@@ -11,7 +11,7 @@ This app use the postDelete User hook to invoke scripts in the docker-welcome co
     <author mail="diroots@e.email" homepage="https://gitlab.e.foundation/">Florent VINCENT</author>
     <namespace>EcloudDropAccount</namespace>
     <category>tools</category>
-    <bugs>https://gitlab.e.foundation/</bugs>
+    <bugs>https://gitlab.e.foundation/e/management/issues</bugs>
     <dependencies>
         <nextcloud min-version="16" max-version="16"/>
     </dependencies>
