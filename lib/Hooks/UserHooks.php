@@ -66,10 +66,10 @@ class UserHooks {
 		} else {
 
 			// build welcome domain url from main NC domain
-			$welcomeDomain = "http://welcome.".$trusted_domains[0];
+			$welcomeDomain = "https://welcome.".$trusted_domains[0];
 
 	    	//$welcomeDomain = "http://localhost";
-	    	$postDeleteScript = "/e.welcome/postDelete.php";
+	    	$postDeleteScript = "/postDelete.php";
 	    	// welcome secret is generated at ecloud selfhosting install
 	    	// and added as a custom var in NC's config
 	    	$welcomeSecret = $this->config->getSystemValue('e_welcome_secret');
