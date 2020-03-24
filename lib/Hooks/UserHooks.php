@@ -25,14 +25,16 @@ class UserHooks {
 
     	
     	
-
+    	/**
+    	 * when auto delete action is done by user, fire postDelete hook 
+    	 * to send postDelete actions to be done for /e/ specific setup
+    	 * 
+    	 * username in ecloud-selfhost setup IS in the form user@$DOMAIN
+    	 * 
+    	 */
+    	  
         $callback = function(IUser $user) {
-            // when auto delete action is done by user, fire postDelete hook 
-            // to send postDelete actions to be done for /e/ specific setup
-
-
-
-            //username in ecloud-selfhost setup IS in the form user@$DOMAIN
+            
 			$username = $user->getUID();
 			$domains = $this->config->getSystemValue('trusted_domains');
 			
@@ -44,16 +46,19 @@ class UserHooks {
         };
         $this->userManager->listen('\OC\User', 'postDelete', $callback);
     }		
-
+    
+    /**
+     * Once NC deleted account datas
+     * do specific ecloud selfhosting actions 
+     * post delete action is delegated welcome container
+     * 
+     * CHECK : compare user account and domain, to be sure it's identical
+     * actually only comparing $trusted_domains[0] >> main domain
+     * 
+     * TODO : handle account deletion with multiple trusted domains!!
+     * 
+     */
     public function ecloudDelete($userID,$trusted_domains) {
-    	// once NC deleted account datas
-    	// do specific ecloud selfhosting actions 
-    	// post delete action is delegated welcome container
-
-
-    	// CHECK : compare user account and domain, to be sure it's identical
-    	// actually only comparing $trusted_domains[0] >> main domain
-    	// TODO : handle account deletion with multiple trusted domains!!
 
 
 		if (strpos($userID, $trusted_domains[0]) == false) {
@@ -64,19 +69,20 @@ class UserHooks {
 
 			// build welcome domain url from main NC domain
 			$welcomeDomain = "https://welcome.".$trusted_domains[0];
+			$postDeleteScript = "/postDelete.php";
 
-	    	$postDeleteScript = "/postDelete.php";
-	    	// welcome secret is generated at ecloud selfhosting install
-	    	// and added as a custom var in NC's config
+	    	/**
+	    	 * welcome secret is generated at ecloud selfhosting install
+	    	 * and added as a custom var in NC's config
+	    	 */
 	    	$welcomeSecret = $this->config->getSystemValue('e_welcome_secret');
-
-	    	
 
 	    	$curl = new Curl();
 
-	    	// send action to  docker_welcome
-	    	//Handling the non NC part of deletion process 
-
+	    	/**
+	    	 * send action to  docker_welcome
+	    	 * Handling the non NC part of deletion process 
+	    	 */
 	    	try {
 
 				$headers = array(
