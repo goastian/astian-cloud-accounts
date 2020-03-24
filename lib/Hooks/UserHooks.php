@@ -4,7 +4,6 @@ use OCA\EcloudDropAccount\AppInfo\Application;
 use OCP\IUserManager;
 use OCP\ILogger;
 use OCP\IUser;
-use OCP\IUserSession;
 use OCP\IConfig;
 
 
@@ -16,10 +15,9 @@ class UserHooks {
     private $userManager;
     private $logger;
 
-    public function __construct(IUserManager $userManager, ILogger $logger, IUserSession $userSession, IConfig $config){
+    public function __construct(IUserManager $userManager, ILogger $logger,  IConfig $config){
         $this->userManager = $userManager;
         $this->logger = $logger;
-        $this->userSession = $userSession;
         $this->config = $config;
     }
 
@@ -34,8 +32,7 @@ class UserHooks {
 
 
 
-            $user = $this->userSession->getUser();
-			//username IS in the form user@$DOMAIN
+            //username in ecloud-selfhost setup IS in the form user@$DOMAIN
 			$username = $user->getUID();
 			$domains = $this->config->getSystemValue('trusted_domains');
 			
@@ -68,7 +65,6 @@ class UserHooks {
 			// build welcome domain url from main NC domain
 			$welcomeDomain = "https://welcome.".$trusted_domains[0];
 
-	    	//$welcomeDomain = "http://localhost";
 	    	$postDeleteScript = "/postDelete.php";
 	    	// welcome secret is generated at ecloud selfhosting install
 	    	// and added as a custom var in NC's config

@@ -47,7 +47,6 @@ class Application extends App {
             return new UserHooks(
                 $c->query('ServerContainer')->getUserManager(),
                 $c->query('ServerContainer')->getLogger(),
-                $c->query('ServerContainer')->getUserSession(),
                 $c->query('ServerContainer')->getConfig()
             );
         });
