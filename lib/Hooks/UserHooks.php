@@ -35,18 +35,12 @@ class UserHooks {
     	  
         $callback = function(IUser $user) {
             
-			$username = $user->getUID();
-			$domains = $this->config->getSystemValue('trusted_domains');
-			
+			$externalDelete = $this->ecloudDelete($user->getUID());
 
-
-			$externalDelete = $this->ecloudDelete($username,$domains);
-
-            
         };
         $this->userManager->listen('\OC\User', 'postDelete', $callback);
     }		
-    
+
     /**
      * Once NC deleted account datas
      * do specific ecloud selfhosting actions 
@@ -58,17 +52,10 @@ class UserHooks {
      * TODO : handle account deletion with multiple trusted domains!!
      * 
      */
-    public function ecloudDelete($userID,$trusted_domains) {
-
-
-		if (strpos($userID, $trusted_domains[0]) == false) {
-		    // user's login AND domain do not match; exit
-
-		    return FALSE;
-		} else {
+    public function ecloudDelete($userID) {
 
 			// build welcome domain url from main NC domain
-			$welcomeDomain = "https://welcome.".$trusted_domains[0];
+			$welcomeDomain = "https://".$this->config->getSystemValue('e_welcome_domain');
 			$postDeleteScript = "/postDelete.php";
 
 	    	/**
@@ -90,8 +77,7 @@ class UserHooks {
 			)	;
 	    		$params = array(
 	    			'sec' => $welcomeSecret,
-	    			'uid' => $userID,
-	    			'domain' => $trusted_domains[0]
+	    			'uid' => $userID
 	    		);
 
 	    		$url = $welcomeDomain.$postDeleteScript;
@@ -106,10 +92,6 @@ class UserHooks {
 				$this->logger->error('There has been an issue while contacting the external deletion script');
 				$this->logger->logException($e, ['app' => Application::APP_NAME]);
 			}
-
-		}
-
-
 
     }
 
