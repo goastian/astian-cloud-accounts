@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @copyright Copyright (c) 2020 Florent VINCENT <e.foundation>
  *
@@ -23,35 +26,26 @@
 
 namespace OCA\EcloudDropAccount\AppInfo;
 
-use OCA\EcloudDropAccount\Hooks\UserHooks;
+use OCA\EcloudDropAccount\Events\UserDeletedListener;
 use OCP\AppFramework\App;
-use OCP\ILogger;
-use OCP\IContainer;
-use OCP\ServerContainer;
-use OCP\IUserManager;
-use OCP\IConfig;
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\User\Events\UserDeletedEvent;
 
+class Application extends App
+{
 
-class Application extends App {
+    const APP_NAME = 'ecloud_drop_account';
 
-	const APP_NAME = 'ecloud_drop_account';
+    public function __construct()
+    {
+        parent::__construct(self::APP_NAME);
+    }
 
-	public function __construct ()
-	{
-		parent::__construct(self::APP_NAME);
-
-		$container = $this->getContainer();
-
-		
-        $container->registerService('UserHooks', function($c) {
-            return new UserHooks(
-                $c->query('ServerContainer')->getUserManager(),
-                $c->query('ServerContainer')->getLogger(),
-                $c->query('ServerContainer')->getConfig()
-            );
-        });
-        
-	}
-
+    public function register()
+    {
+        /* @var IEventDispatcher $eventDispatcher */
+        $eventDispatcher = $this->getContainer()->query(IEventDispatcher::class);
+        $eventDispatcher->addServiceListener(UserDeletedEvent::class, UserDeletedListener::class);
+    }
 
 }

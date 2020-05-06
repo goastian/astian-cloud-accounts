@@ -16,8 +16,9 @@ class Curl
      * @param array $userOptions
      * @return mixed
      */
-    public function get($url, $params = array(), $headers = array(), $userOptions = array()) {
-        return $this->request('GET',$url,$params,$headers,$userOptions);
+    public function get($url, $params = array(), $headers = array(), $userOptions = array())
+    {
+        return $this->request('GET', $url, $params, $headers, $userOptions);
     }
 
     /**
@@ -29,8 +30,9 @@ class Curl
      * @param array $userOptions
      * @return mixed
      */
-    public function post($url, $params = array(), $headers = array(), $userOptions = array()) {
-        return $this->request('POST',$url,$params,$headers,$userOptions);
+    public function post($url, $params = array(), $headers = array(), $userOptions = array())
+    {
+        return $this->request('POST', $url, $params, $headers, $userOptions);
     }
 
 
@@ -45,18 +47,19 @@ class Curl
      * @return mixed
      * @throws Exception
      */
-    private function request($method, $url, $params = array(), $headers = array(), $userOptions = array()) {
+    private function request($method, $url, $params = array(), $headers = array(), $userOptions = array())
+    {
         $ch = curl_init();
         $method = strtoupper($method);
         $options = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HEADER => $headers
         );
-        array_merge($options,$userOptions);
+        array_merge($options, $userOptions);
         switch ($method) {
             case 'GET':
-                if($params) {
-                    $url = $url.'?'.http_build_query($params);
+                if ($params) {
+                    $url = $url . '?' . http_build_query($params);
                 }
                 break;
             case 'POST':
@@ -73,7 +76,7 @@ class Curl
 
         $response = curl_exec($ch);
 
-        if($errno = curl_errno($ch)) {
+        if ($errno = curl_errno($ch)) {
             var_dump($errno);
             $errorMessage = curl_strerror($errno);
             throw new Exception("Curl error $errno - $errorMessage");

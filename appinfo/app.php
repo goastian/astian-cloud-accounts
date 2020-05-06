@@ -21,5 +21,7 @@
  *
  */
 
-$app = new \OCA\EcloudDropAccount\AppInfo\Application();
-$app->getContainer()->query('UserHooks')->register();
+use OCA\EcloudDropAccount\AppInfo\Application;
+
+$app = \OC::$server->query(Application::class);
+$app->register();
