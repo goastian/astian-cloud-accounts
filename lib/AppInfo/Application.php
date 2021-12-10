@@ -24,9 +24,9 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\EcloudDropAccount\AppInfo;
+namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudDropAccount\Events\UserDeletedListener;
+use OCA\EcloudAccounts\Events\UserDeletedListener;
 use OCP\AppFramework\App;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\User\Events\UserDeletedEvent;
