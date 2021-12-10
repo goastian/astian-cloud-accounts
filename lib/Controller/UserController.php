@@ -1,11 +1,12 @@
-
 <?php
+
+declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Controller;
 
+use OCP\IRequest;
 use OCP\AppFramework\ApiController;
-use OCP\AppFramework\Http\JSONResponse;
-
+use OCP\AppFramework\Http\DataResponse;
 use OCA\EcloudAccounts\Service\UserService;
 
 class UserController extends ApiController
@@ -14,8 +15,9 @@ class UserController extends ApiController
     /** @var UserService */
     private $userService;
 
-    public function __construct(UserService $userService)
+    public function __construct($appName, IRequest $request, UserService $userService)
     {
+        parent::__construct($appName, $request);
         $this->userService = $userService;
     }
 
@@ -24,10 +26,10 @@ class UserController extends ApiController
      * @PublicPage
      * @NoCSRFRequired
      */
-    public function setAccountData(string $token, string $uid, string $email, string $quota = '1024 MB'): JSONResponse
+    public function setAccountData(string $token, string $uid, string $email, string $quota = '1024 MB'): DataResponse
     {
 
-        $response = new JSONResponse();
+        $response = new DataResponse();
 
         if(!$this->checkAppCredentials($token)) { 
             $response->setStatus(401);
@@ -38,7 +40,7 @@ class UserController extends ApiController
             $response->setStatus(404);
             return $response; 
         }
-
+        
         $this->userService->setEmail($uid, $email);
         $this->userService->setQuota($uid, $quota);
 
