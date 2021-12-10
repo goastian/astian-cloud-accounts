@@ -21,10 +21,9 @@ class UserController extends ApiController
 
     /**
      * @CORS
-     * @NoCSRFRequired
      * @PublicPage
+     * @NoCSRFRequired
      */
-
     public function setAccountData(string $token, string $uid, string $email, string $quota = '1024 MB'): JSONResponse
     {
 

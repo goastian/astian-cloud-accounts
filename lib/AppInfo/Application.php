@@ -34,7 +34,7 @@ use OCP\User\Events\UserDeletedEvent;
 class Application extends App
 {
 
-    const APP_NAME = 'ecloud_drop_account';
+    const APP_NAME = 'ecloud-accounts';
 
     public function __construct()
     {
