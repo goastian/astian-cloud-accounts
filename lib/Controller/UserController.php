@@ -41,9 +41,17 @@ class UserController extends ApiController
             return $response; 
         }
         
+        $errors = [];
         $this->userService->setEmail($uid, $email);
         $this->userService->setQuota($uid, $quota);
+        $createdFolder = $this->userService->createUserFolder($uid);
 
+        if(!$createdFolder){ 
+            $errors[] = 'error_creating_user_folder';
+        }
+        
+        $response->setData(['errors' => $errors]);
+        
         return $response;
     }
 

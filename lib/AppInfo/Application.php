@@ -26,26 +26,24 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudAccounts\Events\UserDeletedListener;
+
 use OCP\AppFramework\App;
-use OCP\EventDispatcher\IEventDispatcher;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\User\Events\UserDeletedEvent;
+use OCA\EcloudAccounts\Events\UserDeletedListener;
 
 class Application extends App
 {
 
-    const APP_NAME = 'ecloud-accounts';
+    const APP_ID = 'ecloud-accounts';
 
-    public function __construct()
+    public function __construct(array $urlParams = [])
     {
-        parent::__construct(self::APP_NAME);
+        parent::__construct(self::APP_ID, $urlParams);
     }
 
-    public function register()
+    public function register(IRegistrationContext $context): void
     {
-        /* @var IEventDispatcher $eventDispatcher */
-        $eventDispatcher = $this->getContainer()->query(IEventDispatcher::class);
-        $eventDispatcher->addServiceListener(UserDeletedEvent::class, UserDeletedListener::class);
+        $context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
     }
-
 }
