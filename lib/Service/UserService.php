@@ -14,6 +14,9 @@ class UserService
     /** @var IUserManager */
     private $userManager;
 
+    /** @var array */
+    private $appConfig;
+
     /** @var IConfig */
     private $config;
 
@@ -25,15 +28,24 @@ class UserService
     {
         $this->userManager = $userManager;
         $this->config = $config;
+        $this->appConfig = $this->config->getSystemValue($appName);
         $this->appName = $appName;
         $this->storage = $storage;
     }
 
-    private function isShardingEnabled() : bool {
-        $shardingEnabled = $this->config->getAppValue($this->appName, 'user_folder_sharding');
+    private function getConfigValue(string $key) : string {
+        if(array_key_exists($key, $this->appConfig)) {
+            return $this->appConfig[$key];
+        }
+        return false;
+    }
+
+    private function isShardingEnabled(): bool
+    {
+        $shardingEnabled = $this->config->getSystemValue('user_folder_sharding', false);
         return $shardingEnabled;
     }
-    
+
     public function userExists(string $uid): bool
     {
         return $this->userManager->userExists($uid);
@@ -55,12 +67,12 @@ class UserService
 
     public function createUserFolder(string $uid): bool
     {
-       // return true as creation can be handled at login if sharding disabled
+        // return true as creation can be handled at login if sharding disabled
         if (!$this->isShardingEnabled()) {
             return true;
         }
 
-        $realDataDir = $this->config->getAppValue($this->appName, 'realdatadirectory');
+        $realDataDir = $this->getConfigValue('realdatadirectory');
         $ncDataDir = $this->config->getSystemValue('datadirectory');
         $ncUserFolder = $ncDataDir . '/' . $uid;
 
@@ -83,17 +95,16 @@ class UserService
 
         try {
             $created = $this->storage->mkdir($realUserFolder);
-            if(!$created) {
+            if (!$created) {
                 $this->logger->error('Error while creating user folder for user: ' . $uid);
                 return false;
             }
             $linked = symlink($realUserFolder, $ncUserFolder);
-            if(!$linked) {
-                $this->logger->error('Error while linking user folder for user: '. $uid);
+            if (!$linked) {
+                $this->logger->error('Error while linking user folder for user: ' . $uid);
                 return false;
             }
-            return true;  
-          
+            return true;
         } catch (Exception $e) {
             $this->logger->error("Error while creating user folder and linking for user: " . $uid);
             return false;
