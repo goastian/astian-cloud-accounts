@@ -33,7 +33,7 @@ class UserService
         $this->storage = $storage;
     }
 
-    private function getConfigValue(string $key) : string {
+    private function getConfigValue(string $key) {
         if(array_key_exists($key, $this->appConfig)) {
             return $this->appConfig[$key];
         }
