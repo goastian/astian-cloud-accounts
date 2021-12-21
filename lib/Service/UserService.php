@@ -6,7 +6,6 @@ namespace OCA\EcloudAccounts\Service;
 
 use OCP\IUserManager;
 use OCP\IConfig;
-use OCP\Files\Storage\IStorage;
 
 class UserService
 {
@@ -20,24 +19,11 @@ class UserService
     /** @var IConfig */
     private $config;
 
-    private $appName;
-
-    private $storage;
-
-    public function __construct($appName, IUserManager $userManager, IConfig $config, IStorage $storage)
+    public function __construct( $appName, IUserManager $userManager, IConfig $config)
     {
         $this->userManager = $userManager;
         $this->config = $config;
         $this->appConfig = $this->config->getSystemValue($appName);
-        $this->appName = $appName;
-        $this->storage = $storage;
-    }
-
-    private function getConfigValue(string $key) {
-        if(array_key_exists($key, $this->appConfig)) {
-            return $this->appConfig[$key];
-        }
-        return false;
     }
 
     private function isShardingEnabled(): bool
@@ -45,6 +31,14 @@ class UserService
         $shardingEnabled = $this->config->getSystemValue('user_folder_sharding', false);
         return $shardingEnabled;
     }
+
+    public function getConfigValue(string $key) {
+        if(!empty($this->appConfig[$key])) {
+            return $this->appConfig[$key];
+        }
+        return false;
+    }
+
 
     public function userExists(string $uid): bool
     {
@@ -82,19 +76,19 @@ class UserService
             return false;
         }
 
+         // Folder already exists 
+         if (file_exists($ncUserFolder)) {
+            return true;
+        }
+
         // Randomly assign a directory for the new user
         $directories = glob($realDataDir . '/*', GLOB_ONLYDIR);
         $folderIndex = random_int(0, count($directories) - 1);
         $folder = $directories[$folderIndex];
         $realUserFolder = $folder . '/' .  $uid;
 
-        // Folder already exists 
-        if ($this->storage->file_exists($realUserFolder)) {
-            return true;
-        }
-
         try {
-            $created = $this->storage->mkdir($realUserFolder);
+            $created = mkdir($realUserFolder);
             if (!$created) {
                 $this->logger->error('Error while creating user folder for user: ' . $uid);
                 return false;
@@ -109,5 +103,6 @@ class UserService
             $this->logger->error("Error while creating user folder and linking for user: " . $uid);
             return false;
         }
+
     }
 }

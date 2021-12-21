@@ -56,7 +56,7 @@ class UserController extends ApiController
     }
 
     private function checkAppCredentials(string $token) : bool {
-        $ecloud_accounts_secret = $_ENV['ECLOUD_ACCOUNTS_SECRET'];
+        $ecloud_accounts_secret = $this->userService->getConfigValue('secret');
         return strcmp($token, $ecloud_accounts_secret) === 0;
     }
 }
