@@ -26,7 +26,7 @@ class UserController extends ApiController
      * @PublicPage
      * @NoCSRFRequired
      */
-    public function setAccountData(string $token, string $uid, string $email, string $quota = '1024 MB'): DataResponse
+    public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $quota = '1024 MB'): DataResponse
     {
 
         $response = new DataResponse();
@@ -43,14 +43,23 @@ class UserController extends ApiController
         
         $this->userService->setEmail($uid, $email);
         $this->userService->setQuota($uid, $quota);
+        $recoveryEmailSuccess = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
+        if(!$recoveryEmailSuccess) {
+            return $this->getErrorResponse($response, 'error_setting_recovery', 400);
+
+        }
         $createdFolder = $this->userService->createUserFolder($uid);
 
         if(!$createdFolder){ 
-            $response->setStatus(500);
-            $error = 'error_creating_user_folder';
-            $response->setData(['error' => $error]);
+            return $this->getErrorResponse($response, 'error_creating_user_folder', 500);
         }
 
+        return $response;
+    }
+
+    private function getErrorResponse(DataResponse $response, string $error, int $code) {
+        $response->setStatus($code);
+        $response->setData(['error' => $error]);
         return $response;
     }
 

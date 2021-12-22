@@ -6,6 +6,7 @@ namespace OCA\EcloudAccounts\Service;
 
 use OCP\IUserManager;
 use OCP\IConfig;
+use UnexpectedValueException;
 
 class UserService
 {
@@ -57,6 +58,16 @@ class UserService
         $user = $this->userManager->get($uid);
         if (is_null($user)) return;
         $user->setQuota($quota);
+    }
+
+    public function setRecoveryEmail(string $uid, string $recoveryEmail) : bool {
+        try {
+            $this->config->setUserValue($uid, 'email-recovery', 'recovery-email' ,$recoveryEmail);
+            return true;
+        }
+        catch(UnexpectedValueException $e) {
+            return false;
+        }
     }
 
     public function createUserFolder(string $uid): bool
