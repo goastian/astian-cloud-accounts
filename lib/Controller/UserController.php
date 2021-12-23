@@ -58,7 +58,7 @@ class UserController extends ApiController
 
         $createdFolder = $this->userService->createUserFolder($uid);
         if (!$createdFolder) {
-            return $this->getErrorResponse($response, 'error_creating_user_folder', 500);
+            $response->setStatus(500);
         }
 
         return $response;
