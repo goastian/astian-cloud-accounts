@@ -21,7 +21,7 @@ class UserService
     /** @var IConfig */
     private $config;
 
-    public function __construct( $appName, IUserManager $userManager, IConfig $config)
+    public function __construct($appName, IUserManager $userManager, IConfig $config)
     {
         $this->userManager = $userManager;
         $this->config = $config;
@@ -34,8 +34,9 @@ class UserService
         return $shardingEnabled;
     }
 
-    public function getConfigValue(string $key) {
-        if(!empty($this->appConfig[$key])) {
+    public function getConfigValue(string $key)
+    {
+        if (!empty($this->appConfig[$key])) {
             return $this->appConfig[$key];
         }
         return false;
@@ -47,16 +48,17 @@ class UserService
         return $this->userManager->userExists($uid);
     }
 
-    public function getUser(string $uid) : ?IUser {
+    public function getUser(string $uid): ?IUser
+    {
         return $this->userManager->get($uid);
     }
 
-    public function setRecoveryEmail(string $uid, string $recoveryEmail) : bool {
+    public function setRecoveryEmail(string $uid, string $recoveryEmail): bool
+    {
         try {
-            $this->config->setUserValue($uid, 'email-recovery', 'recovery-email' ,$recoveryEmail);
+            $this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
             return true;
-        }
-        catch(UnexpectedValueException $e) {
+        } catch (UnexpectedValueException $e) {
             return false;
         }
     }
@@ -78,8 +80,8 @@ class UserService
             return false;
         }
 
-         // Folder already exists 
-         if (file_exists($ncUserFolder)) {
+        // Folder already exists 
+        if (file_exists($ncUserFolder)) {
             return true;
         }
 
@@ -105,6 +107,5 @@ class UserService
             $this->logger->error("Error while creating user folder and linking for user: " . $uid);
             return false;
         }
-
     }
 }

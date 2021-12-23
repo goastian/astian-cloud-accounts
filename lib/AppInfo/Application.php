@@ -49,7 +49,7 @@ class Application extends App
         $context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
     }
 
-    public function boot(IBootContext $context) {
-
+    public function boot(IBootContext $context)
+    {
     }
 }

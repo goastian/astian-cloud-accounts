@@ -31,19 +31,19 @@ class UserController extends ApiController
 
         $response = new DataResponse();
 
-        if(!$this->checkAppCredentials($token)) { 
+        if (!$this->checkAppCredentials($token)) {
             $response->setStatus(401);
             return $response;
         }
 
-        if(!$this->userService->userExists($uid)) {
+        if (!$this->userService->userExists($uid)) {
             $response->setStatus(404);
-            return $response; 
+            return $response;
         }
 
         $user = $this->userService->getUser($uid);
-        
-        if(is_null($user)) {
+
+        if (is_null($user)) {
             $response->setStatus(404);
             return $response;
         }
@@ -52,25 +52,27 @@ class UserController extends ApiController
         $user->setQuota($quota);
 
         $recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
-        if(!$recoveryEmailUpdated) {
+        if (!$recoveryEmailUpdated) {
             return $this->getErrorResponse($response, 'error_setting_recovery', 400);
         }
 
         $createdFolder = $this->userService->createUserFolder($uid);
-        if(!$createdFolder){ 
+        if (!$createdFolder) {
             return $this->getErrorResponse($response, 'error_creating_user_folder', 500);
         }
 
         return $response;
     }
 
-    private function getErrorResponse(DataResponse $response, string $error, int $code) {
+    private function getErrorResponse(DataResponse $response, string $error, int $code)
+    {
         $response->setStatus($code);
         $response->setData(['error' => $error]);
         return $response;
     }
 
-    private function checkAppCredentials(string $token) : bool {
+    private function checkAppCredentials(string $token): bool
+    {
         $ecloud_accounts_secret = $this->userService->getConfigValue('secret');
         return strcmp($token, $ecloud_accounts_secret) === 0;
     }
