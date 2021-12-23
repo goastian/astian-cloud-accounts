@@ -40,16 +40,23 @@ class UserController extends ApiController
             $response->setStatus(404);
             return $response; 
         }
+
+        $user = $this->userService->getUser($uid);
         
-        $this->userService->setEmail($uid, $email);
-        $this->userService->setQuota($uid, $quota);
-        $recoveryEmailSuccess = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
-        if(!$recoveryEmailSuccess) {
-            return $this->getErrorResponse($response, 'error_setting_recovery', 400);
-
+        if(is_null($user)) {
+            $response->setStatus(404);
+            return $response;
         }
-        $createdFolder = $this->userService->createUserFolder($uid);
 
+        $user->setEMailAddress($email);
+        $user->setQuota($quota);
+
+        $recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
+        if(!$recoveryEmailUpdated) {
+            return $this->getErrorResponse($response, 'error_setting_recovery', 400);
+        }
+
+        $createdFolder = $this->userService->createUserFolder($uid);
         if(!$createdFolder){ 
             return $this->getErrorResponse($response, 'error_creating_user_folder', 500);
         }
