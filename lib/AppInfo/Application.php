@@ -50,7 +50,7 @@ class Application extends App implements IBootstrap
         $context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
     }
 
-    public function boot(IBootContext $context)
+    public function boot(IBootContext $context) : void
     {
     }
 }
