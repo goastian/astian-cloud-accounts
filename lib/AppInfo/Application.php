@@ -24,28 +24,33 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\EcloudDropAccount\AppInfo;
+namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudDropAccount\Events\UserDeletedListener;
+
 use OCP\AppFramework\App;
-use OCP\EventDispatcher\IEventDispatcher;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\User\Events\UserDeletedEvent;
+use OCA\EcloudAccounts\Events\UserDeletedListener;
 
-class Application extends App
+
+class Application extends App implements IBootstrap
 {
 
-    const APP_NAME = 'ecloud_drop_account';
+    const APP_ID = 'ecloud-accounts';
 
-    public function __construct()
+    public function __construct(array $urlParams = [])
     {
-        parent::__construct(self::APP_NAME);
+        parent::__construct(self::APP_ID, $urlParams);
     }
 
-    public function register()
+    public function register(IRegistrationContext $context): void
     {
-        /* @var IEventDispatcher $eventDispatcher */
-        $eventDispatcher = $this->getContainer()->query(IEventDispatcher::class);
-        $eventDispatcher->addServiceListener(UserDeletedEvent::class, UserDeletedListener::class);
+        $context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
     }
 
+    public function boot(IBootContext $context): void
+    {
+    }
 }

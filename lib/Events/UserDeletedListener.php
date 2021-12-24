@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
-namespace OCA\EcloudDropAccount\Events;
+namespace OCA\EcloudAccounts\Events;
 
 use Curl;
-use OCA\EcloudDropAccount\AppInfo\Application;
+use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
