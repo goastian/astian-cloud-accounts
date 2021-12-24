@@ -28,13 +28,14 @@ namespace OCA\EcloudAccounts\AppInfo;
 
 
 use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\User\Events\UserDeletedEvent;
 use OCA\EcloudAccounts\Events\UserDeletedListener;
 
 
-class Application extends App
+class Application extends App implements IBootstrap
 {
 
     const APP_ID = 'ecloud-accounts';
