@@ -14,7 +14,7 @@
 
 ## User Account creation
 
-- The endpoint `/apps/ecloud-accounts/api/set_account_data` is to be used to set user's email, quota,recovery email and create the user's folder if necessary
+- This plugin creates an endpoint `/apps/ecloud-accounts/api/set_account_data` that is to be used to set user's email, quota,recovery email and create the user's folder if necessary
 
 ## User folder sharding
 - When user folder sharding is enabled, the user's folder is created in one of the folders in the specified "real" data directory and the folder is assigned to the user randomly
