@@ -16,6 +16,7 @@
 - When user folder sharding is enabled, the user's folder is created in one of the folders in the specified "real" data directory and the folder is assigned to the user randomly
 - Then a `symlink` is created linking the user's folder in the nextcloud data directory to the user's folder in the "real" data directory
 - If the `user_folder_sharding` config key is set to `true`, ensure to set `realdatadirectory` config key in the `ecloud-accounts` configuration to the location where your folders are mounted 
+- In case `user_folder_sharding` is not set in your `config.php`, it defaults to `false`
 
 ## Drop account
 
