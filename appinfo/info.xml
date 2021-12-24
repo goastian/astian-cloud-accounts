@@ -12,7 +12,7 @@
     This app uses the UserDeletedEvent to invoke scripts in the docker-welcome container of /e/ cloud setup]]></description>
     <version>1.0.0</version>
     <licence>agpl</licence>
-    <author mail="diroots@e.email" homepage="https://gitlab.e.foundation/">Florent VINCENT</author>
+    <author mail="dev@e.email" homepage="https://gitlab.e.foundation/">Akhil Potukuchi</author>
     <namespace>EcloudAccounts</namespace>
     <category>tools</category>
     <bugs>https://gitlab.e.foundation/e/management/issues</bugs>
