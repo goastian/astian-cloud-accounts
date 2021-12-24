@@ -1,15 +1,28 @@
-# Ecloud Drop Account
+# Ecloud Accounts
 
-Allow user to delete his account by himself
+- This app is used to integrate ecloud account creation with [welcome](https://gitlab.e.foundation/e/infra/docker-welcome)
+- Options to be configured in your `config.php`:
+```php
+    'e_welcome_secret' => 'secret', // Secret to authenticate request to the welcome server
+    'e_welcome_domain' => 'welcome.ecloud.global', // Domain of welcome server
+    'user_folder_sharding' => false, // Whether or not user folder sharding has to be enabled
+    'ecloud-accounts' => [
+        'secret' => 'ecloud-accounts-secret', // Secret for incoming requests to authenticate against
+        'realdatadirectory' => '/var/www/realdatadirectory' // Directory where folders for sharding are mounted
+    ]
+```
 
+## User folder sharding
+- When user folder sharding is enabled, the user's folder is created in one of the folders in the specified "real" data directory and the folder is assigned to the user randomly
+- Then a `symlink` is created linking the user's folder in the nextcloud data directory to the user's folder in the "real" data directory
+- If the `user_folder_sharding` config key is set to `true`, ensure to set `realdatadirectory` config key in the `ecloud-accounts` configuration to the location where your folders are mounted 
 
-This plugin works in cunjunction with the drop_account plugin : https://apps.nextcloud.com/apps/drop_account
+## Drop account
 
-Triggers nextcloud's postDelete User Hook to handle proper deletion of user account in /e/ ecosystem
-
-This plugin calls the postDelete.php script in the /e/ docker-welcome container
-
-The e_welcome_secret is loaded in nextcloud's config file during ecloud-selfhosting installation. 
+- The drop account functionality plugin works in conjunction with the drop_account plugin : https://apps.nextcloud.com/apps/drop_account
+- The app listens for user deletion event to handle proper deletion of user account in /e/ ecosystem 
+- This plugin calls the postDelete.php script in the /e/ docker-welcome container 
+- The e_welcome_secret is loaded in nextcloud's config file during ecloud-selfhosting installation. 
 
 ## Support
 
