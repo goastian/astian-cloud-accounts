@@ -26,6 +26,23 @@ class UserController extends ApiController
      * @PublicPage
      * @NoCSRFRequired
      */
+    public function userExists(string $token, string $uid): DataResponse
+    {
+        $response = new DataResponse();
+        if (!$this->checkAppCredentials($token)) {
+            $response->setStatus(401);
+            return $response;
+        }
+
+        $response->setData($this->userService->userExists($uid));
+        return $response;
+    }
+
+    /**
+     * @CORS
+     * @PublicPage
+     * @NoCSRFRequired
+     */
     public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $quota = '1024 MB'): DataResponse
     {
 
@@ -56,7 +73,10 @@ class UserController extends ApiController
             return $this->getErrorResponse($response, 'error_setting_recovery', 400);
         }
 
-        $createdFolder = $this->userService->createUserFolder($uid);
+        $createdFolder = true;
+        if ($this->userService->isShardingEnabled()) {
+            $createdFolder = $this->userService->createUserFolder($uid);
+        }
         if (!$createdFolder) {
             $response->setStatus(500);
         }

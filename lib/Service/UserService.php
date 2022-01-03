@@ -28,7 +28,7 @@ class UserService
         $this->appConfig = $this->config->getSystemValue($appName);
     }
 
-    private function isShardingEnabled(): bool
+    public function isShardingEnabled(): bool
     {
         $shardingEnabled = $this->config->getSystemValue('user_folder_sharding', false);
         return $shardingEnabled;
@@ -65,10 +65,6 @@ class UserService
 
     public function createUserFolder(string $uid): bool
     {
-        // return true as creation can be handled at login if sharding disabled
-        if (!$this->isShardingEnabled()) {
-            return true;
-        }
 
         $realDataDir = $this->getConfigValue('realdatadirectory');
         $ncDataDir = $this->config->getSystemValue('datadirectory');
