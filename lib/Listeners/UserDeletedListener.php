@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\EcloudAccounts\Events;
+namespace OCA\EcloudAccounts\Listeners;
 
 use Curl;
 use OCA\EcloudAccounts\AppInfo\Application;
@@ -76,7 +76,7 @@ class UserDeletedListener implements IEventListener
             return json_decode($answer, true);
         } catch (\Exception $e) {
             $this->logger->error('There has been an issue while contacting the external deletion script');
-            $this->logger->logException($e, ['app' => Application::APP_NAME]);
+            $this->logger->logException($e, ['app' => Application::APP_ID]);
         }
 
         return null;

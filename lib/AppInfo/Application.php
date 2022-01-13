@@ -32,7 +32,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\User\Events\UserDeletedEvent;
-use OCA\EcloudAccounts\Events\UserDeletedListener;
+use OCA\EcloudAccounts\Listeners\UserDeletedListener;
 
 
 class Application extends App implements IBootstrap
