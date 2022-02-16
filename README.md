@@ -31,7 +31,7 @@
 
 ## Support
 
-Please open issues here : https://gitlab.e.foundation/e/management/issues
+Please open issues here : https://gitlab.e.foundation/e/backlog/issues
 
 ## Dependancies
 
