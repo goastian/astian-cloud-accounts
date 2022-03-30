@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Controller;
 
+use Exception;
 use OCP\IRequest;
+use OCP\ILogger;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
 use OCA\EcloudAccounts\Service\UserService;
+use OCA\EcloudAccounts\Db\MailUsageMapper;
 
 class UserController extends ApiController
 {
@@ -15,10 +18,16 @@ class UserController extends ApiController
     /** @var UserService */
     private $userService;
 
-    public function __construct($appName, IRequest $request, UserService $userService)
+    private $mailUsageMapper;
+
+    private $logger;
+
+    public function __construct($appName, IRequest $request, ILogger $logger, UserService $userService, MailUsageMapper $mailUsageMapper)
     {
         parent::__construct($appName, $request);
         $this->userService = $userService;
+        $this->mailUsageMapper = $mailUsageMapper;
+        $this->logger = $logger;
     }
 
     /**
@@ -82,6 +91,35 @@ class UserController extends ApiController
         }
 
         return $response;
+    }
+
+    /**
+     * @CORS
+     * @PublicPage
+     * @NoCSRFRequired
+     */
+    public function setMailQuotaUsage(array $usage, string $token): DataResponse
+    {
+        $response = new DataResponse();
+        if (!$this->checkAppCredentials($token)) {
+            $response->setStatus(401);
+            return $response;
+        }
+        try {
+            $this->updateMailQuotaUsageInPreferences($usage);
+        } catch (Exception $e) {
+            $statusCode = 500;
+            $errorMessage = 'error_setting_mail_quota_usage';
+            $response = $this->getErrorResponse($response, $errorMessage, $statusCode);
+
+            $this->logger->error($errorMessage . ': ' . $e->getMessage());
+        }
+        return $response;
+    }
+
+    private function updateMailQuotaUsageInPreferences(array $usage)
+    {
+        $this->mailUsageMapper->updateUsageInPreferences($usage);
     }
 
     private function getErrorResponse(DataResponse $response, string $error, int $code)
