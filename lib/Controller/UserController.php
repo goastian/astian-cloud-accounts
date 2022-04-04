@@ -106,6 +106,8 @@ class UserController extends ApiController
             return $response;
         }
         try {
+            // Explicitly cast input values to integer
+            $usage = array_map(fn ($value) => (int) $value, $usage);
             $this->updateMailQuotaUsageInPreferences($usage);
         } catch (Exception $e) {
             $statusCode = 500;
