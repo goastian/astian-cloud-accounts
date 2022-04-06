@@ -32,8 +32,9 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\User\Events\UserDeletedEvent;
+use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserDeletedListener;
-
+use OCA\EcloudAccounts\Listeners\UserChangedListener;
 
 class Application extends App implements IBootstrap
 {
@@ -48,6 +49,7 @@ class Application extends App implements IBootstrap
     public function register(IRegistrationContext $context): void
     {
         $context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
+        $context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
     }
 
     public function boot(IBootContext $context): void
