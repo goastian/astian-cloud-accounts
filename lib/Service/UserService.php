@@ -28,18 +28,13 @@ class UserService
         $this->appConfig = $this->config->getSystemValue($appName);
     }
 
-    public function isShardingEnabled(): bool
-    {
-        $shardingEnabled = $this->config->getSystemValue('user_folder_sharding', false);
-        return $shardingEnabled;
-    }
 
-    public function getConfigValue(string $key)
+    public function getConfigValue(string $key, mixed $default = false)
     {
         if (!empty($this->appConfig[$key])) {
             return $this->appConfig[$key];
         }
-        return false;
+        return $default;
     }
 
 
@@ -63,46 +58,25 @@ class UserService
         }
     }
 
-    public function createUserFolder(string $uid): bool
+    public function getHMEAliasesFromConfig($uid) : array
     {
-
-        $realDataDir = $this->getConfigValue('realdatadirectory');
-        $ncDataDir = $this->config->getSystemValue('datadirectory');
-        $ncUserFolder = $ncDataDir . '/' . $uid;
-
-        // return false if no realDataDir specified and sharding is enabled
-        // As user data directory can't be created in correct location
-        if (!$realDataDir) {
-            return false;
+        $aliases = $this->config->getUserValue($uid, 'hide-my-email', 'email-aliases', []);
+        if (!empty($aliases)) {
+            $aliases = json_decode($aliases, true);
         }
-
-        // Folder already exists 
-        if (file_exists($ncUserFolder)) {
-            return true;
-        }
-
-        // Randomly assign a directory for the new user
-        $directories = glob($realDataDir . '/*', GLOB_ONLYDIR);
-        $folderIndex = random_int(0, count($directories) - 1);
-        $folder = $directories[$folderIndex];
-        $realUserFolder = $folder . '/' .  $uid;
-
-        try {
-            $created = mkdir($realUserFolder);
-            if (!$created) {
-                $this->logger->error('Error while creating user folder for user: ' . $uid);
-                return false;
-            }
-            $linked = symlink($realUserFolder, $ncUserFolder);
-            if (!$linked) {
-                $this->logger->error('Error while linking user folder for user: ' . $uid);
-                return false;
-            }
-            return true;
-        } catch (Exception $e) {
-            $this->logger->error("Error while creating user folder and linking for user: " . $uid);
-            return false;
-        }
+        return $aliases;
     }
 
+    public function addHMEAliasInConfig($uid, $alias) : bool
+    {
+        $aliases = $this->getHMEAliasesFromConfig($uid);
+        $aliases[] = $alias;
+        $aliases = json_encode($aliases);
+        try {
+            $this->config->setUserValue($uid, 'hide-my-email', 'email-aliases', $aliases);
+            return true;
+        } catch(UnexpectedValueException $e) {
+            return false;
+        } 
+    }
 }

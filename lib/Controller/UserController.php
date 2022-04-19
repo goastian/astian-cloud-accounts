@@ -52,9 +52,9 @@ class UserController extends ApiController
      * @PublicPage
      * @NoCSRFRequired
      */
-    public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $quota = '1024 MB'): DataResponse
+    public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB'): DataResponse
     {
-
+        
         $response = new DataResponse();
 
         if (!$this->checkAppCredentials($token)) {
@@ -81,15 +81,10 @@ class UserController extends ApiController
         if (!$recoveryEmailUpdated) {
             return $this->getErrorResponse($response, 'error_setting_recovery', 400);
         }
-
-        $createdFolder = true;
-        if ($this->userService->isShardingEnabled()) {
-            $createdFolder = $this->userService->createUserFolder($uid);
+        $hmeAliasAdded = $this->userService->addHMEAliasInConfig($uid, $hmeAlias);
+        if (!$hmeAliasAdded) {
+            return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
         }
-        if (!$createdFolder) {
-            $response->setStatus(500);
-        }
-
         return $response;
     }
 
