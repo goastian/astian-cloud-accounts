@@ -76,3 +76,16 @@ deploy:staging:
   variables:
     DEPLOYMENT_BRANCH: $CI_COMMIT_BRANCH
     CONTAINER_NAME: nextcloud
+
+deploy:production:
+  extends: .deploy:nextcloud-app
+  when: manual
+  only:
+    - nc21
+    - production
+  environment:
+    name: prod/01
+    url: https://ecloud.global
+  variables:
+    DEPLOYMENT_BRANCH: $CI_COMMIT_BRANCH
+    CONTAINER_NAME: nextcloud
