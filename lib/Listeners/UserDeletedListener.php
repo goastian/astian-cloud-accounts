@@ -58,7 +58,7 @@ class UserDeletedListener implements IEventListener
      */
     public function ecloudDelete(string $userID, string $welcomeDomain, string $welcomeSecret)
     {
-        $postDeleteUrl = "https://" . $welcomeDomain . "/postDelete.php";
+        $postDeleteUrl = "https://" . $welcomeDomain . "/postDeleteLDAP.php";
         $curl = new Curl();
 
         /**
