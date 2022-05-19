@@ -20,11 +20,13 @@ class UserDeletedListener implements IEventListener
 {
     private $logger;
     private $config;
+    private $userManager;
 
     public function __construct(ILogger $logger, IConfig $config, IUserManager $userManager)
     {
         $this->logger = $logger;
         $this->config = $config;
+        $this->userManager = $userManager;
     }
 
 
@@ -41,6 +43,7 @@ class UserDeletedListener implements IEventListener
         try {
             $conn = $this->getLDAPConnection($uid);
             $this->deleteAliasEntries($conn, $email);
+            ldap_close($conn);
         }
         catch (Exception $e) {
             $this->logger->error('Error deleting aliases for user '. $uid . ' :' . $e->getMessage());
@@ -133,14 +136,14 @@ class UserDeletedListener implements IEventListener
                 $connection = $access->getConnection();
                 $configuration = $connection->getConfiguration();
 
-                if (!$configuration->ldapConfigurationActive) {
+                if (!$configuration['ldap_configuration_active']) {
                     continue;
                 }
 
-                $adminDn = $configuration->ldapAgentName;
-                $adminPassword = $configuration->ldapAgentPassword;
-                $host = $configuration->ldapHost;
-                $port = $configuration->ldapPort;
+                $adminDn = $configuration['ldap_dn'];
+                $adminPassword = $configuration['ldap_agent_password'];
+                $host = $configuration['ldap_host'];
+                $port = intval($configuration['ldap_port']);
 
                 $conn = ldap_connect($host, $port);
                 ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
