@@ -34,9 +34,11 @@ class BeforeUserDeletedListener implements IEventListener
         $uid = $user->getUID();
 
         try {
-            $conn = $this->LDAPConnectionService->getLDAPConnection($uid);
-            $this->deleteAliasEntries($conn, $email);
-            $this->LDAPConnectionService->closeLDAPConnection($conn);
+            if ($this->LDAPConnectionService->isLDAPEnabled()) {
+                $conn = $this->LDAPConnectionService->getLDAPConnection($uid);
+                $this->deleteAliasEntries($conn, $email);
+                $this->LDAPConnectionService->closeLDAPConnection($conn);
+            }
         } catch (Exception $e) {
             $this->logger->error('Error deleting aliases for user '. $uid . ' :' . $e->getMessage());
         }
