@@ -35,7 +35,7 @@ class BeforeUserDeletedListener implements IEventListener
 
         try {
             if ($this->LDAPConnectionService->isLDAPEnabled() && $this->LDAPConnectionService->isUserOnLDAPBackend($user)) {
-                $conn = $this->LDAPConnectionService->getLDAPConnection($uid);
+                $conn = $this->LDAPConnectionService->getLDAPConnection();
                 $this->deleteAliasEntries($conn, $email);
                 $this->LDAPConnectionService->closeLDAPConnection($conn);
             }
