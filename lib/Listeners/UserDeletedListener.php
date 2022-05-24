@@ -5,26 +5,30 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use Curl;
+use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\User\Events\UserDeletedEvent;
+use OCA\EcloudAccounts\Service\LDAPConnectionService;
 
 require_once 'curl.class.php';
 
 class UserDeletedListener implements IEventListener
 {
-
     private $logger;
     private $config;
+    private $ldapConnectionService;
 
-    public function __construct(ILogger $logger, IConfig $config)
+    public function __construct(ILogger $logger, IConfig $config, LDAPConnectionService $LDAPConnectionService)
     {
         $this->logger = $logger;
         $this->config = $config;
+        $this->ldapConnectionService = $LDAPConnectionService;
     }
+
 
     public function handle(Event $event): void
     {
@@ -32,12 +36,16 @@ class UserDeletedListener implements IEventListener
             return;
         }
 
-        $uid = $event->getUser()->getUID();
+        $user = $event->getUser();
+        $uid = $user->getUID();
+        $isUserOnLDAP = $this->ldapConnectionService->isUserOnLDAPBackend($user);
+
         $this->logger->info("PostDelete user {user}", array('user' => $uid));
         $this->ecloudDelete(
             $uid,
             $this->config->getSystemValue('e_welcome_domain'),
-            $this->config->getSystemValue('e_welcome_secret')
+            $this->config->getSystemValue('e_welcome_secret'),
+            $isUserOnLDAP
         );
     }
 
@@ -51,10 +59,13 @@ class UserDeletedListener implements IEventListener
      * @param $welcomeSecret string generated at ecloud selfhosting install and added as a custom var in NC's config
      * @return mixed response of the external endpoint
      */
-    public function ecloudDelete(string $userID, string $welcomeDomain, string $welcomeSecret)
+    public function ecloudDelete(string $userID, string $welcomeDomain, string $welcomeSecret, bool $isUserOnLDAP = false)
     {
-
-        $postDeleteUrl = "https://" . $welcomeDomain . "/postDelete.php";
+        $endpoint = 'postDelete.php';
+        if($isUserOnLDAP) {
+            $endpoint = 'postDeleteLDAP.php';
+        }
+        $postDeleteUrl = "https://" . $welcomeDomain . $endpoint;
         $curl = new Curl();
 
         /**
@@ -62,7 +73,6 @@ class UserDeletedListener implements IEventListener
          * Handling the non NC part of deletion process
          */
         try {
-
             $headers = array(
                 'Content-Type: application/json'
             );
