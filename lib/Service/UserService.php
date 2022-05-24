@@ -40,7 +40,22 @@ class UserService
 
     public function userExists(string $uid): bool
     {
-        return $this->userManager->userExists($uid);
+        $exists = $this->userManager->userExists($uid);
+        if ($exists) {
+            return $exists;
+        }
+
+        $backends = $this->userManager->getBackends();
+        foreach ($backends as $backend) {
+            if ($backend->getBackendName() === 'LDAP') {
+                $access = $backend->getLDAPAccess($uid);
+                $users = $access->fetchUsersByLoginName($uid) ;
+                if (count($users) > 0) {
+                    $exists = true;
+                }
+            }
+        }
+        return $exists;
     }
 
     public function getUser(string $uid): ?IUser
@@ -75,8 +90,8 @@ class UserService
         try {
             $this->config->setUserValue($uid, 'hide-my-email', 'email-aliases', $aliases);
             return true;
-        } catch(UnexpectedValueException $e) {
+        } catch (UnexpectedValueException $e) {
             return false;
-        } 
+        }
     }
 }

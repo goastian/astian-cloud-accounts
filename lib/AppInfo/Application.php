@@ -32,9 +32,13 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\User\Events\UserDeletedEvent;
-use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserDeletedListener;
+use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
+use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCP\User\Events\BeforeUserDeletedEvent;
+use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
+
 
 class Application extends App implements IBootstrap
 {
@@ -49,10 +53,15 @@ class Application extends App implements IBootstrap
     public function register(IRegistrationContext $context): void
     {
         $context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
+        $context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
         $context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
     }
 
     public function boot(IBootContext $context): void
     {
+        $serverContainer = $context->getServerContainer();
+        $serverContainer->registerService('LDAPConnectionService', function($c) {
+            return new LDAPConnectionService();
+        });
     }
 }
