@@ -6,11 +6,10 @@ use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use Doctrine\DBAL\DriverManager;
-use Exception;
+use Throwable;
 
 class MailboxMapper
 {
-
     private $config;
     private $conn;
     private $logger;
@@ -22,22 +21,35 @@ class MailboxMapper
         $this->initConnection();
     }
 
-    private function initConnection() {
+    private function initConnection()
+    {
         try {
             $params = $this->getConnectionParams();
             $this->conn = DriverManager::getConnection($params);
-        }
-        catch(Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->info('Error connecting to SQL raw backend: ' . $e->getMessage());
         }
     }
-    
+
+    private function isDbConfigValid($config) : bool
+    {
+        if (!$config || !is_array($config)) {
+            return false;
+        }
+        return isset($config['db_name'])
+            && isset($config['mariadb_charset'])
+            && isset($config['db_user'])
+            && isset($config['db_password'])
+            && isset($config['db_host'])
+            && isset($config['db_port']) ;
+    }
+
     private function getConnectionParams()
     {
         $config = $this->config->getSystemValue('user_backend_sql_raw');
-
-        if (!$config) {
-            throw new DbConnectionParamsException('Database connection params for mailbox not available in config.php!');
+        
+        if (!$this->isDbConfigValid($config)) {
+            throw new DbConnectionParamsException('Invalid SQL raw configuration!');
         }
 
         $params = [
