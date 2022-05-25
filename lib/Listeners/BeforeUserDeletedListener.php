@@ -10,6 +10,7 @@ use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\ILogger;
+use OCP\IConfig;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 
@@ -18,11 +19,13 @@ require_once 'curl.class.php';
 class BeforeUserDeletedListener implements IEventListener
 {
     private $logger;
+    private $config;
     private $LDAPConnectionService;
 
-    public function __construct(ILogger $logger, LDAPConnectionService $LDAPConnectionService)
+    public function __construct(ILogger $logger, IConfig $config, LDAPConnectionService $LDAPConnectionService)
     {
         $this->logger = $logger;
+        $this->config = $config;
         $this->LDAPConnectionService = $LDAPConnectionService;
     }
 
@@ -71,9 +74,9 @@ class BeforeUserDeletedListener implements IEventListener
      */
     public function ecloudDelete(string $userID, string $welcomeDomain, string $welcomeSecret, string $email, bool $isUserOnLDAP = false)
     {
-        $endpoint = 'postDelete.php';
+        $endpoint = '/postDelete.php';
         if ($isUserOnLDAP) {
-            $endpoint = 'postDeleteLDAP.php';
+            $endpoint = '/postDeleteLDAP.php';
         }
         $postDeleteUrl = "https://" . $welcomeDomain . $endpoint;
         $curl = new Curl();
