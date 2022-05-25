@@ -19,11 +19,19 @@ class MailboxMapper
     {
         $this->config = $config;
         $this->logger = $logger;
-        $params = $this->getConnectionParams();
-        $this->conn = DriverManager::getConnection($params);
+        $this->initConnection();
     }
 
-
+    private function initConnection() {
+        try {
+            $params = $this->getConnectionParams();
+            $this->conn = DriverManager::getConnection($params);
+        }
+        catch(Exception $e) {
+            $this->logger->info('Error connecting to SQL raw backend: ' . $e->getMessage());
+        }
+    }
+    
     private function getConnectionParams()
     {
         $config = $this->config->getSystemValue('user_backend_sql_raw');
