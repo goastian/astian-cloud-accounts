@@ -56,7 +56,7 @@ class UserController extends ApiController
         // To check for old accounts
         $mailDomain = $this->config->getSystemValue('mail_domain');
         $mailDomainSuffix = !empty($mailDomain) ? '@' . $mailDomain : '';
-        if (stristr($uid, $mailDomainSuffix) === false) {
+        if (!$exists && stristr($uid, $mailDomainSuffix) === false) {
             $exists = $this->userService->userExists($uid . $mailDomainSuffix);
         }
 
