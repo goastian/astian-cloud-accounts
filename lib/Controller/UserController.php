@@ -7,6 +7,7 @@ namespace OCA\EcloudAccounts\Controller;
 use Exception;
 use OCP\IRequest;
 use OCP\ILogger;
+use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
 use OCA\EcloudAccounts\Service\UserService;
@@ -22,12 +23,15 @@ class UserController extends ApiController
 
     private $logger;
 
-    public function __construct($appName, IRequest $request, ILogger $logger, UserService $userService, MailUsageMapper $mailUsageMapper)
+    private $config;
+
+    public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper)
     {
         parent::__construct($appName, $request);
         $this->userService = $userService;
         $this->mailUsageMapper = $mailUsageMapper;
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     /**
@@ -43,7 +47,20 @@ class UserController extends ApiController
             return $response;
         }
 
-        $response->setData($this->userService->userExists($uid));
+        $exists = false;
+
+        if ($this->userService->userExists($uid)) {
+            $exists = true;
+        }
+
+        // To check for old accounts
+        $mailDomain = $this->config->getSystemValue('mail_domain');
+        $mailDomainSuffix = !empty($mailDomain) ? '@' . $mailDomain : '';
+        if (!$exists && stristr($uid, $mailDomainSuffix) === false) {
+            $exists = $this->userService->userExists($uid . $mailDomainSuffix);
+        }
+
+        $response->setData($exists);
         return $response;
     }
 
@@ -54,7 +71,6 @@ class UserController extends ApiController
      */
     public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB'): DataResponse
     {
-        
         $response = new DataResponse();
 
         if (!$this->checkAppCredentials($token)) {
