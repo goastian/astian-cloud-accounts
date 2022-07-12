@@ -93,4 +93,12 @@ class LDAPConnectionService
     {
         ldap_close($conn);
     }
+
+    public function getLDAPAccess()
+    {
+        if (!$this->access) {
+            throw new Exception('Access not defined!');
+        }
+        return $this->access;
+    }
 }
