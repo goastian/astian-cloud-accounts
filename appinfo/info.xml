@@ -7,16 +7,16 @@
     User creation actions dedicated to ecloud setup
     postDelete actions dedicated to ecloud setup
     </summary>
-    <description><![CDATA[in /e/ cloud self-hosting setup, nextcloud accounts are linked to mail accounts and some other things. This app sets the mail, quota and storage of the user upon creation. 
-    It also completes the account deletion by cleaning other parts of the /e/ cloud setup to ensure no more data is retained when a user requests an account deletion.
-    This app uses the UserDeletedEvent to invoke scripts in the docker-welcome container of /e/ cloud setup]]></description>
-    <version>2.1.0</version>
+    <description><![CDATA[in /e/OS cloud, nextcloud accounts are linked to mail accounts. This app ensures both are coordinated: it sets the e-mail address, quota and storage of the user upon creation.
+    It also completes the account deletion by cleaning other parts of the /e/OS cloud setup to ensure no more data is retained when a user requests an account deletion.
+    This app uses the UserDeletedEvent to invoke scripts in the docker-welcome container of /e/OS cloud setup]]></description>
+    <version>2.1.1</version>
     <licence>agpl</licence>
     <author mail="dev@e.email" homepage="https://gitlab.e.foundation/">Akhil Potukuchi</author>
     <namespace>EcloudAccounts</namespace>
     <category>tools</category>
     <bugs>https://gitlab.e.foundation/e/management/issues</bugs>
     <dependencies>
-        <nextcloud min-version="21" max-version="22"/>
+        <nextcloud min-version="21" max-version="23"/>
     </dependencies>
 </info>
