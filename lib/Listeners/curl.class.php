@@ -35,6 +35,10 @@ class Curl
         return $this->request('POST', $url, $params, $headers, $userOptions);
     }
 
+    public function delete($url, $params = [], $headers = [], $userOptions = []) {
+        return $this->request('DELETE', $url, $params, $headers, $userOptions);
+    }
+
 
     /**
      * Curl run request
@@ -53,7 +57,7 @@ class Curl
         $method = strtoupper($method);
         $options = array(
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => $headers
+            CURLOPT_HTTPHEADER => $headers
         );
         array_merge($options, $userOptions);
         switch ($method) {
@@ -65,6 +69,12 @@ class Curl
             case 'POST':
                 $options[CURLOPT_POST] = true;
                 $options[CURLOPT_POSTFIELDS] = $params;
+                break;
+            case 'DELETE':
+                $options[CURLOPT_CUSTOMREQUEST] = "DELETE";
+                if ($params) {
+                    $url = $url . '?' . http_build_query($params);
+                }
                 break;
             default:
                 throw new Exception('Unsuported method.');

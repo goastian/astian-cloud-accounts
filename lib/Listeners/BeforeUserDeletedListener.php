@@ -27,6 +27,16 @@ class BeforeUserDeletedListener implements IEventListener
         $this->logger = $logger;
         $this->config = $config;
         $this->LDAPConnectionService = $LDAPConnectionService;
+
+
+        $wordPressUsername = getenv("WP_SHOP_USERNAME");
+        $wordPressPassword = getenv("WP_SHOP_PASS");
+        $wordPressUrl = getenv("WP_SHOP_URL");
+
+        $this->wordPressUserUrl = $wordPressUrl . "/wp-json/wp/v2/users";
+        $this->wordPressCredentials = base64_encode($wordPressUsername . ":" . $wordPressPassword);
+        $this->wordPressReassignUserId = getenv('WP_REASSIGN_USER_ID');
+
     }
 
 
@@ -59,6 +69,8 @@ class BeforeUserDeletedListener implements IEventListener
         } catch (Exception $e) {
             $this->logger->error('Error deleting aliases for user '. $uid . ' :' . $e->getMessage());
         }
+
+        $this->deleteUserAtWP($email);
     }
 
 
@@ -135,5 +147,68 @@ class BeforeUserDeletedListener implements IEventListener
         );
 
         return $aliasEntries;
+    }
+
+
+    private function deleteUserAtWP(string $email) {
+        $users = $this->getUsersFromWP($email);
+
+        if(empty($users)) {
+            return;
+        }
+
+        if(count($users) > 1) {
+            $this->logger->error('More than one user in WP results when deleting user with email ' . $email);
+            return;
+        }
+
+        $user = $users[0];
+
+        if(!empty($user['openid-connect-generic-last-user-claim'])) {
+            $curl = new Curl();
+            
+            $headers = [
+                "cache-control: no-cache",
+                "content-type: application/json",
+                "Authorization: Basic " . $this->wordPressCredentials
+            ];
+            $params = [
+                'force' => true,
+                'reassign' => $this->wordPressReassignUserId
+            ];
+            $deleteUrl = $this->wordPressUserUrl . '/' . $user['id'];
+
+            try {
+                $answer = $curl->delete($deleteUrl, $params, $headers);
+                $answer = json_decode($answer, true);
+
+                if(!$answer['deleted']) {
+                    throw new Exception("User not deleted at WP ". $user['id'] );
+                }
+            }
+            catch(Exception $e) {
+                $this->logger->error('Error deleting user at WP with ID ' . $user['id']);
+                $this->logger->logException($e, ['app' => Application::APP_ID]);
+            }
+        }
+    } 
+
+    private function getUsersFromWP(string $searchTerm): ?array
+    {
+        $curl = new Curl();
+        $headers = [
+            "cache-control: no-cache",
+            "content-type: application/json",
+            "Authorization: Basic " . $this->wordPressCredentials
+        ];
+        
+        try {
+            $answer = $curl->get($this->wordPressUserUrl, ['search' => $searchTerm], $headers);
+            return json_decode($answer, true);
+        }
+        catch(Exception $e) {
+            $this->logger->error('There was an issue querying wordpress for users');
+            $this->logger->logException($e, ['app' => Application::APP_ID]);
+        }
     }
 }
