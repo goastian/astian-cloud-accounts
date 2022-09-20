@@ -35,14 +35,6 @@ class UserController extends ApiController
     }
 
     /**
-     * @NoAdminRequired
-     */
-
-    public function setShopDeleteInfo(bool $deleteShopAccount, string $shopEmailPostDelete) {
-
-    }
-    
-    /**
      * @CORS
      * @PublicPage
      * @NoCSRFRequired
