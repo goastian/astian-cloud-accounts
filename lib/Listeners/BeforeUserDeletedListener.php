@@ -14,7 +14,7 @@ use OCP\IConfig;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 
-require_once 'curl.class.php';
+require_once '../curl.class.php';
 
 class BeforeUserDeletedListener implements IEventListener
 {
@@ -27,16 +27,6 @@ class BeforeUserDeletedListener implements IEventListener
         $this->logger = $logger;
         $this->config = $config;
         $this->LDAPConnectionService = $LDAPConnectionService;
-
-
-        $wordPressUsername = getenv("WP_SHOP_USERNAME");
-        $wordPressPassword = getenv("WP_SHOP_PASS");
-        $wordPressUrl = getenv("WP_SHOP_URL");
-
-        $this->wordPressUserUrl = $wordPressUrl . "/wp-json/wp/v2/users";
-        $this->wordPressCredentials = base64_encode($wordPressUsername . ":" . $wordPressPassword);
-        $this->wordPressReassignUserId = getenv('WP_REASSIGN_USER_ID');
-
     }
 
 

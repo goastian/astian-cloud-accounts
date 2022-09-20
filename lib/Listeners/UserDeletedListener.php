@@ -14,7 +14,7 @@ use OCP\ILogger;
 use OCP\User\Events\UserDeletedEvent;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 
-require_once 'curl.class.php';
+require_once '../curl.class.php';
 
 class UserDeletedListener implements IEventListener
 {
