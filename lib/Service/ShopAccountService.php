@@ -29,7 +29,7 @@ class ShopAccountService {
     }
 
     public function setShopDeletePreference($userId, bool $delete) {
-        $this->config->setUserValue($userId, $this->appName, 'delete_shop_account', $delete);
+        $this->config->setUserValue($userId, $this->appName, 'delete_shop_account', intval($delete));
     }
 
     public function setShopEmailPostDeletePreference($userId, string $shopEmailPostDelete) {
@@ -37,7 +37,7 @@ class ShopAccountService {
     }
 
     public function getShopDeletePreference($userId) {
-        return $this->config->getUserValue($userId, $this->appName, 'delete_shop_account', true);
+        return boolval($this->config->getUserValue($userId, $this->appName, 'delete_shop_account', true));
     }
 
     public function getShopEmailPostDeletePreference($userId) {

@@ -140,7 +140,7 @@ export default {
 						this.shopEmailPostDelete = this.shopEmailDefault
 					}
 				}
-			}, 500),
+			}, 1000),
 	},
 }
 </script>
