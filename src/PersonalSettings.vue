@@ -92,7 +92,7 @@ export default {
 		async updateDeleteShopPreference() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/set_shop_delete_preference`
+					`/apps/${this.appName}/shop-accounts/set_shop_delete_preference`
 				)
 				const { status } = await Axios.post(url, {
 					deleteShopAccount: this.deleteShopAccount,
@@ -120,7 +120,7 @@ export default {
 				} else {
 					try {
 						const url = generateUrl(
-							`/apps/${this.appName}/set_shop_email_post_delete`
+							`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
 						)
 						const { status } = await Axios.post(url, {
 							shopEmailPostDelete: this.shopEmailPostDelete,
