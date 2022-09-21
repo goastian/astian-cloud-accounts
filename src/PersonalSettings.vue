@@ -13,7 +13,6 @@
 					type="checkbox"
 					name="shop-accounts_confirm"
 					class="checkbox"
-					checked
 					@change="updateDeleteShopPreference()">
 				<label for="shop-accounts_confirm">{{
 					t(
@@ -29,6 +28,7 @@
 					name="shop-alternate-email"
 					:placeholder="('ecloud-accounts', 'Email Address')"
 					class="form-control"
+					v-model="shopEmailPostDelete"
 					@input="updateEmailPostDelete()">
 			</div>
 		</div>
