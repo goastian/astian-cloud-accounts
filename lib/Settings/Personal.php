@@ -25,11 +25,13 @@ namespace OCA\EcloudAccounts\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
 use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCP\App\IAppManager;
+use OCP\IUserManager;
 
 class Personal implements ISettings {
 
@@ -47,12 +49,18 @@ class Personal implements ISettings {
 
 	private $appManager;
 
-	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager) {
+	private IGroupManager $groupManager;
+
+	private IUserManager $userManager;
+
+	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager, IGroupManager $groupManager, IUserManager $userManager) {
 		$this->userSession = $userSession;
 		$this->initialState = $initialState;
 		$this->appName = $appName;
 		$this->shopAccountService = $shopAccountService;
 		$this->appManager = $appManager;
+		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 	}
 
 	/**
@@ -63,6 +71,9 @@ class Personal implements ISettings {
 		
 		$user = $this->userSession->getUser();
 		if ($user) {
+			$onlyUser = $this->userManager->countUsers() < 2;
+			$adminGroup = $this->groupManager->get('admin');
+			$onlyAdmin = $adminGroup && $adminGroup->count() < 2 && $this->groupManager->isAdmin($user->getUID());
 			Util::addScript($this->appName, 'ecloud-accounts-personal-settings');
 			Util::addStyle($this->appName, 'personal');
 			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
@@ -70,6 +81,8 @@ class Personal implements ISettings {
 
 			$this->initialState->provideInitialState('delete_shop_account', $deleteShopAccount);
 			$this->initialState->provideInitialState('shop_email_post_delete', $shopEmailPostDelete);
+			$this->initialState->provideInitialState('only_user', $onlyUser);
+			$this->initialState->provideInitialState('only_admin', $onlyAdmin);
 		}
 		
 		return new TemplateResponse($this->appName, 'personal');
@@ -81,6 +94,8 @@ class Personal implements ISettings {
 	 * @psalm-return 'drop_account'
 	 */
 	public function getSection(): string {
+		return self::DROP_ACCOUNT_APP_ID;
+
 		$user = $this->userSession->getUser();
 		$shopUser = $this->shopAccountService->getUserFromShop($user->getEMailAddress());
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
