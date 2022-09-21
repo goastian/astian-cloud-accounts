@@ -65,7 +65,18 @@ class BeforeUserDeletedListener implements IEventListener
             $this->logger->error('Error deleting aliases for user '. $uid . ' :' . $e->getMessage());
         }
 
-        $this->shopAccountService->deleteUserFromShop($email);
+        $deleteShopAccount = $this->shopAccountService->getShopDeletePreference($uid);
+        $shopUser = $this->shopAccountService->getUser($email);
+
+        if($shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
+            if($deleteShopAccount) {
+                $this->shopAccountService->deleteUser($shopUser['id']);
+            }
+            else {
+                $newEmail = $this->shopAccountService->getShopEmailPostDeletePreference($uid);
+                $newEmail = $this->shopAccountService->updateUserEmail($shopUser['id'], $newEmail);
+            }
+        }
     }
 
     private function deleteAliasEntries($conn, string $email)

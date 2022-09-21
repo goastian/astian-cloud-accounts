@@ -3,7 +3,9 @@
 
 namespace OCA\EcloudAccounts\Service;
 
+use Exception;
 use OCP\IConfig;
+use OCA\EcloudAccounts\AppInfo\Application;
 
 require_once 'curl.class.php';
 
@@ -44,69 +46,100 @@ class ShopAccountService {
         return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);  
     }
 
-    public function getUsersFromShop(string $searchTerm): ?array
+    public function getUsers(string $searchTerm): ?array
     {
-        $curl = new Curl();
-        $headers = [
-            "cache-control: no-cache",
-            "content-type: application/json",
-            "Authorization: Basic " . $this->shopCredentials
-        ];
-        
         try {
-            $answer = $curl->get($this->shopUserUrl, ['search' => $searchTerm], $headers);
-            return json_decode($answer, true);
+            return $this->callShopAPI($this->shopUserUrl, 'GET', ['search' => $searchTerm]);
         }
         catch(Exception $e) {
             $this->logger->error('There was an issue querying shop for users');
             $this->logger->logException($e, ['app' => Application::APP_ID]);
         }
+        return null;
     }
 
-    public function getUserFromShop(string $email) {
-        $users = $this->getUsersFromShop($email);
+    public function getUser(string $email) : ?array {
+        $users = $this->getUsers($email);
         if(empty($users)) {
-            return;
+            return null;
         }
         if(count($users) > 1) {
             $this->logger->error('More than one user in WP results when deleting user with email ' . $email);
-            return;
+            return null;
         }
         return $users[0];
 
     }
 
-    public function deleteUserFromShop(string $email) {
-        $user = $this->getUserFromShop($email);
-    
-        if($user && $this->isUserOIDC($user)) {
-            $curl = new Curl();
-            
-            $headers = [
-                "cache-control: no-cache",
-                "content-type: application/json",
-                "Authorization: Basic " . $this->shopCredentials
-            ];
-            $params = [
-                'force' => true,
-                'reassign' => $this->shopReassignUserId
-            ];
-            $deleteUrl = $this->shopUserUrl . '/' . $user['id'];
+    public function deleteUser(int $userId) : void {    
+        $params = [
+            'force' => true,
+            'reassign' => $this->shopReassignUserId
+        ];
+        $deleteUrl = $this->shopUserUrl . '/' . strval($userId);
 
-            try {
-                $answer = $curl->delete($deleteUrl, $params, $headers);
-                $answer = json_decode($answer, true);
+        try {
+            $answer = $this->callShopAPI($deleteUrl, 'DELETE', $params);
 
-                if(!$answer['deleted']) {
-                    throw new Exception("User not deleted at WP ". $user['id'] );
-                }
-            }
-            catch(Exception $e) {
-                $this->logger->error('Error deleting user at WP with ID ' . $user['id']);
-                $this->logger->logException($e, ['app' => Application::APP_ID]);
+            if(!$answer['deleted']) {
+                throw new Exception('Unknown error while deleting!');
             }
         }
+        catch(Exception $e) {
+            $this->logger->error('Error deleting user at WP with ID ' . $userId);
+            $this->logger->logException($e, ['app' => Application::APP_ID]);
+        }
+        
     } 
+
+    public function updateUserEmail(int $userId, string $email) : void {
+        $updateUrl = $this->shopUserUrl . '/' . strval($userId);
+
+        $params = [
+            'email' => $email
+        ];
+
+        try {
+            $answer = $this->callShopAPI($updateUrl, 'POST', $params);
+                
+            if($answer['email'] !== $email) {
+                throw new Exception('Unknown error while updating!');
+            }
+        }
+        catch(Exception $e) {
+            $this->logger->error('Error updating user email at WP with ID ' . $userId . ' and new email ' . $email);
+            $this->logger->logException($e, ['app' => Application::APP_ID]);
+        }
+    }
+
+    private function callShopAPI(string $url, string $method, array $data = []) {
+        $curl = new Curl();
+            
+        $headers = [
+            "cache-control: no-cache",
+            "content-type: application/json",
+            "Authorization: Basic " . $this->shopCredentials
+        ];
+
+        if($method === 'GET') {
+            $answer = $curl->get($url, $data, $headers);
+        }
+
+        if($method === 'DELETE') {
+            $answer = $curl->delete($url, $data, $headers);
+        }
+
+        if ($method === 'POST') {
+            $answer = $curl->post($url, $data, $headers);
+        }
+
+        $answer = json_decode($answer, true);
+        if(isset($answer['code']) && isset($answer['message'])) {
+            throw new Exception($answer['message']);
+        }
+
+        return $answer;
+    }
 
     public function isUserOIDC(array $user) {
         return !empty($user['openid-connect-generic-last-user-claim']);
