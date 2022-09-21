@@ -1,2 +1,1 @@
-<div>test</div>
-<div id="drop-account-settings"></div>
+<div id="ecloud-accounts-settings"></div>

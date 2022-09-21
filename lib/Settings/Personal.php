@@ -23,47 +23,31 @@
 
 namespace OCA\EcloudAccounts\Settings;
 
-use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IConfig;
-use OCP\IGroupManager;
-use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
+use OCA\EcloudAccounts\Service\ShopAccountService;
 
 class Personal implements ISettings {
 
 	/** @var IUserSession */
 	private $userSession;
-
-	/**
-	 * @var IUserManager
-	 */
-	private $userManager;
-
-	/**
-	 * @var IGroupManager
-	 */
-	private $groupManager;
 	/**
 	 * @var IInitialState
 	 */
 	private $initialState;
-	/**
-	 * @var IConfig
-	 */
-	private $config;
+
 	private $appName;
 
-	public function __construct(IConfig $config, IUserSession $userSession, IUserManager $userManager, IGroupManager $groupManager, IInitialState $initialState) {
-		$this->config = $config;
+	private $shopAccountService;
+
+	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService) {
 		$this->userSession = $userSession;
-		$this->userManager = $userManager;
-		$this->groupManager = $groupManager;
 		$this->initialState = $initialState;
-		$this->appName = 'drop_account';
+		$this->appName = $appName;
+		$this->shopAccountService = $shopAccountService;
 	}
 
 	/**
@@ -74,22 +58,13 @@ class Personal implements ISettings {
 		
 		$user = $this->userSession->getUser();
 		if ($user) {
-			$onlyUser = $this->userManager->countUsers() < 2;
-			$adminGroup = $this->groupManager->get('admin');
-			$onlyAdmin = $adminGroup && $adminGroup->count() < 2 && $this->groupManager->isAdmin($user->getUID());
-			$requiresConfirmation = $this->config->getAppValue($this->appName, 'requireConfirmation', 'no') === 'yes';
-			$hasEmailForConfirmation = $requiresConfirmation && !($user->getEMailAddress() === null || $user->getEMailAddress() === '');
-			$willDelayPurge = $this->config->getAppValue($this->appName, 'delayPurge', 'no') === 'yes';
-			$delayPurgeHours = (int) $this->config->getAppValue($this->appName, 'delayPurgeHours', '24');
-
-			Util::addScript($this->appName, 'drop_account-personal-settings');
+			Util::addScript($this->appName, 'ecloud-accounts-personal-settings');
 			Util::addStyle($this->appName, 'personal');
-			$this->initialState->provideInitialState('has_email_for_confirmation', $hasEmailForConfirmation);
-			$this->initialState->provideInitialState('only_user', $onlyUser);
-			$this->initialState->provideInitialState('only_admin', $onlyAdmin);
-			$this->initialState->provideInitialState('will_delay_purge', $willDelayPurge);
-			$this->initialState->provideInitialState('delay_purge_hours', $delayPurgeHours);
-			$this->initialState->provideInitialState('require_confirmation', $requiresConfirmation);
+			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
+			$shopEmailPostDelete = $this->shopAccountService->getShopEmailPostDeletePreference($user->getUID());
+
+			$this->initialState->provideInitialState('delete_shop_account', $deleteShopAccount);
+			$this->initialState->provideInitialState('shop_email_post_delete', $shopEmailPostDelete);
 		}
 		
 		return new TemplateResponse($this->appName, 'personal');
@@ -101,7 +76,7 @@ class Personal implements ISettings {
 	 * @psalm-return 'drop_account'
 	 */
 	public function getSection(): string {
-		return $this->appName;
+		return 'drop_account';
 	}
 
 	/**
@@ -114,6 +89,6 @@ class Personal implements ISettings {
 	 * @psalm-return 40
 	 */
 	public function getPriority(): int {
-		return 41;
+		return 20;
 	}
 }

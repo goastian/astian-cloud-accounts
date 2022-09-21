@@ -1,18 +1,12 @@
 {
-	"name": "drop_account",
+	"name": "ecloud-accounts",
 	"version": "2.2.0",
 	"description": "An app to allow users to delete their accounts.",
 	"repository": {
 		"type": "git",
-		"url": "git@framagit.org:framasoft/nextcloud/drop_account.git"
+		"url": "https://gitlab.e.foundation/e/infra/ecloud/nextcloud-apps/ecloud-accounts"
 	},
-	"author": "Thomas Citharel <nextcloud@tcit.fr>",
-	"license": "AGPL-3.0",
 	"private": true,
-	"bugs": {
-		"url": "https://framagit.org/framasoft/nextcloud/drop_account/issues"
-	},
-	"homepage": "https://framagit.org/framasoft/nextcloud/drop_account",
 	"scripts": {
 		"build": "NODE_ENV=production webpack --progress --config webpack.js",
 		"dev": "NODE_ENV=development webpack --progress --config webpack.js",

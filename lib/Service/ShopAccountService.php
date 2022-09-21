@@ -30,7 +30,7 @@ class ShopAccountService {
         $this->config->setUserValue($userId, $this->appName, 'delete_shop_account', $delete);
     }
 
-    public function setShopEmailPostDelete($userId, string $shopEmailPostDelete) {
+    public function setShopEmailPostDeletePreference($userId, string $shopEmailPostDelete) {
         $this->config->setUserValue($userId, $this->appName, 'shop_email_post_delete', $shopEmailPostDelete);
     }
 
@@ -38,7 +38,7 @@ class ShopAccountService {
         return $this->config->getUserValue($userId, $this->appName, 'delete_shop_account', true);
     }
 
-    public function getShopEmailPreference($userId) {
+    public function getShopEmailPostDeletePreference($userId) {
         $recoveryEmail = $this->config->getUserValue($userId, 'email-recovery', 'recovery-email');
 
         return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);  

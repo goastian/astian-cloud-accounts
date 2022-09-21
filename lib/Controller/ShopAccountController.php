@@ -34,7 +34,7 @@ class ShopAccountController extends Controller {
             return $response;
         }
 
-        $this->shopAccountService->setShopEmailPostDelete($userId, $shopEmailPostDelete);
+        $this->shopAccountService->setShopEmailPostDeletePreference($userId, $shopEmailPostDelete);
 
     }
     

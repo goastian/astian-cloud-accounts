@@ -24,6 +24,6 @@ import './common.js'
 import PersonalSettings from './PersonalSettings.vue'
 
 export default new Vue({
-	el: '#drop-account-settings',
+	el: '#ecloud-accounts-settings',
 	render: h => h(PersonalSettings),
 })
