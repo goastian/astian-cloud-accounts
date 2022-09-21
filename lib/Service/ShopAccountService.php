@@ -44,7 +44,7 @@ class ShopAccountService {
         return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);  
     }
 
-    private function getUsersFromShop(string $searchTerm): ?array
+    public function getUsersFromShop(string $searchTerm): ?array
     {
         $curl = new Curl();
         $headers = [
@@ -63,7 +63,7 @@ class ShopAccountService {
         }
     }
 
-    private function getUserFromShop(string $email) {
+    public function getUserFromShop(string $email) {
         $users = $this->getUsersFromShop($email);
         if(empty($users)) {
             return;
@@ -76,7 +76,7 @@ class ShopAccountService {
 
     }
 
-    private function deleteUserFromShop(string $email) {
+    public function deleteUserFromShop(string $email) {
         $user = $this->getUserFromShop($email);
     
         if($user && $this->isUserOIDC($user)) {
@@ -108,7 +108,7 @@ class ShopAccountService {
         }
     } 
 
-    private function isUserOIDC(array $user) {
+    public function isUserOIDC(array $user) {
         return !empty($user['openid-connect-generic-last-user-claim']);
     }
 }
