@@ -79,6 +79,7 @@ class Personal implements ISettings {
 			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
 			$shopEmailPostDelete = $this->shopAccountService->getShopEmailPostDeletePreference($user->getUID());
 
+			$this->initialState->provideInitialState('email', $user->getEMailAddress());
 			$this->initialState->provideInitialState('delete_shop_account', $deleteShopAccount);
 			$this->initialState->provideInitialState('shop_email_post_delete', $shopEmailPostDelete);
 			$this->initialState->provideInitialState('only_user', $onlyUser);
