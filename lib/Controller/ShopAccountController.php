@@ -5,7 +5,7 @@ namespace OCA\EcloudAccounts\Controller;
 
 use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCP\IUserSession;
-
+use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 
