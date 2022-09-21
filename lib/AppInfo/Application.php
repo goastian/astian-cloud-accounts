@@ -41,7 +41,7 @@ use OCA\EcloudAccounts\Listeners\UserChangedListener;
 class Application extends App implements IBootstrap
 {
 
-    const APP_ID = 'ecloud-accounts';
+    const APP_ID = 'drop_account';
 
     public function __construct(array $urlParams = [])
     {

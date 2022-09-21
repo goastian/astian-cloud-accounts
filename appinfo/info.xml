@@ -19,4 +19,10 @@
     <dependencies>
         <nextcloud min-version="21" max-version="23"/>
     </dependencies>
+	<settings>
+		<!-- <admin>OCA\EcloudAccounts\Settings\Admin</admin> -->
+		<personal>OCA\EcloudAccounts\Settings\Personal</personal>
+		<personal-section>OCA\EcloudAccounts\Settings\PersonalSection</personal-section>
+	</settings>
+	
 </info>
