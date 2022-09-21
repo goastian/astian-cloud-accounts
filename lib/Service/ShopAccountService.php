@@ -5,7 +5,7 @@ namespace OCA\EcloudAccounts\Service;
 
 use OCP\IConfig;
 
-require_once '../curl.class.php';
+require_once 'curl.class.php';
 
 class ShopAccountService {
 
