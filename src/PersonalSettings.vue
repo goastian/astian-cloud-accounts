@@ -1,7 +1,7 @@
 <template>
 	<SettingsSection :title="t('ecloud-accounts', 'Delete shop account')"
 		:description="t('ecloud-accounts', 'You can delete your shop account with deleting ecloud account.')">
-		<div id="delete-shop-account-settings" v-if="!onlyUser && !onlyAdmin">
+		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 			<div>
 				<input id="shop-accounts_confirm"
 					v-model="checked"
@@ -21,14 +21,13 @@
 			</div>
 		</div>
 		<p v-if="onlyUser" class="warnings">
-				{{ t('drop_account', 'You are the only user of this instance, you can\'t delete your account.') }}
-			</p>
+			{{ t('drop_account', 'You are the only user of this instance, you can\'t delete your account.') }}
+		</p>
 		<p v-if="onlyAdmin" class="warnings">
-				{{ t('ecloud-accounts', 'You are the only admin of this instance, you can\'t delete your account.') }}
+			{{ t('ecloud-accounts', 'You are the only admin of this instance, you can\'t delete your account.') }}
 		</p>
 	</SettingsSection>
 </template>
-
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
@@ -56,7 +55,7 @@ export default {
 		try {
 			this.onlyUser = loadState(this.appName, 'only_user')
 			this.onlyAdmin = loadState(this.appName, 'only_admin')
-			this.deleteShopAccount = loadState(this.appName,'shop_email_post_delete')
+			this.deleteShopAccount = loadState(this.appName, 'shop_email_post_delete')
 			this.shopEmailPostDelete = loadState(this.appName, 'delete_shop_account')
 		} catch (e) {
 			console.error('Error fetching initial state', e)
