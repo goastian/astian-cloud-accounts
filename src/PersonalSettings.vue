@@ -1,12 +1,34 @@
 <template>
-	<SettingsSection :title="t('ecloud-accounts', 'Delete Shop Account')"
-		:description="
-			t(
-				'ecloud-accounts',
-				'Set your shop account preferences when your Murena ID is deleted'
-			)
-		" />
+	<SettingsSection :title="t('ecloud-accounts', 'Delete shop account')"
+		:description="t('ecloud-accounts', 'You can delete your shop account with deleting ecloud account.')">
+		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+			<div>
+				<input id="shop-accounts_confirm"
+					v-model="checked"
+					type="checkbox"
+					name="shop-accounts_confirm"
+					class="checkbox"
+					checked>
+				<label for="shop-accounts_confirm">{{ t('ecloud-accounts', 'Check this to confirm the deletion request for shop account') }}</label>
+			</div>
+			<div>
+				<input id="shop-alternate-email"
+					type="email"
+					:disabled="checked"
+					name="shop-alternate-email"
+					:placeholder="('ecloud-accounts', 'Email Address')"
+					class="form-control">
+			</div>
+		</div>
+		<p v-if="onlyUser" class="warnings">
+			{{ t('drop_account', 'You are the only user of this instance, you can\'t delete your account.') }}
+		</p>
+		<p v-if="onlyAdmin" class="warnings">
+			{{ t('ecloud-accounts', 'You are the only admin of this instance, you can\'t delete your account.') }}
+		</p>
+	</SettingsSection>
 </template>
+
 <script>
 import { loadState } from '@nextcloud/initial-state'
 import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
@@ -24,14 +46,16 @@ export default {
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
 			appName: 'ecloud-accounts',
+			checked: false,
+			onlyAdmin: false,
+			onlyUser: false,
 		}
 	},
 	created() {
 		try {
-			this.deleteShopAccount = loadState(
-				this.appName,
-				'shop_email_post_delete'
-			)
+			this.onlyUser = loadState(this.appName, 'only_user')
+			this.onlyAdmin = loadState(this.appName, 'only_admin')
+			this.deleteShopAccount = loadState(this.appName, 'shop_email_post_delete')
 			this.shopEmailPostDelete = loadState(this.appName, 'delete_shop_account')
 		} catch (e) {
 			console.error('Error fetching initial state', e)
@@ -46,12 +70,12 @@ export default {
 				const { status } = await Axios.post(url, {})
 				if (status !== 200) {
 					showError(
-						t('drop_account', 'Error while setting shop delete preference')
+						t('ecloud-accounts', 'Error while setting shop delete preference')
 					)
 				}
 			} catch (e) {
 				showError(
-					t('drop_account', 'Error while setting shop delete preference')
+					t('ecloud-accounts', 'Error while setting shop delete preference')
 				)
 			}
 		},
@@ -63,15 +87,38 @@ export default {
 				const { status } = await Axios.post(url, {})
 				if (status !== 200) {
 					showError(
-						t('drop_account', 'Error while setting shop email preference')
+						t('ecloud-accounts', 'Error while setting shop email preference')
 					)
 				}
 			} catch (e) {
 				showError(
-					t('drop_account', 'Error while setting shop email preference')
+					t('ecloud-accounts', 'Error while setting shop email preference')
 				)
 			}
 		},
 	},
 }
 </script>
+<style>
+	#delete-shop-account-settings .form-control {
+		display: block;
+		width: 300px;
+		padding: 0.375rem 0.75rem;
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #212529;
+		background-color: #fff;
+		border: 1px solid #a2a2a2;
+		border-radius: 0.25rem;
+		transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+		margin-top: 20px;
+	}
+	#delete-shop-account-settings .form-control:focus {
+		color: #212529;
+		background-color: #fff;
+		border-color: #86b7fe;
+		outline: 0;
+		box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+	}
+</style>
