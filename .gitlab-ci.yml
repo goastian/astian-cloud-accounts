@@ -1,5 +1,7 @@
 include:
-  - project: 'e/infra/ecloud/nextcloud-apps/ci-templates'
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
-    file: 'nc-apps-checkout-deploy.yml'
-
+    file: "nc-apps-lint-build-frontend.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: main
+    file: "nc-apps-deploy.yml"
