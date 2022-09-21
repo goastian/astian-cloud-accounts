@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace OCA\EcloudAccounts\Controller;
+
 use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCP\IUserSession;
 
@@ -28,7 +30,7 @@ class ShopAccountController extends Controller {
         $user = $this->userSession->getUser();
         $userId = $user->getUID();
         $email = $user->getEMailAddress();
-        
+
         if(!filter_var($shopEmailPostDelete, FILTER_VALIDATE_EMAIL) || $shopEmailPostDelete === $email) {
             $response = new DataResponse();
             $response->setStatus(400);
