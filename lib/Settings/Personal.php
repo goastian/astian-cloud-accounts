@@ -29,9 +29,11 @@ use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
 use OCA\EcloudAccounts\Service\ShopAccountService;
+use OCP\App\IAppManager;
 
 class Personal implements ISettings {
 
+	private const DROP_ACCOUNT_APP_ID = 'drop_account';
 	/** @var IUserSession */
 	private $userSession;
 	/**
@@ -43,11 +45,14 @@ class Personal implements ISettings {
 
 	private $shopAccountService;
 
-	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService) {
+	private $appManager;
+
+	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager) {
 		$this->userSession = $userSession;
 		$this->initialState = $initialState;
 		$this->appName = $appName;
 		$this->shopAccountService = $shopAccountService;
+		$this->appManager = $appManager;
 	}
 
 	/**
@@ -76,7 +81,14 @@ class Personal implements ISettings {
 	 * @psalm-return 'drop_account'
 	 */
 	public function getSection(): string {
-		return 'drop_account';
+		$user = $this->userSession->getUser();
+		$shopUser = $this->shopAccountService->getUserFromShop($user->getEMailAddress());
+		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
+
+		if($dropAccountEnabled && $shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
+			return self::DROP_ACCOUNT_APP_ID;
+		}
+		return null;
 	}
 
 	/**
