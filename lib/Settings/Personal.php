@@ -94,9 +94,7 @@ class Personal implements ISettings {
 	 * @since 9.1
 	 * @psalm-return 'drop_account'
 	 */
-	public function getSection(): string {
-		return self::DROP_ACCOUNT_APP_ID;
-
+	public function getSection(): ?string {
 		$user = $this->userSession->getUser();
 		$shopUser = $this->shopAccountService->getUser($user->getEMailAddress());
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
@@ -114,7 +112,7 @@ class Personal implements ISettings {
 	 *
 	 * E.g.: 70
 	 * @since 9.1
-	 * @psalm-return 40
+	 * @psalm-return 20
 	 */
 	public function getPriority(): int {
 		return 20;

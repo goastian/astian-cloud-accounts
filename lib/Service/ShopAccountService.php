@@ -9,8 +9,6 @@ use OCP\IConfig;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\CurlService;
 
-require_once 'curl.class.php';
-
 class ShopAccountService {
 
     private $config;
