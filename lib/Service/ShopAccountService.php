@@ -35,6 +35,13 @@ class ShopAccountService {
         $this->config->setUserValue($userId, $this->appName, 'delete_shop_account', intval($delete));
     }
 
+    public function validateShopEmail(string $shopEmail, string $ncUserEmail) : bool {
+        if(!filter_var($shopEmail, FILTER_VALIDATE_EMAIL) || $shopEmail === $ncUserEmail) {
+            return false;
+        }
+        return empty($this->getUser($shopEmail));
+    }
+
     public function setShopEmailPostDeletePreference($userId, string $shopEmailPostDelete) {
         $this->config->setUserValue($userId, $this->appName, 'shop_email_post_delete', $shopEmailPostDelete);
     }

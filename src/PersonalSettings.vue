@@ -91,11 +91,28 @@ export default {
 			this.shopEmailPostDelete = loadState(this.appName, 'shop_email_post_delete')
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
+			this.invalidEmailEvent()
+		
 		} catch (e) {
 			console.error('Error fetching initial state', e)
 		}
 	},
 	methods: {
+		async invalidEmailEvent() {
+			let event
+			const elem = document.getElementById('#delete-shop-account-settings')
+			if(this.deleteShopAccount) {
+				event = new Event('enable-delete-account')
+				elem.dispatchEvent(event)
+			}
+			else {
+				const validEmail = await this.callAPIToUpdateEmail()
+				if(!validEmail) {
+					event = new Event('disable-delete-account')
+				}
+				elem.dispatchEvent(event)
+			}
+		},
 		async getOrderCount() {
 			try {
 				const url = generateUrl(
@@ -109,6 +126,7 @@ export default {
 			}
 		},
 		async updateDeleteShopPreference() {
+			this.invalidEmailEvent()
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/set_shop_delete_preference`
@@ -120,23 +138,17 @@ export default {
 					showError(
 						t('ecloud-accounts', 'Error while setting shop delete preference')
 					)
+					return false;
 				}
+				return true;
 			} catch (e) {
 				showError(
 					t('ecloud-accounts', 'Error while setting shop delete preference')
 				)
+				return false;
 			}
 		},
-		updateEmailPostDelete:
-			debounce(async function(e) {
-				if (this.shopEmailPostDelete === this.userEmail) {
-					showError(
-						t(
-							'ecloud-accounts',
-							"Shop email cannot be same as this account's email!"
-						)
-					)
-				} else {
+		async callAPIToUpdateEmail() {
 					try {
 						const url = generateUrl(
 							`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
@@ -148,18 +160,30 @@ export default {
 							showError(
 								t(
 									'ecloud-accounts',
-									'Error while setting shop email preference'
+									'Invalid Shop Email'
 								)
 							)
 						}
 					} catch (e) {
 						showError(
-							t('ecloud-accounts', 'Error while setting shop email preference')
+							t('ecloud-accounts', 'Invalid Shop Email')
 						)
 						this.shopEmailPostDelete = this.shopEmailDefault
 					}
-				}
-			}, 1000),
+		},
+		updateEmailPostDelete: debounce(async function(e) {
+			if (this.shopEmailPostDelete === this.userEmail) {
+					showError(
+						t(
+							'ecloud-accounts',
+							"Shop email cannot be same as this account's email!"
+						)
+					)
+			}
+			else {
+				await this.callAPIToUpdateEmail()
+			}
+		}, 1000),
 	},
 }
 </script>

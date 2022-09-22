@@ -31,7 +31,7 @@ class ShopAccountController extends Controller {
         $userId = $user->getUID();
         $email = $user->getEMailAddress();
 
-        if(!filter_var($shopEmailPostDelete, FILTER_VALIDATE_EMAIL) || $shopEmailPostDelete === $email) {
+        if(!$this->shopAccountService->validateShopEmail($shopEmailPostDelete, $email)) {
             $response = new DataResponse();
             $response->setStatus(400);
             return $response;
