@@ -148,7 +148,6 @@ export default {
 			}
 		},
 		async callAPIToUpdateEmail() {
-			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
 				)
@@ -163,12 +162,7 @@ export default {
 						)
 					)
 				}
-			} catch (e) {
-				showError(
-					t('ecloud-accounts', 'Invalid Shop Email')
-				)
-				this.shopEmailPostDelete = this.shopEmailDefault
-			}
+			} 
 		},
 		updateEmailPostDelete: debounce(async function(e) {
 			if (this.shopEmailPostDelete === this.userEmail) {
@@ -179,10 +173,17 @@ export default {
 					)
 				)
 			} else {
-				await this.callAPIToUpdateEmail()
-			}
+				try {
+					await this.callAPIToUpdateEmail()
+				}
+				catch (e) {
+					showError(
+						t('ecloud-accounts', 'Invalid Shop Email')
+					)
+					this.shopEmailPostDelete = this.shopEmailDefault
+				}
+			} 
 		}, 1000),
-	},
 }
 </script>
 <style>
