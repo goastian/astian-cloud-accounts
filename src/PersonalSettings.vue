@@ -105,11 +105,11 @@ export default {
 				event = new Event('enable-delete-account')
 				elem.dispatchEvent(event)
 			} else {
-				const validEmail = await this.callAPIToUpdateEmail()
-				if (!validEmail) {
+				let status = await this.callAPIToUpdateEmail()
+				if (status !== 200) {
 					event = new Event('disable-delete-account')
+					elem.dispatchEvent(event)
 				}
-				elem.dispatchEvent(event)
 			}
 		},
 		async getOrderCount() {
@@ -137,24 +137,26 @@ export default {
 					showError(
 						t('ecloud-accounts', 'Error while setting shop delete preference')
 					)
-					return false
 				}
-				return true
 			} catch (e) {
 				showError(
 					t('ecloud-accounts', 'Error while setting shop delete preference')
 				)
-				return false
 			}
 		},
 		async callAPIToUpdateEmail() {
-				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
-				)
-				const { status } = await Axios.post(url, {
-					shopEmailPostDelete: this.shopEmailPostDelete,
-				})
-				return status
+				try {
+					const url = generateUrl(
+						`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
+					)
+					const { status } = await Axios.post(url, {
+						shopEmailPostDelete: this.shopEmailPostDelete,
+					})
+					return status
+				}
+				catch(err) {
+					return err.response.status
+				}
 			} 
 		},
 		updateEmailPostDelete: debounce(async function(e) {
@@ -166,22 +168,14 @@ export default {
 					)
 				)
 			} else {
-				try {
-					const status = await this.callAPIToUpdateEmail()
-					if (status !== 200) {
-						showError(
-							t(
-								'ecloud-accounts',
-								'Invalid Shop Email'
-							)
-						)
-					}
-				}
-				catch (e) {
+				const status = await this.callAPIToUpdateEmail()
+				if (status !== 200) {
 					showError(
-						t('ecloud-accounts', 'Invalid Shop Email')
+						t(
+							'ecloud-accounts',
+							'Invalid Shop Email'
+						)
 					)
-					this.shopEmailPostDelete = this.shopEmailDefault
 				}
 			} 
 		}, 1000),
