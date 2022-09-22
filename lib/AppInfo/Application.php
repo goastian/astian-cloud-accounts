@@ -36,8 +36,6 @@ use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
-use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
-use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 
 
 class Application extends App implements IBootstrap
@@ -54,7 +52,6 @@ class Application extends App implements IBootstrap
     {
         $context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
         $context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
-        $context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
     }
 
     public function boot(IBootContext $context): void
