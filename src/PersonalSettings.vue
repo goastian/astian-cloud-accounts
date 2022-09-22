@@ -21,7 +21,7 @@
 					)
 				}}</label>
 			</div>
-			<div>
+			<div v-if="!checked">
 				<input id="shop-alternate-email"
 					type="email"
 					:disabled="checked"

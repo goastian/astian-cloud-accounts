@@ -3,9 +3,11 @@
 
 namespace OCA\EcloudAccounts\Service;
 
+use Curl;
 use Exception;
 use OCP\IConfig;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Service\CurlService;
 
 require_once 'curl.class.php';
 
@@ -13,8 +15,9 @@ class ShopAccountService {
 
     private $config;
     private $appName;
+    private $curl;
 
-    public function __construct($appName, IConfig $config)
+    public function __construct($appName, IConfig $config, CurlService $curlService)
     {
 
         $shopUsername = getenv("WP_SHOP_USERNAME");
@@ -23,9 +26,11 @@ class ShopAccountService {
 
         $this->appName = $appName;
         $this->shopUserUrl = $shopUrl . "/wp-json/wp/v2/users";
+        $this->shopOrdersUrl = $shopUrl . "/wp-json/wc/v3/orders";
         $this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
         $this->shopReassignUserId = getenv('WP_REASSIGN_USER_ID');
         $this->config = $config;
+        $this->curl = $curlService;
     }
 
     public function setShopDeletePreference($userId, bool $delete) {
@@ -44,6 +49,17 @@ class ShopAccountService {
         $recoveryEmail = $this->config->getUserValue($userId, 'email-recovery', 'recovery-email');
 
         return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);  
+    }
+
+    public function getOrders(int $userId): ?array {
+        try {
+            return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
+        }
+        catch(Exception $e) {
+            $this->logger->error('There was an issue querying shop for orders for user ' . strval($userId));
+            $this->logger->logException($e, ['app' => Application::APP_ID]);
+        }
+        return null;
     }
 
     public function getUsers(string $searchTerm): ?array
@@ -113,7 +129,6 @@ class ShopAccountService {
     }
 
     private function callShopAPI(string $url, string $method, array $data = []) {
-        $curl = new Curl();
             
         $headers = [
             "cache-control: no-cache",
@@ -122,15 +137,15 @@ class ShopAccountService {
         ];
 
         if($method === 'GET') {
-            $answer = $curl->get($url, $data, $headers);
+            $answer = $this->curl->get($url, $data, $headers);
         }
 
         if($method === 'DELETE') {
-            $answer = $curl->delete($url, $data, $headers);
+            $answer = $this->curl->delete($url, $data, $headers);
         }
 
         if ($method === 'POST') {
-            $answer = $curl->post($url, $data, $headers);
+            $answer = $this->curl->post($url, $data, $headers);
         }
 
         $answer = json_decode($answer, true);

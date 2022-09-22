@@ -51,4 +51,30 @@ class ShopAccountController extends Controller {
         $this->shopAccountService->setShopDeletePreference($userId, $deleteShopAccount);
     }
 
+    /**
+     * @NoAdminRequired
+     */
+    public function getShopOrderCount() {
+        $response = new DataResponse();
+        $user = $this->userSession->getUser();
+        $email = $user->getEMailAddress();
+
+        $shopUser = $this->shopAccountService->getUser($email);
+        $data = ['count' => 0];
+        if(!$shopUser) {
+            $response->setData($data);
+            return $response;
+        }
+
+        $orders = $this->shopAccountService->getOrders($shopUser['id']);
+
+        if(!$orders) {
+            $response->setData($data);
+            return $response;
+        }
+
+        $data['count'] = count($orders);
+        $response->setData($data);
+        return $response;
+    }
 }

@@ -98,7 +98,7 @@ class Personal implements ISettings {
 		return self::DROP_ACCOUNT_APP_ID;
 
 		$user = $this->userSession->getUser();
-		$shopUser = $this->shopAccountService->getUserFromShop($user->getEMailAddress());
+		$shopUser = $this->shopAccountService->getUser($user->getEMailAddress());
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
 
 		if($dropAccountEnabled && $shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
