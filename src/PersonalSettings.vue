@@ -35,7 +35,7 @@
 					t(
 						"ecloud-accounts",
 						"You have %s orders with your shop account. To check, please go to <a href='https://staging01.murena.com/my-account/orders/'>your shop orders</a>."
-					).replace('%s', orderCount)
+					)
 				}}
 			</div>
 		</div>
