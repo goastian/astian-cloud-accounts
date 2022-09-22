@@ -23,17 +23,17 @@
 			</div>
 			<div v-if="!deleteShopAccount">
 				<input id="shop-alternate-email"
+					v-model="shopEmailPostDelete"
 					type="email"
 					name="shop-alternate-email"
 					:placeholder="('ecloud-accounts', 'Email Address')"
 					class="form-control"
-					v-model="shopEmailPostDelete"
 					@input="updateEmailPostDelete()">
 			</div>
 			<div v-if="orderCount > 0">
 				{{
 					t(
-						"ecloud-accounts", 
+						"ecloud-accounts",
 						"You have %s orders with your shop account. To check, please go to <a href='https://staging01.murena.com/my-account/orders/'>your shop orders</a>."
 					).replace('%s', `${orderCount}`)
 				}}
@@ -92,7 +92,7 @@ export default {
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
 			this.invalidEmailEvent()
-		
+
 		} catch (e) {
 			console.error('Error fetching initial state', e)
 		}
@@ -101,13 +101,12 @@ export default {
 		async invalidEmailEvent() {
 			let event
 			const elem = document.getElementById('#delete-shop-account-settings')
-			if(this.deleteShopAccount) {
+			if (this.deleteShopAccount) {
 				event = new Event('enable-delete-account')
 				elem.dispatchEvent(event)
-			}
-			else {
+			} else {
 				const validEmail = await this.callAPIToUpdateEmail()
-				if(!validEmail) {
+				if (!validEmail) {
 					event = new Event('disable-delete-account')
 				}
 				elem.dispatchEvent(event)
@@ -138,49 +137,48 @@ export default {
 					showError(
 						t('ecloud-accounts', 'Error while setting shop delete preference')
 					)
-					return false;
+					return false
 				}
-				return true;
+				return true
 			} catch (e) {
 				showError(
 					t('ecloud-accounts', 'Error while setting shop delete preference')
 				)
-				return false;
+				return false
 			}
 		},
 		async callAPIToUpdateEmail() {
-					try {
-						const url = generateUrl(
-							`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
-						)
-						const { status } = await Axios.post(url, {
-							shopEmailPostDelete: this.shopEmailPostDelete,
-						})
-						if (status !== 200) {
-							showError(
-								t(
-									'ecloud-accounts',
-									'Invalid Shop Email'
-								)
-							)
-						}
-					} catch (e) {
-						showError(
-							t('ecloud-accounts', 'Invalid Shop Email')
-						)
-						this.shopEmailPostDelete = this.shopEmailDefault
-					}
-		},
-		updateEmailPostDelete: debounce(async function(e) {
-			if (this.shopEmailPostDelete === this.userEmail) {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
+				)
+				const { status } = await Axios.post(url, {
+					shopEmailPostDelete: this.shopEmailPostDelete,
+				})
+				if (status !== 200) {
 					showError(
 						t(
 							'ecloud-accounts',
-							"Shop email cannot be same as this account's email!"
+							'Invalid Shop Email'
 						)
 					)
+				}
+			} catch (e) {
+				showError(
+					t('ecloud-accounts', 'Invalid Shop Email')
+				)
+				this.shopEmailPostDelete = this.shopEmailDefault
 			}
-			else {
+		},
+		updateEmailPostDelete: debounce(async function(e) {
+			if (this.shopEmailPostDelete === this.userEmail) {
+				showError(
+					t(
+						'ecloud-accounts',
+						"Shop email cannot be same as this account's email!"
+					)
+				)
+			} else {
 				await this.callAPIToUpdateEmail()
 			}
 		}, 1000),
