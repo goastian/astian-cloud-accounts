@@ -154,14 +154,7 @@ export default {
 				const { status } = await Axios.post(url, {
 					shopEmailPostDelete: this.shopEmailPostDelete,
 				})
-				if (status !== 200) {
-					showError(
-						t(
-							'ecloud-accounts',
-							'Invalid Shop Email'
-						)
-					)
-				}
+				return status
 			} 
 		},
 		updateEmailPostDelete: debounce(async function(e) {
@@ -174,7 +167,15 @@ export default {
 				)
 			} else {
 				try {
-					await this.callAPIToUpdateEmail()
+					const status = await this.callAPIToUpdateEmail()
+					if (status !== 200) {
+						showError(
+							t(
+								'ecloud-accounts',
+								'Invalid Shop Email'
+							)
+						)
+					}
 				}
 				catch (e) {
 					showError(
