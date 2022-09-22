@@ -37,16 +37,9 @@ install-node-deps:
       changes:
           - package*.json
 
-lint:
-  extends: .frontend:base
-  stage: build
-  script:
-    - npm run lint
-
 build-frontend:
   extends: .frontend:base
   stage: build
-  needs: ["lint"]
   script:
     - npm run build
     - mkdir -p dist/${APP_NAME}
