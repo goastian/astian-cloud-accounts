@@ -54,7 +54,7 @@ class ShopAccountController extends Controller {
     /**
      * @NoAdminRequired
      */
-    public function getShopOrderCount() {
+    public function getOrderCount() {
         $response = new DataResponse();
         $user = $this->userSession->getUser();
         $email = $user->getEMailAddress();

@@ -30,6 +30,14 @@
 					v-model="shopEmailPostDelete"
 					@input="updateEmailPostDelete()">
 			</div>
+			<div v-if="orderCount > 0">
+				{{
+					t(
+						"ecloud-accounts", 
+						"You have %s orders with your shop account. To check, please go to <a href='https://staging01.murena.com/my-account/orders/'>your shop orders</a>."
+					).replace('%s', `${orderCount}`)
+				}}
+			</div>
 		</div>
 		<p v-if="onlyUser" class="warnings">
 			{{
@@ -72,6 +80,7 @@ export default {
 			userEmail: '',
 			onlyAdmin: false,
 			onlyUser: false,
+			orderCount: 0,
 		}
 	},
 	created() {
@@ -87,6 +96,18 @@ export default {
 		}
 	},
 	methods: {
+		async getOrderCount() {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/get_order_count`
+				)
+				const { status, data } = await Axios.get(url)
+				if (status === 200) {
+					this.orderCount = data.count
+				}
+			} catch (e) {
+			}
+		},
 		async updateDeleteShopPreference() {
 			try {
 				const url = generateUrl(
