@@ -1,6 +1,6 @@
 /* global $ */
 $(document).ready(function() {
-	const elem = document.getElementById('#delete-shop-account-section')
+	const elem = document.getElementById('delete-shop-account-settings')
 	elem.addEventListener('disable-delete-account', function() {
 		$('#deleteaccount').hide()
 	})

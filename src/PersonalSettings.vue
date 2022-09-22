@@ -6,7 +6,6 @@
 				'You can delete your shop account with deleting ecloud account.'
 			)
 		"
-		id="delete-shop-account-section"
 		>
 		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 			<div>
@@ -102,7 +101,7 @@ export default {
 	methods: {
 		async invalidEmailEvent() {
 			let event
-			const elem = document.getElementById('#delete-shop-account-section')
+			const elem = document.getElementById('delete-shop-account-settings')
 			if (this.deleteShopAccount) {
 				event = new Event('enable-delete-account')
 				elem.dispatchEvent(event)
