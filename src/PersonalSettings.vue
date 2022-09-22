@@ -9,7 +9,7 @@
 		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 			<div>
 				<input id="shop-accounts_confirm"
-					v-model="checked"
+					v-model="deleteShopAccount"
 					type="checkbox"
 					name="shop-accounts_confirm"
 					class="checkbox"
@@ -21,10 +21,9 @@
 					)
 				}}</label>
 			</div>
-			<div v-if="!checked">
+			<div v-if="!deleteShopAccount">
 				<input id="shop-alternate-email"
 					type="email"
-					:disabled="checked"
 					name="shop-alternate-email"
 					:placeholder="('ecloud-accounts', 'Email Address')"
 					class="form-control"
@@ -71,7 +70,6 @@ export default {
 			shopEmailDefault: '',
 			appName: 'ecloud-accounts',
 			userEmail: '',
-			checked: false,
 			onlyAdmin: false,
 			onlyUser: false,
 		}

@@ -40,7 +40,7 @@ class ShopAccountService {
     }
 
     public function getShopDeletePreference($userId) {
-        return boolval($this->config->getUserValue($userId, $this->appName, 'delete_shop_account', true));
+        return boolval($this->config->getUserValue($userId, $this->appName, 'delete_shop_account', false));
     }
 
     public function getShopEmailPostDeletePreference($userId) {
