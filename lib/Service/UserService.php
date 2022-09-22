@@ -7,9 +7,10 @@ namespace OCA\EcloudAccounts\Service;
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\IConfig;
-use UnexpectedValueException;
+use OCA\EcloudAccounts\Service\CurlService;
+use OCA\EcloudAccounts\AppInfo\Application;
 
-require_once 'curl.class.php';
+use UnexpectedValueException;
 
 class UserService
 {
@@ -23,11 +24,15 @@ class UserService
     /** @var IConfig */
     private $config;
 
-    public function __construct($appName, IUserManager $userManager, IConfig $config)
+    private $curl;
+
+
+    public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService)
     {
         $this->userManager = $userManager;
         $this->config = $config;
         $this->appConfig = $this->config->getSystemValue($appName);
+        $this->curl = $curlService;
     }
 
 
@@ -114,8 +119,6 @@ class UserService
             $endpoint = '/postDeleteLDAP.php';
         }
         $postDeleteUrl = "https://" . $welcomeDomain . $endpoint;
-        $curl = new Curl();
-
         /**
          * send action to docker_welcome
          * Handling the non NC part of deletion process
@@ -131,7 +134,7 @@ class UserService
                 'Content-Type: application/json'
             );
 
-            $answer = $curl->post($postDeleteUrl, $params, $headers);
+            $answer = $this->curl->post($postDeleteUrl, $params, $headers);
 
             return json_decode($answer, true);
         } catch (\Exception $e) {
