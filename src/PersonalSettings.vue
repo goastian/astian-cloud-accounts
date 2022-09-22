@@ -5,8 +5,7 @@
 				'ecloud-accounts',
 				'You can delete your shop account with deleting ecloud account.'
 			)
-		"
-		>
+		">
 		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 			<div>
 				<input id="shop-accounts_confirm"
