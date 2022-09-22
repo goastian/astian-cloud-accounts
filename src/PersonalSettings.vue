@@ -100,7 +100,7 @@ export default {
 	methods: {
 		async invalidEmailEvent() {
 			let event
-			const elem = document.getElementById('delete-shop-account-settings')
+			const elem = document.getElementById('body-settings')
 			if (this.deleteShopAccount) {
 				event = new Event('enable-delete-account')
 				elem.dispatchEvent(event)
