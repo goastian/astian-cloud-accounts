@@ -5,6 +5,7 @@ namespace OCA\EcloudAccounts\Service;
 
 use Exception;
 use OCP\IConfig;
+use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\CurlService;
 
