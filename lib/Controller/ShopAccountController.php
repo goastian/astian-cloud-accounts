@@ -8,18 +8,23 @@ use OCP\IUserSession;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\IL10N;
 
 
 class ShopAccountController extends Controller {
 
     private $shopAccountService;
     private $userSession;
+    private $l10n;
+    private $shopOrdersUrl;
 
-    public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService)
+    public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService, IL10N $l10n)
     {
         parent::__construct($appName, $request);
         $this->shopAccountService = $shopAccountService;
         $this->userSession = $userSession;
+        $this->l10n = $l10n;
+        $this->shopOrdersUrl = ("WP_SHOP_URL") . '/my-account/orders';
     }
 
     /**
@@ -74,6 +79,11 @@ class ShopAccountController extends Controller {
         }
 
         $data['count'] = count($orders);
+        $data['message'] = sprintf(
+            $this->l10n->t("You have %d orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>."), 
+            $data['count'], 
+            $this->shopOrdersUrl
+        );
         $response->setData($data);
         return $response;
     }

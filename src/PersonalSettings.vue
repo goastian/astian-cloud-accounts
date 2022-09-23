@@ -32,10 +32,7 @@
 			</div>
 			<div v-if="orderCount">
 				{{
-					t(
-						"ecloud-accounts",
-						"You have %s orders with your shop account. To check, please go to <a href='https://staging01.murena.com/my-account/orders/'>your shop orders</a>."
-					).replace('%s', orderCount)
+					orderCountMessage
 				}}
 			</div>
 		</div>
@@ -81,6 +78,7 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
+			orderCountMessage: ''
 		}
 	},
 	created() {
@@ -116,11 +114,14 @@ export default {
 		async getOrderCount() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/get_order_count`
+					`/apps/${this.appName}/shop-accounts/order_count`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
 					this.orderCount = data.count
+					if(this.orderCount > 0) {
+						this.orderCountMessage = data.message
+					}
 				}
 			} catch (e) {
 			}
