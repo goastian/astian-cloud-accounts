@@ -87,7 +87,7 @@ class ShopAccountService {
             return null;
         }
         if(count($users) > 1) {
-            $this->logger->error('More than one user in WP results when deleting user with email ' . $email);
+            $this->logger->error('More than one user in WP results when getting user with email ' . $email);
             return null;
         }
         return $users[0];
