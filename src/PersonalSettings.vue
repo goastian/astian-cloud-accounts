@@ -97,7 +97,7 @@ export default {
 			this.shopEmailPostDelete = loadState(this.appName, 'shop_email_post_delete')
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
-			this.invalidEmailEvent()
+			this.disableOrEnableDeleteAccount()
 			this.getOrderCount()
 
 		} catch (e) {
@@ -105,19 +105,26 @@ export default {
 		}
 	},
 	methods: {
-		async invalidEmailEvent() {
-			let event
-			const elem = document.getElementById('body-settings')
-			if (this.deleteShopAccount) {
-				event = new Event('enable-delete-account')
-				elem.dispatchEvent(event)
-			} else {
-				let status = await this.callAPIToUpdateEmail()
-				if (status !== 200) {
-					event = new Event('disable-delete-account')
-					elem.dispatchEvent(event)
+		async disableOrEnableDeleteAccount() {
+			if(!this.deleteShopAccount) {
+				const status = await this.callAPIToUpdateEmail()
+				if(status !== 200) {
+					this.disableDeleteAccountEvent()
 				}
 			}
+			else {
+				this.enableDeleteAccountEvent()
+			}
+		},
+		async enableDeleteAccountEvent() {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('enable-delete-account')
+			elem.dispatchEvent(event)
+		},
+		async disableDeleteAccountEvent(status = null) {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('disable-delete-account')
+			elem.dispatchEvent(event)
 		},
 		async getOrderCount() {
 			try {
@@ -135,7 +142,7 @@ export default {
 			}
 		},
 		async updateDeleteShopPreference() {
-			this.invalidEmailEvent()
+			this.disableOrEnableDeleteAccount()
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/set_shop_delete_preference`
@@ -180,6 +187,7 @@ export default {
 			} else {
 				const status = await this.callAPIToUpdateEmail()
 				if (status !== 200) {
+					this.disableDeleteAccountEvent();
 					showError(
 						t(
 							'ecloud-accounts',
