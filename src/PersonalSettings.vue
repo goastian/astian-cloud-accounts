@@ -38,7 +38,7 @@
 					class="form-control"
 					@input="updateEmailPostDelete()">
 			</div>
-			<div v-if="orderCount" v-html="orderCountMessage"></div>
+			<div v-if="orderCount" v-html="orderCountMessage" />
 		</div>
 		<p v-if="onlyUser" class="warnings">
 			{{
@@ -82,7 +82,7 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			orderCountMessage: ''
+			orderCountMessage: '',
 		}
 	},
 	created() {
@@ -102,13 +102,12 @@ export default {
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
-			if(!this.deleteShopAccount) {
+			if (!this.deleteShopAccount) {
 				const status = await this.callAPIToUpdateEmail()
-				if(status !== 200) {
+				if (status !== 200) {
 					this.disableDeleteAccountEvent()
 				}
-			}
-			else {
+			} else {
 				this.enableDeleteAccountEvent()
 			}
 		},
@@ -130,7 +129,7 @@ export default {
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
 					this.orderCount = data.count
-					if(this.orderCount > 0) {
+					if (this.orderCount > 0) {
 						this.orderCountMessage = data.message
 					}
 				}
@@ -158,19 +157,17 @@ export default {
 			}
 		},
 		async callAPIToUpdateEmail() {
-				try {
-					const url = generateUrl(
-						`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
-					)
-					const { status } = await Axios.post(url, {
-						shopEmailPostDelete: this.shopEmailPostDelete,
-					})
-					return status
-				}
-				catch(err) {
-					return err.response.status
-				}
-			} 
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
+				)
+				const { status } = await Axios.post(url, {
+					shopEmailPostDelete: this.shopEmailPostDelete,
+				})
+				return status
+			} catch (err) {
+				return err.response.status
+			}
 		},
 		updateEmailPostDelete: debounce(async function(e) {
 			if (this.shopEmailPostDelete === this.userEmail) {
@@ -183,7 +180,7 @@ export default {
 			} else {
 				const status = await this.callAPIToUpdateEmail()
 				if (status !== 200) {
-					this.disableDeleteAccountEvent();
+					this.disableDeleteAccountEvent()
 					showError(
 						t(
 							'ecloud-accounts',
@@ -191,8 +188,9 @@ export default {
 						)
 					)
 				}
-			} 
+			}
 		}, 1000),
+	},
 }
 </script>
 <style>
