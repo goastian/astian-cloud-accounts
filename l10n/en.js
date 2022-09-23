@@ -1,5 +1,5 @@
 OC.L10N.register(
-	"drop_account",
+	"ecloud-accounts",
 	{
 		"Delete shop account": "Delete shop account",
 		"You can delete your shop account with deleting cloud account.": "You can delete your shop account with deleting cloud account.",
