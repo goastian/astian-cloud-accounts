@@ -30,12 +30,12 @@
 					class="form-control"
 					@input="updateEmailPostDelete()">
 			</div>
-			<div v-if="orderCount > 0">
+			<div v-if="orderCount">
 				{{
 					t(
 						"ecloud-accounts",
 						"You have %s orders with your shop account. To check, please go to <a href='https://staging01.murena.com/my-account/orders/'>your shop orders</a>."
-					)
+					).replace('%s', orderCount)
 				}}
 			</div>
 		</div>
