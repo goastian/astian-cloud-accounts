@@ -3,7 +3,6 @@
 
 namespace OCA\EcloudAccounts\Service;
 
-use Curl;
 use Exception;
 use OCP\IConfig;
 use OCA\EcloudAccounts\AppInfo\Application;
@@ -14,8 +13,9 @@ class ShopAccountService {
     private $config;
     private $appName;
     private $curl;
+    private $logger;
 
-    public function __construct($appName, IConfig $config, CurlService $curlService)
+    public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger)
     {
 
         $shopUsername = getenv("WP_SHOP_USERNAME");
@@ -29,6 +29,7 @@ class ShopAccountService {
         $this->shopReassignUserId = getenv('WP_REASSIGN_USER_ID');
         $this->config = $config;
         $this->curl = $curlService;
+        $this->logger = $logger;
     }
 
     public function setShopDeletePreference($userId, bool $delete) {

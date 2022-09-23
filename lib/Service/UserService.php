@@ -7,6 +7,7 @@ namespace OCA\EcloudAccounts\Service;
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\IConfig;
+use OCP\ILogger;
 use OCA\EcloudAccounts\Service\CurlService;
 use OCA\EcloudAccounts\AppInfo\Application;
 
@@ -27,12 +28,13 @@ class UserService
     private $curl;
 
 
-    public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService)
+    public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger)
     {
         $this->userManager = $userManager;
         $this->config = $config;
         $this->appConfig = $this->config->getSystemValue($appName);
         $this->curl = $curlService;
+        $this->logger = $logger;
     }
 
 
