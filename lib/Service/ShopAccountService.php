@@ -152,7 +152,7 @@ class ShopAccountService {
         }
 
         if ($method === 'POST') {
-            $answer = $this->curl->post($url, $data, $headers);
+            $answer = $this->curl->post($url, json_encode($data), $headers);
         }
 
         $answer = json_decode($answer, true);
