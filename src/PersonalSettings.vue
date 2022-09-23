@@ -29,6 +29,14 @@
 					:placeholder="('ecloud-accounts', 'Email Address')"
 					class="form-control"
 					@input="updateEmailPostDelete()">
+				<label for="shop-alternate-email">
+					{{
+						t(
+							"ecloud-accounts",
+							"Alternate E-mail for shop login"
+						)
+					}}
+				</label>
 			</div>
 			<div v-if="orderCount">
 				{{

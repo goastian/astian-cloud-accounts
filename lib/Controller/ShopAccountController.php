@@ -24,7 +24,7 @@ class ShopAccountController extends Controller {
         $this->shopAccountService = $shopAccountService;
         $this->userSession = $userSession;
         $this->l10n = $l10n;
-        $this->shopOrdersUrl = ("WP_SHOP_URL") . '/my-account/orders';
+        $this->shopOrdersUrl = getenv("WP_SHOP_URL") . '/my-account/orders';
     }
 
     /**
@@ -79,11 +79,7 @@ class ShopAccountController extends Controller {
         }
 
         $data['count'] = count($orders);
-        $data['message'] = sprintf(
-            $this->l10n->t("You have %d orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>."), 
-            $data['count'], 
-            $this->shopOrdersUrl
-        );
+        $data['message'] = $this->l10n->t("You have %d orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>.", [ $data['count'], $this->shopOrdersUrl ]);
         $response->setData($data);
         return $response;
     }

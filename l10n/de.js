@@ -4,6 +4,7 @@ OC.L10N.register(
 		"Delete shop account": "Delete shop account",
 		"You can delete your shop account with deleting ecloud account.": "You can delete your shop account with deleting ecloud account.",
 		"Check this to confirm the deletion request for shop account": "Check this to confirm the deletion request for shop account",
-		"You have %d orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>.": "You have %s orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>."
+		"You have %d orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>.": "You have %s orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>.",
+		"Alternate E-mail for shop login": "Alternate E-mail for shop login"
 	},
 	"nplurals=2; plural=(n != 1);");
