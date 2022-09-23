@@ -188,6 +188,9 @@ export default {
 						)
 					)
 				}
+				else {
+					this.enableDeleteAccountEvent()
+				}
 			}
 		}, 1000),
 	},
