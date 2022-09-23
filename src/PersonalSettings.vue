@@ -22,13 +22,6 @@
 				}}</label>
 			</div>
 			<div v-if="!deleteShopAccount">
-				<input id="shop-alternate-email"
-					v-model="shopEmailPostDelete"
-					type="email"
-					name="shop-alternate-email"
-					:placeholder="('ecloud-accounts', 'Email Address')"
-					class="form-control"
-					@input="updateEmailPostDelete()">
 				<label for="shop-alternate-email">
 					{{
 						t(
@@ -37,12 +30,15 @@
 						)
 					}}
 				</label>
+				<input id="shop-alternate-email"
+					v-model="shopEmailPostDelete"
+					type="email"
+					name="shop-alternate-email"
+					:placeholder="('ecloud-accounts', 'Email Address')"
+					class="form-control"
+					@input="updateEmailPostDelete()">
 			</div>
-			<div v-if="orderCount">
-				{{
-					orderCountMessage
-				}}
-			</div>
+			<div v-if="orderCount" v-html="orderCountMessage"></div>
 		</div>
 		<p v-if="onlyUser" class="warnings">
 			{{
@@ -191,7 +187,7 @@ export default {
 					showError(
 						t(
 							'ecloud-accounts',
-							'Invalid Shop Email'
+							'Invalid Shop Email!'
 						)
 					)
 				}
