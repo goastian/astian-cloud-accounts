@@ -1,11 +1,6 @@
 <template>
-	<SettingsSection :title="t('ecloud-accounts', 'Delete shop account')"
-		:description="
-			t(
-				'ecloud-accounts',
-				'You can delete your shop account with deleting ecloud account.'
-			)
-		">
+	<SettingsSection :title="t('ecloud-accounts', 'Options')" 
+						:description ="description">
 		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 			<div>
 				<input id="shop-accounts_confirm"
@@ -17,7 +12,7 @@
 				<label for="shop-accounts_confirm">{{
 					t(
 						"ecloud-accounts",
-						"Check this to confirm the deletion request for shop account"
+						"I also want to delete my shop account"
 					)
 				}}</label>
 			</div>
@@ -26,7 +21,7 @@
 					{{
 						t(
 							"ecloud-accounts",
-							"Alternate E-mail for shop login"
+							"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
 						)
 					}}
 				</label>
@@ -83,6 +78,7 @@ export default {
 			onlyUser: false,
 			orderCount: 0,
 			orderCountMessage: '',
+			description: this.t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
 		}
 	},
 	created() {
@@ -124,13 +120,14 @@ export default {
 		async getOrderCount() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_count`
+					`/apps/${this.appName}/shop-accounts/order_info`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					this.orderCount = data.count
+					this.orderCount = data['count']
 					if (this.orderCount > 0) {
-						this.orderCountMessage = data.message
+						const myOrdersUrl = data['my_orders_url']
+						this.description = this.t('For your information you have %d invoices in your account. Click <a href="%s">here</a> to download them.', this.orderCount, myOrdersUrl)
 					}
 				}
 			} catch (e) {

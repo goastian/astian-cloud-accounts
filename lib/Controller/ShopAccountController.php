@@ -59,13 +59,13 @@ class ShopAccountController extends Controller {
     /**
      * @NoAdminRequired
      */
-    public function getOrderCount() {
+    public function getOrderInfo() {
         $response = new DataResponse();
         $user = $this->userSession->getUser();
         $email = $user->getEMailAddress();
 
         $shopUser = $this->shopAccountService->getUser($email);
-        $data = ['count' => 0];
+        $data = ['count' => 0, 'my_orders_url' => $this->shopOrdersUrl];
         if(!$shopUser) {
             $response->setData($data);
             return $response;
@@ -79,7 +79,6 @@ class ShopAccountController extends Controller {
         }
 
         $data['count'] = count($orders);
-        $data['message'] = $this->l10n->t("You have %d orders with your shop account. To check, please go to <a href='%s'>your shop orders</a>.", [ $data['count'], $this->shopOrdersUrl ]);
         $response->setData($data);
         return $response;
     }
