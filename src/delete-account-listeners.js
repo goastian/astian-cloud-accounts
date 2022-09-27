@@ -1,6 +1,6 @@
 /* global $ */
 $(document).ready(function() {
-	const elem = document.getElementById('body-settings')
+	const elem = document.getElementById('delete-shop-account-settings')
 	elem.addEventListener('disable-delete-account', function() {
 		$('#deleteaccount').prop('disabled', true)
 		$('#drop_account_confirm').prop('disabled', true)
