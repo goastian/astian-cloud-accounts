@@ -1,6 +1,6 @@
 <template>
 	<SettingsSection :title="t('ecloud-accounts', 'Options')">
-		<p class="settings-section__desc">
+		<p>
 			{{
 				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
 			}}
