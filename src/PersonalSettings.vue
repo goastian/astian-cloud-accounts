@@ -83,7 +83,7 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			ordersDescription: this.t('ecloud-accounts', "For your information you have %d invoices in your account. Click <a class='text-color-active' href='%s'>here</a> to download them."),
+			ordersDescription: this.t('ecloud-accounts', "For your information you have %d orders in <a class='text-color-active' href='%s'>your account</a>."),
 		}
 	},
 	created() {
