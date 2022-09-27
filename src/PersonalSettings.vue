@@ -104,9 +104,10 @@ export default {
 	methods: {
 		async disableOrEnableDeleteAccount() {
 			if (!this.deleteShopAccount) {
+				this.disableDeleteAccountEvent()
 				const status = await this.callAPIToUpdateEmail()
-				if (status !== 200) {
-					this.disableDeleteAccountEvent()
+				if (status === 200) {
+					this.enableDeleteAccountEvent()
 				}
 			} else {
 				this.enableDeleteAccountEvent()
