@@ -78,7 +78,7 @@ export default {
 			onlyUser: false,
 			orderCount: 0,
 			description: this.t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.'),
-			ordersDescription: this.t('ecloud-accounts', 'For your information you have %d invoices in your account. Click <a href="%s">here</a> to download them.')
+			ordersDescription: this.t('ecloud-accounts', "For your information you have %d invoices in your account. Click <a class='text-color-active' href='%s'>here</a> to download them.")
 		}
 	},
 	created() {
