@@ -1,6 +1,7 @@
 <template>
 	<SettingsSection :title="t('ecloud-accounts', 'Options')" 
 						:description ="description">
+		<p v-if="orderCount" v-html="ordersDescription"></p> 
 		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 			<div>
 				<input id="shop-accounts_confirm"
@@ -76,7 +77,8 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			description: this.t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
+			description: this.t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.'),
+			ordersDescription: this.t('ecloud-accounts', 'For your information you have %d invoices in your account. Click <a href="%s">here</a> to download them.')
 		}
 	},
 	created() {
@@ -88,7 +90,7 @@ export default {
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
 			this.disableOrEnableDeleteAccount()
-			this.getOrderCount()
+			this.getOrdersInfo()
 
 		} catch (e) {
 			console.error('Error fetching initial state', e)
@@ -115,19 +117,16 @@ export default {
 			const event = new Event('disable-delete-account')
 			elem.dispatchEvent(event)
 		},
-		async getOrderCount() {
+		async getOrdersInfo() {
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/order_info`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					this.orderCount = data['count']
-					if (this.orderCount > 0) {
-						const myOrdersUrl = data['my_orders_url']
-						let ordersDescription = this.t('For your information you have %d invoices in your account. Click <a href="%s">here</a> to download them.')
-						ordersDescription = ordersDescription.replace('%d', data['count']).replace('%s', myOrdersUrl)
-						this.description += ordersDescription
+					if (data['count'] > 0) {
+						this.ordersDescription = this.ordersDescription.replace('%d', data['count']).replace('%s', data['my_orders_url'])
+						this.orderCount = data['count']
 					}
 				}
 			} catch (e) {
