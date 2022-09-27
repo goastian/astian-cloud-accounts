@@ -83,7 +83,7 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			ordersDescription: this.t('ecloud-accounts', "For your information you have %d orders in <a class='text-color-active' href='%s'>your account</a>."),
+			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>."),
 		}
 	},
 	created() {
@@ -112,12 +112,12 @@ export default {
 				this.enableDeleteAccountEvent()
 			}
 		},
-		async enableDeleteAccountEvent() {
+	 	enableDeleteAccountEvent() {
 			const elem = document.getElementById('body-settings')
 			const event = new Event('enable-delete-account')
 			elem.dispatchEvent(event)
 		},
-		async disableDeleteAccountEvent(status = null) {
+		disableDeleteAccountEvent(status = null) {
 			const elem = document.getElementById('body-settings')
 			const event = new Event('disable-delete-account')
 			elem.dispatchEvent(event)
@@ -138,7 +138,7 @@ export default {
 			}
 		},
 		async updateDeleteShopPreference() {
-			this.disableOrEnableDeleteAccount()
+			await this.disableOrEnableDeleteAccount()
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/set_shop_delete_preference`
