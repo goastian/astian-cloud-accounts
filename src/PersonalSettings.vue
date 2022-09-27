@@ -33,7 +33,6 @@
 					class="form-control"
 					@input="updateEmailPostDelete()">
 			</div>
-			<div v-if="orderCount" v-html="orderCountMessage" />
 		</div>
 		<p v-if="onlyUser" class="warnings">
 			{{
@@ -77,7 +76,6 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			orderCountMessage: '',
 			description: this.t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
 		}
 	},
@@ -127,7 +125,9 @@ export default {
 					this.orderCount = data['count']
 					if (this.orderCount > 0) {
 						const myOrdersUrl = data['my_orders_url']
-						this.description = this.t('For your information you have %d invoices in your account. Click <a href="%s">here</a> to download them.', this.orderCount, myOrdersUrl)
+						let ordersDescription = this.t('For your information you have %d invoices in your account. Click <a href="%s">here</a> to download them.')
+						ordersDescription = ordersDescription.replace('%d', data['count']).replace('%s', myOrdersUrl)
+						this.description += ordersDescription
 					}
 				}
 			} catch (e) {
