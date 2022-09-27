@@ -1,40 +1,46 @@
 <template>
-	<SettingsSection :title="t('ecloud-accounts', 'Options')" 
-						:description ="description">
-		<p v-if="orderCount" v-html="ordersDescription"></p> 
-		<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
-			<div>
-				<input id="shop-accounts_confirm"
-					v-model="deleteShopAccount"
-					type="checkbox"
-					name="shop-accounts_confirm"
-					class="checkbox"
-					@change="updateDeleteShopPreference()">
-				<label for="shop-accounts_confirm">{{
-					t(
-						"ecloud-accounts",
-						"I also want to delete my shop account"
-					)
-				}}</label>
-			</div>
-			<div v-if="!deleteShopAccount">
-				<label for="shop-alternate-email">
-					{{
+	<SettingsSection :title="t('ecloud-accounts', 'Options')">
+		<p class="settings-section__desc">
+			{{
+				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
+			}}
+			<span v-if="orderCount" v-html="ordersDescription" />
+		</p>
+		<form>
+			<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+				<div class="delete-shop-input">
+					<input id="shop-accounts_confirm"
+						v-model="deleteShopAccount"
+						type="checkbox"
+						name="shop-accounts_confirm"
+						class="checkbox"
+						@change="updateDeleteShopPreference()">
+					<label for="shop-accounts_confirm">{{
 						t(
 							"ecloud-accounts",
-							"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
+							"I also want to delete my shop account"
 						)
-					}}
-				</label>
-				<input id="shop-alternate-email"
-					v-model="shopEmailPostDelete"
-					type="email"
-					name="shop-alternate-email"
-					:placeholder="('ecloud-accounts', 'Email Address')"
-					class="form-control"
-					@input="updateEmailPostDelete()">
+					}}</label>
+				</div>
+				<div v-if="!deleteShopAccount" class="delete-shop-input">
+					<label for="shop-alternate-email">
+						{{
+							t(
+								"ecloud-accounts",
+								"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
+							)
+						}}
+					</label>
+					<input id="shop-alternate-email"
+						v-model="shopEmailPostDelete"
+						type="email"
+						name="shop-alternate-email"
+						:placeholder="('ecloud-accounts', 'Email Address')"
+						class="form-control"
+						@input="updateEmailPostDelete()">
+				</div>
 			</div>
-		</div>
+		</form>
 		<p v-if="onlyUser" class="warnings">
 			{{
 				t(
@@ -77,8 +83,7 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			description: this.t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.'),
-			ordersDescription: this.t('ecloud-accounts', "For your information you have %d invoices in your account. Click <a class='text-color-active' href='%s'>here</a> to download them.")
+			ordersDescription: this.t('ecloud-accounts', "For your information you have %d invoices in your account. Click <a class='text-color-active href='%s'>here</a> to download them."),
 		}
 	},
 	created() {
@@ -124,9 +129,9 @@ export default {
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					if (data['count'] > 0) {
-						this.ordersDescription = this.ordersDescription.replace('%d', data['count']).replace('%s', data['my_orders_url'])
-						this.orderCount = data['count']
+					if (data.count > 0) {
+						this.ordersDescription = this.ordersDescription.replace('%d', data.count).replace('%s', data.my_orders_url)
+						this.orderCount = data.count
 					}
 				}
 			} catch (e) {
@@ -183,8 +188,7 @@ export default {
 							'Invalid Shop Email!'
 						)
 					)
-				}
-				else {
+				} else {
 					this.enableDeleteAccountEvent()
 				}
 			}
@@ -213,5 +217,9 @@ export default {
   border-color: #86b7fe;
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+}
+
+.delete-shop-input {
+	margin-bottom: 1em;
 }
 </style>
