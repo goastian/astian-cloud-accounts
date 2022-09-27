@@ -1,6 +1,7 @@
 OC.L10N.register(
 	"ecloud-accounts",
 	{
+		"Email Address": "Email Address",
 		"Options": "Options",
 		"We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.": "We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.",
 		"For your information you have %d invoices in your account. Click <a class='text-color-active' href='%s'>here</a> to download them.": "For your information you have %d invoices in your account. Click <a class='text-color-active' href='%s'>here</a> to download them.",

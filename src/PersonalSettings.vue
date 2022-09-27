@@ -35,7 +35,7 @@
 						v-model="shopEmailPostDelete"
 						type="email"
 						name="shop-alternate-email"
-						:placeholder="('ecloud-accounts', 'Email Address')"
+						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
 						@input="updateEmailPostDelete()">
 				</div>
