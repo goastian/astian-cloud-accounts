@@ -6,7 +6,7 @@
 			}}
 			<span v-if="orderCount" v-html="ordersDescription" />
 		</p>
-		<form>
+		<form @submit.prevent>
 			<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 				<div class="delete-shop-input">
 					<input id="shop-accounts_confirm"
@@ -37,7 +37,7 @@
 						name="shop-alternate-email"
 						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
-						@focusout="updateEmailPostDelete()">
+						@focusout="updateEmailPostDelete(e)">
 				</div>
 			</div>
 		</form>
@@ -172,6 +172,10 @@ export default {
 			}
 		},
 		updateEmailPostDelete: async function(e) {
+			const container = document.getElementById('body-settings')
+			if(!container.contains(e.relatedTarget)) {
+				return;
+			}
 			if (this.shopEmailPostDelete === this.userEmail) {
 				showError(
 					t(
