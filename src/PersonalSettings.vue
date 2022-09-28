@@ -114,12 +114,12 @@ export default {
 			}
 		},
 	 	enableDeleteAccountEvent() {
-			const elem = document.getElementById('delete-shop-account-settings')
+			const elem = document.getElementById('body-settings')
 			const event = new Event('enable-delete-account')
 			elem.dispatchEvent(event)
 		},
 		disableDeleteAccountEvent() {
-			const elem = document.getElementById('delete-shop-account-settings')
+			const elem = document.getElementById('body-settings')
 			const event = new Event('disable-delete-account')
 			elem.dispatchEvent(event)
 		},
