@@ -37,7 +37,7 @@
 						name="shop-alternate-email"
 						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
-						@focusout="updateEmailPostDelete">
+						@blur="updateEmailPostDelete">
 				</div>
 			</div>
 		</form>
