@@ -37,7 +37,7 @@
 						name="shop-alternate-email"
 						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
-						@input="updateEmailPostDelete()">
+						@focusout="updateEmailPostDelete()">
 				</div>
 			</div>
 		</form>
@@ -171,7 +171,7 @@ export default {
 				return err.response.status
 			}
 		},
-		updateEmailPostDelete: debounce(async function(e) {
+		updateEmailPostDelete: async function(e) {
 			if (this.shopEmailPostDelete === this.userEmail) {
 				showError(
 					t(
@@ -193,7 +193,7 @@ export default {
 					this.enableDeleteAccountEvent()
 				}
 			}
-		}, 1000),
+		},
 	},
 }
 </script>
