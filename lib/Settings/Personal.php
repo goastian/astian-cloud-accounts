@@ -76,7 +76,6 @@ class Personal implements ISettings {
 			$onlyAdmin = $adminGroup && $adminGroup->count() < 2 && $this->groupManager->isAdmin($user->getUID());
 			Util::addScript($this->appName, 'ecloud-accounts-personal-settings');
 			Util::addScript($this->appName, 'ecloud-accounts-delete-account-listeners');
-			Util::addStyle($this->appName, 'personal');
 			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
 			$shopEmailPostDelete = $this->shopAccountService->getShopEmailPostDeletePreference($user->getUID());
 
