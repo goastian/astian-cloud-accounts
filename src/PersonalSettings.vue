@@ -105,7 +105,7 @@ export default {
 		async disableOrEnableDeleteAccount() {
 			if (!this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
-				const status = await this.callAPIToUpdateEmail()
+				const { status } = await this.callAPIToUpdateEmail()
 				if (status === 200) {
 					this.enableDeleteAccountEvent()
 				}
@@ -163,12 +163,12 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
 				)
-				const { status } = await Axios.post(url, {
+				const { status, data } = await Axios.post(url, {
 					shopEmailPostDelete: this.shopEmailPostDelete,
 				})
-				return status
+				return { status, data}
 			} catch (err) {
-				return err.response.status
+				return { status: err.response.status, data: err.response.data}
 			}
 		},
 		updateEmailPostDelete: async function(event) {
@@ -183,13 +183,13 @@ export default {
 					)
 				)
 			} else {
-				const status = await this.callAPIToUpdateEmail()
+				const { status, data} = await this.callAPIToUpdateEmail()
 				if (status !== 200) {
 					this.disableDeleteAccountEvent()
 					showError(
 						t(
 							'ecloud-accounts',
-							'Invalid Shop Email!'
+							data['message']
 						)
 					)
 				} else {

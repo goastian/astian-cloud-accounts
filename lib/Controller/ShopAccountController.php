@@ -35,10 +35,27 @@ class ShopAccountController extends Controller {
         $user = $this->userSession->getUser();
         $userId = $user->getUID();
         $email = $user->getEMailAddress();
+        $response = new DataResponse();
 
-        if(!$this->shopAccountService->validateShopEmail($shopEmailPostDelete, $email)) {
-            $response = new DataResponse();
+        $data = ['message' => ''];
+
+        if(!filter_var($shopEmailPostDelete, FILTER_VALIDATE_EMAIL)) {
             $response->setStatus(400);
+            $data['message'] = 'Invalid Email Format.';
+            $response->setData($data);
+            return $response;
+        }
+
+        if($shopEmailPostDelete === $email) {
+            $response->setStatus(400);
+            $data['message'] = 'Shop email cannot be same as this account\'s email.';
+            $response->setData($data);
+            return $response;
+        }
+        if($this->shopAccountService->shopEmailExists($shopEmailPostDelete, $email)) {
+            $response->setStatus(400);
+            $data['message'] = 'A Murena.com account already uses this e-mail address.';
+            $response->setData($data);
             return $response;
         }
 
