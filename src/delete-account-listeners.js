@@ -7,7 +7,8 @@ $(document).ready(function() {
 	})
 
 	elem.addEventListener('enable-delete-account', function() {
-		$('#deleteaccount').prop('disabled', false)
 		$('#drop_account_confirm').prop('disabled', false)
+		const enableDeleteAccount = $('#drop_account_confirm').is(':checked')
+		$('#deleteaccount').prop('disabled', !enableDeleteAccount)
 	})
 })
