@@ -179,7 +179,7 @@ export default {
 				showError(
 					t(
 						'ecloud-accounts',
-						"Shop email cannot be same as this account's email!"
+						"Shop email cannot be same as this account's email."
 					)
 				)
 			} else {
