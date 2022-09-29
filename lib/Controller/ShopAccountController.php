@@ -48,7 +48,7 @@ class ShopAccountController extends Controller {
 
         if($shopEmailPostDelete === $email) {
             $response->setStatus(400);
-            $data['message'] = 'Shop email cannot be same as this account\'s email.';
+            $data['message'] = 'Murena.com email cannot be same as this account\'s email.';
             $response->setData($data);
             return $response;
         }
