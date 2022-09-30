@@ -5,7 +5,13 @@
  * Date: 18-Feb-17
  * Time: 20:42
  */
-class Curl
+
+
+declare(strict_types=1);
+
+namespace OCA\EcloudAccounts\Service;
+
+class CurlService
 {
     /**
      * GET alias for request method
