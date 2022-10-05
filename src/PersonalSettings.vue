@@ -66,7 +66,6 @@ import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
-import { debounce } from 'lodash'
 
 export default {
 	name: 'PersonalSettings',
@@ -113,7 +112,7 @@ export default {
 				this.enableDeleteAccountEvent()
 			}
 		},
-	 	enableDeleteAccountEvent() {
+		enableDeleteAccountEvent() {
 			const elem = document.getElementById('body-settings')
 			const event = new Event('enable-delete-account')
 			elem.dispatchEvent(event)
@@ -166,14 +165,14 @@ export default {
 				const { status, data } = await Axios.post(url, {
 					shopEmailPostDelete: this.shopEmailPostDelete,
 				})
-				return { status, data}
+				return { status, data }
 			} catch (err) {
-				return { status: err.response.status, data: err.response.data}
+				return { status: err.response.status, data: err.response.data }
 			}
 		},
-		updateEmailPostDelete: async function(event) {
-			if(document.activeElement === event.target) {
-				return;
+		async updateEmailPostDelete(event) {
+			if (document.activeElement === event.target) {
+				return
 			}
 			if (this.shopEmailPostDelete === this.userEmail) {
 				showError(
@@ -183,13 +182,13 @@ export default {
 					)
 				)
 			} else {
-				const { status, data} = await this.callAPIToUpdateEmail()
+				const { status, data } = await this.callAPIToUpdateEmail()
 				if (status !== 200) {
 					this.disableDeleteAccountEvent()
 					showError(
 						t(
 							'ecloud-accounts',
-							data['message']
+							data.message
 						)
 					)
 				} else {
