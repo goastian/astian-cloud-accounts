@@ -52,7 +52,7 @@ class ShopAccountService {
     public function getShopEmailPostDeletePreference($userId) {
         $recoveryEmail = $this->config->getUserValue($userId, 'email-recovery', 'recovery-email');
 
-        return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);  
+        return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);
     }
 
     public function getOrders(int $userId): ?array {
@@ -86,7 +86,7 @@ class ShopAccountService {
         return $users[0];
     }
 
-    public function deleteUser(int $userId) : void {    
+    public function deleteUser(int $userId) : void {
         $params = [
             'force' => true,
             'reassign' => $this->shopReassignUserId
@@ -104,8 +104,8 @@ class ShopAccountService {
             $this->logger->error('Error deleting user at WP with ID ' . $userId);
             $this->logger->logException($e, ['app' => Application::APP_ID]);
         }
-        
-    } 
+
+    }
 
     public function updateUserEmail(int $userId, string $email) : void {
         $updateUrl = $this->shopUserUrl . '/' . strval($userId);
@@ -116,7 +116,7 @@ class ShopAccountService {
 
         try {
             $answer = $this->callShopAPI($updateUrl, 'POST', $params);
-                
+
             if($answer['email'] !== $email) {
                 throw new Exception('Unknown error while updating!');
             }
@@ -128,7 +128,7 @@ class ShopAccountService {
     }
 
     private function callShopAPI(string $url, string $method, array $data = []) {
-            
+
         $headers = [
             "cache-control: no-cache",
             "content-type: application/json",

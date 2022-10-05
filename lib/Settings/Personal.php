@@ -68,7 +68,7 @@ class Personal implements ISettings {
 	 * @since 9.1
 	 */
 	public function getForm(): TemplateResponse {
-		
+
 		$user = $this->userSession->getUser();
 		if ($user) {
 			$onlyUser = $this->userManager->countUsers() < 2;
@@ -85,7 +85,7 @@ class Personal implements ISettings {
 			$this->initialState->provideInitialState('only_user', $onlyUser);
 			$this->initialState->provideInitialState('only_admin', $onlyAdmin);
 		}
-		
+
 		return new TemplateResponse($this->appName, 'personal');
 	}
 
@@ -96,10 +96,8 @@ class Personal implements ISettings {
 	 */
 	public function getSection(): ?string {
 		$user = $this->userSession->getUser();
-		$shopUser = $this->shopAccountService->getUser($user->getEMailAddress());
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
-
-		if($dropAccountEnabled && $shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
+		if($dropAccountEnabled) {
 			return self::DROP_ACCOUNT_APP_ID;
 		}
 		return null;

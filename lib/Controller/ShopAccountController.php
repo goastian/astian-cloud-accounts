@@ -62,7 +62,7 @@ class ShopAccountController extends Controller {
         $this->shopAccountService->setShopEmailPostDeletePreference($userId, $shopEmailPostDelete);
 
     }
-    
+
     /**
      * @NoAdminRequired
      */
@@ -96,6 +96,29 @@ class ShopAccountController extends Controller {
         }
 
         $data['count'] = count($orders);
+        $response->setData($data);
+        return $response;
+    }
+
+    /**
+     * @NoAdminRequired
+     */
+    public function getShopUser() {
+        $response = new DataResponse();
+        $user = $this->userSession->getUser();
+        $email = $user->getEMailAddress();
+
+        $shopUser = $this->shopAccountService->getUser($email);
+
+        $data = ['count' => 0];
+        $data = ['isuseroidc' => false];
+        if(!$shopUser) {
+            $response->setData($data);
+            return $response;
+        }
+        $isUserOIDC=$this->shopAccountService->isUserOIDC($shopUser);
+        $data['count'] = count($shopUser);
+        $data['isuseroidc'] = $isUserOIDC;
         $response->setData($data);
         return $response;
     }
