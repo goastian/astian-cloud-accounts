@@ -131,12 +131,8 @@ class UserService
                 'uid' => $userID,
                 'email' => $email
             ];
-            
-            $headers = array(
-                'Content-Type: application/json'
-            );
 
-            $answer = $this->curl->post($postDeleteUrl, $params, $headers);
+            $answer = $this->curl->post($postDeleteUrl, $params);
 
             return json_decode($answer, true);
         } catch (\Exception $e) {
