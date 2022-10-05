@@ -122,7 +122,7 @@ export default {
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					this.isUseroidc =data.isuseroidc
+					this.isUseroidc = data.isuseroidc
 					if (data.count > 0) {
 						this.shopUser = true
 					}
