@@ -7,7 +7,7 @@
 			<span v-if="orderCount" v-html="ordersDescription" />
 		</p>
 		<form @submit.prevent>
-			<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+			<div v-if="!onlyUser && !onlyAdmin && shopUser && isUseroidc" id="delete-shop-account-settings">
 				<div class="delete-shop-input">
 					<input id="shop-accounts_confirm"
 						v-model="deleteShopAccount"
@@ -74,6 +74,8 @@ export default {
 	},
 	data() {
 		return {
+			shopUser: false,
+			isUseroidc: false,
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
 			shopEmailDefault: '',
@@ -95,7 +97,7 @@ export default {
 			this.userEmail = loadState(this.appName, 'email')
 			this.disableOrEnableDeleteAccount()
 			this.getOrdersInfo()
-
+			this.disableOrEnableShopDeleteAccount()
 		} catch (e) {
 			console.error('Error fetching initial state', e)
 		}
@@ -111,6 +113,23 @@ export default {
 			} else {
 				this.enableDeleteAccountEvent()
 			}
+		},
+		async disableOrEnableShopDeleteAccount() {
+
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/get_shop_user`
+				)
+				const { status, data } = await Axios.get(url)
+				if (status === 200) {
+					this.isUseroidc =data.isuseroidc
+					if (data.count > 0) {
+						this.shopUser = true
+					}
+				}
+			} catch (e) {
+			}
+
 		},
 		enableDeleteAccountEvent() {
 			const elem = document.getElementById('body-settings')
