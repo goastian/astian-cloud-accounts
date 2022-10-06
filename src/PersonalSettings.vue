@@ -118,7 +118,12 @@ export default {
 		async checkShopEmailPostDelete() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/check_shop_email_post_delete?shopEmailPostDelete=${this.shopEmailPostDelete}`
+					`/apps/${this.appName}/shop-accounts/check_shop_email_post_delete`,
+					{
+						params: {
+							shopEmailPostDelete: this.shopEmailPostDelete
+						}
+					}
 				)
 				const { status } = await Axios.get(url)
 				return status
