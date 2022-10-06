@@ -119,13 +119,16 @@ export default {
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/check_shop_email_post_delete`,
+					
+				)
+				const { status } = await Axios.get(
+					url, 
 					{
 						params: {
 							shopEmailPostDelete: this.shopEmailPostDelete
 						}
 					}
 				)
-				const { status } = await Axios.get(url)
 				return status
 			} catch (err) {
 				return err.response.status
