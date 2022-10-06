@@ -95,9 +95,9 @@ export default {
 			this.shopEmailPostDelete = loadState(this.appName, 'shop_email_post_delete')
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
-			this.disableOrEnableDeleteAccount()
 			this.getShopUser().then(() => {
 				this.getOrdersInfo()
+				this.disableOrEnableDeleteAccount()
 			})
 		} catch (e) {
 			console.error('Error fetching initial state', e)
