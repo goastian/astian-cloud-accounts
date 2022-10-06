@@ -80,19 +80,10 @@ class ShopAccountController extends Controller {
     /**
      * @NoAdminRequired
      */
-    public function getOrderInfo() {
+    public function getOrderInfo(int $id) {
         $response = new DataResponse();
-        $user = $this->userSession->getUser();
-        $email = $user->getEMailAddress();
-
-        $data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl()];
-        $shopUser = $this->shopAccountService->getUser($email);
-        if(!$shopUser) {
-            $response->setData($data);
-            return $response;
-        }
-
-        $orders = $this->shopAccountService->getOrders($shopUser['id']);
+        $data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
+        $orders = $this->shopAccountService->getOrders($id);
 
         if(!$orders) {
             $response->setData($data);

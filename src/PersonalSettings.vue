@@ -75,6 +75,7 @@ export default {
 	data() {
 		return {
 			shopUserExists: false,
+			shopUser: {},
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
 			shopEmailDefault: '',
@@ -95,8 +96,9 @@ export default {
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
 			this.disableOrEnableDeleteAccount()
-			this.getOrdersInfo()
-			this.getShopUser()
+			this.getShopUser().then(() => {
+				this.getOrdersInfo()
+			})
 		} catch (e) {
 			console.error('Error fetching initial state', e)
 		}
@@ -129,28 +131,18 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/user`
 				)
-				const { status } = await Axios.get(url)
+				const { status, data } = await Axios.get(url)
 				if (status === 200) {
 					this.shopUserExists = true
+					this.shopUser = data
 				}
 			} catch (e) {
 			}
-
-		},
-		enableDeleteAccountEvent() {
-			const elem = document.getElementById('body-settings')
-			const event = new Event('enable-delete-account')
-			elem.dispatchEvent(event)
-		},
-		disableDeleteAccountEvent() {
-			const elem = document.getElementById('body-settings')
-			const event = new Event('disable-delete-account')
-			elem.dispatchEvent(event)
 		},
 		async getOrdersInfo() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info`
+					`/apps/${this.appName}/shop-accounts/order_info?id=${this.shopUser.id}`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
@@ -220,6 +212,16 @@ export default {
 					this.enableDeleteAccountEvent()
 				}
 			}
+		},
+		enableDeleteAccountEvent() {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('enable-delete-account')
+			elem.dispatchEvent(event)
+		},
+		disableDeleteAccountEvent() {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('disable-delete-account')
+			elem.dispatchEvent(event)
 		},
 	},
 }
