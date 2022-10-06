@@ -136,6 +136,9 @@ export default {
 					this.shopUserExists = true
 					this.shopUser = data
 				}
+				if(status === 400) {
+					this.enableDeleteAccountEvent()
+				}
 			} catch (e) {
 			}
 		},
