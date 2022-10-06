@@ -10,6 +10,7 @@
 declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
+use Exception;
 
 class CurlService
 {

@@ -19,6 +19,7 @@ class ShopAccountService {
     public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger)
     {
 
+        $this->config = $config;
         $shopUsername = $this->config->getSystemValue('murena_shop_username');
         $shopPassword = $this->config->getSystemValue('murena_shop_password');
         
@@ -29,7 +30,6 @@ class ShopAccountService {
         $this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
         $this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
         $this->shopReassignUserId = getenv('WP_REASSIGN_USER_ID');
-        $this->config = $config;
         $this->curl = $curlService;
         $this->logger = $logger;
     }

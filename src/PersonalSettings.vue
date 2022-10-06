@@ -127,7 +127,7 @@ export default {
 		async getShopUser() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/get_shop_user`
+					`/apps/${this.appName}/shop-accounts/user`
 				)
 				const { status } = await Axios.get(url)
 				if (status === 200) {
