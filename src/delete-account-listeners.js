@@ -1,9 +1,6 @@
 /* global $ */
 $(document).ready(function() {
 	// Disable initially
-	$('#drop_account_confirm').prop('disabled', true)
-	$('#deleteaccount').prop('disabled', true)
-
 	const elem = document.getElementById('body-settings')
 	elem.addEventListener('disable-delete-account', function() {
 		$('#deleteaccount').prop('disabled', true)
