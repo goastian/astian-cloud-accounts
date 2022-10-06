@@ -46,6 +46,18 @@ class ShopAccountService {
         return !empty($this->getUser($shopEmail));
     }
 
+    public function validateShopEmailPostDelete(string $shopEmailPostDelete, string $cloudEmail) : void {
+        if(!filter_var($shopEmailPostDelete, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Invalid Email Format.');
+        }
+        if($shopEmailPostDelete === $cloudEmail) {
+            throw new Exception('Murena.com email cannot be same as this account\'s email.');
+        }
+        if($this->shopEmailExists($shopEmailPostDelete)) {
+            throw new Exception('A Murena.com account already uses this e-mail address.');
+        }
+    }
+
     public function setShopEmailPostDeletePreference($userId, string $shopEmailPostDelete) {
         $this->config->setUserValue($userId, $this->appName, 'shop_email_post_delete', $shopEmailPostDelete);
     }

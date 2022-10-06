@@ -36,24 +36,12 @@ class ShopAccountController extends Controller {
         $response = new DataResponse();
 
         try {
-            $this->validateShopEmailPostDelete($shopEmailPostDelete, $email);
+            $this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
         }
         catch(Exception $e) {  
             $response->setStatus(400);
             $response->setData(['message' => $e->getMessage()]);
             return $response;
-        }
-    }
-
-    private function validateShopEmailPostDelete(string $shopEmailPostDelete, string $cloudEmail) : void {
-        if(!filter_var($shopEmailPostDelete, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Invalid Email Format.');
-        }
-        if($shopEmailPostDelete === $cloudEmail) {
-            throw new Exception('Murena.com email cannot be same as this account\'s email.');
-        }
-        if($this->shopAccountService->shopEmailExists($shopEmailPostDelete)) {
-            throw new Exception('A Murena.com account already uses this e-mail address.');
         }
     }
     /**
@@ -67,7 +55,7 @@ class ShopAccountController extends Controller {
         $response = new DataResponse();
 
         try {
-            $this->validateShopEmailPostDelete($shopEmailPostDelete, $email);
+            $this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
         }
         catch(Exception $e) {  
             $response->setStatus(400);
