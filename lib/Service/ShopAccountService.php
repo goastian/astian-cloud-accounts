@@ -19,13 +19,14 @@ class ShopAccountService {
     public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger)
     {
 
-        $shopUsername = getenv("WP_SHOP_USERNAME");
-        $shopPassword = getenv("WP_SHOP_PASS");
-        $shopUrl = getenv("WP_SHOP_URL");
-
+        $shopUsername = $this->config->getSystemValue('murena_shop_username');
+        $shopPassword = $this->config->getSystemValue('murena_shop_password');
+        
+        $this->shopUrl = $this->config->getSystemValue('murena_shop_url');
         $this->appName = $appName;
-        $this->shopUserUrl = $shopUrl . "/wp-json/wp/v2/users";
-        $this->shopOrdersUrl = $shopUrl . "/wp-json/wc/v3/orders";
+
+        $this->shopUserUrl = $this->shopUrl . "/wp-json/wp/v2/users";
+        $this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
         $this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
         $this->shopReassignUserId = getenv('WP_REASSIGN_USER_ID');
         $this->config = $config;
@@ -33,11 +34,15 @@ class ShopAccountService {
         $this->logger = $logger;
     }
 
+    public function getShopUrl() {
+        return $this->shopUrl;
+    }
+
     public function setShopDeletePreference($userId, bool $delete) {
         $this->config->setUserValue($userId, $this->appName, 'delete_shop_account', intval($delete));
     }
 
-    public function shopEmailExists(string $shopEmail, string $ncUserEmail) : bool {
+    public function shopEmailExists(string $shopEmail) : bool {
         return !empty($this->getUser($shopEmail));
     }
 

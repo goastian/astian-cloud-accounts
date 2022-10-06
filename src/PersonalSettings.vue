@@ -1,5 +1,5 @@
 <template>
-	<SettingsSection :title="t('ecloud-accounts', 'Options')">
+	<SettingsSection :title="t('ecloud-accounts', 'Options')" v-if="shopUserExists">
 		<p>
 			{{
 				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
@@ -7,7 +7,7 @@
 			<span v-if="orderCount" v-html="ordersDescription" />
 		</p>
 		<form @submit.prevent>
-			<div v-if="!onlyUser && !onlyAdmin && shopUser && isUseroidc" id="delete-shop-account-settings">
+			<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 				<div class="delete-shop-input">
 					<input id="shop-accounts_confirm"
 						v-model="deleteShopAccount"
@@ -74,8 +74,7 @@ export default {
 	},
 	data() {
 		return {
-			shopUser: false,
-			isUseroidc: false,
+			shopUserExists: false,
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
 			shopEmailDefault: '',
@@ -97,7 +96,7 @@ export default {
 			this.userEmail = loadState(this.appName, 'email')
 			this.disableOrEnableDeleteAccount()
 			this.getOrdersInfo()
-			this.disableOrEnableShopDeleteAccount()
+			this.getShopUser()
 		} catch (e) {
 			console.error('Error fetching initial state', e)
 		}
@@ -106,7 +105,7 @@ export default {
 		async disableOrEnableDeleteAccount() {
 			if (!this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
-				const { status } = await this.callAPIToUpdateEmail()
+				const status  = await this.checkShopEmailPostDelete()
 				if (status === 200) {
 					this.enableDeleteAccountEvent()
 				}
@@ -114,18 +113,25 @@ export default {
 				this.enableDeleteAccountEvent()
 			}
 		},
-		async disableOrEnableShopDeleteAccount() {
-
+		async checkShopEmailPostDelete() {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/check_shop_email_post_delete?shopEmailPostDelete=${this.shopEmailPostDelete}`
+				)
+				const { status } = await Axios.get(url)
+				return status
+			} catch (err) {
+				return err.response.status
+			}
+		},
+		async getShopUser() {
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/get_shop_user`
 				)
-				const { status, data } = await Axios.get(url)
+				const { status } = await Axios.get(url)
 				if (status === 200) {
-					this.isUseroidc = data.isuseroidc
-					if (data.count > 0) {
-						this.shopUser = true
-					}
+					this.shopUserExists = true
 				}
 			} catch (e) {
 			}
