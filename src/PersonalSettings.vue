@@ -96,10 +96,8 @@ export default {
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
 			this.getShopUser().then(() => {
-				if(this.shopUserExists) {
-					this.getOrdersInfo()
-					this.disableOrEnableDeleteAccount()
-				}
+				this.getOrdersInfo()
+				this.disableOrEnableDeleteAccount()
 			})
 		} catch (e) {
 			console.error('Error fetching initial state', e)
@@ -107,7 +105,7 @@ export default {
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
-			if (!this.deleteShopAccount) {
+			if (this.shopUserExists && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
 				const status  = await this.checkShopEmailPostDelete()
 				if (status === 200) {
