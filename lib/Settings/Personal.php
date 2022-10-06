@@ -95,7 +95,6 @@ class Personal implements ISettings {
 	 * @psalm-return 'drop_account'
 	 */
 	public function getSection(): ?string {
-		$user = $this->userSession->getUser();
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
 		if($dropAccountEnabled) {
 			return self::DROP_ACCOUNT_APP_ID;
