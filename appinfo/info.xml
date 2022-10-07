@@ -22,7 +22,7 @@
 	<settings>
 		<personal>OCA\EcloudAccounts\Settings\Personal</personal>
 		<!-- <personal>OCA\EcloudAccounts\Settings\BecomeBetaSetting</personal>  -->
-		<personal-section>OCA\EcloudAccounts\Settings\BetaSection</personal-section>
+		<!-- <personal-section>OCA\EcloudAccounts\Settings\BetaSection</personal-section> -->
 	</settings>     
         <!-- -->
 	
