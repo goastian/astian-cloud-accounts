@@ -19,26 +19,43 @@ class ShopAccountService {
     public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger)
     {
 
-        $shopUsername = getenv("WP_SHOP_USERNAME");
-        $shopPassword = getenv("WP_SHOP_PASS");
-        $shopUrl = getenv("WP_SHOP_URL");
-
+        $this->config = $config;
+        $shopUsername = $this->config->getSystemValue('murena_shop_username');
+        $shopPassword = $this->config->getSystemValue('murena_shop_password');
+        
+        $this->shopUrl = $this->config->getSystemValue('murena_shop_url');
         $this->appName = $appName;
-        $this->shopUserUrl = $shopUrl . "/wp-json/wp/v2/users";
-        $this->shopOrdersUrl = $shopUrl . "/wp-json/wc/v3/orders";
+
+        $this->shopUserUrl = $this->shopUrl . "/wp-json/wp/v2/users";
+        $this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
         $this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
         $this->shopReassignUserId = getenv('WP_REASSIGN_USER_ID');
-        $this->config = $config;
         $this->curl = $curlService;
         $this->logger = $logger;
+    }
+
+    public function getShopUrl() {
+        return $this->shopUrl;
     }
 
     public function setShopDeletePreference($userId, bool $delete) {
         $this->config->setUserValue($userId, $this->appName, 'delete_shop_account', intval($delete));
     }
 
-    public function shopEmailExists(string $shopEmail, string $ncUserEmail) : bool {
+    public function shopEmailExists(string $shopEmail) : bool {
         return !empty($this->getUser($shopEmail));
+    }
+
+    public function validateShopEmailPostDelete(string $shopEmailPostDelete, string $cloudEmail) : void {
+        if(!filter_var($shopEmailPostDelete, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Invalid Email Format.');
+        }
+        if($shopEmailPostDelete === $cloudEmail) {
+            throw new Exception('Murena.com email cannot be same as this account\'s email.');
+        }
+        if($this->shopEmailExists($shopEmailPostDelete)) {
+            throw new Exception('A Murena.com account already uses this e-mail address.');
+        }
     }
 
     public function setShopEmailPostDeletePreference($userId, string $shopEmailPostDelete) {
@@ -52,7 +69,7 @@ class ShopAccountService {
     public function getShopEmailPostDeletePreference($userId) {
         $recoveryEmail = $this->config->getUserValue($userId, 'email-recovery', 'recovery-email');
 
-        return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);  
+        return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);
     }
 
     public function getOrders(int $userId): ?array {
@@ -86,7 +103,7 @@ class ShopAccountService {
         return $users[0];
     }
 
-    public function deleteUser(int $userId) : void {    
+    public function deleteUser(int $userId) : void {
         $params = [
             'force' => true,
             'reassign' => $this->shopReassignUserId
@@ -104,8 +121,8 @@ class ShopAccountService {
             $this->logger->error('Error deleting user at WP with ID ' . $userId);
             $this->logger->logException($e, ['app' => Application::APP_ID]);
         }
-        
-    } 
+
+    }
 
     public function updateUserEmail(int $userId, string $email) : void {
         $updateUrl = $this->shopUserUrl . '/' . strval($userId);
@@ -116,7 +133,7 @@ class ShopAccountService {
 
         try {
             $answer = $this->callShopAPI($updateUrl, 'POST', $params);
-                
+
             if($answer['email'] !== $email) {
                 throw new Exception('Unknown error while updating!');
             }
@@ -128,7 +145,7 @@ class ShopAccountService {
     }
 
     private function callShopAPI(string $url, string $method, array $data = []) {
-            
+
         $headers = [
             "cache-control: no-cache",
             "content-type: application/json",
