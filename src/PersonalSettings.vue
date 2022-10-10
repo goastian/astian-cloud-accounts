@@ -1,5 +1,5 @@
 <template>
-	<SettingsSection :title="t('ecloud-accounts', 'Options')" v-if="shopUserExists">
+	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
 		<p>
 			{{
 				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
@@ -107,7 +107,7 @@ export default {
 		async disableOrEnableDeleteAccount() {
 			if (this.shopUserExists && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
-				const status  = await this.checkShopEmailPostDelete()
+				const status = await this.checkShopEmailPostDelete()
 				if (status === 200) {
 					this.enableDeleteAccountEvent()
 				}
@@ -119,14 +119,14 @@ export default {
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/check_shop_email_post_delete`,
-					
+
 				)
 				const { status } = await Axios.get(
-					url, 
+					url,
 					{
 						params: {
-							shopEmailPostDelete: this.shopEmailPostDelete
-						}
+							shopEmailPostDelete: this.shopEmailPostDelete,
+						},
 					}
 				)
 				return status
@@ -144,7 +144,7 @@ export default {
 					this.shopUserExists = true
 					this.shopUser = data
 				}
-				if(status === 400) {
+				if (status === 400) {
 					this.enableDeleteAccountEvent()
 				}
 			} catch (e) {
