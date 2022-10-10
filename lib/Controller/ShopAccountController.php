@@ -9,22 +9,18 @@ use OCP\IUserSession;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IL10N;
 
 
 class ShopAccountController extends Controller {
 
     private $shopAccountService;
     private $userSession;
-    private $l10n;
-    private $shopOrdersUrl;
 
-    public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService, IL10N $l10n)
+    public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService)
     {
         parent::__construct($appName, $request);
         $this->shopAccountService = $shopAccountService;
         $this->userSession = $userSession;
-        $this->l10n = $l10n;
     }
 
     /**
@@ -80,10 +76,10 @@ class ShopAccountController extends Controller {
     /**
      * @NoAdminRequired
      */
-    public function getOrderInfo(int $id) {
+    public function getOrderInfo(int $userId) {
         $response = new DataResponse();
         $data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
-        $orders = $this->shopAccountService->getOrders($id);
+        $orders = $this->shopAccountService->getOrders($userId);
 
         if(!$orders) {
             $response->setData($data);

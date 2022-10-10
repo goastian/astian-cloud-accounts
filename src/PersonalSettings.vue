@@ -153,7 +153,7 @@ export default {
 		async getOrdersInfo() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info?id=${this.shopUser.id}`
+					`/apps/${this.appName}/shop-accounts/order_info?userId=${this.shopUser.id}`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
