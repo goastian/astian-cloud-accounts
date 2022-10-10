@@ -1,25 +1,4 @@
 <?php
-/**
- * @copyright Copyright (c) 2017 Thomas Citharel <nextcloud@tcit.fr>
- *
- * @author Thomas Citharel <nextcloud@tcit.fr>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
 
 namespace OCA\EcloudAccounts\Settings;
 
@@ -68,7 +47,7 @@ class Personal implements ISettings {
 	 * @since 9.1
 	 */
 	public function getForm(): TemplateResponse {
-		
+
 		$user = $this->userSession->getUser();
 		if ($user) {
 			$onlyUser = $this->userManager->countUsers() < 2;
@@ -85,7 +64,7 @@ class Personal implements ISettings {
 			$this->initialState->provideInitialState('only_user', $onlyUser);
 			$this->initialState->provideInitialState('only_admin', $onlyAdmin);
 		}
-		
+
 		return new TemplateResponse($this->appName, 'personal');
 	}
 
@@ -95,11 +74,8 @@ class Personal implements ISettings {
 	 * @psalm-return 'drop_account'
 	 */
 	public function getSection(): ?string {
-		$user = $this->userSession->getUser();
-		$shopUser = $this->shopAccountService->getUser($user->getEMailAddress());
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
-
-		if($dropAccountEnabled && $shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
+		if($dropAccountEnabled) {
 			return self::DROP_ACCOUNT_APP_ID;
 		}
 		return null;

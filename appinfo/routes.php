@@ -7,6 +7,8 @@ return ['routes' => [
     ['name' => 'shop_account#set_shop_email_post_delete', 'url' => '/shop-accounts/set_shop_email_post_delete', 'verb' => 'POST' ],
     ['name' => 'shop_account#set_shop_delete_preference', 'url' => '/shop-accounts/set_shop_delete_preference', 'verb' => 'POST' ],
     ['name' => 'shop_account#get_order_info', 'url' => '/shop-accounts/order_info', 'verb' => 'GET'],
+    ['name' => 'shop_account#get_shop_user', 'url' => '/shop-accounts/user', 'verb' => 'GET'],
+    ['name' => 'shop_account#check_shop_email_post_delete', 'url' => '/shop-accounts/check_shop_email_post_delete', 'verb' => 'GET'],
     [
         'name' => 'user#preflighted_cors', 'url' => '/api/{path}',
         'verb' => 'OPTIONS', 'requirements' => array('path' => '.+')
