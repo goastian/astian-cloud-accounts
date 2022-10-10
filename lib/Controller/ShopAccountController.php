@@ -81,12 +81,10 @@ class ShopAccountController extends Controller {
         $data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
         $orders = $this->shopAccountService->getOrders($userId);
 
-        if(!$orders) {
-            $response->setData($data);
-            return $response;
+        if($orders) {
+            $data['count'] = count($orders);
         }
 
-        $data['count'] = count($orders);
         $response->setData($data);
         return $response;
     }
