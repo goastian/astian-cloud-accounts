@@ -96,7 +96,9 @@ export default {
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
 			this.getShopUser().then(() => {
-				this.getOrdersInfo()
+				if (this.shopUserExists) {
+					this.getOrdersInfo()
+				}
 				this.disableOrEnableDeleteAccount()
 			})
 		} catch (e) {
