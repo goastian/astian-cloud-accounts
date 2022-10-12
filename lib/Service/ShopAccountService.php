@@ -20,16 +20,17 @@ class ShopAccountService {
     {
 
         $this->config = $config;
+        $this->appName = $appName;
+
         $shopUsername = $this->config->getSystemValue('murena_shop_username');
         $shopPassword = $this->config->getSystemValue('murena_shop_password');
-        
         $this->shopUrl = $this->config->getSystemValue('murena_shop_url');
-        $this->appName = $appName;
+        $this->shopReassignUserId = $this->config->getSystemValue('murena_shop_reassign_user_id');
+
 
         $this->shopUserUrl = $this->shopUrl . "/wp-json/wp/v2/users";
         $this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
         $this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
-        $this->shopReassignUserId = getenv('WP_REASSIGN_USER_ID');
         $this->curl = $curlService;
         $this->logger = $logger;
     }
