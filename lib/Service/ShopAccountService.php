@@ -125,11 +125,12 @@ class ShopAccountService {
 
     }
 
-    public function updateUserEmail(int $userId, string $email) : void {
+    public function updateUserEmailAndEmptyOIDC(int $userId, string $email) : void {
         $updateUrl = $this->shopUserUrl . '/' . strval($userId);
 
         $params = [
-            'email' => $email
+            'email' => $email,
+            'openid-connect-generic-last-user-claim' => []
         ];
 
         try {
