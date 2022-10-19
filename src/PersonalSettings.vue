@@ -1,5 +1,5 @@
 <template>
-	<SettingsSection :title="t('ecloud-accounts', 'Options')">
+	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
 		<p>
 			{{
 				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
@@ -74,6 +74,8 @@ export default {
 	},
 	data() {
 		return {
+			shopUserExists: false,
+			shopUser: {},
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
 			shopEmailDefault: '',
@@ -93,18 +95,19 @@ export default {
 			this.shopEmailPostDelete = loadState(this.appName, 'shop_email_post_delete')
 			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
 			this.userEmail = loadState(this.appName, 'email')
-			this.disableOrEnableDeleteAccount()
-			this.getOrdersInfo()
-
+			this.getShopUser().then(() => {
+				this.getOrdersInfo()
+				this.disableOrEnableDeleteAccount()
+			})
 		} catch (e) {
 			console.error('Error fetching initial state', e)
 		}
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
-			if (!this.deleteShopAccount) {
+			if (this.shopUserExists && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
-				const { status } = await this.callAPIToUpdateEmail()
+				const status = await this.checkShopEmailPostDelete()
 				if (status === 200) {
 					this.enableDeleteAccountEvent()
 				}
@@ -112,20 +115,45 @@ export default {
 				this.enableDeleteAccountEvent()
 			}
 		},
-		enableDeleteAccountEvent() {
-			const elem = document.getElementById('body-settings')
-			const event = new Event('enable-delete-account')
-			elem.dispatchEvent(event)
+		async checkShopEmailPostDelete() {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/check_shop_email_post_delete`,
+
+				)
+				const { status } = await Axios.get(
+					url,
+					{
+						params: {
+							shopEmailPostDelete: this.shopEmailPostDelete,
+						},
+					}
+				)
+				return status
+			} catch (err) {
+				return err.response.status
+			}
 		},
-		disableDeleteAccountEvent() {
-			const elem = document.getElementById('body-settings')
-			const event = new Event('disable-delete-account')
-			elem.dispatchEvent(event)
+		async getShopUser() {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/user`
+				)
+				const { status, data } = await Axios.get(url)
+				if (status === 200) {
+					this.shopUserExists = true
+					this.shopUser = data
+				}
+				if (status === 400) {
+					this.enableDeleteAccountEvent()
+				}
+			} catch (e) {
+			}
 		},
 		async getOrdersInfo() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info`
+					`/apps/${this.appName}/shop-accounts/order_info?userId=${this.shopUser.id}`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
@@ -195,6 +223,16 @@ export default {
 					this.enableDeleteAccountEvent()
 				}
 			}
+		},
+		enableDeleteAccountEvent() {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('enable-delete-account')
+			elem.dispatchEvent(event)
+		},
+		disableDeleteAccountEvent() {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('disable-delete-account')
+			elem.dispatchEvent(event)
 		},
 	},
 }
