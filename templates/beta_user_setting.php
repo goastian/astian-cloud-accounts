@@ -3,7 +3,6 @@ script('beta-user', 'script');
 ?>
 
 <div id="email-main">
-	
 	<div id="email-content">
         <div class="section">
 			<?php if($isBeta){ ?>

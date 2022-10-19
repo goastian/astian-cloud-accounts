@@ -20,5 +20,5 @@ return ['routes' => [
 	[
 		'name' => 'update_beta_user#remove_user_from_group',
 		'url' => '/api/groups/remove', 'verb' => 'POST'
-	]
+	],
 ]];

@@ -81,7 +81,7 @@ class BecomeBetaSetting implements ISettings
 		}
 		
 		$parameters = ['isBeta' => $isBeta];
-		return new TemplateResponse('beta-user', 'beta_user_setting', $parameters, '');
+		return new TemplateResponse('ecloud-accounts', 'beta_user_setting', $parameters, '');
 	}
 
 	public function getSection(): ?string
