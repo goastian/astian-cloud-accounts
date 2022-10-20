@@ -73,6 +73,6 @@ class BetaSection implements IIconSection
 	 */
 	public function getIcon()
 	{
-		return $this->url->imagePath('beta-user', 'alias.svg');
+		return $this->url->getAbsoluteURL($this->url->imagePath('core', 'actions/checkmark.svg'));
 	}
 }
