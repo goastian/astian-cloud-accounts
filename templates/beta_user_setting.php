@@ -15,7 +15,7 @@ script('ecloud-accounts', 'script');
             <div id="groups" class="aliases-info">
 				<form id="isbForm">
 					<div>
-						<span><input type="checkbox" id="agree" /> <label for="agree">Please agree with terms & Conditions to become beta user?</label></span>
+						<span><input type="checkbox" id="agree" /> <label for="agree">Please agree with terms & conditions?</label></span>
 					</div>
 					<input name="beta" id="beta" type="hidden" value="<?= ($isBeta) ? 'deregister':'register' ?>" >
 					<input type="submit" value="<?= ($isBeta) ? 'Deregister':'Become beta user' ?>"/>
