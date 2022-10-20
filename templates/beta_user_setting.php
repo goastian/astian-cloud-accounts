@@ -11,7 +11,9 @@ script('ecloud-accounts', 'script');
 			<?php }else{ ?>
 				<h3><strong><?php p($l->t('Do you want to become the beta user?'));?></strong></h3>
 				<p><?php p($l->t('Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!')) ?></p>
+				<p><?php p($l->t('To get a preview showing of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features anytime.')) ?></p>
 			<?php } ?>
+			<p><?php p($l->t('Note: as the features are not released yet, you may encounter some bugs.')) ?></p>			
             <div id="groups" class="aliases-info">
 				<form id="isbForm">
 					<div>
