@@ -14,8 +14,6 @@
   use OCP\IUserSession;
   use OCP\AppFramework\Http\Response;
   use OCP\ILogger;
-  use OCA\EcloudAccounts\Service\StorageService;
-  use OCA\EcloudAccounts\Exception\UserNotFoundException;
 
   class UpdateBetaUserController extends ApiController
   {
@@ -24,8 +22,6 @@
       protected $config;
       protected $userManager;
       protected $groupManager;
-      private $logger;
-      private $storageService;
 	 private $userSession;
 
       public function __construct(
@@ -35,8 +31,7 @@
           ILogger $logger,
           IUserManager $userManager,
           IGroupManager $groupManager,
-		  IUserSession $userSession,
-          StorageService $storageService
+		  IUserSession $userSession
       ) {
           parent::__construct($AppName, $request);
           $this->appName = $AppName;
@@ -46,7 +41,6 @@
           $this->userManager = $userManager;
 		  $this->userSession = $userSession;
           $this->groupManager = $groupManager;
-          $this->storageService = $storageService;
       }
 
       /**
@@ -58,7 +52,7 @@
       public function addUserToGroup()
       {
 		$response = new Response();
-		$gid = 'beta'
+		$gid = 'beta';
 		$uid =  $this->userSession->getUser()->getUID();
 		$user = $this->userManager->get($uid);
 		
@@ -83,10 +77,10 @@
         * @NoCSRFRequired
         */
 
-      public function removeUserFromGroup(string $username, string $gid, string $token)
+      public function removeUserFromGroup()
       {
 		$response = new Response();
-		$gid = 'beta'
+		$gid = 'beta';
 		$uid =  $this->userSession->getUser()->getUID();
 		$user = $this->userManager->get($uid);
 		

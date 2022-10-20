@@ -1,5 +1,5 @@
 <?php
-script('beta-user', 'script');
+script('ecloud-accounts', 'script');
 ?>
 
 <div id="email-main">
