@@ -7,7 +7,7 @@ script('ecloud-accounts', 'script');
 		<div class="section">
 			<?php if ($isBeta) { ?>
 				<h3><strong><?php p($l->t('You are part of the beta users.')); ?></strong></h3>
-				<p><?php p($l->t('Note: as the features are not released yet, you may encounter some bugs. Please report them in GitLab if they\'ve not already been filed. You can also provide some feedback using the form further down.')) ?></p>
+				<p><?php p($l->t('Note : As the features are not released yet, you may encounter some bugs. Please report them in GitLab if they\'ve not already been filed. You can also provide some feedback using the form further down.')) ?></p>
 			<?php } else { ?>
 				<h3><strong><?php p($l->t('Do you want to become the beta user?')); ?></strong></h3>
 				<p><?php p($l->t('You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')) ?></p>
