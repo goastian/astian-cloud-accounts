@@ -21,9 +21,9 @@ $(function() {
 			},
 			function() {
 				if(register_type == 'deregister'){
-					alert('You are not beta user now.');
+					alert('You\'ve successfully opt out from the beta users.');
 				}else{
-					alert('Congratulation! You are now beta user.');
+					alert('Congratulations! You\'ve successfully been added to the beta users.');
 				}
 				window.location.reload();
 	  		});
