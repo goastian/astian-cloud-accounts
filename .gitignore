@@ -17,7 +17,6 @@ yarn-error.log*
 build/
 coverage/
 vendor/
-js/
 
 translationtool.phar
 .php-cs-fixer.cache
