@@ -53,7 +53,7 @@ class BetaSection implements IIconSection
 	 */
 	public function getName()
 	{
-		return $this->l->t('Beta User');
+		return $this->l->t('Experimental');
 	}
 
 	/**

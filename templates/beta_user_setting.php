@@ -6,20 +6,24 @@ script('ecloud-accounts', 'script');
 	<div id="email-content">
 		<div class="section">
 			<?php if ($isBeta) { ?>
-				<h3><strong><?php p($l->t('You are part of the beta users.')); ?></strong></h3>
-				<p><?php p($l->t('Note : As the features are not released yet, you may encounter some bugs. Please report them in GitLab if they\'ve not already been filed. You can also provide some feedback using the form further down.')) ?></p>
+				<h2><?php p($l->t('You are part of the beta users.')); ?></h2>
+				<p class="settings-hint"><?php p($l->t('Note : As the features are not released yet, you may encounter some bugs. Please report them in GitLab if they\'ve not already been filed. You can also provide some feedback using the form further down.')) ?></p>
+				<p class="settings-hint"><?php p($l->t('Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!')) ?></p>
 			<?php } else { ?>
-				<h3><strong><?php p($l->t('Do you want to become the beta user?')); ?></strong></h3>
-				<p><?php p($l->t('You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')) ?></p>
-				<p><?php p($l->t('To get a preview showing of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features anytime.')) ?></p>
+				<h2><?php p($l->t('Do you want to become the beta user?')); ?></h2>
+				<p class="settings-hint"><?php p($l->t('You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')) ?></p>
+				<p class="settings-hint"><?php p($l->t('To get a preview showing of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features anytime.')) ?></p>
 			<?php } ?>
 			<div id="groups" class="aliases-info">
 				<form id="isbForm">
-					<div>
-						<span><input type="checkbox" id="agree" /> <label for="agree">Please agree with terms & conditions?</label></span>
-					</div>
+					<?php if (!$isBeta) { ?>
+						<div>
+							<input id="agree" type="checkbox" class="checkbox">
+							<label for="agree"><?php p($l->t('I agree with terms & conditions')) ?></label>
+						</div>
+					<?php } ?>
 					<input name="beta" id="beta" type="hidden" value="<?= ($isBeta) ? 'deregister' : 'register' ?>">
-					<input type="submit" value="<?= ($isBeta) ? 'Opt out of beta features' : 'Become beta user' ?>" />
+					<input type="submit" value="<?= ($isBeta) ? p($l->t('Opt out of beta features')) : p($l->t('Become beta user')) ?>" />
 				</form>
 			</div>
 		</div>
