@@ -11,7 +11,7 @@
 		"Invalid Email Format.": "Formato de correo electrónico no válido.",
 		"A Murena.com account already uses this e-mail address.": "Una cuenta de Murena.com ya utiliza esta dirección de correo electrónico.",
 		"You are part of the beta users.": "Usted forma parte de los usuarios beta.",
-		"Note : As the features are not released yet, you may encounter some bugs. Please report them in GitLab if they've not already been filed. You can also provide some feedback using the form further down.": "Nota : Como las características no están liberadas todavía, puede encontrar algunos errores. Por favor, informa de ellos en GitLab si no han sido ya archivados. También puede proporcionar algunos comentarios utilizando el formulario más abajo.",
+		"Note : As the features are not released yet, you may encounter some bugs. Please report them in {linkopen}GitLab ↗{linkclose} if they have not already been filed. You can also provide some feedback using the form further down.": "Nota : Como las características no están liberadas todavía, puede encontrar algunos errores. Por favor, informa de ellos en {linkopen}GitLab ↗{linkclose} si no han sido ya archivados. También puede proporcionar algunos comentarios utilizando el formulario más abajo.",
 		"Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!": "Quiere descansar de las novedades? Sólo tienes que hacer clic en el botón de abajo. ¡Puedes volver a ser un usuario beta en cualquier momento!",
 		"Do you want to become the beta user?": "Desea convertirse en usuario beta?",
 		"You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!": "Quieres experimentar las nuevas funciones antes que los demás y dar tu opinión sobre ellas antes y si se publican? Esta sección está hecha para ti.",
@@ -22,7 +22,9 @@
 		"Are you sure you want to opt out of beta features?": "Estás seguro de que quieres excluir las funciones beta?", 
 		"Please agree terms & conditions.": "Acepte los términos y condiciones.",
 		"You've successfully opt out from the beta users.": "Has conseguido excluir a los usuarios de la beta.",
-		"Congratulations! You've successfully been added to the beta users.": "Enhorabuena! Has sido añadido con éxito a los usuarios beta."
+		"Congratulations! You've successfully been added to the beta users.": "Enhorabuena! Has sido añadido con éxito a los usuarios beta.",
+		"Beta Program is closed for now.": "El Programa Beta está cerrado por ahora.",
+		"Something went wrong.": "Algo salió mal."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

@@ -14,11 +14,7 @@ return ['routes' => [
         'verb' => 'OPTIONS', 'requirements' => array('path' => '.+')
     ],
 	[
-		'name' => 'update_beta_user#add_user_to_group',
-		'url' => '/api/groups/add', 'verb' => 'POST'
-	],
-	[
-		'name' => 'update_beta_user#remove_user_from_group',
-		'url' => '/api/groups/remove', 'verb' => 'POST'
-	],
+		'name' => 'beta_user#add_remove_user_in_group',
+		'url' => '/api/groups/user', 'verb' => 'POST'
+	]
 ]];

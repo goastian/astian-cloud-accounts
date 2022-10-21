@@ -11,7 +11,7 @@
 		"Invalid Email Format.": "Invalid Email Format.",
 		"A Murena.com account already uses this e-mail address.": "A Murena.com account already uses this e-mail address.",
 		"You are part of the beta users.": "You are part of the beta users.",
-		"Note : As the features are not released yet, you may encounter some bugs. Please report them in GitLab if they've not already been filed. You can also provide some feedback using the form further down.": "Note : As the features are not released yet, you may encounter some bugs. Please report them in GitLab if they've not already been filed. You can also provide some feedback using the form further down.",
+		"Note : As the features are not released yet, you may encounter some bugs. Please report them in {linkopen}GitLab ↗{linkclose} if they have not already been filed. You can also provide some feedback using the form further down.": "Note : As the features are not released yet, you may encounter some bugs. Please report them in {linkopen}GitLab ↗{linkclose} if they have not already been filed. You can also provide some feedback using the form further down.",
 		"Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!": "Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!",
 		"Do you want to become the beta user?": "Do you want to become the beta user?",
 		"You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!": "You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!",
@@ -22,7 +22,9 @@
 		"Are you sure you want to opt out of beta features?": "Are you sure you want to opt out of beta features?", 
 		"Please agree terms & conditions.": "Please agree terms & conditions.",
 		"You've successfully opt out from the beta users.": "You've successfully opt out from the beta users.",
-		"Congratulations! You've successfully been added to the beta users.": "Congratulations! You've successfully been added to the beta users."
+		"Congratulations! You've successfully been added to the beta users.": "Congratulations! You've successfully been added to the beta users.",
+		"Beta Program is closed for now.": "Beta Program is closed for now.",
+		"Something went wrong.": "Something went wrong."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }
