@@ -19,7 +19,7 @@ script('ecloud-accounts', 'script');
 					<?php if (!$isBeta) { ?>
 						<div>
 							<input id="agree" type="checkbox" class="checkbox">
-							<label for="agree"><?php p($l->t('I agree with terms & conditions')) ?></label>
+							<label for="agree"><?php p($l->t('I agree with terms & conditions.')) ?></label>
 						</div>
 					<?php } ?>
 					<input name="beta" id="beta" type="hidden" value="<?= ($isBeta) ? 'deregister' : 'register' ?>">
