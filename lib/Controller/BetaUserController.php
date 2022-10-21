@@ -23,8 +23,6 @@ class BetaUserController extends ApiController
 	protected $userManager;
 	protected $groupManager;
 	private $userSession;
-	protected $gid;
-
 
 	public function __construct(
 		$AppName,
@@ -43,7 +41,6 @@ class BetaUserController extends ApiController
 		$this->userManager = $userManager;
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
-		$this->gid = 'beta';
 	}
 
 	/**
@@ -53,13 +50,14 @@ class BetaUserController extends ApiController
 	 */
 	public function addRemoveUserInGroup()
 	{
+		$gid = 'beta';
 		$user =  $this->userSession->getUser();
 		$action = isset($_POST['beta']) ? $_POST['beta'] : '';
 
-		if (!$this->groupManager->groupExists($this->gid)) {
+		if (!$this->groupManager->groupExists($gid)) {
 			return false;
 		} else {
-			$group = $this->groupManager->get($this->gid);
+			$group = $this->groupManager->get($gid);
 			if ($action == 'register') {
 				$group->addUser($user);
 			} else if ($action == 'deregister') {
