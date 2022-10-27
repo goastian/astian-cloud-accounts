@@ -22,7 +22,7 @@ OC.L10N.register(
 		"Are you sure you want to opt out of beta features?": "Sind Sie sicher, dass Sie die Beta-Funktionen nicht nutzen möchten?", 
 		"You've successfully been removed from the beta users.": "Sie haben sich erfolgreich von den Beta-Benutzern abgemeldet.",
 		"Congratulations! You've successfully been added to the beta users.": "Herzlichen Glückwunsch! Du wurdest erfolgreich zu den Beta-Benutzern hinzugefügt.",
-		"Beta program is not available at the moment. ": "Das Beta-Programm ist vorerst geschlossen.",
+		"Beta program is not available at the moment.": "Beta programma is momenteel niet beschikbaar.",
 		"Something went wrong.": "Etwas ist schief gelaufen."
 	},
 	"nplurals=2; plural=(n != 1);");

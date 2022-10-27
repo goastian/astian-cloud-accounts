@@ -21,7 +21,7 @@
 		"Are you sure you want to opt out of beta features?": "Estás seguro de que quieres excluir las funciones beta?", 
 		"You've successfully been removed from the beta users.": "Has conseguido excluir a los usuarios de la beta.",
 		"Congratulations! You've successfully been added to the beta users.": "Enhorabuena! Has sido añadido con éxito a los usuarios beta.",
-		"Beta program is not available at the moment. ": "El Programa Beta está cerrado por ahora.",
+		"Beta program is not available at the moment.": "El programa beta no está disponible por el momento.",
 		"Something went wrong.": "Algo salió mal."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"

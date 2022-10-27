@@ -22,7 +22,7 @@ OC.L10N.register(
 		"Are you sure you want to opt out of beta features?": "Êtes-vous sûr de vouloir refuser les fonctionnalités de la version bêta ?", 
 		"You've successfully been removed from the beta users.": "Vous avez réussi à vous retirer des utilisateurs de la version bêta..",
 		"Congratulations! You've successfully been added to the beta users.": "Félicitations! Vous avez été ajouté avec succès aux utilisateurs de la version bêta.",
-		"Beta program is not available at the moment. ": "Le programme bêta est fermé pour le moment",
+		"Beta program is not available at the moment.": "Le programme bêta n'est pas disponible pour le moment.",
 		"Something went wrong.": "Quelque chose a mal tourné."
 	},
 	"nplurals=2; plural=(n != 1);");
