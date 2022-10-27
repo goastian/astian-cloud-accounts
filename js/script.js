@@ -6,35 +6,31 @@ $(function () {
 	$('#isbForm').submit(function (event) {
 		event.preventDefault();
 
+		$('[type="submit"]').attr('disabled',true);
 		let register_type = $('#beta').val();
 		let url_ = OC.generateUrl('/apps/ecloud-accounts/api/groups/user');
-		if (register_type == 'deregister') {
-			if (!confirm(t('ecloud-accounts',"Are you sure you want to opt out of beta features?"))) {
-				return;
-			}
-		} else {
-			if (!$("#agree").prop('checked')) {
-				alert(t('ecloud-accounts','Please agree terms & conditions.'));
-				return;
-			}
-		}
-
+		
 		$.post(url_,
 			{
 				beta: register_type
 			},
 			function (result) {
-				console.log(result);
+				var message_ = '';
 				if(result){
 					if (register_type == 'deregister') {
-						alert(t('ecloud-accounts','You\'ve successfully opt out from the beta users.'));
+						message_ = t('ecloud-accounts','You\'ve successfully been removed from the beta users.');
 					} else {
-						alert(t('ecloud-accounts','Congratulations! You\'ve successfully been added to the beta users.'));
-					}	
+						message_ = t('ecloud-accounts','Congratulations! You\'ve successfully been added to the beta users.');
+					}
+					$('#message').addClass('alert-success');
 				}else{
-					alert(t('ecloud-accounts','Something went wrong.'));
+					message_ = t('ecloud-accounts','Something went wrong.');
+					$('#message').addClass('alert-fail');
 				}
-				window.location.reload();
+				$('#message').html(message_);
+				setTimeout(function(){
+					window.location.reload();
+				}, 2000);
 			});
 	});
 });
