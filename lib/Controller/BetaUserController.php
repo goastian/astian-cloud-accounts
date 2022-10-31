@@ -6,7 +6,7 @@
 
 namespace OCA\EcloudAccounts\Controller;
 
-use OCP\AppFramework\ApiController;
+use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\IConfig;
 use OCP\IUserManager;
@@ -15,7 +15,7 @@ use OCP\IUserSession;
 use OCP\AppFramework\Http\Response;
 use OCP\ILogger;
 
-class BetaUserController extends ApiController
+class BetaUserController extends Controller
 {
 	protected $appName;
 	protected $request;
@@ -23,6 +23,7 @@ class BetaUserController extends ApiController
 	protected $userManager;
 	protected $groupManager;
 	private $userSession;
+	const GROUP_NAME = "beta";
 
 	public function __construct(
 		$AppName,
@@ -50,19 +51,19 @@ class BetaUserController extends ApiController
 	 */
 	public function addRemoveUserInGroup()
 	{
-		$gid = 'beta';
 		$user =  $this->userSession->getUser();
 		$action = isset($_POST['beta']) ? $_POST['beta'] : '';
 
-		if (!$this->groupManager->groupExists($gid)) {
+		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
 			return false;
-		} else {
-			$group = $this->groupManager->get($gid);
-			if ($action == 'register') {
-				$group->addUser($user);
-			} else if ($action == 'deregister') {
-				$group->removeUser($user);
-			}
+		}
+		$group = $this->groupManager->get(self::GROUP_NAME);
+		if ($action == 'register') {
+			$group->addUser($user);
+			return true;
+		}
+		if ($action == 'deregister') {
+			$group->removeUser($user);
 			return true;
 		}
 		return false;

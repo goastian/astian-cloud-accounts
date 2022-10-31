@@ -19,6 +19,8 @@ class BetaUserSetting implements ISettings
 	/** @var IGroupManager */
 	protected $groupManager;
 
+	const GROUP_NAME = "beta";
+
 
 	public function __construct(
 		IUserSession $userSession,
@@ -31,10 +33,12 @@ class BetaUserSetting implements ISettings
 	public function getForm(): TemplateResponse
 	{		
 		$uid =  $this->userSession->getUser()->getUID();
-		$gid = 'beta';
-		
-		$groupExists = $this->groupManager->groupExists($gid);
-		$isBeta = ($this->groupManager->isInGroup($uid, $gid)) ? 1 : 0;
+		$isBeta = 0;
+
+		$groupExists = $this->groupManager->groupExists(self::GROUP_NAME);
+		if($groupExists){
+			$isBeta = $this->groupManager->isInGroup($uid, self::GROUP_NAME);
+		}
 		
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
 		return new TemplateResponse('ecloud-accounts', 'beta_user_setting', $parameters, '');

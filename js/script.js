@@ -8,7 +8,7 @@ $(function () {
 
 		$('[type="submit"]').attr('disabled',true);
 		let register_type = $('#beta').val();
-		let url_ = OC.generateUrl('/apps/ecloud-accounts/api/groups/user');
+		let url_ = OC.generateUrl('/apps/ecloud-accounts/beta/update');
 		
 		$.post(url_,
 			{

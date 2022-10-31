@@ -15,6 +15,6 @@ return ['routes' => [
     ],
 	[
 		'name' => 'beta_user#add_remove_user_in_group',
-		'url' => '/api/groups/user', 'verb' => 'POST'
+		'url' => '/beta/update', 'verb' => 'POST'
 	]
 ]];
