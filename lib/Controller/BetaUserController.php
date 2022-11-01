@@ -14,6 +14,8 @@ use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\ILogger;
 use OCP\Mail\IMailer;
+use OCP\Util;
+use OCP\Defaults;
 
 class BetaUserController extends Controller
 {
@@ -22,8 +24,9 @@ class BetaUserController extends Controller
 	protected $config;
 	protected $userManager;
 	protected $groupManager;
-	private $userSession;
 	protected $mailer;
+	private $defaults;
+	private $userSession;
 
 	const GROUP_NAME = "beta";
 	const GITLAB_EMAIL_ADDRESS = "gitlab+e-backlog-177-ecr4cla0uf6bqrtdsy04zafd3-issue@e.email";
@@ -36,7 +39,8 @@ class BetaUserController extends Controller
 		IUserManager $userManager,
 		IGroupManager $groupManager,
 		IUserSession $userSession,
-		IMailer $mailer
+		IMailer $mailer,
+		Defaults $defaults
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -47,6 +51,7 @@ class BetaUserController extends Controller
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->mailer = $mailer;
+		$this->defaults = $defaults;
 	}
 
 	/**
@@ -93,7 +98,7 @@ class BetaUserController extends Controller
 		$template->addBodyText(htmlspecialchars($msg), $msg);
 
 		$message = $this->mailer->createMessage();
-		$message->setFrom(['dev@e.email' => 'Nextcloud Notifier']);
+		$message->setFrom([Util::getDefaultEmailAddress('noreply') => $this->defaults->getName()]);
 		$message->setTo([self::GITLAB_EMAIL_ADDRESS => 'GITLAB']);
 		$message->useTemplate($template);
 		$this->mailer->send($message);
