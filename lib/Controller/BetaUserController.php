@@ -99,7 +99,7 @@ class BetaUserController extends Controller
 		$template->addBodyText(htmlspecialchars($msg), $msg);
 
 		$message = $this->mailer->createMessage();
-		$message->setFrom([Util::getDefaultEmailAddress('noreply') => 'Nextcloud Notifier']);
+		$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
 		$message->setTo([self::GITLAB_EMAIL_ADDRESS => 'GITLAB']);
 		$message->useTemplate($template);
 		
