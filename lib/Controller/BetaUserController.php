@@ -15,7 +15,6 @@ use OCP\IUserSession;
 use OCP\ILogger;
 use OCP\Mail\IMailer;
 use OCP\Util;
-use OCP\Defaults;
 
 class BetaUserController extends Controller
 {
@@ -25,7 +24,6 @@ class BetaUserController extends Controller
 	protected $userManager;
 	protected $groupManager;
 	protected $mailer;
-	private $defaults;
 	private $userSession;
 
 	const GROUP_NAME = "beta";
@@ -39,8 +37,7 @@ class BetaUserController extends Controller
 		IUserManager $userManager,
 		IGroupManager $groupManager,
 		IUserSession $userSession,
-		IMailer $mailer,
-		Defaults $defaults
+		IMailer $mailer
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -51,7 +48,6 @@ class BetaUserController extends Controller
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->mailer = $mailer;
-		$this->defaults = $defaults;
 	}
 
 	/**
