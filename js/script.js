@@ -58,6 +58,7 @@ $(function () {
 		$.ajax({
 			url: url_,
 			method: 'POST',
+			data: $(this).serializeArray(),
 			success: function (result) {
 				var message_ = '';
 				if (result) {
