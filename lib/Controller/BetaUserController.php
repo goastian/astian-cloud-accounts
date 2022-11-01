@@ -94,14 +94,17 @@ class BetaUserController extends Controller
 	{
 		$msg = $_POST['description'];
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
+		$template->addHeader();
 		$template->setSubject($_POST['title']);
 		$template->addBodyText(htmlspecialchars($msg), $msg);
 
 		$message = $this->mailer->createMessage();
-		$message->setFrom([Util::getDefaultEmailAddress('noreply') => $this->defaults->getName()]);
+		$message->setFrom([Util::getDefaultEmailAddress('noreply') => 'Nextcloud Notifier']);
 		$message->setTo([self::GITLAB_EMAIL_ADDRESS => 'GITLAB']);
 		$message->useTemplate($template);
+		
 		$this->mailer->send($message);
+
 		return true;
 	}
 }
