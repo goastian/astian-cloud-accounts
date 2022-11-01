@@ -10,11 +10,10 @@ $(function () {
 		let register_type = $('#beta').val();
 		let url_ = OC.generateUrl('/apps/ecloud-accounts/beta/update');
 		
-		$.post(url_,
-			{
-				beta: register_type
-			},
-			function (result) {
+		$.ajax({
+			url: url_,
+			method: (register_type == 'deregister') ? 'DELETE' : 'POST',
+			success: function(result) {
 				var message_ = '';
 				if(result){
 					if (register_type == 'deregister') {
@@ -31,6 +30,14 @@ $(function () {
 				setTimeout(function(){
 					window.location.reload();
 				}, 2000);
-			});
+			},
+			error: function(request,msg,error) {
+				$('#message').addClass('alert-fail');
+				$('#message').html(t('ecloud-accounts','Something went wrong.'));
+				setTimeout(function(){
+					window.location.reload();
+				}, 2000);
+			}
+		});
 	});
 });

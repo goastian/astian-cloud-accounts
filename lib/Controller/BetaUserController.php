@@ -43,29 +43,35 @@ class BetaUserController extends Controller
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 	}
-
+	
 	/**
-	 * @CORS
-	 * @PublicPage
-	 * @NoCSRFRequired
+	 * addUserInGroup
+	 *
+	 * @return void
 	 */
-	public function addRemoveUserInGroup()
+	public function addUserInGroup()
 	{
 		$user =  $this->userSession->getUser();
-		$action = isset($_POST['beta']) ? $_POST['beta'] : '';
-
 		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
 			return false;
 		}
 		$group = $this->groupManager->get(self::GROUP_NAME);
-		if ($action == 'register') {
-			$group->addUser($user);
-			return true;
+		$group->addUser($user);
+		return true;
+	}	
+	/**
+	 * removeUserInGroup
+	 *
+	 * @return void
+	 */
+	public function removeUserInGroup()
+	{
+		$user =  $this->userSession->getUser();
+		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
+			return false;
 		}
-		if ($action == 'deregister') {
-			$group->removeUser($user);
-			return true;
-		}
-		return false;
+		$group = $this->groupManager->get(self::GROUP_NAME);
+		$group->removeUser($user);
+		return true;
 	}
 }
