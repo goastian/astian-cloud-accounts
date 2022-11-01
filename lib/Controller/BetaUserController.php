@@ -42,7 +42,7 @@ class BetaUserController extends Controller
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 	}
-	
+
 	/**
 	 * addUserInGroup
 	 *
@@ -57,7 +57,7 @@ class BetaUserController extends Controller
 		$group = $this->groupManager->get(self::GROUP_NAME);
 		$group->addUser($user);
 		return true;
-	}	
+	}
 	/**
 	 * removeUserInGroup
 	 *
@@ -71,6 +71,19 @@ class BetaUserController extends Controller
 		}
 		$group = $this->groupManager->get(self::GROUP_NAME);
 		$group->removeUser($user);
+		return true;
+	}
+
+	/**
+	 * submitIssue
+	 *
+	 * @return void
+	 */
+	public function submitIssue()
+	{
+		$msg = $_POST['description'];
+		$msg = wordwrap($msg, 70);
+		mail("gitlab+e-backlog-177-ecr4cla0uf6bqrtdsy04zafd3-issue@e.email", $_POST['title'], $msg);
 		return true;
 	}
 }

@@ -18,3 +18,20 @@
 	background-color: #f8d7da;
 	border-color: #f5c6cb;
 }
+
+#issue-submit-form input,
+#issue-submit-form textarea {
+	width: 300px;
+}
+
+#issue-submit-form textarea {
+	height: 100px;
+}
+
+#issue-submit-form textarea:hover {
+	border-color: var(--color-primary-element) !important;
+}
+
+.mt-20 {
+	margin-top: 20px !important;
+}
