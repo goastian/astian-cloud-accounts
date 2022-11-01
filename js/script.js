@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - ECORP SAS - tous droits réservés
+ * Copyright 2022 - Murena SAS - tous droits réservés
  */
 
 $(function () {

@@ -1,7 +1,7 @@
 <?php
 
 /*
-   * Copyright 2019 - ECORP SAS - tous droits réservés
+   * Copyright 2022 - Murena SAS - tous droits réservés
    */
 
 namespace OCA\EcloudAccounts\Controller;
@@ -46,7 +46,7 @@ class BetaUserController extends Controller
 	/**
 	 * addUserInGroup
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function addUserInGroup()
 	{
@@ -61,7 +61,7 @@ class BetaUserController extends Controller
 	/**
 	 * removeUserInGroup
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function removeUserInGroup()
 	{
@@ -77,7 +77,7 @@ class BetaUserController extends Controller
 	/**
 	 * submitIssue
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function submitIssue()
 	{
