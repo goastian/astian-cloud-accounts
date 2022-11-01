@@ -12,7 +12,6 @@ use OCP\IConfig;
 use OCP\IUserManager;
 use OCP\IGroupManager;
 use OCP\IUserSession;
-use OCP\AppFramework\Http\Response;
 use OCP\ILogger;
 
 class BetaUserController extends Controller
