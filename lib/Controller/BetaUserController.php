@@ -100,7 +100,7 @@ class BetaUserController extends Controller
 
 		$message = $this->mailer->createMessage();
 		$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
-		$message->setTo([self::GITLAB_EMAIL_ADDRESS => 'GITLAB']);
+		$message->setTo([self::GITLAB_EMAIL_ADDRESS]);
 		$message->useTemplate($template);
 		
 		$this->mailer->send($message);
