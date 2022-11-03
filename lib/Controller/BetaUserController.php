@@ -27,7 +27,7 @@ class BetaUserController extends Controller
 	private $userSession;
 
 	const GROUP_NAME = "beta";
-	const GITLAB_EMAIL_ADDRESS = "gitlab+e-backlog-177-ecr4cla0uf6bqrtdsy04zafd3-issue@e.email";
+	const GITLAB_EMAIL_ADDRESS = "gitlab+e-infra-ecloud-beta-feedback-1361-issue-@e.email";
 
 	public function __construct(
 		$AppName,
@@ -88,10 +88,9 @@ class BetaUserController extends Controller
 	 */
 	public function submitIssue()
 	{
-
-		$currentUser = $this->userManager->get($this->userSession->getUser()->getUID());
-		$fromEmail = $currentUser->getEMailAddress();
-		$fromName = $currentUser->getDisplayName();
+		$user =  $this->userSession->getUser();
+		$fromEmail = $user->getEMailAddress();
+		$fromName = $user->getDisplayName();
 
 		$msg = $_POST['description'];
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
