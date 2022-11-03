@@ -88,11 +88,8 @@ class BetaUserController extends Controller
 	 */
 	public function submitIssue()
 	{
-		$user = $this->userSession->getUser();
-		if ($user === null) {
-			return false;
-		}
-		$currentUser = $this->userManager->get($user->getUID());
+
+		$currentUser = $this->userManager->get($this->userSession->getUser()->getUID());
 		$fromEmail = $currentUser->getEMailAddress();
 		$fromName = $currentUser->getDisplayName();
 
