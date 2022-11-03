@@ -88,6 +88,14 @@ class BetaUserController extends Controller
 	 */
 	public function submitIssue()
 	{
+		$user = $this->userSession->getUser();
+		if ($user === null) {
+			return false;
+		}
+		$currentUser = $this->userManager->get($user->getUID());
+		$fromEmail = $currentUser->getEMailAddress();
+		$fromName = $currentUser->getDisplayName();
+
 		$msg = $_POST['description'];
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
 		$template->addHeader();
@@ -95,10 +103,10 @@ class BetaUserController extends Controller
 		$template->addBodyText(htmlspecialchars($msg), $msg);
 
 		$message = $this->mailer->createMessage();
-		$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
+		$message->setFrom([$fromEmail => $fromName]);
 		$message->setTo([self::GITLAB_EMAIL_ADDRESS]);
 		$message->useTemplate($template);
-		
+
 		$this->mailer->send($message);
 
 		return true;
