@@ -11,7 +11,7 @@ style('ecloud-accounts', 'style');
 					<h2><?php p($l->t('You are part of the beta users.')); ?></h2>
 					<p class="settings-hint">
 						<?php $aliasstring = $l->t('Note : As the features are not released yet, you may encounter some bugs. Please report them in {linkopen}GitLab ↗{linkclose} if they have not already been filed. You can also provide some feedback using the form further down.');
-						$aliasstring = str_replace('{linkopen}', '<a target="_blank" rel="noreferrer noopener" href="https://gitlab.e.foundation/e/backlog/-/issues">', $aliasstring);
+						$aliasstring = str_replace('{linkopen}', '<a target="_blank" rel="noreferrer noopener" href="https://gitlab.e.foundation/e/infra/ecloud/beta-feedback">', $aliasstring);
 						$aliasstring = str_replace('{linkclose}', '</a>', $aliasstring);
 						echo html_entity_decode($aliasstring);
 						?>
