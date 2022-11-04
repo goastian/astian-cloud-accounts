@@ -11,7 +11,7 @@
 		"Invalid Email Format.": "Format d'email invalide.",
 		"A Murena.com account already uses this e-mail address.": "Un compte Murena.com utilise déjà cette adresse électronique.",
 		"You are part of the beta users.": "Vous faites partie des utilisateurs bêta.",
-		"Note : as the features are not released yet, you may encounter some bugs. Please report them in {linkopen}GitLab ↗{linkclose} if they have not already been filed. You can also provide some feedback using the form further down.": "Note : comme les fonctionnalités ne sont pas encore publiées, vous pouvez rencontrer certains bugs. Veuillez les signaler dans {linkopen}GitLab ↗{linkclose} s'ils n'ont pas déjà été signalés. Vous pouvez également nous faire part de vos commentaires en utilisant le formulaire ci-dessous.",
+		"Note : as the features are not released yet, you may encounter some bugs. Please report them and your feedback using the form below.": "Note : les fonctionnalités n'étant pas encore disponibles, il est possible que vous rencontriez quelques bugs. Veuillez les signaler et faire part de vos commentaires en utilisant le formulaire ci-dessous.",
 		"Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!": "Vous voulez faire une pause dans les nouveautés ? Cliquez simplement sur le bouton ci-dessous. Vous pouvez redevenir un utilisateur bêta à tout moment !",
 		"Do you want to become a beta user?": "Voulez-vous devenir un utilisateur bêta ?",
 		"You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!": "Vous voulez expérimenter les nouvelles fonctionnalités avant les autres et donner votre avis sur celles-ci avant et si elles sont publiées ? Cette section est faite pour vous !",
@@ -22,7 +22,10 @@
 		"You've successfully been removed from the beta users.": "Vous avez réussi à vous retirer des utilisateurs de la version bêta..",
 		"Congratulations! You've successfully been added to the beta users.": "Félicitations! Vous avez été ajouté avec succès aux utilisateurs de la version bêta.",
 		"Beta program is not available at the moment.": "Le programme bêta n'est pas disponible pour le moment.",
-		"Something went wrong.": "Quelque chose a mal tourné."
+		"Something went wrong.": "Quelque chose a mal tourné.",
+		"Title": "Titre",
+		"required": "requis",
+		"Description": "Description"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

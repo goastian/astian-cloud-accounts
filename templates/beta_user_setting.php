@@ -10,21 +10,17 @@ style('ecloud-accounts', 'style');
 				<?php if ($isBeta) { ?>
 					<h2><?php p($l->t('You are part of the beta users.')); ?></h2>
 					<p class="settings-hint">
-						<?php $aliasstring = $l->t('Note : as the features are not released yet, you may encounter some bugs. Please report them in {linkopen}GitLab ↗{linkclose} if they have not already been filed. You can also provide some feedback using the form further down.');
-						$aliasstring = str_replace('{linkopen}', '<a target="_blank" rel="noreferrer noopener" href="https://gitlab.e.foundation/e/infra/ecloud/beta-feedback">', $aliasstring);
-						$aliasstring = str_replace('{linkclose}', '</a>', $aliasstring);
-						echo html_entity_decode($aliasstring);
-						?>
+						<?php p($l->t('Note : as the features are not released yet, you may encounter some bugs. Please report them and your feedback using the form below.')); ?>
 					</p>
 					<form id="issue-submit-form" class="settings-hint mt-20">
 						<p>
-							<label for="title" id="title_label">Title (required)</label>
+							<label for="title" id="title_label"><?php p($l->t('Title')); ?> (<?php p($l->t('required')); ?>)</label>
 						</p>
 						<p>
 							<input type="text" id="title" name="title">
 						</p>
 						<p>
-							<label for="description">Description</label>
+							<label for="description"><?php p($l->t('Description')); ?></label>
 						</p>
 						<p>
 							<textarea id="description" name="description"></textarea>
