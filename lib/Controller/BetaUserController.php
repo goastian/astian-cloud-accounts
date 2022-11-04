@@ -10,6 +10,7 @@ use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\IConfig;
 use OCP\IUserManager;
+use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\ILogger;
@@ -51,10 +52,10 @@ class BetaUserController extends Controller
 	}
 
 	/**
-	 * addUserInGroup
-	 *
-	 * @return boolean
-	 */
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     */
 	public function addUserInGroup()
 	{
 		$user =  $this->userSession->getUser();
@@ -65,11 +66,12 @@ class BetaUserController extends Controller
 		$group->addUser($user);
 		return true;
 	}
+
 	/**
-	 * removeUserInGroup
-	 *
-	 * @return boolean
-	 */
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     */
 	public function removeUserInGroup()
 	{
 		$user =  $this->userSession->getUser();
@@ -82,20 +84,20 @@ class BetaUserController extends Controller
 	}
 
 	/**
-	 * submitIssue
-	 *
-	 * @return boolean
-	 */
-	public function submitIssue()
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     */
+	public function submitIssue($title , $msg)
 	{
 		$user =  $this->userSession->getUser();
 		$fromEmail = $user->getEMailAddress();
 		$fromName = $user->getDisplayName();
 
-		$msg = $_POST['description'];
+
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
 		$template->addHeader();
-		$template->setSubject($_POST['title']);
+		$template->setSubject($title);
 		$template->addBodyText(htmlspecialchars($msg), $msg);
 
 		$message = $this->mailer->createMessage();

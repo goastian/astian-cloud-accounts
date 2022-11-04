@@ -33,7 +33,7 @@ $(function () {
 			},
 			error: function (request, msg, error) {
 				$('#message').addClass('alert-fail');
-				$('#message').html(t('ecloud-accounts', 'Something went wrong.'));
+				$('#message').html(t('ecloud-accounts', 'Something went wrong here.'));
 				setTimeout(function () {
 					window.location.reload();
 				}, 2000);
@@ -69,17 +69,17 @@ $(function () {
 					$('#issue_message').addClass('alert-fail');
 				}
 				$('#issue_message').html(message_);
-				// setTimeout(function () {
-				// 	window.location.reload();
-				// }, 2000);
+				setTimeout(function () {
+					window.location.reload();
+				}, 2000);
 
 			},
 			error: function (request, msg, error) {
 				$('#issue_message').addClass('alert-fail');
 				$('#issue_message').html(t('ecloud-accounts', 'Something went wrong.'));
-				// setTimeout(function () {
-				// 	window.location.reload();
-				// }, 2000);
+				setTimeout(function () {
+					window.location.reload();
+				}, 2000);
 			}
 		});
 	});
