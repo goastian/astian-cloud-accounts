@@ -28,7 +28,8 @@
 		"Description": "Description",
 		"Summary of your feedback": "Summary of your feedback",
 		"Please give us as many details as possible": "Please give us as many details as possible",
-		"Submit": "Submit"
+		"Submit": "Submit",
+		"Experimental": "Experimental"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

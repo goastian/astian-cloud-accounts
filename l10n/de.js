@@ -29,6 +29,7 @@ OC.L10N.register(
 		"Description": "Beschreibung",
 		"Summary of your feedback": "Zusammenfassung Ihres Feedbacks",
 		"Please give us as many details as possible": "Bitte geben Sie uns so viele Details wie möglich",
-		"Submit": "Einreichen"
+		"Submit": "Einreichen",
+		"Experimental": "Experimentelle"
 	},
 	"nplurals=2; plural=(n != 1);");
