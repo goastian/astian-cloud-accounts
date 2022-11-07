@@ -88,7 +88,7 @@ class BetaUserController extends Controller
      * @NoCSRFRequired
      * @PublicPage
      */
-	public function submitIssue($title , $msg)
+	public function submitIssue(string $title ,string $msg)
 	{
 		$user =  $this->userSession->getUser();
 		$fromEmail = $user->getEMailAddress();
