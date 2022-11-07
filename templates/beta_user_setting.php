@@ -19,13 +19,13 @@ style('ecloud-accounts', 'style');
 						<p>
 							<input type="text" id="title" name="title" placeholder="<?php p($l->t('Summary of your feedback')); ?>">
 						</p>
-						<p>
+						<p class="mt-20">
 							<label for="description" id="description_label"><b><?php p($l->t('Description')); ?> <sup class="color-red">*</sup></b></label>
 						</p>
 						<p>
 							<textarea id="description" name="description" placeholder="<?php p($l->t('Please give us as many details as possible')); ?>"></textarea>
 						</p>
-						<p>
+						<p class="mt-20">
 							<input type="submit" value="<?php p($l->t('Submit')) ?>" class="width300"/>
 						</p>
 						<div id="issue_message" class="alert"></div>

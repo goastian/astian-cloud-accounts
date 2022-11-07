@@ -49,16 +49,13 @@ $(function () {
 
 		if ($('#title').val() == '' || $('#description').val() == '') {
 			if ($('#title').val() == '') {
-				$('#title_label').addClass('alert-fail');
+				$('#title').parent().append('<div class="color-red width300">'+t('ecloud-accounts', 'Title is mandatory.')+'</div>')
 			}
 			if ($('#description').val() == '') {
-				$('#description_label').addClass('alert-fail');
+				$('#description').parent().append('<div class="color-red width300">'+t('ecloud-accounts', 'Description is mandatory.')+'</div>')
 			}
 			return;
-		} else {
-			$('.alert-fail').removeClass('alert-fail');
 		}
-
 		$('#issue-submit-form [type="submit"]').attr('disabled', true);
 
 		$.ajax({

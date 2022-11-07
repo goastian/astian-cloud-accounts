@@ -31,6 +31,8 @@ OC.L10N.register(
 		"Summary of your feedback": "Resumen de sus comentarios",
 		"Please give us as many details as possible": "Por favor, danos tantos detalles como sea posible",
 		"Submit": "Envíe",
-		"Experimental": "Experimento"
+		"Experimental": "Experimento",
+		"Title is mandatory.": "El título es obligatorio.",
+		"Description is mandatory.": "La descripción es obligatoria."
 	},
 	"nplurals=2; plural=(n != 1);");

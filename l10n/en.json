@@ -29,7 +29,9 @@
 		"Summary of your feedback": "Summary of your feedback",
 		"Please give us as many details as possible": "Please give us as many details as possible",
 		"Submit": "Submit",
-		"Experimental": "Experimental"
+		"Experimental": "Experimental",
+		"Title is mandatory.": "Title is mandatory.",
+		"Description is mandatory.": "Description is mandatory."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }
