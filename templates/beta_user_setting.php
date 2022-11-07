@@ -34,7 +34,7 @@ style('ecloud-accounts', 'style');
 				<?php } else { ?>
 					<h2><?php p($l->t('Do you want to become a beta user?')); ?></h2>
 					<p class="settings-hint"><?php p($l->t('You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')) ?></p>
-					<p class="settings-hint"><?php p($l->t('To get a preview showing our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features at anytime.')) ?></p>
+					<p class="settings-hint"><?php p($l->t('To get a preview of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features at anytime.')) ?></p>
 				<?php } ?>
 				<div id="groups" class="aliases-info">
 					<form id="beta-form">
