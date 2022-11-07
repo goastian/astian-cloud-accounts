@@ -88,7 +88,7 @@ class BetaUserController extends Controller
      * @NoCSRFRequired
      * @PublicPage
      */
-	public function submitIssue($title , $msg)
+	public function submitIssue(string $title ,string $description)
 	{
 		$user =  $this->userSession->getUser();
 		$fromEmail = $user->getEMailAddress();
@@ -98,7 +98,7 @@ class BetaUserController extends Controller
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
 		$template->addHeader();
 		$template->setSubject($title);
-		$template->addBodyText(htmlspecialchars($msg), $msg);
+		$template->addBodyText(htmlspecialchars($description), $description);
 
 		$message = $this->mailer->createMessage();
 		$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
