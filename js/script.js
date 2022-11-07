@@ -41,6 +41,9 @@ $(function () {
 		});
 	});
 
+	$('#title, #description').on('input', function() {
+		$(this).parent().find('.error-msg').remove();
+	});
 
 	$('#issue-submit-form').submit(function (event) {
 		event.preventDefault();
