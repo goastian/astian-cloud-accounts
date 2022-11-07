@@ -29,6 +29,7 @@ OC.L10N.register(
 		"required": "requerido",
 		"Description": "Descripción",
 		"Summary of your feedback": "Resumen de sus comentarios",
-		"Please give us as many details as possible": "Por favor, danos tantos detalles como sea posible"
+		"Please give us as many details as possible": "Por favor, danos tantos detalles como sea posible",
+		"Submit": "Envíe"
 	},
 	"nplurals=2; plural=(n != 1);");

@@ -26,7 +26,7 @@ style('ecloud-accounts', 'style');
 							<textarea id="description" name="description" placeholder="<?php p($l->t('Please give us as many details as possible')); ?>"></textarea>
 						</p>
 						<p>
-							<input type="submit" value="Submit" class="width300"/>
+							<input type="submit" value="<?php p($l->t('Submit')) ?>" class="width300"/>
 						</p>
 						<div id="issue_message" class="alert"></div>
 					</form>
