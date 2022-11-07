@@ -53,6 +53,12 @@ $(function () {
 		} else {
 			$('#title_label').removeClass('alert-fail');
 		}
+		if ($('#description').val() == '') {
+			$('#description_label').addClass('alert-fail');
+			return;
+		} else {
+			$('#description_label').removeClass('alert-fail');
+		}
 		$('#issue-submit-form [type="submit"]').attr('disabled', true);
 
 		$.ajax({

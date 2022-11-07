@@ -16,7 +16,7 @@ OC.L10N.register(
 		"Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!": "Quiere descansar de las novedades? Sólo tienes que hacer clic en el botón de abajo. ¡Puedes volver a ser un usuario beta en cualquier momento!",
 		"Do you want to become a beta user?": "Desea convertirse en usuario beta?",
 		"You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!": "Quieres experimentar las nuevas funciones antes que los demás y dar tu opinión sobre ellas antes y si se publican? Esta sección está hecha para ti.",
-		"To get a preview showing of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features anytime.": "Para obtener una vista previa que muestre nuestras nuevas funciones, debe formar parte de nuestros usuarios beta. Para ello, simplemente haga clic en el botón de abajo. Puedes excluirte de las funciones beta en cualquier momento.",
+		"To get a preview showing our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features at anytime.": "Para obtener una vista previa que muestre nuestras nuevas funciones, debe formar parte de nuestros usuarios beta. Para ello, simplemente haga clic en el botón de abajo. Puedes excluirte de las funciones beta en cualquier momento.",
 		"I agree with terms & conditions.": "Estoy de acuerdo con los términos y condiciones.",
 		"Opt out of beta features": "No participar en las funciones beta",
 		"Become a beta user": "Convertirse en usuario beta",
@@ -27,6 +27,8 @@ OC.L10N.register(
 		"Something went wrong.": "Algo salió mal.",
 		"Title": "Título",
 		"required": "requerido",
-		"Description": "Descripción"
+		"Description": "Descripción",
+		"Summary of your feedback": "Resumen de sus comentarios",
+		"Please give us as many details as possible": "Por favor, danos tantos detalles como sea posible"
 	},
 	"nplurals=2; plural=(n != 1);");

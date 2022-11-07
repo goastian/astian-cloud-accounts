@@ -16,7 +16,7 @@ OC.L10N.register(
 		"Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!": "Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!",
 		"Do you want to become a beta user?": "Do you want to become a beta user?",
 		"You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!": "You want to experiment new features ahead of the others and provide feedback on them before and if they're released? This section is made for you!",
-		"To get a preview showing of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features anytime.": "To get a preview showing of our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features anytime.",
+		"To get a preview showing our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features at anytime.": "To get a preview showing our new features you need to become part of our beta users. To do so, simply click on the button below. You can opt out of beta features at anytime.",
 		"Opt out of beta features": "Opt out of beta features",
 		"Become a beta user": "Become a beta user",
 		"Are you sure you want to opt out of beta features?": "Are you sure you want to opt out of beta features?", 
@@ -26,6 +26,8 @@ OC.L10N.register(
 		"Something went wrong.": "Something went wrong.",
 		"Title": "Title",
 		"required": "required",
-		"Description": "Description"
+		"Description": "Description",
+		"Summary of your feedback": "Summary of your feedback",
+		"Please give us as many details as possible": "Please give us as many details as possible"
 	},
 	"nplurals=2; plural=(n != 1);");
