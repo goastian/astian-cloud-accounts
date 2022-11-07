@@ -46,13 +46,13 @@ $(function () {
 		event.preventDefault();
 
 		let url_ = OC.generateUrl('/apps/ecloud-accounts/issue/submit');
-
+		$('.error-msg').remove();
 		if ($('#title').val() == '' || $('#description').val() == '') {
 			if ($('#title').val() == '') {
-				$('#title').parent().append('<div class="color-red width300">'+t('ecloud-accounts', 'Title is mandatory.')+'</div>')
+				$('#title').parent().append('<div class="error-msg color-red width300">'+t('ecloud-accounts', 'Title is mandatory.')+'</div>')
 			}
 			if ($('#description').val() == '') {
-				$('#description').parent().append('<div class="color-red width300">'+t('ecloud-accounts', 'Description is mandatory.')+'</div>')
+				$('#description').parent().append('<div class="error-msg color-red width300">'+t('ecloud-accounts', 'Description is mandatory.')+'</div>')
 			}
 			return;
 		}
