@@ -47,18 +47,18 @@ $(function () {
 
 		let url_ = OC.generateUrl('/apps/ecloud-accounts/issue/submit');
 
-		if ($('#title').val() == '') {
-			$('#title_label').addClass('alert-fail');
+		if ($('#title').val() == '' || $('#description').val() == '') {
+			if ($('#title').val() == '') {
+				$('#title_label').addClass('alert-fail');
+			}
+			if ($('#description').val() == '') {
+				$('#description_label').addClass('alert-fail');
+			}
 			return;
 		} else {
-			$('#title_label').removeClass('alert-fail');
+			$('.alert-fail').removeClass('alert-fail');
 		}
-		if ($('#description').val() == '') {
-			$('#description_label').addClass('alert-fail');
-			return;
-		} else {
-			$('#description_label').removeClass('alert-fail');
-		}
+
 		$('#issue-submit-form [type="submit"]').attr('disabled', true);
 
 		$.ajax({

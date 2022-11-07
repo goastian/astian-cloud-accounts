@@ -14,13 +14,13 @@ style('ecloud-accounts', 'style');
 					</p>
 					<form id="issue-submit-form" class="mt-20">
 						<p>
-							<label for="title" id="title_label"><b><?php p($l->t('Title')); ?> (<?php p($l->t('required')); ?>)</b></label>
+							<label for="title" id="title_label"><b><?php p($l->t('Title')); ?> <sup class="color-red">*</sup></b></label>
 						</p>
 						<p>
 							<input type="text" id="title" name="title" placeholder="<?php p($l->t('Summary of your feedback')); ?>">
 						</p>
 						<p>
-							<label for="description" id="description_label"><b><?php p($l->t('Description')); ?> (<?php p($l->t('required')); ?>)</b></label>
+							<label for="description" id="description_label"><b><?php p($l->t('Description')); ?> <sup class="color-red">*</sup></b></label>
 						</p>
 						<p>
 							<textarea id="description" name="description" placeholder="<?php p($l->t('Please give us as many details as possible')); ?>"></textarea>
