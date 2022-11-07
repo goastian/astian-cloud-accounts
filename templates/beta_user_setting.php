@@ -10,7 +10,7 @@ style('ecloud-accounts', 'style');
 				<?php if ($isBeta) { ?>
 					<h2><?php p($l->t('You are part of the beta users.')); ?></h2>
 					<p class="settings-hint">
-						<?php p($l->t('Note : as the features are not released yet, you may encounter some bugs. Please report them and your feedback using the form below.')); ?>
+						<?php p($l->t('Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.')); ?>
 					</p>
 					<form id="issue-submit-form" class="mt-20">
 						<p>
@@ -30,7 +30,7 @@ style('ecloud-accounts', 'style');
 						</p>
 						<div id="issue_message" class="alert"></div>
 					</form>
-					<p class="settings-hint mt-20"><?php p($l->t('Want to take a break from novelties? Just click on the button below. You can become a beta user again anytime!')) ?></p>
+					<p class="settings-hint mt-20"><?php p($l->t('Want to take a break from beta features? Just click on the button below. You can become a beta user again anytime!')) ?></p>
 				<?php } else { ?>
 					<h2><?php p($l->t('Do you want to become a beta user?')); ?></h2>
 					<p class="settings-hint"><?php p($l->t('You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')) ?></p>
