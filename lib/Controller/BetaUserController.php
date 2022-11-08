@@ -54,7 +54,6 @@ class BetaUserController extends Controller
 	/**
      * @NoAdminRequired
      * @NoCSRFRequired
-     * @PublicPage
      */
 	public function addUserInGroup()
 	{
@@ -70,7 +69,6 @@ class BetaUserController extends Controller
 	/**
      * @NoAdminRequired
      * @NoCSRFRequired
-     * @PublicPage
      */
 	public function removeUserInGroup()
 	{
@@ -86,7 +84,6 @@ class BetaUserController extends Controller
 	/**
      * @NoAdminRequired
      * @NoCSRFRequired
-     * @PublicPage
      */
 	public function submitIssue(string $title ,string $description)
 	{
