@@ -52,9 +52,9 @@ class BetaUserController extends Controller
 	}
 
 	/**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function addUserInGroup()
 	{
 		$user =  $this->userSession->getUser();
@@ -67,9 +67,9 @@ class BetaUserController extends Controller
 	}
 
 	/**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function removeUserInGroup()
 	{
 		$user =  $this->userSession->getUser();
@@ -82,10 +82,10 @@ class BetaUserController extends Controller
 	}
 
 	/**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-	public function submitIssue(string $title ,string $description)
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function submitIssue(string $title, string $description)
 	{
 		$user =  $this->userSession->getUser();
 		$fromEmail = $user->getEMailAddress();
