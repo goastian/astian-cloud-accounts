@@ -20,7 +20,7 @@ class ShopAccountService {
 
 		$shopUsername = $this->config->getSystemValue('murena_shop_username');
 		$shopPassword = $this->config->getSystemValue('murena_shop_password');
-		$this->shopUrl = $this->config->getSystemValue('murena_shop_url');
+		$this->shopUrl = $this->config->getSystemValue('murena_shop_url', '');
 		$this->shopReassignUserId = $this->config->getSystemValue('murena_shop_reassign_user_id');
 
 
@@ -137,6 +137,9 @@ class ShopAccountService {
 	}
 
 	private function callShopAPI(string $url, string $method, array $data = []) {
+		if(empty($this->shopUrl)) {
+			return [];
+		}
 		$headers = [
 			"cache-control: no-cache",
 			"content-type: application/json",
