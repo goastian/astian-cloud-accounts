@@ -72,7 +72,7 @@ class ShopAccountService {
 	public function getOrders(int $userId): ?array {
 		try {
 			return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->logger->error('There was an issue querying shop for orders for user ' . strval($userId));
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
@@ -82,7 +82,7 @@ class ShopAccountService {
 	public function getUsers(string $searchTerm): ?array {
 		try {
 			return $this->callShopAPI($this->shopUserUrl, 'GET', ['search' => $searchTerm]);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->logger->error('There was an issue querying shop for users');
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
@@ -110,7 +110,7 @@ class ShopAccountService {
 			if (!$answer['deleted']) {
 				throw new Exception('Unknown error while deleting!');
 			}
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->logger->error('Error deleting user at WP with ID ' . $userId);
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
@@ -130,7 +130,7 @@ class ShopAccountService {
 			if ($answer['email'] !== $email) {
 				throw new Exception('Unknown error while updating!');
 			}
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->logger->error('Error updating user email at WP with ID ' . $userId . ' and new email ' . $email);
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}

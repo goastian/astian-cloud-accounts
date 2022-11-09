@@ -94,16 +94,16 @@ class UserService {
 		}
 	}
 
-		/**
-		 * Once NC deleted the account,
-		 * perform specific ecloud selfhosting actions
-		 * post delete action is delegated to the welcome container
-		 *
-		 * @param $userID string
-		 * @param $welcomeDomain string main NC domain (welcome container)
-		 * @param $welcomeSecret string generated at ecloud selfhosting install and added as a custom var in NC's config
-		 * @return mixed response of the external endpoint
-		 */
+	/**
+	 * Once NC deleted the account,
+	 * perform specific ecloud selfhosting actions
+	 * post delete action is delegated to the welcome container
+	 *
+	 * @param $userID string
+	 * @param $welcomeDomain string main NC domain (welcome container)
+	 * @param $welcomeSecret string generated at ecloud selfhosting install and added as a custom var in NC's config
+	 * @return mixed response of the external endpoint
+	 */
 	public function ecloudDelete(string $userID, string $welcomeDomain, string $welcomeSecret, string $email, bool $isUserOnLDAP = false) {
 		$endpoint = '/postDelete.php';
 		if ($isUserOnLDAP) {

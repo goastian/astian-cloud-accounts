@@ -31,7 +31,7 @@ class ShopAccountController extends Controller {
 
 		try {
 			$this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$response->setStatus(400);
 			$response->setData(['message' => $e->getMessage()]);
 			return $response;
@@ -49,7 +49,7 @@ class ShopAccountController extends Controller {
 
 		try {
 			$this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$response->setStatus(400);
 			$response->setData(['message' => $e->getMessage()]);
 			return $response;
