@@ -137,7 +137,7 @@ class ShopAccountService {
 	}
 
 	private function callShopAPI(string $url, string $method, array $data = []) {
-		if(empty($this->shopUrl)) {
+		if (empty($this->shopUrl)) {
 			return [];
 		}
 		$headers = [
