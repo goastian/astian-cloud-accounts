@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Controller;
@@ -10,100 +11,94 @@ use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 
-
 class ShopAccountController extends Controller {
+	private $shopAccountService;
+	private $userSession;
 
-    private $shopAccountService;
-    private $userSession;
+	public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService) {
+		parent::__construct($appName, $request);
+		$this->shopAccountService = $shopAccountService;
+		$this->userSession = $userSession;
+	}
 
-    public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService)
-    {
-        parent::__construct($appName, $request);
-        $this->shopAccountService = $shopAccountService;
-        $this->userSession = $userSession;
-    }
+	/**
+	 * @NoAdminRequired
+	 */
+	public function checkShopEmailPostDelete(string $shopEmailPostDelete) {
+		$user = $this->userSession->getUser();
+		$email = $user->getEMailAddress();
+		$response = new DataResponse();
 
-    /**
-     * @NoAdminRequired
-     */
-    public function checkShopEmailPostDelete(string $shopEmailPostDelete) {
-        $user = $this->userSession->getUser();
-        $email = $user->getEMailAddress();
-        $response = new DataResponse();
+		try {
+			$this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
+		} catch(Exception $e) {
+			$response->setStatus(400);
+			$response->setData(['message' => $e->getMessage()]);
+			return $response;
+		}
+	}
+	/**
+	 * @NoAdminRequired
+	 */
 
-        try {
-            $this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
-        }
-        catch(Exception $e) {  
-            $response->setStatus(400);
-            $response->setData(['message' => $e->getMessage()]);
-            return $response;
-        }
-    }
-    /**
-     * @NoAdminRequired
-     */
+	public function setShopEmailPostDelete(string $shopEmailPostDelete) {
+		$user = $this->userSession->getUser();
+		$userId = $user->getUID();
+		$email = $user->getEMailAddress();
+		$response = new DataResponse();
 
-    public function setShopEmailPostDelete(string $shopEmailPostDelete) {
-        $user = $this->userSession->getUser();
-        $userId = $user->getUID();
-        $email = $user->getEMailAddress();
-        $response = new DataResponse();
+		try {
+			$this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
+		} catch(Exception $e) {
+			$response->setStatus(400);
+			$response->setData(['message' => $e->getMessage()]);
+			return $response;
+		}
 
-        try {
-            $this->shopAccountService->validateShopEmailPostDelete($shopEmailPostDelete, $email);
-        }
-        catch(Exception $e) {  
-            $response->setStatus(400);
-            $response->setData(['message' => $e->getMessage()]);
-            return $response;
-        }
+		$this->shopAccountService->setShopEmailPostDeletePreference($userId, $shopEmailPostDelete);
+	}
 
-        $this->shopAccountService->setShopEmailPostDeletePreference($userId, $shopEmailPostDelete);
+	/**
+	 * @NoAdminRequired
+	 */
+	public function setShopDeletePreference(bool $deleteShopAccount) {
+		$user = $this->userSession->getUser();
+		$userId = $user->getUID();
 
-    }
+		$this->shopAccountService->setShopDeletePreference($userId, $deleteShopAccount);
+	}
 
-    /**
-     * @NoAdminRequired
-     */
-    public function setShopDeletePreference(bool $deleteShopAccount) {
-        $user = $this->userSession->getUser();
-        $userId = $user->getUID();
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getOrderInfo(int $userId) {
+		$response = new DataResponse();
+		$data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
+		$orders = $this->shopAccountService->getOrders($userId);
 
-        $this->shopAccountService->setShopDeletePreference($userId, $deleteShopAccount);
-    }
+		if ($orders) {
+			$data['count'] = count($orders);
+		}
 
-    /**
-     * @NoAdminRequired
-     */
-    public function getOrderInfo(int $userId) {
-        $response = new DataResponse();
-        $data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
-        $orders = $this->shopAccountService->getOrders($userId);
+		$response->setData($data);
+		return $response;
+	}
 
-        if($orders) {
-            $data['count'] = count($orders);
-        }
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getShopUser() {
+		$response = new DataResponse();
+		$user = $this->userSession->getUser();
+		$email = $user->getEMailAddress();
 
-        $response->setData($data);
-        return $response;
-    }
+		$shopUser = $this->shopAccountService->getUser($email);
 
-    /**
-     * @NoAdminRequired
-     */
-    public function getShopUser() {
-        $response = new DataResponse();
-        $user = $this->userSession->getUser();
-        $email = $user->getEMailAddress();
-
-        $shopUser = $this->shopAccountService->getUser($email);
-
-        if(!$shopUser || !$this->shopAccountService->isUserOIDC($shopUser)) {
-            $response->setStatus(404);
-            return $response;
-        }
-        $response->setData($shopUser);
-        return $response;
-    }
+		if (!$shopUser || !$this->shopAccountService->isUserOIDC($shopUser)) {
+			$response->setStatus(404);
+			return $response;
+		}
+		$response->setData($shopUser);
+		return $response;
+	}
 }
