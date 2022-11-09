@@ -7,6 +7,6 @@ module.exports = {
 	...webpackConfig,
 	entry: {
 		'personal-settings': path.join(__dirname, 'src/personal.js'),
-		'delete-account-listeners': path.join(__dirname, 'src/delete-account-listeners.js')
+		'delete-account-listeners': path.join(__dirname, 'src/delete-account-listeners.js'),
 	},
 }
