@@ -35,10 +35,10 @@ class BetaUserSetting implements ISettings {
 	public function getForm(): TemplateResponse {
 		$uid = $this->userSession->getUser()->getUID();
 		$isBeta = 0;
-
-		$groupExists = $this->groupManager->groupExists($this->config->getSystemValue("beta_group_name"));
+		$betaGroupName = $this->config->getSystemValue("beta_group_name");
+		$groupExists = $this->groupManager->groupExists($betaGroupName);
 		if ($groupExists) {
-			$isBeta = $this->groupManager->isInGroup($uid, $this->config->getSystemValue("beta_group_name"));
+			$isBeta = $this->groupManager->isInGroup($uid, $betaGroupName);
 		}
 		Util::addScript($this->appName, 'ecloud-accounts-beta-user-setting');
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
