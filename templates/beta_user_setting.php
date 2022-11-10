@@ -1,5 +1,4 @@
 <?php
-script('ecloud-accounts', 'script');
 style('ecloud-accounts', 'style');
 ?>
 
