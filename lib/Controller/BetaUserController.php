@@ -25,9 +25,6 @@ class BetaUserController extends Controller {
 	protected $mailer;
 	private $userSession;
 
-	public const GROUP_NAME = "beta";
-	public const GITLAB_EMAIL_ADDRESS = "gitlab+e-infra-ecloud-beta-feedback-1361-issue-@e.email";
-
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -55,10 +52,11 @@ class BetaUserController extends Controller {
 	 */
 	public function addUserInGroup() {
 		$user = $this->userSession->getUser();
-		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
+		$groupName = $this->config->getSystemValue("beta_group_name");
+		if (!$this->groupManager->groupExists($groupName)) {
 			return false;
 		}
-		$group = $this->groupManager->get(self::GROUP_NAME);
+		$group = $this->groupManager->get($groupName);
 		$group->addUser($user);
 		return true;
 	}
@@ -69,10 +67,11 @@ class BetaUserController extends Controller {
 	 */
 	public function removeUserInGroup() {
 		$user = $this->userSession->getUser();
-		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
+		$groupName = $this->config->getSystemValue("beta_group_name");
+		if (!$this->groupManager->groupExists($groupName)) {
 			return false;
 		}
-		$group = $this->groupManager->get(self::GROUP_NAME);
+		$group = $this->groupManager->get($groupName);
 		$group->removeUser($user);
 		return true;
 	}
@@ -95,7 +94,7 @@ class BetaUserController extends Controller {
 		$message = $this->mailer->createMessage();
 		$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
 		$message->setReplyTo([$fromEmail => $fromName]);
-		$message->setTo([self::GITLAB_EMAIL_ADDRESS]);
+		$message->setTo([$this->config->getSystemValue("beta_gitlab_email_id")]);
 		$message->useTemplate($template);
 
 		$this->mailer->send($message);

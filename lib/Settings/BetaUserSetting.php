@@ -9,6 +9,7 @@ use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
+use OCP\IConfig;
 
 class BetaUserSetting implements ISettings {
 	/** @var IUserSession */
@@ -19,25 +20,25 @@ class BetaUserSetting implements ISettings {
 
 	private $appName;
 
-	public const GROUP_NAME = "beta";
-
 	public function __construct(
 		$appName,
 		IUserSession $userSession,
-		IGroupManager $groupManager
+		IGroupManager $groupManager,
+		IConfig $config
 	) {
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->appName = $appName;
+		$this->config = $config;
 	}
 
 	public function getForm(): TemplateResponse {
 		$uid = $this->userSession->getUser()->getUID();
 		$isBeta = 0;
 
-		$groupExists = $this->groupManager->groupExists(self::GROUP_NAME);
+		$groupExists = $this->groupManager->groupExists($this->config->getSystemValue("beta_group_name"));
 		if ($groupExists) {
-			$isBeta = $this->groupManager->isInGroup($uid, self::GROUP_NAME);
+			$isBeta = $this->groupManager->isInGroup($uid, $this->config->getSystemValue("beta_group_name"));
 		}
 		Util::addScript($this->appName, 'ecloud-accounts-beta-user-setting');
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
