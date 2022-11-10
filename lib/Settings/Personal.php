@@ -13,7 +13,6 @@ use OCP\App\IAppManager;
 use OCP\IUserManager;
 
 class Personal implements ISettings {
-
 	private const DROP_ACCOUNT_APP_ID = 'drop_account';
 	/** @var IUserSession */
 	private $userSession;
@@ -47,7 +46,6 @@ class Personal implements ISettings {
 	 * @since 9.1
 	 */
 	public function getForm(): TemplateResponse {
-
 		$user = $this->userSession->getUser();
 		if ($user) {
 			$onlyUser = $this->userManager->countUsers() < 2;
@@ -75,7 +73,7 @@ class Personal implements ISettings {
 	 */
 	public function getSection(): ?string {
 		$dropAccountEnabled = $this->appManager->isEnabledForUser(self::DROP_ACCOUNT_APP_ID);
-		if($dropAccountEnabled) {
+		if ($dropAccountEnabled) {
 			return self::DROP_ACCOUNT_APP_ID;
 		}
 		return null;
