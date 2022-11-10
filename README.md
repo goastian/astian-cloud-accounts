@@ -30,3 +30,16 @@ Please open issues here : https://gitlab.e.foundation/e/backlog/issues
 This plugin works in cunjunction with the drop_account plugin : https://apps.nextcloud.com/apps/drop_account
 
 This plugin uses SRDI's [Simple and lightweight curl class](https://github.com/srdi/php-curl-class), under the The Unlicense license : https://github.com/srdi/php-curl-class/blob/master/LICENSE
+
+## Beta User
+
+- The app is using system values which are configured in `/config/config.php`. 
+- Below keys to add:
+1. beta_group_name
+2. beta_gitlab_email_id
+
+The values are:
+```
+'beta_group_name' => 'beta',
+'beta_gitlab_email_id' => 'gitlab+e-infra-ecloud-beta-feedback-1361-issue-@e.email',
+```
