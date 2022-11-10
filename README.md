@@ -41,5 +41,5 @@ This plugin uses SRDI's [Simple and lightweight curl class](https://github.com/s
 The values are:
 ```
 'beta_group_name' => 'beta',
-'beta_gitlab_email_id' => 'gitlab+e-infra-ecloud-beta-feedback-1361-issue-@e.email',
+'beta_gitlab_email_id' => 'xyz@e.email',
 ```
