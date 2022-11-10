@@ -9,8 +9,7 @@ use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
 
-class BetaUserSetting implements ISettings
-{
+class BetaUserSetting implements ISettings {
 	/** @var IUserSession */
 	private $userSession;
 
@@ -31,8 +30,7 @@ class BetaUserSetting implements ISettings
 		$this->appName = $appName;
 	}
 
-	public function getForm(): TemplateResponse
-	{
+	public function getForm(): TemplateResponse {
 		$uid = $this->userSession->getUser()->getUID();
 		$isBeta = 0;
 
@@ -44,13 +42,11 @@ class BetaUserSetting implements ISettings
 		return new TemplateResponse($this->appName, 'beta_user_setting', $parameters, '');
 	}
 
-	public function getSection(): ?string
-	{
+	public function getSection(): ?string {
 		return 'beta-user';
 	}
 
-	public function getPriority(): int
-	{
+	public function getPriority(): int {
 		return 0;
 	}
 }
