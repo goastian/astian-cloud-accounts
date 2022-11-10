@@ -8,7 +8,6 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
-use OCP\Util;
 
 class BetaUserSetting implements ISettings
 {
@@ -41,7 +40,6 @@ class BetaUserSetting implements ISettings
 		if ($groupExists) {
 			$isBeta = $this->groupManager->isInGroup($uid, self::GROUP_NAME);
 		}
-		Util::addScript($this->appName, 'ecloud-accounts-beta-user-setting');
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
 		return new TemplateResponse($this->appName, 'beta_user_setting', $parameters, '');
 	}
