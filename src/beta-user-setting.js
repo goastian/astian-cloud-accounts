@@ -34,9 +34,6 @@ $(function() {
 			error(request, msg, error) {
 				$('#message').addClass('alert-fail')
 				$('#message').html(t('ecloud-accounts', 'Something went wrong here.'))
-				setTimeout(function() {
-					window.location.reload()
-				}, 2000)
 			},
 		})
 	})
@@ -83,9 +80,6 @@ $(function() {
 			error(request, msg, error) {
 				$('#issue_message').addClass('alert-fail')
 				$('#issue_message').html(t('ecloud-accounts', 'Something went wrong.'))
-				setTimeout(function() {
-					window.location.reload()
-				}, 2000)
 			},
 		})
 	})

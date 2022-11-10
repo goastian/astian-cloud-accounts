@@ -40,7 +40,7 @@ class BetaUserSetting implements ISettings {
 		if ($groupExists) {
 			$isBeta = $this->groupManager->isInGroup($uid, $betaGroupName);
 		}
-		Util::addScript($this->appName, 'ecloud-accounts-beta-user-setting');
+		Util::addScript($this->appName, $this->appName . '-beta-user-setting');
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
 		return new TemplateResponse($this->appName, 'beta_user_setting', $parameters, '');
 	}
