@@ -13,8 +13,6 @@ namespace OCA\EcloudAccounts\Service;
 
 use Exception;
 
-use Exception;
-
 class CurlService {
 	/**
 	 * GET alias for request method
