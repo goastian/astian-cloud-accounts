@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
@@ -37,28 +36,22 @@ use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 
+class Application extends App implements IBootstrap {
+	public const APP_ID = 'ecloud-accounts';
 
-class Application extends App implements IBootstrap
-{
+	public function __construct(array $urlParams = []) {
+		parent::__construct(self::APP_ID, $urlParams);
+	}
 
-    const APP_ID = 'ecloud-accounts';
+	public function register(IRegistrationContext $context): void {
+		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
+		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
+	}
 
-    public function __construct(array $urlParams = [])
-    {
-        parent::__construct(self::APP_ID, $urlParams);
-    }
-
-    public function register(IRegistrationContext $context): void
-    {
-        $context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
-        $context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
-    }
-
-    public function boot(IBootContext $context): void
-    {
-        $serverContainer = $context->getServerContainer();
-        $serverContainer->registerService('LDAPConnectionService', function($c) {
-            return new LDAPConnectionService();
-        });
-    }
+	public function boot(IBootContext $context): void {
+		$serverContainer = $context->getServerContainer();
+		$serverContainer->registerService('LDAPConnectionService', function ($c) {
+			return new LDAPConnectionService();
+		});
+	}
 }

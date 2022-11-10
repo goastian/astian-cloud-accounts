@@ -1,9 +1,9 @@
 .DS_Store
 node_modules/
+js/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
 # Editor directories and files
 .idea
 .vscode
@@ -11,15 +11,11 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-
 .marginalia
-
 build/
 coverage/
 vendor/
-
 translationtool.phar
 .php-cs-fixer.cache
 .phpunit.result.cache
 junit.xml
-.php-cs-fixer.dist.php
