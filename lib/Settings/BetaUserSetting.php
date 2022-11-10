@@ -18,18 +18,23 @@ class BetaUserSetting implements ISettings {
 	/** @var IGroupManager */
 	protected $groupManager;
 
+	/** @var Util */
+	protected $util;
+
 	private $appName;
 
 	public function __construct(
 		$appName,
 		IUserSession $userSession,
 		IGroupManager $groupManager,
+		Util $util,
 		IConfig $config
 	) {
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->appName = $appName;
 		$this->config = $config;
+		$this->util = $util;
 	}
 
 	public function getForm(): TemplateResponse {
@@ -40,7 +45,7 @@ class BetaUserSetting implements ISettings {
 		if ($groupExists) {
 			$isBeta = $this->groupManager->isInGroup($uid, $betaGroupName);
 		}
-		Util::addScript($this->appName, $this->appName . '-beta-user-setting');
+		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
 		return new TemplateResponse($this->appName, 'beta_user_setting', $parameters, '');
 	}
