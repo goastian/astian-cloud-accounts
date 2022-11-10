@@ -10,15 +10,13 @@ use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\IConfig;
 use OCP\IUserManager;
-use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\ILogger;
 use OCP\Mail\IMailer;
 use OCP\Util;
 
-class BetaUserController extends Controller
-{
+class BetaUserController extends Controller {
 	protected $appName;
 	protected $request;
 	protected $config;
@@ -27,8 +25,8 @@ class BetaUserController extends Controller
 	protected $mailer;
 	private $userSession;
 
-	const GROUP_NAME = "beta";
-	const GITLAB_EMAIL_ADDRESS = "gitlab+e-infra-ecloud-beta-feedback-1361-issue-@e.email";
+	public const GROUP_NAME = "beta";
+	public const GITLAB_EMAIL_ADDRESS = "gitlab+e-infra-ecloud-beta-feedback-1361-issue-@e.email";
 
 	public function __construct(
 		$AppName,
@@ -55,9 +53,8 @@ class BetaUserController extends Controller
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function addUserInGroup()
-	{
-		$user =  $this->userSession->getUser();
+	public function addUserInGroup() {
+		$user = $this->userSession->getUser();
 		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
 			return false;
 		}
@@ -70,9 +67,8 @@ class BetaUserController extends Controller
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function removeUserInGroup()
-	{
-		$user =  $this->userSession->getUser();
+	public function removeUserInGroup() {
+		$user = $this->userSession->getUser();
 		if (!$this->groupManager->groupExists(self::GROUP_NAME)) {
 			return false;
 		}
@@ -85,9 +81,8 @@ class BetaUserController extends Controller
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function submitIssue(string $title, string $description)
-	{
-		$user =  $this->userSession->getUser();
+	public function submitIssue(string $title, string $description) {
+		$user = $this->userSession->getUser();
 		$fromEmail = $user->getEMailAddress();
 		$fromName = $user->getDisplayName();
 
