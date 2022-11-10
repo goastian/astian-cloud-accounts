@@ -1,5 +1,4 @@
 <?php
-script('ecloud-accounts', 'beta-user-setting');
 style('ecloud-accounts', 'style');
 ?>
 
