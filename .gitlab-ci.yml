@@ -1,5 +1,5 @@
 variables:
-    TO_PACKAGE: 'appinfo l10n img lib templates js'
+    TO_PACKAGE: 'appinfo css l10n lib templates js img'
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
