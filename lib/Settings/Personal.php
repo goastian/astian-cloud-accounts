@@ -31,7 +31,10 @@ class Personal implements ISettings {
 
 	private IUserManager $userManager;
 
-	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager, IGroupManager $groupManager, IUserManager $userManager) {
+	/** @var Util */
+	protected $util;
+
+	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager, IGroupManager $groupManager, IUserManager $userManager, Util $util) {
 		$this->userSession = $userSession;
 		$this->initialState = $initialState;
 		$this->appName = $appName;
@@ -39,6 +42,7 @@ class Personal implements ISettings {
 		$this->appManager = $appManager;
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
+		$this->util = $util;
 	}
 
 	/**
@@ -51,8 +55,8 @@ class Personal implements ISettings {
 			$onlyUser = $this->userManager->countUsers() < 2;
 			$adminGroup = $this->groupManager->get('admin');
 			$onlyAdmin = $adminGroup && $adminGroup->count() < 2 && $this->groupManager->isAdmin($user->getUID());
-			Util::addScript($this->appName, 'ecloud-accounts-personal-settings');
-			Util::addScript($this->appName, 'ecloud-accounts-delete-account-listeners');
+			$this->util->addScript($this->appName, $this->appName.'-personal-settings');
+			$this->util->addScript($this->appName, $this->appName.'-delete-account-listeners');
 			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
 			$shopEmailPostDelete = $this->shopAccountService->getShopEmailPostDeletePreference($user->getUID());
 

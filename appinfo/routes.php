@@ -13,4 +13,16 @@ return ['routes' => [
 		'name' => 'user#preflighted_cors', 'url' => '/api/{path}',
 		'verb' => 'OPTIONS', 'requirements' => array('path' => '.+')
 	],
+	[
+		'name' => 'beta_user#remove_user_in_group',
+		'url' => '/beta/update', 'verb' => 'DELETE'
+	],
+	[
+		'name' => 'beta_user#add_user_in_group',
+		'url' => '/beta/update', 'verb' => 'POST'
+	],
+	[
+		'name' => 'beta_user#submit_issue',
+		'url' => '/issue/submit', 'verb' => 'POST'
+	]
 ]];
