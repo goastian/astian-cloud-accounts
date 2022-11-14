@@ -20,7 +20,7 @@ OC.L10N.register(
 		"Opt out of beta features": "Abmeldung von Beta-Funktionen",
 		"Become a beta user": "Beta-Benutzer werden",
 		"Are you sure you want to opt out of beta features?": "Sind Sie sicher, dass Sie die Beta-Funktionen nicht nutzen möchten?", 
-		"You've successfully been removed from the beta users.": "Sie haben sich erfolgreich von den Beta-Benutzern abgemeldet.",
+		"You've successfully opted out of beta features.": "Sie haben sich erfolgreich von den Beta-Funktionen abgemeldet.",
 		"Congratulations! You've successfully been added to the beta users.": "Herzlichen Glückwunsch! Du wurdest erfolgreich zu den Beta-Benutzern hinzugefügt.",
 		"Beta program is not available at the moment.": "Beta programma is momenteel niet beschikbaar.",
 		"Something went wrong.": "Etwas ist schief gelaufen.",
