@@ -17,7 +17,7 @@ $(function() {
 				let message_ = ''
 				if (result) {
 					if (registerType === 'deregister') {
-						message_ = t('ecloud-accounts', 'You\'ve successfully been removed from the beta users.')
+						message_ = t('ecloud-accounts', 'You\'ve successfully opted out of beta features.')
 					} else {
 						message_ = t('ecloud-accounts', 'Congratulations! You\'ve successfully been added to the beta users.')
 					}
