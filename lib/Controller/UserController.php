@@ -136,6 +136,6 @@ class UserController extends ApiController {
 
 	private function checkAppCredentials(string $token): bool {
 		$ecloud_accounts_secret = $this->userService->getConfigValue('secret');
-		return strcmp($token, $ecloud_accounts_secret) === 0;
+		return hash_equals($ecloud_accounts_secret, $token);
 	}
 }
