@@ -37,7 +37,6 @@ use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Listeners\UserAddedToBetaGroupListener;
 
-
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
 
@@ -49,7 +48,6 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(UserAddedEvent::class, UserAddedToBetaGroupListener::class);
-
 	}
 
 	public function boot(IBootContext $context): void {
