@@ -38,7 +38,6 @@ use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Listeners\UserAddedToBetaGroupListener;
 use OCP\Group\Events\UserAddedEvent;
 
-
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
 
