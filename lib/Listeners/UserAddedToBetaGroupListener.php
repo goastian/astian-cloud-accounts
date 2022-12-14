@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Listeners;
 
+use Exception;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\UserAddedEvent;
@@ -53,8 +54,12 @@ class UserAddedToBetaGroupListener implements IEventListener {
 			$this->logger->debug("$snappyDir already exists");
 			return;
 		}
-		mkdir($snappyDir, 0755, true);
-		shell_exec("cp -ar $rainloopDir/* $snappyDir");
+		if (!mkdir($snappyDir, 0755, true)) {
+			throw new Exception("Unable to mkdir $snappyDir");
+		}
+		if (!shell_exec("cp -avr $rainloopDir/* $snappyDir")) {
+			throw new Exception("Unable to copy files from $rainloopDir to $snappyDir");
+		}
 		return;
 	}
 }
