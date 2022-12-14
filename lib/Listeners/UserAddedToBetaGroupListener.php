@@ -9,12 +9,15 @@ use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\UserAddedEvent;
 use OCP\IUser;
 use OCP\IConfig;
+use OCP\ILogger;
 
 class UserAddedToBetaGroupListener implements IEventListener {
 	private $config;
+	private $logger;
 
-	public function __construct(IConfig $config) {
+	public function __construct(IConfig $config, ILogger $logger) {
 		$this->config = $config;
+		$this->logger = $logger;
 	}
 
 	public function handle(Event $event): void {
@@ -30,24 +33,28 @@ class UserAddedToBetaGroupListener implements IEventListener {
 		if ($group->getGID() !== $betaGroup) {
 			return;
 		}
-
-		$this->migrateRainloopData($user);
+		try {
+			$this->migrateRainloopData($user);
+		} catch (Exception $e) {
+			$errorMessage = 'Error while migrating user rainloop data to snappymail';
+			$this->logger->error($errorMessage . ': ' . $e->getMessage());
+		}
 	}
 
 	private function migrateRainloopData(IUser $user): void {
 		$username = $user->getUID();
-		$dir_data = substr($username, 0, 2);
+		$userDir = substr($username, 0, 2);
 		$email = $user->getEMailAddress();
-		$dir = rtrim(trim($this->config->getSystemValue('datadirectory', '')), '\\/');
-		$dir_snappy = $dir . '/appdata_snappymail/_data_/_default_/storage/cfg/' . $dir_data . "/$email/";
-		$dir_rainloop = $dir . '/rainloop-storage/_data_/_default_/storage/cfg/' . $dir_data . "/$email";
+		$dataDir = rtrim(trim($this->config->getSystemValue('datadirectory', '')), '\\/');
+		$snappyDir = "$dataDir/appdata_snappymail/_data_/_default_/storage/cfg/$userDir/$email/";
+		$rainloopDir = "$dataDir/rainloop-storage/_data_/_default_/storage/cfg/$userDir/$email";
 		
-		if (file_exists($dir_snappy)) {
-			\OC::$server->getLogger()->debug("$dir_snappy folder already exists");
+		if (file_exists($snappyDir)) {
+			$this->logger->debug("$snappyDir already exists");
 			return;
 		}
-		mkdir($dir_snappy, 0755, true);
-		shell_exec("cp -ar $dir_rainloop/* $dir_snappy");
+		mkdir($snappyDir, 0755, true);
+		shell_exec("cp -ar $rainloopDir/* $snappyDir");
 		return;
 	}
 }
