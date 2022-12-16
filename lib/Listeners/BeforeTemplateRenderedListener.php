@@ -56,6 +56,9 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		}
 		
 		$password = $this->session->get('oidc_access_token');
+		if(empty($password)) {
+			return;
+		}
 
 		$account = $actions->LoginProcess($email, $password, false);
 		if ($account) {
