@@ -23,6 +23,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 
 	private const SNAPPYMAIL_APP_ID = 'snappymail';
 	private const SNAPPYMAIL_URL = '/apps/snappymail/';
+	private const SNAPPYMAIL_AUTOLOGIN_PWD = '1';
 
 	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager) {
 		$this->appName = $appName;
@@ -48,24 +49,23 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (!$isOidcLogin) {
 			return;
 		}
-		$email = $this->getEmail();
+		$accountId = $this->getAccountId();
 		$actions = \RainLoop\Api::Actions();
 		
-		if (empty($email) || $actions->getMainAccountFromToken(false)) {
+		if (empty($accountId) || $actions->getMainAccountFromToken(false)) {
 			return;
 		}
 		
-		// Just send over '1' as the plugin must set the correct one
-		$password = strval($isOidcLogin);
+		// Just send over '1' as password to trigger login as the plugin will set the correct access token
 
-		$account = $actions->LoginProcess($email, $password, false);
+		$account = $actions->LoginProcess($accountId, self::SNAPPYMAIL_AUTOLOGIN_PWD, false);
 		if ($account) {
 			$actions->Plugins()->RunHook('login.success', array($account));
 			$actions->SetAuthToken($account);
 		}
 	}
 
-	private function getEmail() : string {
+	private function getAccountId() : string {
 		$username = $this->userSession->getUser()->getUID();
 		if ($this->config->getAppValue('snappymail', 'snappymail-autologin', false)) {
 			return $username;
