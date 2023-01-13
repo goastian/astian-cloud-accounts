@@ -47,7 +47,7 @@ class BetaUserSetting implements ISettings {
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
 		$groupExists = $this->groupManager->groupExists($betaGroupName);
 		if (! $groupExists) {
-			return new TemplateResponse($this->appName, 'opt_out_beta_user', [], '');
+			return new TemplateResponse($this->appName, 'no_group_exists', [], '');
 		}
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
 		$group = $this->groupManager->get($betaGroupName);
