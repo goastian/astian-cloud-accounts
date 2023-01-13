@@ -11,6 +11,14 @@ style('ecloud-accounts', 'style');
 					<p class="settings-hint">
 						<?php p($l->t('Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.')); ?>
 					</p>
+					<div>
+						<p><?php p($l->t('Here is the list of currently available beta features:')) ?></p>
+						<ul class="beta-apps">
+							<?php foreach ($betaApps as $apps) { ?>
+							<li><?= $apps ?></li>
+							<?php } ?>
+						</ul>
+					</div>
 					<form id="issue-submit-form" class="mt-20">
 						<p>
 							<label for="title" id="title_label"><b><?php p($l->t('Title')); ?> <sup class="color-red">*</sup></b></label>
@@ -42,6 +50,16 @@ style('ecloud-accounts', 'style');
 					</form>
 				</div>
 				<div id="message" class="alert"></div>
+				<?php if (!$isBeta) { ?>
+				<div>
+					<p><?php p($l->t('Here is the list of currently available beta features:')) ?></p>
+					<ul class="beta-apps">
+						<?php foreach ($betaApps as $apps) { ?>
+						<li><?= $apps ?></li>
+						<?php } ?>
+					</ul>
+				</div>
+				<?php } ?>
 			<?php } else { ?>
 				<h2><?php p($l->t('Beta program is not available at the moment.')); ?></h2>
 			<?php } ?>

@@ -10,6 +10,7 @@ use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
 use OCP\IConfig;
+use OCP\App\IAppManager;
 
 class BetaUserSetting implements ISettings {
 	/** @var IUserSession */
@@ -23,18 +24,22 @@ class BetaUserSetting implements ISettings {
 
 	private $appName;
 
+	private $appManager;
+
 	public function __construct(
 		$appName,
 		IUserSession $userSession,
 		IGroupManager $groupManager,
 		Util $util,
-		IConfig $config
+		IConfig $config,
+		IAppManager $appManager
 	) {
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->util = $util;
+		$this->appManager = $appManager;
 	}
 
 	public function getForm(): TemplateResponse {
@@ -46,7 +51,17 @@ class BetaUserSetting implements ISettings {
 			$isBeta = $this->groupManager->isInGroup($uid, $betaGroupName);
 		}
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
-		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists];
+		$group = $this->groupManager->get($betaGroupName);
+		$betaGroupApps = $this->appManager->getEnabledAppsForGroup($group);
+		$betaApps = [];
+		foreach ($betaGroupApps as $app) {
+			$appEnabledGroups = $this->config->getAppValue($app, 'enabled', 'no');
+			if (str_contains($appEnabledGroups, $betaGroupName)) {
+				$info = $this->appManager->getAppInfo($app);
+				$betaApps[] = $info['name'];
+			}
+		}
+		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists, 'betaApps' => $betaApps];
 		return new TemplateResponse($this->appName, 'beta_user_setting', $parameters, '');
 	}
 
