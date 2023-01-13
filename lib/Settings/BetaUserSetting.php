@@ -62,7 +62,11 @@ class BetaUserSetting implements ISettings {
 			}
 		}
 		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists, 'betaApps' => $betaApps];
-		return new TemplateResponse($this->appName, 'beta_user_setting', $parameters, '');
+		if($isBeta){
+			return new TemplateResponse($this->appName, 'opt_out_beta_user', $parameters, '');
+		}else{
+			return new TemplateResponse($this->appName, 'become_beta_user', $parameters, '');
+		}
 	}
 
 	public function getSection(): ?string {
