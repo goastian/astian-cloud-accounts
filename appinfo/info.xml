@@ -10,7 +10,7 @@
     <description><![CDATA[in /e/OS cloud, nextcloud accounts are linked to mail accounts. This app ensures both are coordinated: it sets the e-mail address, quota and storage of the user upon creation.
     It also completes the account deletion by cleaning other parts of the /e/OS cloud setup to ensure no more data is retained when a user requests an account deletion.
     This app uses the UserDeletedEvent to invoke scripts in the docker-welcome container of /e/OS cloud setup]]></description>
-    <version>2.3.3</version>
+    <version>2.4.0</version>
     <licence>agpl</licence>
     <author mail="dev@e.email" homepage="https://gitlab.e.foundation/">Akhil Potukuchi</author>
     <namespace>EcloudAccounts</namespace>
