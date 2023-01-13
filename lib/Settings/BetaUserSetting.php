@@ -44,11 +44,10 @@ class BetaUserSetting implements ISettings {
 
 	public function getForm(): TemplateResponse {
 		$uid = $this->userSession->getUser()->getUID();
-		$isBeta = 0;
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
 		$groupExists = $this->groupManager->groupExists($betaGroupName);
-		if ($groupExists) {
-			$isBeta = $this->groupManager->isInGroup($uid, $betaGroupName);
+		if (! $groupExists) {
+			return new TemplateResponse($this->appName, 'opt_out_beta_user', [], '');
 		}
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
 		$group = $this->groupManager->get($betaGroupName);
@@ -61,11 +60,10 @@ class BetaUserSetting implements ISettings {
 				$betaApps[] = $info['name'];
 			}
 		}
-		$parameters = ['isBeta' => $isBeta, 'groupExists' => $groupExists, 'betaApps' => $betaApps];
-		if($isBeta){
-			return new TemplateResponse($this->appName, 'opt_out_beta_user', $parameters, '');
-		}else{
-			return new TemplateResponse($this->appName, 'become_beta_user', $parameters, '');
+		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
+			return new TemplateResponse($this->appName, 'opt_out_beta_user', ['betaApps' => $betaApps], '');
+		} else {
+			return new TemplateResponse($this->appName, 'become_beta_user', ['betaApps' => $betaApps], '');
 		}
 	}
 
