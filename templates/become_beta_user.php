@@ -18,8 +18,8 @@ style('ecloud-accounts', 'style');
 			<div>
 				<p><?php p($l->t('Here is the list of currently available beta features:')) ?></p>
 				<ul class="beta-apps">
-					<?php foreach ($betaApps as $apps) { ?>
-					<li><?= $apps ?></li>
+					<?php foreach ($betaApps as $app) { ?>
+					<li><?= $app ?></li>
 					<?php } ?>
 				</ul>
 			</div>
