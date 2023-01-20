@@ -62,7 +62,7 @@ class BetaUserSetting implements ISettings {
 		}
 		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
 			return new TemplateResponse($this->appName, 'opt_out_beta_user', ['betaApps' => $betaApps], '');
-		} 
+		}
 		return new TemplateResponse($this->appName, 'become_beta_user', ['betaApps' => $betaApps], '');
 	}
 
