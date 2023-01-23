@@ -45,10 +45,6 @@ class BetaUserSetting implements ISettings {
 	public function getForm(): TemplateResponse {
 		$uid = $this->userSession->getUser()->getUID();
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
-		$groupExists = $this->groupManager->groupExists($betaGroupName);
-		if (! $groupExists) {
-			return new TemplateResponse($this->appName, 'no_group_exists', [], '');
-		}
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
 		$group = $this->groupManager->get($betaGroupName);
 		$betaGroupApps = $this->appManager->getEnabledAppsForGroup($group);
@@ -67,6 +63,11 @@ class BetaUserSetting implements ISettings {
 	}
 
 	public function getSection(): ?string {
+		$betaGroupName = $this->config->getSystemValue("beta_group_name");
+		$groupExists = $this->groupManager->groupExists($betaGroupName);
+		if (! $groupExists) {
+			return null;
+		}
 		return 'beta-user';
 	}
 
