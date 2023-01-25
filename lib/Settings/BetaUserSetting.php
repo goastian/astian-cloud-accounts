@@ -11,6 +11,7 @@ use OCP\Settings\ISettings;
 use OCP\Util;
 use OCP\IConfig;
 use OCP\App\IAppManager;
+use OCP\ILogger;
 
 class BetaUserSetting implements ISettings {
 	/** @var IUserSession */
@@ -26,13 +27,17 @@ class BetaUserSetting implements ISettings {
 
 	private $appManager;
 
+	/** @var ILogger */
+	private $logger;
+
 	public function __construct(
 		$appName,
 		IUserSession $userSession,
 		IGroupManager $groupManager,
 		Util $util,
 		IConfig $config,
-		IAppManager $appManager
+		IAppManager $appManager,
+		ILogger $logger
 	) {
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
@@ -40,6 +45,7 @@ class BetaUserSetting implements ISettings {
 		$this->config = $config;
 		$this->util = $util;
 		$this->appManager = $appManager;
+		$this->logger = $logger;
 	}
 
 	public function getForm(): TemplateResponse {
@@ -64,8 +70,13 @@ class BetaUserSetting implements ISettings {
 
 	public function getSection(): ?string {
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
+		if (empty($betaGroupName)) {
+			$this->logger->error('Beta group name is not configured.', ['app' => 'ecloud-accounts']);
+			return null;
+		}
 		$groupExists = $this->groupManager->groupExists($betaGroupName);
 		if (! $groupExists) {
+			$this->logger->error('Beta group is not available.', ['app' => 'ecloud-accounts']);
 			return null;
 		}
 		return 'beta-user';
