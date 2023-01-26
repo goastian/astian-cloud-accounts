@@ -1,7 +1,7 @@
 .alert {
 	position: relative;
-	padding: 0.75rem 1.25rem;
 	margin-top: 1rem;
+	margin-bottom: 1rem;
 	border: 1px solid transparent;
 	border-radius: 0.25rem;
 	width: fit-content;
@@ -11,12 +11,14 @@
 	color: #155724;
 	background-color: #d4edda;
 	border-color: #c3e6cb;
+	padding: 0.75rem 1.25rem;
 }
 
 .alert-fail {
 	color: #721c24;
 	background-color: #f8d7da;
 	border-color: #f5c6cb;
+	padding: 0.75rem 1.25rem;
 }
 
 #issue-submit-form #title,
@@ -50,3 +52,17 @@
 .color-red {
 	color: red;
 }
+
+ul.beta-apps {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 1em;
+}
+
+ul.beta-apps > li:before {
+	display: inline-block;
+	content: '-';
+	width: 1em;
+	margin-left: -1em;
+}
+

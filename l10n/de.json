@@ -31,7 +31,8 @@
 		"Submit": "Einreichen",
 		"Experimental": "Experimentelle",
 		"Title is mandatory.": "Der Titel ist obligatorisch.",
-		"Description is mandatory.": "Die Beschreibung ist obligatorisch."
+		"Description is mandatory.": "Die Beschreibung ist obligatorisch.",
+		"Here is the list of currently available beta features:": "Hier ist die Liste der derzeit verfügbaren Beta-Funktionen:"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }
