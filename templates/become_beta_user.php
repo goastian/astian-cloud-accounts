@@ -14,7 +14,6 @@ style('ecloud-accounts', 'style');
 					<input type="submit" class="width300" value="<?= p($l->t('Become a beta user')) ?>" />
 				</form>
 			</div>
-			<div id="message" class="alert"></div>
 			<div>
 				<p class="settings-hint"><?php p($l->t('Here is the list of currently available beta features:')) ?></p>
 				<ul class="beta-apps settings-hint">
@@ -23,6 +22,7 @@ style('ecloud-accounts', 'style');
 					<?php } ?>
 				</ul>
 			</div>
+			<div id="message" class="alert"></div>
 		</div>
 	</div>
 </div>
