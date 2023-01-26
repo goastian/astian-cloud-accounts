@@ -10,8 +10,8 @@ style('ecloud-accounts', 'style');
 				<?php p($l->t('Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.')); ?>
 			</p>
 			<div>
-				<p><?php p($l->t('Here is the list of currently available beta features:')) ?></p>
-				<ul class="beta-apps">
+				<p class="settings-hint"><?php p($l->t('Here is the list of currently available beta features:')) ?></p>
+				<ul class="beta-apps settings-hint">
 					<?php foreach ($betaApps as $app) { ?>
 						<li><?= $app ?></li>
 					<?php } ?>
