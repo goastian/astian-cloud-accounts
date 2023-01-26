@@ -33,6 +33,7 @@ OC.L10N.register(
 		"Submit": "Envíe",
 		"Experimental": "Experimento",
 		"Title is mandatory.": "El título es obligatorio.",
-		"Description is mandatory.": "La descripción es obligatoria."
+		"Description is mandatory.": "La descripción es obligatoria.",
+		"Here is the list of currently available beta features:": "Esta es la lista de funciones de la versión beta disponibles actualmente:"
 	},
 	"nplurals=2; plural=(n != 1);");
