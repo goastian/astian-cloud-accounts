@@ -73,13 +73,16 @@ class ShopAccountController extends Controller {
 	 */
 	public function getOrderInfo(int $userId) {
 		$response = new DataResponse();
-		$data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
+		$data = ['count' => 0,'subscriptions' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
+		
 		$orders = $this->shopAccountService->getOrders($userId);
-
+		$subscriptions = $this->shopAccountService->getSubscriptions($userId);
 		if ($orders) {
 			$data['count'] = count($orders);
 		}
-
+		if ($subscriptions) {
+			$data['subscriptions'] = count($subscriptions);
+		}
 		$response->setData($data);
 		return $response;
 	}

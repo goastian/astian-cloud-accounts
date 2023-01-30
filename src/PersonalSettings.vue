@@ -5,6 +5,7 @@
 				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
 			}}
 			<span v-if="orderCount" v-html="ordersDescription" />
+			<span v-if="subscriptionCount" v-html="subscriptionDescription" />
 		</p>
 		<form @submit.prevent>
 			<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
@@ -14,6 +15,7 @@
 						type="checkbox"
 						name="shop-accounts_confirm"
 						class="checkbox"
+						:disabled='subscriptionCount > 0'
 						@change="updateDeleteShopPreference()">
 					<label for="shop-accounts_confirm">{{
 						t(
@@ -37,6 +39,7 @@
 						name="shop-alternate-email"
 						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
+						:disabled='subscriptionCount > 0'
 						@blur="updateEmailPostDelete($event)">
 				</div>
 			</div>
@@ -84,7 +87,9 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
+			subscriptionCount: 0,
 			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>."),
+			subscriptionDescription: this.t('ecloud-accounts', "A subscription is active in this account. Please cancel it or let it expire before deleting your account."),
 		}
 	},
 	created() {
@@ -155,13 +160,17 @@ export default {
 		async getOrdersInfo() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info?userId=${this.shopUser.id}`
+					`/apps/${this.appName}/shop-accounts/order_info?userId=11758`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					if (data.count > 0) {
-						this.ordersDescription = this.ordersDescription.replace('%d', data.count).replace('%s', data.my_orders_url)
-						this.orderCount = data.count
+					this.orderCount = data.count
+					if (this.orderCount) {
+						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
+					}
+					this.subscriptionCount = data.subscriptions
+					if (this.subscriptionCount) {
+						this.subscriptionDescription = this.subscriptionDescription.replace('%d', this.subscriptionCount).replace('%s', data.my_orders_url)
 					}
 				}
 			} catch (e) {

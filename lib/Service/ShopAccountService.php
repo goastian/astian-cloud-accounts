@@ -26,6 +26,7 @@ class ShopAccountService {
 
 		$this->shopUserUrl = $this->shopUrl . "/wp-json/wp/v2/users";
 		$this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
+		$this->subscriptionUrl = $this->shopUrl . "/wp-json/wc/v3/subscriptions";
 		$this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
 		$this->curl = $curlService;
 		$this->logger = $logger;
@@ -168,5 +169,15 @@ class ShopAccountService {
 
 	public function isUserOIDC(array $user) {
 		return !empty($user['openid-connect-generic-last-user-claim']);
+	}
+
+	public function getSubscriptions(int $userId): ?array {
+		try {
+			return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId]);
+		} catch (Exception $e) {
+			$this->logger->error('There was an issue querying shop for subscriptions for user ' . strval($userId));
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+		}
+		return null;
 	}
 }

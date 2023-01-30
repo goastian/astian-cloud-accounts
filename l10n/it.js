@@ -33,6 +33,7 @@ OC.L10N.register(
 		"Experimental": "Sperimentale",
 		"Title is mandatory.": "Il titolo è obbligatorio.",
 		"Description is mandatory.": "La descrizione è obbligatoria.",
-		"Here is the list of currently available beta features:": "Ecco l'elenco delle funzioni beta attualmente disponibili:"
+		"Here is the list of currently available beta features:": "Ecco l'elenco delle funzioni beta attualmente disponibili:",
+		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "In questo account è attivo un abbonamento. Si prega di annullarlo o di lasciarlo scadere prima di cancellare l'account."
 	},
 	"nplurals=2; plural=(n != 1);");
