@@ -15,7 +15,7 @@
 						type="checkbox"
 						name="shop-accounts_confirm"
 						class="checkbox"
-						:disabled='subscriptionCount > 0'
+						:disabled="subscriptionCount > 0"
 						@change="updateDeleteShopPreference()">
 					<label for="shop-accounts_confirm">{{
 						t(
@@ -39,7 +39,7 @@
 						name="shop-alternate-email"
 						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
-						:disabled='subscriptionCount > 0'
+						:disabled="subscriptionCount > 0"
 						@blur="updateEmailPostDelete($event)">
 				</div>
 			</div>
@@ -89,7 +89,7 @@ export default {
 			orderCount: 0,
 			subscriptionCount: 0,
 			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>."),
-			subscriptionDescription: this.t('ecloud-accounts', "A subscription is active in this account. Please cancel it or let it expire before deleting your account."),
+			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
 		}
 	},
 	created() {
