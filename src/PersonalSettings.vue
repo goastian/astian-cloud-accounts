@@ -15,7 +15,7 @@
 						type="checkbox"
 						name="shop-accounts_confirm"
 						class="checkbox"
-						:disabled="subscriptionCount > 0"
+						:disabled="subscriptionCount"
 						@change="updateDeleteShopPreference()">
 					<label for="shop-accounts_confirm">{{
 						t(
@@ -39,7 +39,7 @@
 						name="shop-alternate-email"
 						:placeholder="t('ecloud-accounts', 'Email Address')"
 						class="form-control"
-						:disabled="subscriptionCount > 0"
+						:disabled="subscriptionCount"
 						@blur="updateEmailPostDelete($event)">
 				</div>
 			</div>
