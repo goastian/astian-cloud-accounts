@@ -3,8 +3,9 @@ OC.L10N.register(
 	{
 		"Email Address": "Indirizzo e-mail",
 		"Options": "Opzioni",
-		"We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.": "Procederemo con la soppressione dell'account cloud. Selezionare la casella sottostante se si desidera eliminare anche l'account del negozio associato.",
-		"For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>.": "Per vostra informazione, avete %d ordini in <a class='text-color-active' href='%s'>il tuo account</a>.",
+		"We are going to proceed with your cloud account suppression.": "Procederemo con la soppressione dell'account cloud.",
+		"Check the box below if you also want to delete the associated shop account.": "Selezionare la casella sottostante se si desidera eliminare anche l'account del negozio associato.",
+		"For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.": "Per vostra informazione, avete %d ordini in <a class='text-color-active' href='%s' target='_blank'>il tuo account</a>.",
 		"I also want to delete my shop account": "Voglio anche cancellare il mio account del negozio",
 		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ": "Se volete mantenere il vostro account del negozio, convalidate o modificate l'indirizzo e-mail qui sotto. Questo indirizzo e-mail diventerà il vostro nuovo login al negozio. ",
 		"Error while setting shop delete preference": "Errore durante l'impostazione della preferenza di cancellazione del negozio",

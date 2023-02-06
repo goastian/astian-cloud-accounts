@@ -6,8 +6,13 @@
 		<div v-if="!loader">
 			<p>
 				{{
-					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
+					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
 				}}
+				<span v-if="subscriptionCount === 0">
+					{{
+						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account.')
+					}}
+				</span>
 			</p>
 			<p><span v-if="orderCount" v-html="ordersDescription" /></p>
 			<p><span v-if="subscriptionCount" v-html="subscriptionDescription" /></p>
