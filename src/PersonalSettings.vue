@@ -17,7 +17,7 @@
 			<p><span v-if="orderCount" v-html="ordersDescription" /></p>
 			<p><span v-if="subscriptionCount" v-html="subscriptionDescription" /></p>
 			<form @submit.prevent>
-				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+				<div v-if="!onlyUser && !onlyAdmin && subscriptionCount === 0" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
 						<input id="shop-accounts_confirm"
 							v-model="deleteShopAccount"
