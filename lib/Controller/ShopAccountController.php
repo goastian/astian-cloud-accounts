@@ -82,7 +82,6 @@ class ShopAccountController extends Controller {
 		}
 		if ($subscriptions) {
 			$data['subscriptions'] = count($subscriptions);
-			$data['all_subscriptions'] = $subscriptions;
 		}
 		$response->setData($data);
 		return $response;
