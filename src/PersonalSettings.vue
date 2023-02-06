@@ -283,7 +283,9 @@ export default {
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }
-
+input#shop-alternate-email:disabled {
+    background: var(--color-background-dark);
+}
 .delete-shop-input {
 	margin-bottom: 1em;
 }
