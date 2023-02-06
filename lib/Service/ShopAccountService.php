@@ -173,7 +173,7 @@ class ShopAccountService {
 
 	public function getSubscriptions(int $userId): ?array {
 		try {
-			return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId]);
+			return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId , 'status' => 'active']);
 		} catch (Exception $e) {
 			$this->logger->error('There was an issue querying shop for subscriptions for user ' . strval($userId));
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
