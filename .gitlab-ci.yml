@@ -4,8 +4,8 @@ variables:
     CONTAINER_TAG: focal
     CONTAINER_NAME: nextcloud
     APP_NAME: $CI_PROJECT_NAME
-    OCC_ENABLE_AFTER_DEPLOY: 'true'
-    APP_PATH: ''
+    APP_ENABLE_ARGS: ''
+
   
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
@@ -15,7 +15,7 @@ include:
     ref: main
     file: "nc-apps-deploy.yml"
 
-.deploy:nextcloud-app-by-checkout:
+.deploy:nextcloud-app:
   stage: deploy
   # assuming all deployment will happen with sames image
   image: $CONTAINER_IMAGE:$CONTAINER_TAG
@@ -31,32 +31,19 @@ include:
     - chmod 644 ~/.ssh/known_hosts ~/.ssh/id_ed25519.pub
     - apt-get update && apt-get install -y openssh-client rsync
   script:
-    # print var to confirm
-    - echo "Deploying $APP_NAME to $CI_ENVIRONMENT_NAME ($DEPLOYMENT_HOST)"
-    # clone repo to /tmp
-    - |
-      ssh $SSH_USER@$DEPLOYMENT_HOST /bin/bash -s << EOT
-      git clone --depth 1 $CI_REPOSITORY_URL --branch $CI_COMMIT_REF_NAME --single-branch /tmp/${CI_JOB_ID}/${APP_NAME}
-      if $OCC_ENABLE_AFTER_DEPLOY = 'true'
-      then
-        sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:disable ${APP_NAME}
-      fi
-      sudo rsync -avzh --chown www-data:www-data --delete --exclude '.git*' /tmp/${CI_JOB_ID}/${APP_NAME} ${DEPLOYMENT_PATH}/html/custom_apps/${APP_PATH}
-      if $OCC_ENABLE_AFTER_DEPLOY = 'true'
-      then
-        sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:enable ${APP_NAME}
-      fi
-      EOT
+    - echo "Deploying ${APP_NAME} to $CI_ENVIRONMENT_NAME ($DEPLOYMENT_HOST)"
+    - rsync -avzh dist/ $SSH_USER@$DEPLOYMENT_HOST:/tmp/${CI_JOB_ID}
+    - ssh $SSH_USER@$DEPLOYMENT_HOST "sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:disable ${APP_NAME} && 
+      sudo rsync -avzh --chown www-data:www-data --delete /tmp/${CI_JOB_ID}/${APP_NAME} ${DEPLOYMENT_PATH}/html/custom_apps/ && 
+      sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:enable ${APP_ENABLE_ARGS} ${APP_NAME}"
     - echo "SUCCESS" > .job_status
   after_script:
     # reading job status, checking it and implementing additional steps
     # are not handled here as rm -rf /tmp/${CI_JOB_ID} will always execute
     - ssh $SSH_USER@$DEPLOYMENT_HOST "rm -rf /tmp/${CI_JOB_ID}"
 
-
-
 deploy:staging:
-  extends: .deploy:nextcloud-app-by-checkout
+  extends: .deploy:nextcloud-app
   when: manual
   only:
     - main
