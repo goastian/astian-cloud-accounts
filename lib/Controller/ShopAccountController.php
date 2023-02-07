@@ -81,7 +81,7 @@ class ShopAccountController extends Controller {
 		}
 		$total_subscriptions = 0;
 		$subscription_status_list = ['pending','active','on-hold','pending-cancel'];
-		foreach($subscription_status_list as $status){
+		foreach ($subscription_status_list as $status) {
 			$subscriptions = $this->shopAccountService->getSubscriptions($userId, $status);
 			if ($subscriptions) {
 				$total_subscriptions += count($subscriptions);
