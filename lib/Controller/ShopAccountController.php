@@ -80,21 +80,12 @@ class ShopAccountController extends Controller {
 			$data['count'] = count($orders);
 		}
 		$total_subscriptions = 0;
-		$subscriptions_pending = $this->shopAccountService->getSubscriptions($userId, 'pending');
-		if ($subscriptions_pending) {
-			$total_subscriptions += count($subscriptions_pending);
-		}
-		$subscriptions_active = $this->shopAccountService->getSubscriptions($userId, 'active');
-		if ($subscriptions_active) {
-			$total_subscriptions += count($subscriptions_active);
-		}
-		$subscriptions_on_hold = $this->shopAccountService->getSubscriptions($userId, 'on-hold');
-		if ($subscriptions_on_hold) {
-			$total_subscriptions += count($subscriptions_on_hold);
-		}
-		$subscriptions_pending_cancel = $this->shopAccountService->getSubscriptions($userId, 'pending-cancel');
-		if ($subscriptions_pending_cancel) {
-			$total_subscriptions += count($subscriptions_pending_cancel);
+		$subscription_status_list = ['pending','active','on-hold','pending-cancel'];
+		foreach($subscription_status_list as $status){
+			$subscriptions = $this->shopAccountService->getSubscriptions($userId, $status);
+			if ($subscriptions) {
+				$total_subscriptions += count($subscriptions);
+			}
 		}
 		$data['subscriptions'] = $total_subscriptions;
 		$response->setData($data);
