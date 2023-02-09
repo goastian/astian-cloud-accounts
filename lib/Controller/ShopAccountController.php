@@ -87,7 +87,7 @@ class ShopAccountController extends Controller {
 		}
 		$total_subscriptions = 0;
 		
-		foreach (SUBSCRIPTION_STATUS_LIST as $status) {
+		foreach (self::SUBSCRIPTION_STATUS_LIST as $status) {
 			$subscriptions = $this->shopAccountService->getSubscriptions($userId, $status);
 			if ($subscriptions) {
 				$total_subscriptions += count($subscriptions);
