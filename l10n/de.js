@@ -35,6 +35,7 @@ OC.L10N.register(
 		"Title is mandatory.": "Der Titel ist obligatorisch.",
 		"Description is mandatory.": "Die Beschreibung ist obligatorisch.",
 		"Here is the list of currently available beta features:": "Hier ist die Liste der derzeit verfügbaren Beta-Funktionen:",
-		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Für dieses Konto ist ein Abonnement aktiv. Bitte kündigen Sie es oder lassen Sie es auslaufen, bevor Sie Ihr Konto löschen."
+		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Für dieses Konto ist ein Abonnement aktiv. Bitte kündigen Sie es oder lassen Sie es auslaufen, bevor Sie Ihr Konto löschen.",
+		"Loading...": "Laden..."
 	},
 	"nplurals=2; plural=(n != 1);");

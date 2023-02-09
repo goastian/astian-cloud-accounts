@@ -1,7 +1,9 @@
 <template>
 	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
 		<p v-if="loader">
-			Loading ...
+			{{
+				t('ecloud-accounts', 'Loading...')
+			}}
 		</p>
 		<div v-if="!loader">
 			<p>
@@ -175,11 +177,11 @@ export default {
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					this.orderCount = data.count
+					this.orderCount = data.order_count
 					if (this.orderCount) {
 						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
 					}
-					this.subscriptionCount = data.subscriptions
+					this.subscriptionCount = data.subscription_count
 					if (this.subscriptionCount) {
 						this.subscriptionDescription = this.subscriptionDescription.replace('%d', this.subscriptionCount).replace('%s', data.my_orders_url)
 					}
