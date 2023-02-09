@@ -91,7 +91,7 @@ class ShopAccountController extends Controller {
 		if ($subscriptions) {
 			foreach ($subscriptions as $subscription) {
 				if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
-					$total_subscriptions += count($subscriptions);
+					$total_subscriptions++;
 				}
 			}
 		}
