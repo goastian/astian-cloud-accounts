@@ -1,11 +1,11 @@
 <template>
 	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
-		<p v-if="loader">
+		<p v-if="loading">
 			{{
 				t('ecloud-accounts', 'Loading...')
 			}}
 		</p>
-		<div v-if="!loader">
+		<div v-if="!loading">
 			<p>
 				{{
 					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
@@ -102,7 +102,7 @@ export default {
 			subscriptionCount: 0,
 			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
 			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
-			loader: true,
+			loading: true,
 		}
 	},
 	created() {
@@ -186,9 +186,9 @@ export default {
 						this.subscriptionDescription = this.subscriptionDescription.replace('%d', this.subscriptionCount).replace('%s', data.my_orders_url)
 					}
 				}
-				this.loader = false
+				this.loading = false
 			} catch (e) {
-				this.loader = false
+				this.loading = false
 			}
 		},
 		async updateDeleteShopPreference() {
