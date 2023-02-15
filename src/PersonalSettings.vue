@@ -5,7 +5,7 @@
 				t('ecloud-accounts', 'Loading...')
 			}}
 		</p>
-		<div v-if="!loading">
+		<div v-else>
 			<p>
 				{{
 					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
