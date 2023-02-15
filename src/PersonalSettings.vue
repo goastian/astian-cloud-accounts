@@ -165,10 +165,9 @@ export default {
 				if (status === 200) {
 					this.shopUserExists = true
 					this.shopUser = data
-				} else {
-					showError(
-						t('ecloud-accounts', 'Error while fetching the records')
-					)
+				}
+				if (status === 400) {
+					this.enableDeleteAccountEvent()
 				}
 			} catch (e) {
 			}
