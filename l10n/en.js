@@ -36,6 +36,7 @@ OC.L10N.register(
 		"Description is mandatory.": "Description is mandatory.",
 		"Here is the list of currently available beta features:": "Here is the list of currently available beta features:",
 		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "A subscription is active in this account. Please cancel it or let it expire before deleting your account.",
-		"Loading...": "Loading..."
+		"Loading...": "Loading...",
+		"Error while fetching the records": "Error while fetching the records"
 	},
 	"nplurals=2; plural=(n != 1);");

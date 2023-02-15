@@ -37,6 +37,7 @@ OC.L10N.register(
 		"Description is mandatory.": "La descripción es obligatoria.",
 		"Here is the list of currently available beta features:": "Esta es la lista de funciones de la versión beta disponibles actualmente:",
 		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Hay una suscripción activa en esta cuenta. Por favor, cancélala o deja que expire antes de eliminar tu cuenta.",
-		"Loading...": "Cargando..."
+		"Loading...": "Cargando...",
+		"Error while fetching the records": "Error al recuperar los registros"
 	},
 	"nplurals=2; plural=(n != 1);");
