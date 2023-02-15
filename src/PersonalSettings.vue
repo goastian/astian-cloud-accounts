@@ -182,9 +182,6 @@ export default {
 						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
 					}
 					this.subscriptionCount = data.subscription_count
-					if (this.subscriptionCount) {
-						this.subscriptionDescription = this.subscriptionDescription.replace('%d', this.subscriptionCount).replace('%s', data.my_orders_url)
-					}
 				}
 				this.loading = false
 			} catch (e) {
