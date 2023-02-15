@@ -103,6 +103,7 @@ export default {
 			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
 			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
 			loading: true,
+			showError: false,
 		}
 	},
 	created() {
@@ -116,6 +117,7 @@ export default {
 			this.getShopUser().then(() => {
 				if (this.shopUserExists) {
 					this.getOrdersInfo()
+					this.getSubscriptionInfo()
 				}
 				this.disableOrEnableDeleteAccount()
 			})
@@ -163,9 +165,10 @@ export default {
 				if (status === 200) {
 					this.shopUserExists = true
 					this.shopUser = data
-				}
-				if (status === 400) {
-					this.enableDeleteAccountEvent()
+				} else {
+					showError(
+						t('ecloud-accounts', 'Error while fetching the records')
+					)
 				}
 			} catch (e) {
 			}
@@ -181,10 +184,39 @@ export default {
 					if (this.orderCount) {
 						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
 					}
-					this.subscriptionCount = data.subscription_count
+				} else {
+					showError(
+						t('ecloud-accounts', 'Error while fetching the records')
+					)
 				}
 				this.loading = false
 			} catch (e) {
+				showError(
+					t('ecloud-accounts', 'Error while fetching the records')
+				)
+				this.loading = false
+			}
+		},
+		async getSubscriptionInfo() {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/subscription_info?userId=${this.shopUser.id}`
+				)
+				const { status, data } = await Axios.get(url)
+				if (status === 200) {
+					this.subscriptionCount = data.subscription_count
+				} else {
+					this.disableDeleteAccountEvent()
+					showError(
+						t('ecloud-accounts', 'Error while fetching the records')
+					)
+				}
+				this.loading = false
+			} catch (e) {
+				this.disableDeleteAccountEvent()
+				showError(
+					t('ecloud-accounts', 'Error while fetching the records')
+				)
 				this.loading = false
 			}
 		},

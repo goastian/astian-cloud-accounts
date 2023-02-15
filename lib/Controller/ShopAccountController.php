@@ -10,6 +10,7 @@ use OCP\IUserSession;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http;
 
 class ShopAccountController extends Controller {
 	private $shopAccountService;
@@ -78,22 +79,40 @@ class ShopAccountController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public function getOrderInfo(int $userId) {
-		$response = new DataResponse();
-		$data = ['order_count' => 0,'subscription_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
-		
+		if (!$userId) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
+		}
+		$data = ['order_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
 		$orders = $this->shopAccountService->getOrders($userId);
-		if ($orders) {
-			$data['order_count'] = count($orders);
+		if ($orders === null) {
+			return new DataResponse([''], Http::STATUS_BAD_REQUEST);
+		}
+		$data['order_count'] = count($orders);
+		$response = new DataResponse();
+		$response->setData($data);
+		return $response;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getSubscriptionInfo(int $userId) {
+		if (!$userId) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
+		}
+		$data = ['subscription_count' => 0];
+		$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
+		if ($subscriptions === null) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
 		$total_subscriptions = 0;
-		
-		$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
 		foreach ($subscriptions as $subscription) {
 			if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
 				$total_subscriptions++;
 			}
 		}
 		$data['subscription_count'] = $total_subscriptions;
+		$response = new DataResponse();
 		$response->setData($data);
 		return $response;
 	}

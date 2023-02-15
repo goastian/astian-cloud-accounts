@@ -8,6 +8,9 @@ $(document).ready(function() {
 	elem.addEventListener('disable-delete-account', function() {
 		$('#deleteaccount').prop('disabled', true)
 		$('#drop_account_confirm').prop('disabled', true)
+		$('#drop_account_confirm').prop('disabled', true)
+		$('#shop-accounts_confirm').prop('disabled', true)
+		$('#shop-alternate-email').prop('disabled', true)
 	})
 
 	elem.addEventListener('enable-delete-account', function() {
