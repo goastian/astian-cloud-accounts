@@ -204,6 +204,9 @@ export default {
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
 					this.subscriptionCount = data.subscription_count
+					if (this.subscriptionCount > 0) {
+						this.disableDeleteAccountEvent()
+					}
 				} else {
 					this.disableDeleteAccountEvent()
 					showError(
