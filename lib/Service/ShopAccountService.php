@@ -77,7 +77,6 @@ class ShopAccountService {
 			$this->logger->error('There was an issue querying shop for orders for user ' . strval($userId));
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
-		return null;
 	}
 
 	public function getUsers(string $searchTerm): ?array {
@@ -87,7 +86,6 @@ class ShopAccountService {
 			$this->logger->error('There was an issue querying shop for users');
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
-		return null;
 	}
 
 	public function getUser(string $email) : ?array {
