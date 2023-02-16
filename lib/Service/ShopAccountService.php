@@ -176,6 +176,5 @@ class ShopAccountService {
 			$this->logger->error('There was an issue querying shop for subscriptions for user ' . strval($userId));
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
-		return null;
 	}
 }
