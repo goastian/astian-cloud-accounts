@@ -8,14 +8,16 @@ $(document).ready(function() {
 	elem.addEventListener('disable-delete-account', function() {
 		$('#deleteaccount').prop('disabled', true)
 		$('#drop_account_confirm').prop('disabled', true)
-		$('#drop_account_confirm').prop('disabled', true)
-		$('#shop-accounts_confirm').prop('disabled', true)
-		$('#shop-alternate-email').prop('disabled', true)
 	})
 
 	elem.addEventListener('enable-delete-account', function() {
 		$('#drop_account_confirm').prop('disabled', false)
 		const enableDeleteAccount = $('#drop_account_confirm').is(':checked')
 		$('#deleteaccount').prop('disabled', !enableDeleteAccount)
+	})
+
+	elem.addEventListener('disable-shop-delete-account', function() {
+		$('#shop-accounts_confirm').prop('disabled', true)
+		$('#shop-alternate-email').prop('disabled', true)
 	})
 })

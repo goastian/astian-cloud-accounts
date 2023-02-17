@@ -206,9 +206,11 @@ export default {
 					this.subscriptionCount = data.subscription_count
 					if (this.subscriptionCount > 0) {
 						this.disableDeleteAccountEvent()
+						this.disableDeleteShopAccountEvent()
 					}
 				} else {
 					this.disableDeleteAccountEvent()
+					this.disableDeleteShopAccountEvent()
 					showError(
 						t('ecloud-accounts', 'Error while fetching the records')
 					)
@@ -216,6 +218,7 @@ export default {
 				this.loading = false
 			} catch (e) {
 				this.disableDeleteAccountEvent()
+				this.disableDeleteShopAccountEvent()
 				showError(
 					t('ecloud-accounts', 'Error while fetching the records')
 				)
@@ -289,6 +292,11 @@ export default {
 		disableDeleteAccountEvent() {
 			const elem = document.getElementById('body-settings')
 			const event = new Event('disable-delete-account')
+			elem.dispatchEvent(event)
+		},
+		disableDeleteShopAccountEvent() {
+			const elem = document.getElementById('body-settings')
+			const event = new Event('disable-shop-delete-account')
 			elem.dispatchEvent(event)
 		},
 	},
