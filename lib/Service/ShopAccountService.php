@@ -71,12 +71,7 @@ class ShopAccountService {
 	}
 
 	public function getOrders(int $userId): ?array {
-		try {
-			return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
-		} catch (Exception $e) {
-			$this->logger->error('There was an issue querying shop for orders for user ' . strval($userId));
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-		}
+		return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
 	}
 
 	public function getUsers(string $searchTerm): ?array {
@@ -170,11 +165,6 @@ class ShopAccountService {
 	}
 
 	public function getSubscriptions(int $userId, string $status): ?array {
-		try {
-			return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId , 'status' => $status]);
-		} catch (Exception $e) {
-			$this->logger->error('There was an issue querying shop for subscriptions for user ' . strval($userId));
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-		}
+		return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId , 'status' => $status]);
 	}
 }

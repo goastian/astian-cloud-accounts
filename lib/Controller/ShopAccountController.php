@@ -90,7 +90,7 @@ class ShopAccountController extends Controller {
 			$response->setData($data);
 			return $response;
 		} catch (Exception $e) {
-			return new DataResponse([''], Http::STATUS_BAD_REQUEST);
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
 	}
 
@@ -115,7 +115,7 @@ class ShopAccountController extends Controller {
 			$response->setData($data);
 			return $response;
 		} catch (Exception $e) {
-			return new DataResponse([''], Http::STATUS_BAD_REQUEST);
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
 	}
 
