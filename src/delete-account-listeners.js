@@ -15,9 +15,4 @@ $(document).ready(function() {
 		const enableDeleteAccount = $('#drop_account_confirm').is(':checked')
 		$('#deleteaccount').prop('disabled', !enableDeleteAccount)
 	})
-
-	elem.addEventListener('disable-shop-delete-account', function() {
-		$('#shop-accounts_confirm').prop('disabled', true)
-		$('#shop-alternate-email').prop('disabled', true)
-	})
 })
