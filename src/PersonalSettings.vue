@@ -89,7 +89,7 @@ export default {
 	},
 	data() {
 		return {
-			shopUserExists: false,
+			shopUserExists: true,
 			shopUser: {},
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
@@ -183,16 +183,9 @@ export default {
 					if (this.orderCount) {
 						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
 					}
-				} else {
-					showError(
-						t('ecloud-accounts', 'Error while fetching the records')
-					)
 				}
 				this.loading = false
 			} catch (e) {
-				showError(
-					t('ecloud-accounts', 'Error while fetching the records')
-				)
 				this.loading = false
 			}
 		},
@@ -208,12 +201,6 @@ export default {
 						this.disableDeleteAccountEvent()
 						this.disableDeleteShopAccountEvent()
 					}
-				} else {
-					this.disableDeleteAccountEvent()
-					this.disableDeleteShopAccountEvent()
-					showError(
-						t('ecloud-accounts', 'Error while fetching the records')
-					)
 				}
 				this.loading = false
 			} catch (e) {
