@@ -89,7 +89,7 @@ export default {
 	},
 	data() {
 		return {
-			shopUserExists: true,
+			shopUserExists: false,
 			shopUser: {},
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
