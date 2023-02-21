@@ -1,6 +1,6 @@
 {
 	"name": "ecloud-accounts",
-	"version": "2.2.0",
+	"version": "2.5.0",
 	"description": "App for ecloud account management.",
 	"repository": {
 		"type": "git",
