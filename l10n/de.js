@@ -37,6 +37,6 @@ OC.L10N.register(
 		"Here is the list of currently available beta features:": "Hier ist die Liste der derzeit verfügbaren Beta-Funktionen:",
 		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Für dieses Konto ist ein Abonnement aktiv. Bitte kündigen Sie es oder lassen Sie es auslaufen, bevor Sie Ihr Konto löschen.",
 		"Loading...": "Laden...",
-		"Error while fetching the records": "Fehler beim Abrufen der Datensätze"
+		"Temporary error contacting murena.com; please try again later!": "Vorübergehender Fehler bei der Kontaktaufnahme mit murena.com; bitte versuchen Sie es später noch einmal!"
 	},
 	"nplurals=2; plural=(n != 1);");
