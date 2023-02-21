@@ -205,7 +205,7 @@ export default {
 			} catch (e) {
 				this.disableDeleteAccountEvent()
 				showError(
-					t('ecloud-accounts', 'Error while fetching the records')
+					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
 				)
 				this.loading = false
 			}
