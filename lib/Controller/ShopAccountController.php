@@ -12,6 +12,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http;
 use OCP\ILogger;
+
 class ShopAccountController extends Controller {
 	private $shopAccountService;
 	private $userSession;
@@ -113,7 +114,11 @@ class ShopAccountController extends Controller {
 			}
 			$data = ['subscription_count' => 0];
 			$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
-			$total_subscriptions = 0;$this->logger
+			$total_subscriptions = 0;
+			foreach ($subscriptions as $subscription) {
+				if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
+					$total_subscriptions++;
+				}
 			}
 			$data['subscription_count'] = $total_subscriptions;
 			$response = new DataResponse();
