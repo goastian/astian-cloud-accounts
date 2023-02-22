@@ -86,7 +86,6 @@ class ShopAccountController extends Controller {
 		try {
 			if (!$userId) {
 				$this->logger->error('Invalid user id');
-				$this->logger->logException($e, ['app' => Application::APP_ID]);
 				return new DataResponse([], Http::STATUS_BAD_REQUEST);
 			}
 			$data = ['order_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
@@ -109,7 +108,6 @@ class ShopAccountController extends Controller {
 		try {
 			if (!$userId) {
 				$this->logger->error('Invalid user id');
-				$this->logger->logException($e, ['app' => Application::APP_ID]);
 				return new DataResponse([], Http::STATUS_BAD_REQUEST);
 			}
 			$data = ['subscription_count' => 0];
