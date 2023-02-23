@@ -85,8 +85,7 @@ class ShopAccountController extends Controller {
 	public function getOrderInfo(int $userId) {
 		try {
 			if (!$userId) {
-				$this->logger->error('Invalid user id');
-				return new DataResponse([], Http::STATUS_BAD_REQUEST);
+				throw new Exception("Invalid user id");
 			}
 			$data = ['order_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
 			$orders = $this->shopAccountService->getOrders($userId);
@@ -107,8 +106,7 @@ class ShopAccountController extends Controller {
 	public function getSubscriptionInfo(int $userId) {
 		try {
 			if (!$userId) {
-				$this->logger->error('Invalid user id');
-				return new DataResponse([], Http::STATUS_BAD_REQUEST);
+				throw new Exception("Invalid user id");
 			}
 			$data = ['subscription_count' => 0];
 			$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
