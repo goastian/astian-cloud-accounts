@@ -10,7 +10,7 @@
 				{{
 					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
 				}}
-				<span v-if="subscriptionCount === 0">
+				<span v-if="subscriptionCount === 0 && allowDelete">
 					{{
 						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account.')
 					}}
@@ -19,7 +19,7 @@
 			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
 			<p><span v-if="subscriptionCount > 0" v-html="subscriptionDescription" /></p>
 			<form @submit.prevent>
-				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+				<div v-if="!onlyUser && !onlyAdmin && allowDelete" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
 						<input id="shop-accounts_confirm"
 							v-model="deleteShopAccount"
@@ -104,6 +104,7 @@ export default {
 			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
 			loading: true,
 			showError: false,
+			allowDelete: true,
 		}
 	},
 	created() {
@@ -208,6 +209,7 @@ export default {
 					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
 				)
 				this.loading = false
+				this.allowDelete = false
 			}
 		},
 		async updateDeleteShopPreference() {
