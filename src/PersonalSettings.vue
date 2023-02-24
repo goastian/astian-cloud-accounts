@@ -10,7 +10,7 @@
 				{{
 					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
 				}}
-				<span v-if="subscriptionCount === 0 && allowDelete">
+				<span v-if="subscriptionCount === 0">
 					{{
 						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account.')
 					}}
@@ -19,14 +19,14 @@
 			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
 			<p><span v-if="subscriptionCount > 0" v-html="subscriptionDescription" /></p>
 			<form @submit.prevent>
-				<div v-if="!onlyUser && !onlyAdmin && allowDelete" id="delete-shop-account-settings">
+				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
 						<input id="shop-accounts_confirm"
 							v-model="deleteShopAccount"
 							type="checkbox"
 							name="shop-accounts_confirm"
 							class="checkbox"
-							:disabled="subscriptionCount > 0"
+							:disabled="subscriptionCount > 0 || !allowDelete"
 							@change="updateDeleteShopPreference()">
 						<label for="shop-accounts_confirm">{{
 							t(
