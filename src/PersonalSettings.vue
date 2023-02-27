@@ -281,11 +281,6 @@ export default {
 			const event = new Event('disable-delete-account')
 			elem.dispatchEvent(event)
 		},
-		disableDeleteShopAccountEvent() {
-			const elem = document.getElementById('body-settings')
-			const event = new Event('disable-shop-delete-account')
-			elem.dispatchEvent(event)
-		},
 	},
 }
 </script>
