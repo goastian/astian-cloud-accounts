@@ -50,7 +50,7 @@
 							name="shop-alternate-email"
 							:placeholder="t('ecloud-accounts', 'Email Address')"
 							class="form-control"
-							:disabled="subscriptionCount > 0"
+							:disabled="subscriptionCount > 0 || !allowDelete"
 							@blur="updateEmailPostDelete($event)">
 					</div>
 				</div>
@@ -89,7 +89,7 @@ export default {
 	},
 	data() {
 		return {
-			shopUserExists: true,
+			shopUserExists: false,
 			shopUser: {},
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
@@ -119,8 +119,10 @@ export default {
 				if (this.shopUserExists) {
 					this.getOrdersInfo()
 					this.getSubscriptionInfo()
+				} else {
+					this.disableOrEnableDeleteAccount()
 				}
-				this.disableOrEnableDeleteAccount()
+
 			})
 		} catch (e) {
 			console.error('Error fetching initial state', e)
@@ -210,8 +212,6 @@ export default {
 				)
 				this.loading = false
 				this.allowDelete = false
-				this.deleteShopAccount = false
-				this.shopEmailPostDelete = ''
 			}
 		},
 		async updateDeleteShopPreference() {
