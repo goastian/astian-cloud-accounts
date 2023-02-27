@@ -26,7 +26,7 @@
 							type="checkbox"
 							name="shop-accounts_confirm"
 							class="checkbox"
-							:disabled="subscriptionCount > 0 || !allowDelete"
+							:disabled="subscriptionCount > 0 || !allowCloudAccountDelete"
 							@change="updateDeleteShopPreference()">
 						<label for="shop-accounts_confirm">{{
 							t(
@@ -89,7 +89,7 @@ export default {
 	},
 	data() {
 		return {
-			shopUserExists: false,
+			shopUserExists: true,
 			shopUser: {},
 			deleteShopAccount: false,
 			shopEmailPostDelete: '',
@@ -104,7 +104,7 @@ export default {
 			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
 			loading: true,
 			showError: false,
-			allowDelete: true,
+			allowCloudAccountDelete: true,
 		}
 	},
 	created() {
@@ -130,12 +130,16 @@ export default {
 		async disableOrEnableDeleteAccount() {
 			if (this.shopUserExists && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
-				const status = await this.checkShopEmailPostDelete()
-				if (status === 200) {
-					this.enableDeleteAccountEvent()
+				if (this.allowCloudAccountDelete) {
+					const status = await this.checkShopEmailPostDelete()
+					if (status === 200) {
+						this.enableDeleteAccountEvent()
+					}
 				}
 			} else {
-				this.enableDeleteAccountEvent()
+				if (this.allowCloudAccountDelete) {
+					this.enableDeleteAccountEvent()
+				}
 			}
 		},
 		async checkShopEmailPostDelete() {
@@ -209,7 +213,7 @@ export default {
 					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
 				)
 				this.loading = false
-				this.allowDelete = false
+				this.allowCloudAccountDelete = false
 			}
 		},
 		async updateDeleteShopPreference() {
