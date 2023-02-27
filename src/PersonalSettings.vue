@@ -173,10 +173,6 @@ export default {
 					this.enableDeleteAccountEvent()
 				}
 			} catch (e) {
-				showError(
-					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
-				)
-				this.disableDeleteAccountEvent()
 			}
 		},
 		async getOrdersInfo() {
