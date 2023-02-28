@@ -18,7 +18,7 @@ class ShopAccountController extends Controller {
 	private $userSession;
 
 	private $logger;
-	public const SUBSCRIPTION_STATUS_LIST = [
+	private const SUBSCRIPTION_STATUS_LIST = [
 		'pending',
 		'active',
 		'on-hold',
