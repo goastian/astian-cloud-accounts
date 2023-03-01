@@ -10,15 +10,26 @@ use OCP\IUserSession;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http;
+use OCP\ILogger;
 
 class ShopAccountController extends Controller {
 	private $shopAccountService;
 	private $userSession;
 
-	public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService) {
+	private $logger;
+	private const SUBSCRIPTION_STATUS_LIST = [
+		'pending',
+		'active',
+		'on-hold',
+		'pending-cancel'
+	];
+
+	public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService, ILogger $logger) {
 		parent::__construct($appName, $request);
 		$this->shopAccountService = $shopAccountService;
 		$this->userSession = $userSession;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -72,16 +83,48 @@ class ShopAccountController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public function getOrderInfo(int $userId) {
-		$response = new DataResponse();
-		$data = ['count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
-		$orders = $this->shopAccountService->getOrders($userId);
-
-		if ($orders) {
-			$data['count'] = count($orders);
+		try {
+			if (!$userId) {
+				throw new Exception("Invalid user id");
+			}
+			$data = ['order_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
+			$orders = $this->shopAccountService->getOrders($userId);
+			$data['order_count'] = count($orders);
+			$response = new DataResponse();
+			$response->setData($data);
+			return $response;
+		} catch (Exception $e) {
+			$this->logger->error('There was an issue querying order for user : ' . strval($userId));
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
+	}
 
-		$response->setData($data);
-		return $response;
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getSubscriptionInfo(int $userId) {
+		try {
+			if (!$userId) {
+				throw new Exception("Invalid user id");
+			}
+			$data = ['subscription_count' => 0];
+			$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
+			$total_subscriptions = 0;
+			foreach ($subscriptions as $subscription) {
+				if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
+					$total_subscriptions++;
+				}
+			}
+			$data['subscription_count'] = $total_subscriptions;
+			$response = new DataResponse();
+			$response->setData($data);
+			return $response;
+		} catch (Exception $e) {
+			$this->logger->error('There was an issue querying subscription for user : ' . strval($userId));
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
+		}
 	}
 
 	/**

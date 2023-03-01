@@ -1,62 +1,77 @@
 <template>
 	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
-		<p>
+		<p v-if="loading">
 			{{
-				t('ecloud-accounts', 'We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.')
+				t('ecloud-accounts', 'Loading...')
 			}}
-			<span v-if="orderCount" v-html="ordersDescription" />
 		</p>
-		<form @submit.prevent>
-			<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
-				<div class="delete-shop-input">
-					<input id="shop-accounts_confirm"
-						v-model="deleteShopAccount"
-						type="checkbox"
-						name="shop-accounts_confirm"
-						class="checkbox"
-						@change="updateDeleteShopPreference()">
-					<label for="shop-accounts_confirm">{{
-						t(
-							"ecloud-accounts",
-							"I also want to delete my shop account"
-						)
-					}}</label>
-				</div>
-				<div v-if="!deleteShopAccount" class="delete-shop-input">
-					<label for="shop-alternate-email">
-						{{
+		<div v-else>
+			<p>
+				{{
+					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
+				}}
+				<span v-if="subscriptionCount === 0">
+					{{
+						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account.')
+					}}
+				</span>
+			</p>
+			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
+			<p><span v-if="subscriptionCount > 0" v-html="subscriptionDescription" /></p>
+			<form @submit.prevent>
+				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+					<div class="delete-shop-input">
+						<input id="shop-accounts_confirm"
+							v-model="deleteShopAccount"
+							type="checkbox"
+							name="shop-accounts_confirm"
+							class="checkbox"
+							:disabled="subscriptionCount > 0 || !allowDelete"
+							@change="updateDeleteShopPreference()">
+						<label for="shop-accounts_confirm">{{
 							t(
 								"ecloud-accounts",
-								"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
+								"I also want to delete my shop account"
 							)
-						}}
-					</label>
-					<input id="shop-alternate-email"
-						v-model="shopEmailPostDelete"
-						type="email"
-						name="shop-alternate-email"
-						:placeholder="t('ecloud-accounts', 'Email Address')"
-						class="form-control"
-						@blur="updateEmailPostDelete($event)">
+						}}</label>
+					</div>
+					<div v-if="!deleteShopAccount" class="delete-shop-input">
+						<label for="shop-alternate-email">
+							{{
+								t(
+									"ecloud-accounts",
+									"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
+								)
+							}}
+						</label>
+						<input id="shop-alternate-email"
+							v-model="shopEmailPostDelete"
+							type="email"
+							name="shop-alternate-email"
+							:placeholder="t('ecloud-accounts', 'Email Address')"
+							class="form-control"
+							:disabled="subscriptionCount > 0 || !allowDelete"
+							@blur="updateEmailPostDelete($event)">
+					</div>
 				</div>
-			</div>
-		</form>
-		<p v-if="onlyUser" class="warnings">
-			{{
-				t(
-					"drop_account",
-					"You are the only user of this instance, you can't delete your account."
-				)
-			}}
-		</p>
-		<p v-if="onlyAdmin" class="warnings">
-			{{
-				t(
-					"drop_account",
-					"You are the only admin of this instance, you can't delete your account."
-				)
-			}}
-		</p>
+			</form>
+			<p v-if="onlyUser" class="warnings">
+				{{
+					t(
+						"drop_account",
+						"You are the only user of this instance, you can't delete your account."
+					)
+				}}
+			</p>
+			<p v-if="onlyAdmin" class="warnings">
+				{{
+					t(
+						"drop_account",
+						"You are the only admin of this instance, you can't delete your account."
+					)
+				}}
+			</p>
+		</div>
 	</SettingsSection>
 </template>
 
@@ -84,7 +99,12 @@ export default {
 			onlyAdmin: false,
 			onlyUser: false,
 			orderCount: 0,
-			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>."),
+			subscriptionCount: 0,
+			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
+			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
+			loading: true,
+			showError: false,
+			allowDelete: true,
 		}
 	},
 	created() {
@@ -98,8 +118,11 @@ export default {
 			this.getShopUser().then(() => {
 				if (this.shopUserExists) {
 					this.getOrdersInfo()
+					this.getSubscriptionInfo()
+				} else {
+					this.disableOrEnableDeleteAccount()
 				}
-				this.disableOrEnableDeleteAccount()
+
 			})
 		} catch (e) {
 			console.error('Error fetching initial state', e)
@@ -159,12 +182,36 @@ export default {
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					if (data.count > 0) {
-						this.ordersDescription = this.ordersDescription.replace('%d', data.count).replace('%s', data.my_orders_url)
-						this.orderCount = data.count
+					this.orderCount = data.order_count
+					if (this.orderCount) {
+						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
 					}
 				}
+				this.loading = false
 			} catch (e) {
+				this.loading = false
+			}
+		},
+		async getSubscriptionInfo() {
+			try {
+				const url = generateUrl(
+					`/apps/${this.appName}/shop-accounts/subscription_info?userId=${this.shopUser.id}`
+				)
+				const { status, data } = await Axios.get(url)
+				if (status === 200) {
+					this.subscriptionCount = data.subscription_count
+					if (this.subscriptionCount > 0) {
+						this.disableDeleteAccountEvent()
+					}
+				}
+				this.loading = false
+			} catch (e) {
+				this.disableDeleteAccountEvent()
+				showError(
+					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
+				)
+				this.loading = false
+				this.allowDelete = false
 			}
 		},
 		async updateDeleteShopPreference() {
@@ -261,7 +308,9 @@ export default {
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }
-
+input#shop-alternate-email:disabled {
+    background: var(--color-background-dark);
+}
 .delete-shop-input {
 	margin-bottom: 1em;
 }

@@ -2,8 +2,9 @@
 	"translations": {
 		"Email Address": "Correo electrónico",
 		"Options": "Opciones",
-		"We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.": "Vamos a proceder a la supresión de su cuenta en la nube. Marca la casilla de abajo si también quieres eliminar la cuenta de la tienda asociada.",
-		"For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>.": "Para su información tiene %d orden(es) en <a class='text-color-active' href='%s'>su cuenta</a>.",
+		"We are going to proceed with your cloud account suppression.": "Vamos a proceder a la supresión de su cuenta en la nube. ",
+		"Check the box below if you also want to delete the associated shop account.": "Marca la casilla de abajo si también quieres eliminar la cuenta de la tienda asociada.",
+		"For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.": "Para su información tiene %d orden(es) en <a class='text-color-active' href='%s' target='_blank'>su cuenta</a>.",
 		"I also want to delete my shop account": "También quiero borrar mi cuenta de la tienda",
 		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ": "Si quieres mantener tu cuenta de la tienda, valida o modifica la dirección de correo electrónico que aparece a continuación. Esta dirección de correo electrónico se convertirá en su nuevo acceso a la tienda. ",
 		"Error while setting shop delete preference": "Error al configurar la preferencia de eliminación de la tienda",
@@ -32,7 +33,10 @@
 		"Experimental": "Experimento",
 		"Title is mandatory.": "El título es obligatorio.",
 		"Description is mandatory.": "La descripción es obligatoria.",
-		"Here is the list of currently available beta features:": "Esta es la lista de funciones de la versión beta disponibles actualmente:"
+		"Here is the list of currently available beta features:": "Esta es la lista de funciones de la versión beta disponibles actualmente:",
+		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Hay una suscripción activa en esta cuenta. Por favor, cancélala o deja que expire antes de eliminar tu cuenta.",
+		"Loading...": "Cargando...",
+		"Temporary error contacting murena.com; please try again later!": "Error temporal al contactar con murena.com; ¡por favor, inténtalo más tarde!"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

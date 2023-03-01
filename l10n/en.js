@@ -3,8 +3,9 @@ OC.L10N.register(
 	{
 		"Email Address": "Email Address",
 		"Options": "Options",
-		"We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.": "We are going to proceed with your cloud account suppression. Check the box below if you also want to delete the associated shop account.",
-		"For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>.": "For your information you have %d order(s) in <a class='text-color-active' href='%s'>your account</a>.",
+		"We are going to proceed with your cloud account suppression.": "We are going to proceed with your cloud account suppression.",
+		"Check the box below if you also want to delete the associated shop account.": "Check the box below if you also want to delete the associated shop account.",
+		"For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.": "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.",
 		"I also want to delete my shop account": "I also want to delete my shop account",
 		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ": "If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ",
 		"Error while setting shop delete preference": "Error while setting shop delete preference",
@@ -33,6 +34,9 @@ OC.L10N.register(
 		"Experimental": "Experimental",
 		"Title is mandatory.": "Title is mandatory.",
 		"Description is mandatory.": "Description is mandatory.",
-		"Here is the list of currently available beta features:": "Here is the list of currently available beta features:"
+		"Here is the list of currently available beta features:": "Here is the list of currently available beta features:",
+		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "A subscription is active in this account. Please cancel it or let it expire before deleting your account.",
+		"Loading...": "Loading...",
+		"Temporary error contacting murena.com; please try again later!": "Temporary error contacting murena.com; please try again later!"
 	},
 	"nplurals=2; plural=(n != 1);");
