@@ -35,7 +35,6 @@ use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
-use OCP\Group\Events\UserAddedEvent;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 
