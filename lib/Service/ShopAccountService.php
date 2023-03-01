@@ -26,6 +26,7 @@ class ShopAccountService {
 
 		$this->shopUserUrl = $this->shopUrl . "/wp-json/wp/v2/users";
 		$this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
+		$this->subscriptionUrl = $this->shopUrl . "/wp-json/wc/v3/subscriptions";
 		$this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
 		$this->curl = $curlService;
 		$this->logger = $logger;
@@ -70,13 +71,7 @@ class ShopAccountService {
 	}
 
 	public function getOrders(int $userId): ?array {
-		try {
-			return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
-		} catch (Exception $e) {
-			$this->logger->error('There was an issue querying shop for orders for user ' . strval($userId));
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-		}
-		return null;
+		return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
 	}
 
 	public function getUsers(string $searchTerm): ?array {
@@ -86,7 +81,6 @@ class ShopAccountService {
 			$this->logger->error('There was an issue querying shop for users');
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
-		return null;
 	}
 
 	public function getUser(string $email) : ?array {
@@ -168,5 +162,9 @@ class ShopAccountService {
 
 	public function isUserOIDC(array $user) {
 		return !empty($user['openid-connect-generic-last-user-claim']);
+	}
+
+	public function getSubscriptions(int $userId, string $status): ?array {
+		return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId , 'status' => $status]);
 	}
 }
