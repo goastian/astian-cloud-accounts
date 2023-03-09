@@ -20,6 +20,8 @@ class BeforeUserDeletedListener implements IEventListener {
 	private $LDAPConnectionService;
 	private $shopAccountService;
 	private $userService;
+	private const PENDING_CANCEL_STATUS = 'pending-cancel';
+	private const CANCELLED_STATUS = 'cancelled';
 
 	public function __construct(ILogger $logger, IConfig $config, LDAPConnectionService $LDAPConnectionService, UserService $userService, ShopAccountService $shopAccountService) {
 		$this->logger = $logger;
@@ -64,6 +66,10 @@ class BeforeUserDeletedListener implements IEventListener {
 
 		if ($shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
 			if ($deleteShopAccount) {
+				$subscriptions = $this->shopAccountService->getSubscriptions($shopUser['id'], self::PENDING_CANCEL_STATUS);
+				foreach ($subscriptions as $subscription) {
+					$this->shopAccountService->updateSubscriptionStatus($subscription['id'], self::CANCELLED_STATUS);
+				}
 				$this->shopAccountService->deleteUser($shopUser['id']);
 			} else {
 				$newEmail = $this->shopAccountService->getShopEmailPostDeletePreference($uid);
