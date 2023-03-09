@@ -115,11 +115,6 @@ class ShopAccountController extends Controller {
 					$total_subscriptions++;
 				}
 			}
-			$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'pending-cancel');
-			foreach ($subscriptions as $subscription) {
-				$this->shopAccountService->updateSubscriptionStatus($subscription['id'], 'cancelled');
-			}
-			
 			$data['subscription_count'] = $total_subscriptions;
 			$response = new DataResponse();
 			$response->setData($data);
