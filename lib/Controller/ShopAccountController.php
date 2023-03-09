@@ -23,6 +23,7 @@ class ShopAccountController extends Controller {
 		'active',
 		'on-hold'
 	];
+	private const PENDING_CANCEL_STATUS = 'pending-cancel';
 
 	public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService, ILogger $logger) {
 		parent::__construct($appName, $request);
@@ -114,7 +115,7 @@ class ShopAccountController extends Controller {
 				if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
 					$total_subscriptions++;
 				}
-				if ($subscription['status'] === 'pending-cancel') {
+				if ($subscription['status'] === self::PENDING_CANCEL_STATUS) {
 					array_push($data['pending_cancel_subscriptions'], $subscription['id']);
 				}
 			}
