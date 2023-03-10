@@ -41,6 +41,8 @@ class BeforeUserDeletedListener implements IEventListener {
 		$email = $user->getEMailAddress();
 		$uid = $user->getUID();
 		$isUserOnLDAP = $this->LDAPConnectionService->isUserOnLDAPBackend($user);
+		$shopUser = $this->shopAccountService->getUser($email);
+		$this->shopAccountService->updateSubscriptionStatus(71981, self::CANCELLED_STATUS);
 
 		$this->logger->info("PostDelete user {user}", array('user' => $uid));
 		$this->userService->ecloudDelete(
@@ -62,14 +64,10 @@ class BeforeUserDeletedListener implements IEventListener {
 		}
 
 		$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($uid);
-		$shopUser = $this->shopAccountService->getUser($email);
+		
 
 		if ($shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
 			if ($deleteShopAccount) {
-				$subscriptions = $this->shopAccountService->getSubscriptions($shopUser['id'], self::PENDING_CANCEL_STATUS);
-				foreach ($subscriptions as $subscription) {
-					$this->shopAccountService->updateSubscriptionStatus($subscription['id'], self::CANCELLED_STATUS);
-				}
 				$this->shopAccountService->deleteUser($shopUser['id']);
 			} else {
 				$newEmail = $this->shopAccountService->getShopEmailPostDeletePreference($uid);
