@@ -21,8 +21,7 @@ class ShopAccountController extends Controller {
 	private const SUBSCRIPTION_STATUS_LIST = [
 		'pending',
 		'active',
-		'on-hold',
-		'pending-cancel'
+		'on-hold'
 	];
 
 	public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService, ILogger $logger) {
