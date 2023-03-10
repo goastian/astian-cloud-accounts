@@ -167,13 +167,4 @@ class ShopAccountService {
 	public function getSubscriptions(int $userId, string $status): ?array {
 		return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId , 'status' => $status]);
 	}
-
-	public function updateSubscriptionStatus(int $subscriptionId, string $status) {
-		try {
-			return $this->callShopAPI($this->subscriptionUrl . '/' . $subscriptionId, 'POST', ['status' => $status]);
-		} catch (Exception $e) {
-			$this->logger->error('Error updating subscription status to '.$status);
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-		}
-	}
 }
