@@ -17,7 +17,7 @@
     <category>tools</category>
     <bugs>https://gitlab.e.foundation/e/management/issues</bugs>
     <dependencies>
-        <nextcloud min-version="21" max-version="24"/>
+        <nextcloud min-version="21" max-version="25"/>
     </dependencies>
 	<settings>
 		<personal>OCA\EcloudAccounts\Settings\Personal</personal>
