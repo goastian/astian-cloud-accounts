@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use OCA\TwoFactorTOTP\Db\TotpSecretMapper;
 use OCP\Security\ICrypto;
@@ -14,7 +14,6 @@ use OCP\IDBConnection;
 use OCA\EcloudAccounts\Db\SSOMapper;
 
 class Migrate2FASecrets extends Command {
-
 	private TotpSecretMapper $totpSecretMapper;
 	private SSOMapper $SSOMapper;
 	private IDBConnection $dbConn;
@@ -41,50 +40,49 @@ class Migrate2FASecrets extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		try {
-			$users = explode(',' , $input->getArgument('users'));
+			$users = explode(',', $input->getArgument('users'));
 			$ssoSecretEntries = [];
-			if(empty($users)) {
+			if (empty($users)) {
 				$ssoSecretEntries = $this->getSSOSecretEntriesForAllUsers();
 			} else {
-				foreach($users as $user) {
+				foreach ($users as $user) {
 					$secret = $this->totpSecretMapper->getSecret($user);
 					$ssoSecretEntries[] = $this->getSSOSecretEntry($user, );
 				}
 			}
 		} catch (\Exception $e) {
-				$output->writeln($e->getMessage());
-				return 1;
+			$output->writeln($e->getMessage());
+			return 1;
 		}
 	}
 
 	private function getSSOSecretEntriesForAllUsers() : array {
 		$entries = [];
 		$query = $this->dbConn->getQueryBuilder();
-				$qb->select( 'user_id', 'secret')
-				   ->from(self::TOTP_TABLE);
-				$result = $qb->execute();
-				while ($row = $result->fetch()) {
-					$userId = (string) $result['user_id'];
-					$secret = (string) $result['secret'];
-					$decryptedSecret = $this->crypto->decrypt($secret);
-					$entries[] = $this->getSSOSecretEntry($userId, $secret);
-				}
-			return $entries;
-
+		$qb->select('user_id', 'secret')
+		   ->from(self::TOTP_TABLE);
+		$result = $qb->execute();
+		while ($row = $result->fetch()) {
+			$userId = (string) $result['user_id'];
+			$secret = (string) $result['secret'];
+			$decryptedSecret = $this->crypto->decrypt($secret);
+			$entries[] = $this->getSSOSecretEntry($userId, $secret);
+		}
+		return $entries;
 	}
 
 	private function getSSOSecretEntry(string $userId, string $secret) : array {
 		$SSOUserId = $this->SSOMapper->getUserId($userId);
 		$credentialEntry = [
 			'ID' => $this->randomUUID(),
-			'SALT' => NULL,
+			'SALT' => null,
 			'USER_ID' => $SSOUserId,
 			'USER_LABEL' => 'Murena Cloud 2FA',
 			'SECRET_DATA' => [
 				'value' => $secret
 			],
 			'CREATED_DATE' => round(microtime(true) * 1000),
-			'CREDENTIAL_DATA'  => [
+			'CREDENTIAL_DATA' => [
 				'subType' => 'nextcloud_totp',
 				'period' => 30,
 				'digits' => 6,
@@ -96,7 +94,7 @@ class Migrate2FASecrets extends Command {
 	}
 
 
-	/* 
+	/*
 		From https://www.uuidgenerator.net/dev-corner/php
 		As keycloak generates random UUIDs using the java.util.UUID class which is RFC 4122 compliant
 	*/
@@ -113,5 +111,4 @@ class Migrate2FASecrets extends Command {
 		// Output the 36 character UUID.
 		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 	}
-	
 }

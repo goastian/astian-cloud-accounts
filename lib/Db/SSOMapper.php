@@ -6,7 +6,6 @@ use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use Doctrine\DBAL\DriverManager;
-use Throwable;
 
 class SSOMapper {
 	private $config;
@@ -54,20 +53,19 @@ class SSOMapper {
 	}
 
 	public function getUserId(string $username) : string {
-			$query = $this->conn->createQueryBuilder();
-			$query->select('USER_ID')
-				->from('USER_ATTRIBUTE')
-				->where($query->expr()->eq('NAME', 'LDAP_ID'))
-				->where($query->expr()->eq('VALUE', $query->createParameter('username')));
+		$query = $this->conn->createQueryBuilder();
+		$query->select('USER_ID')
+			->from('USER_ATTRIBUTE')
+			->where($query->expr()->eq('NAME', 'LDAP_ID'))
+			->where($query->expr()->eq('VALUE', $query->createParameter('username')));
 			
-			$query->setParameter('username', $username);
+		$query->setParameter('username', $username);
 
-			$result = $query->execute();
-			$SSOUserId = (string) $result->fetchColumn();	
-			return $SSOUserId;	
-	}	
+		$result = $query->execute();
+		$SSOUserId = (string) $result->fetchColumn();
+		return $SSOUserId;
+	}
 
 	public function insertCredentials(array $entries) {
-		
 	}
 }
