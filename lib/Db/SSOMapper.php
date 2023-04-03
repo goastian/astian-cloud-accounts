@@ -11,6 +11,8 @@ class SSOMapper {
 	private $config;
 	private $conn;
 	private $logger;
+	private const USER_ATTRIBUTE_TABLE = 'USER_ATTRIBUTE';
+	private const CREDENTIAL_TABLE = 'CREDENTIAL';
 
 	public function __construct(IConfig $config, ILogger $logger) {
 		$this->config = $config;
@@ -53,19 +55,30 @@ class SSOMapper {
 	}
 
 	public function getUserId(string $username) : string {
-		$query = $this->conn->createQueryBuilder();
-		$query->select('USER_ID')
-			->from('USER_ATTRIBUTE')
-			->where($query->expr()->eq('NAME', 'LDAP_ID'))
-			->where($query->expr()->eq('VALUE', $query->createParameter('username')));
+		$qb = $this->conn->createQueryBuilder();
+		$qb->select('USER_ID')
+			->from(self::USER_ATTRIBUTE_TABLE)
+			->where($qb->expr()->eq('NAME', 'LDAP_ID'))
+			->where($qb->expr()->eq('VALUE', $qb->createParameter('username')));
 			
-		$query->setParameter('username', $username);
+		$qb->setParameter('username', $username);
 
-		$result = $query->execute();
+		$result = $qb->execute();
 		$SSOUserId = (string) $result->fetchColumn();
 		return $SSOUserId;
 	}
 
 	public function insertCredentials(array $entries) {
+		$qb = $this->conn->createQueryBuilder();
+		foreach ($entries as $entry) {
+			try {
+				$qb->insert(self::CREDENTIAL_TABLE)
+					->values($entry)
+					->execute();
+			} catch(Exception $e) {
+				$this->logger->logException($e, ['Error migrating 2FA secret for SSO user ID ' . $entry['USER_ID']]);
+				continue;
+			}
+		}
 	}
 }

@@ -50,6 +50,7 @@ class Migrate2FASecrets extends Command {
 					$ssoSecretEntries[] = $this->getSSOSecretEntry($user, );
 				}
 			}
+			$this->SSOMapper->insertCredentials($ssoSecretEntries);
 		} catch (\Exception $e) {
 			$output->writeln($e->getMessage());
 			return 1;
@@ -66,7 +67,7 @@ class Migrate2FASecrets extends Command {
 			$userId = (string) $result['user_id'];
 			$secret = (string) $result['secret'];
 			$decryptedSecret = $this->crypto->decrypt($secret);
-			$entries[] = $this->getSSOSecretEntry($userId, $secret);
+			$entries[] = $this->getSSOSecretEntry($userId, $decryptedSecret);
 		}
 		return $entries;
 	}
