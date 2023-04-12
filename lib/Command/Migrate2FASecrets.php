@@ -123,6 +123,9 @@ class Migrate2FASecrets extends Command {
 				$secret = (string) $row['secret'];
 				$decryptedSecret = $this->crypto->decrypt($secret);
 				$ssoUserId = $this->ssoMapper->getUserId($username, $this->ssoDbConn);
+				if(empty($ssoUserId)) {
+					throw new Exception('Does not exist in SSO database');
+				}
 				$entry = $this->getSSOSecretEntry($decryptedSecret, $ssoUserId);
 				$this->ssoMapper->insertCredential($entry, $this->ssoDbConn);
 			} catch(\Exception $e) {
@@ -139,8 +142,10 @@ class Migrate2FASecrets extends Command {
 	 */
 
 	private function getSSOSecretEntry(string $secret, string $ssoUserId) : array {
+		// Create the random UUID from the sso user ID so multiple entries of same credential do not happen
+		$id = $this->randomUUID(substr($ssoUserId, 0, 16));
 		$credentialEntry = [
-			'ID' => $this->randomUUID(),
+			'ID' => $id,
 			'USER_ID' => $ssoUserId,
 			'USER_LABEL' => 'Murena Cloud 2FA',
 			'TYPE' => 'otp',
