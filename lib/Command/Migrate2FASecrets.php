@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OCP\Security\ICrypto;
 use OCP\IDBConnection;
 use OCP\IUserManager;
+use OCP\IUser;
+use OCP\IConfig;
 use OCA\EcloudAccounts\Db\SSOMapper;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use Doctrine\DBAL\DriverManager;
@@ -23,13 +25,22 @@ class Migrate2FASecrets extends Command {
 	private ICrypto $crypto;
 	private IUserManager $userManager;
 	private OutputInterface $commandOutput;
+	private IConfig $config;
 	private const TOTP_SECRET_TABLE = 'twofactor_totp_secrets';
+	private const USER_LABELS = [
+		'en' => 'Murena Cloud 2FA',
+		'es' => 'Murena Cloud 2FA',
+		'de' => 'Murena Cloud 2FA',
+		'it' => 'Murena Cloud 2FA',
+		'fr' => 'Murena Cloud 2FA',
+	];
 
-	public function __construct(IDBConnection $dbConn, ICrypto $crypto, SSOMapper $ssoMapper, IUserManager $userManager) {
+	public function __construct(IDBConnection $dbConn, ICrypto $crypto, SSOMapper $ssoMapper, IUserManager $userManager, IConfig $config) {
 		$this->ssoMapper = $ssoMapper;
 		$this->userManager = $userManager;
 		$this->dbConn = $dbConn;
 		$this->crypto = $crypto;
+		$this->config = $config;
 		parent::__construct();
 	}
 
@@ -120,13 +131,22 @@ class Migrate2FASecrets extends Command {
 		while ($row = $result->fetch()) {
 			try {
 				$username = (string) $row['user_id'];
+				if (!$this->userManager->get($username) instanceof IUser) {
+					throw new \Exception('No user found in nextcloud with given username');
+				}
+				
 				$secret = (string) $row['secret'];
 				$decryptedSecret = $this->crypto->decrypt($secret);
 				$ssoUserId = $this->ssoMapper->getUserId($username, $this->ssoDbConn);
-				if(empty($ssoUserId)) {
-					throw new Exception('Does not exist in SSO database');
+				if (empty($ssoUserId)) {
+					throw new \Exception('Does not exist in SSO database');
 				}
-				$entry = $this->getSSOSecretEntry($decryptedSecret, $ssoUserId);
+
+				$language = $this->config->getUserValue($uid, 'core', 'lang', 'en');
+				if (!array_key_exists($language, self::USER_LABELS)) {
+					$language = 'en';
+				}
+				$entry = $this->getSSOSecretEntry($decryptedSecret, $ssoUserId, $language);
 				$this->ssoMapper->insertCredential($entry, $this->ssoDbConn);
 			} catch(\Exception $e) {
 				$this->commandOutput->writeln('Error inserting entry for user ' . $username . ' message: ' . $e->getMessage());
@@ -141,9 +161,11 @@ class Migrate2FASecrets extends Command {
 	 * @return array
 	 */
 
-	private function getSSOSecretEntry(string $secret, string $ssoUserId) : array {
+	private function getSSOSecretEntry(string $secret, string $ssoUserId, string $language) : array {
 		// Create the random UUID from the sso user ID so multiple entries of same credential do not happen
 		$id = $this->randomUUID(substr($ssoUserId, 0, 16));
+
+		$userLabel = self::USER_LABELS[$language];
 		$credentialEntry = [
 			'ID' => $id,
 			'USER_ID' => $ssoUserId,
