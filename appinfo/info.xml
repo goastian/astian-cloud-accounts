@@ -24,4 +24,7 @@
 		<personal>OCA\EcloudAccounts\Settings\BetaUserSetting</personal>
 		<personal-section>OCA\EcloudAccounts\Settings\BetaSection</personal-section>
 	</settings>
+    <commands>
+        <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
+    </commands>
 </info>
