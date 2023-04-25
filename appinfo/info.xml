@@ -12,7 +12,7 @@
     This app uses the UserDeletedEvent to invoke scripts in the docker-welcome container of /e/OS cloud setup]]></description>
     <version>2.5.0</version>
     <licence>agpl</licence>
-    <author mail="dev@murena.io" homepage="https://gitlab.e.foundation/">Akhil Potukuchi</author>
+    <author mail="dev@murena.com" homepage="https://murena.com/">Murena SAS</author>
     <namespace>EcloudAccounts</namespace>
     <category>tools</category>
     <bugs>https://gitlab.e.foundation/e/management/issues</bugs>
