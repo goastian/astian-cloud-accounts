@@ -1,18 +1,17 @@
-/* global $ */
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 	// Disable initially
-	$('#drop_account_confirm').prop('disabled', true)
-	$('#deleteaccount').prop('disabled', true)
+	document.getElementById('drop_account_confirm').disabled = true
+	document.getElementById('deleteaccount').disabled = true
 
 	const elem = document.getElementById('body-settings')
 	elem.addEventListener('disable-delete-account', function() {
-		$('#deleteaccount').prop('disabled', true)
-		$('#drop_account_confirm').prop('disabled', true)
+	  document.getElementById('deleteaccount').disabled = true
+	  document.getElementById('drop_account_confirm').disabled = true
 	})
 
 	elem.addEventListener('enable-delete-account', function() {
-		$('#drop_account_confirm').prop('disabled', false)
-		const enableDeleteAccount = $('#drop_account_confirm').is(':checked')
-		$('#deleteaccount').prop('disabled', !enableDeleteAccount)
+	  document.getElementById('drop_account_confirm').disabled = false
+	  const enableDeleteAccount = document.getElementById('drop_account_confirm').checked
+	  document.getElementById('deleteaccount').disabled = !enableDeleteAccount
 	})
 })
