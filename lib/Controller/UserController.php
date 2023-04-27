@@ -11,11 +11,14 @@ use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
 use OCA\EcloudAccounts\Service\UserService;
+use OCA\TermsOfService\Service\SignatoryService ;
 use OCA\EcloudAccounts\Db\MailUsageMapper;
 
 class UserController extends ApiController {
 	/** @var UserService */
 	private $userService;
+	/** @var SignatoryService */
+	private $signatoryService;
 
 	private $mailUsageMapper;
 
@@ -23,12 +26,13 @@ class UserController extends ApiController {
 
 	private $config;
 
-	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
+	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper, SignatoryService $signatoryService) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
 		$this->logger = $logger;
 		$this->config = $config;
+		$this->signatoryService = $signatoryService;
 	}
 
 	/**
@@ -87,7 +91,10 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-
+		$tosSignatoryInserted = $this->signatoryService->tosSignatoryInsert($uid);
+		if (!$tosSignatoryInserted) {
+			return $this->getErrorResponse($response, 'error_setting_tos', 400);
+		}
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
