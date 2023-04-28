@@ -100,11 +100,11 @@ class UserController extends ApiController
         $user->setEMailAddress($email);
         $user->setQuota($quota);
         if ($this->appManager->isEnabledForUser('terms_of_service')) {
-            $tosSignatoryInserted = $this->signatoryService->tosSignatoryInsert($uid);
-            if (!$tosSignatoryInserted) {
-                return $this->getErrorResponse($response, 'error_setting_tos', 400);
-            }
-        }
+			$tosSignatoryInserted = $this->signatoryService->tosSignatoryInsert($uid);
+			if (!$tosSignatoryInserted) {
+				return $this->getErrorResponse($response, 'error_setting_tos', 400);
+			}
+		}
         $recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
         if (!$recoveryEmailUpdated) {
             return $this->getErrorResponse($response, 'error_setting_recovery', 400);
