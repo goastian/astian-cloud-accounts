@@ -10,6 +10,7 @@ use OCP\ILogger;
 use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
+use App\IAppManager;
 use OCA\EcloudAccounts\Service\UserService;
 use OCA\TermsOfService\Service\SignatoryService ;
 use OCA\EcloudAccounts\Db\MailUsageMapper;
@@ -19,6 +20,8 @@ class UserController extends ApiController {
 	private $userService;
 	/** @var SignatoryService */
 	private $signatoryService;
+	/** @var IAppManager */
+	private $appManager;
 
 	private $mailUsageMapper;
 
