@@ -21,15 +21,14 @@ class UserController extends ApiController
     private $userService;
     /** @var SignatoryService */
     private $signatoryService;
+	/** @var IAppManager */
+	private $appManager;
 
     private $mailUsageMapper;
 
     private $logger;
 
     private $config;
-
-    /** @var IAppManager */
-    private $appManager;
 
     public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper, SignatoryService $signatoryService, IAppManager $appManager)
     {
