@@ -10,7 +10,7 @@ use OCP\ILogger;
 use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
-use App\IAppManager;
+use OCP\App\IAppManager;
 use OCA\EcloudAccounts\Service\UserService;
 use OCA\TermsOfService\Service\SignatoryService ;
 use OCA\EcloudAccounts\Db\MailUsageMapper;
