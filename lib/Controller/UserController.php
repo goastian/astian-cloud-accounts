@@ -21,8 +21,8 @@ class UserController extends ApiController
     private $userService;
     /** @var SignatoryService */
     private $signatoryService;
-	/** @var IAppManager */
-	private $appManager;
+    /** @var IAppManager */
+    private $appManager;
 
     private $mailUsageMapper;
 
