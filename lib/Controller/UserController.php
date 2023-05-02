@@ -10,18 +10,12 @@ use OCP\ILogger;
 use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\App\IAppManager;
 use OCA\EcloudAccounts\Service\UserService;
-use OCA\TermsOfService\Service\SignatoryService ;
 use OCA\EcloudAccounts\Db\MailUsageMapper;
 
 class UserController extends ApiController {
 	/** @var UserService */
 	private $userService;
-	/** @var SignatoryService */
-	private $signatoryService;
-	/** @var IAppManager */
-	private $appManager;
 
 	private $mailUsageMapper;
 
@@ -29,14 +23,12 @@ class UserController extends ApiController {
 
 	private $config;
 
-	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper, SignatoryService $signatoryService, IAppManager $appManager) {
+	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
 		$this->logger = $logger;
 		$this->config = $config;
-		$this->signatoryService = $signatoryService;
-		$this->appManager = $appManager;
 	}
 
 	/**
@@ -73,7 +65,7 @@ class UserController extends ApiController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB'): DataResponse {
+	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', 84,72:  * - postLogin(\OC\User\User $user, string $loginName, string $password, boolean $tosAccepted)): DataResponse {
 		$response = new DataResponse();
 
 		if (!$this->checkAppCredentials($token)) {
@@ -95,12 +87,7 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		if ($this->appManager->isEnabledForUser('terms_of_service')) {
-			$tosSignatoryInserted = $this->signatoryService->tosSignatoryInsert($uid);
-			if (!$tosSignatoryInserted) {
-				return $this->getErrorResponse($response, 'error_setting_tos', 400);
-			}
-		}
+		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', $tosAccepted);
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
