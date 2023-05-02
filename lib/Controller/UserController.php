@@ -65,7 +65,7 @@ class UserController extends ApiController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', boolean $tosAccepted = false): DataResponse {
+	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB',  bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
 
 		if (!$this->checkAppCredentials($token)) {
