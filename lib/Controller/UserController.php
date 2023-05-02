@@ -87,7 +87,7 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', $tosAccepted);
+		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', strval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
