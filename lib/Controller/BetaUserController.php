@@ -16,6 +16,7 @@ use OCP\ILogger;
 use OCP\Mail\IMailer;
 use OCP\Util;
 use OCP\App\IAppManager;
+
 class BetaUserController extends Controller {
 	protected $appName;
 	protected $request;
