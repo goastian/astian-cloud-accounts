@@ -15,7 +15,7 @@ use OCP\IUserSession;
 use OCP\ILogger;
 use OCP\Mail\IMailer;
 use OCP\Util;
-
+use OCP\App\IAppManager;
 class BetaUserController extends Controller {
 	protected $appName;
 	protected $request;
@@ -33,7 +33,8 @@ class BetaUserController extends Controller {
 		IUserManager $userManager,
 		IGroupManager $groupManager,
 		IUserSession $userSession,
-		IMailer $mailer
+		IMailer $mailer,
+		IAppManager $appManager
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -44,6 +45,7 @@ class BetaUserController extends Controller {
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->mailer = $mailer;
+		$this->appManager = $appManager;
 	}
 
 	/**
@@ -100,5 +102,28 @@ class BetaUserController extends Controller {
 		$this->mailer->send($message);
 
 		return true;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function checkUserInGroup() {
+		$uid = $this->userSession->getUser()->getUID();
+		$betaGroupName = $this->config->getSystemValue("beta_group_name");
+		$group = $this->groupManager->get($betaGroupName);
+		$betaGroupApps = $this->appManager->getEnabledAppsForGroup($group);
+		$betaApps = [];
+		foreach ($betaGroupApps as $app) {
+			$appEnabledGroups = $this->config->getAppValue($app, 'enabled', 'no');
+			if (str_contains($appEnabledGroups, $betaGroupName)) {
+				$info = $this->appManager->getAppInfo($app);
+				$betaApps[] = $info['name'];
+			}
+		}
+		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
+			return ['isBetaUser' => true, 'betaApps' => $betaApps];
+		}
+		return ['isBetaUser' => false, 'betaApps' => $betaApps];
 	}
 }

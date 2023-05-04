@@ -49,22 +49,8 @@ class BetaUserSetting implements ISettings {
 	}
 
 	public function getForm(): TemplateResponse {
-		$uid = $this->userSession->getUser()->getUID();
-		$betaGroupName = $this->config->getSystemValue("beta_group_name");
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
-		$group = $this->groupManager->get($betaGroupName);
-		$betaGroupApps = $this->appManager->getEnabledAppsForGroup($group);
 		$betaApps = [];
-		foreach ($betaGroupApps as $app) {
-			$appEnabledGroups = $this->config->getAppValue($app, 'enabled', 'no');
-			if (str_contains($appEnabledGroups, $betaGroupName)) {
-				$info = $this->appManager->getAppInfo($app);
-				$betaApps[] = $info['name'];
-			}
-		}
-		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
-			return new TemplateResponse($this->appName, 'opt_out_beta_user', ['betaApps' => $betaApps], '');
-		}
 		return new TemplateResponse($this->appName, 'become_beta_user', ['betaApps' => $betaApps], '');
 	}
 
