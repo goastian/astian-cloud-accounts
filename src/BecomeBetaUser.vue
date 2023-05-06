@@ -1,6 +1,5 @@
 <template>
 	<SettingsSection>
-		<div id="message" :class="messageClass" v-html="message" />
 		<div v-if="!isBetaUser" class="section">
 			<h2>
 				{{
@@ -100,6 +99,7 @@
 import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import { showSuccess, showError } from '@nextcloud/dialogs'
 
 export default {
 	name: 'BecomeBetaUser',
@@ -118,8 +118,6 @@ export default {
 			betaApps: [],
 			title: '',
 			description: '',
-			messageClass: '',
-			message: '',
 		}
 	},
 	computed: {
@@ -159,12 +157,10 @@ export default {
 				const { status } = await Axios.get(url)
 				if (status === 200) {
 					this.isBetaUser = true
-					this.message = t('ecloud-accounts', 'Congratulations! You\'ve successfully been added to the beta users.')
-					this.messageClass = 'alert-success'
+					showSuccess(t('ecloud-accounts', 'Congratulations! You\'ve successfully been added to the beta users.'))
 				}
 			} catch (e) {
-				this.message = t('ecloud-accounts', 'Something went wrong.')
-				this.messageClass = 'alert-fail'
+				showError(t('ecloud-accounts', 'Something went wrong.'))
 			}
 		},
 		async optOutFromBetaUser() {
@@ -175,12 +171,10 @@ export default {
 				const { status } = await Axios.get(url)
 				if (status === 200) {
 					this.isBetaUser = false
-					this.message = t('ecloud-accounts', 'You no longer have access to experimental features.')
-					this.messageClass = 'alert-success'
+					showSuccess(t('ecloud-accounts', 'You no longer have access to experimental features.'))
 				}
 			} catch (e) {
-				this.message = t('ecloud-accounts', 'Something went wrong.')
-				this.messageClass = 'alert-fail'
+				showError(t('ecloud-accounts', 'Something went wrong.'))
 			}
 		},
 		async submitFeedback(e) {
@@ -191,14 +185,12 @@ export default {
 				)
 				const { status } = await Axios.post(url, { title: this.title, description: this.description })
 				if (status === 200) {
-					this.message = t('ecloud-accounts', 'Issue submitted successfully.')
-					this.messageClass = 'alert-success'
+					showSuccess(t('ecloud-accounts', 'Issue submitted successfully.'))
 					this.description = ''
 					this.title = ''
 				}
 			} catch (e) {
-				this.message = t('ecloud-accounts', 'Something went wrong.')
-				this.messageClass = 'alert-fail'
+				showError(t('ecloud-accounts', 'Something went wrong.'))
 			}
 		},
 	},
