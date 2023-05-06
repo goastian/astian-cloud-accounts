@@ -25,6 +25,8 @@ class BetaUserController extends Controller {
 	protected $groupManager;
 	protected $mailer;
 	private $userSession;
+	private $appManager;
+	private $logger;
 
 	public function __construct(
 		$AppName,

@@ -1,95 +1,102 @@
 <template>
 	<SettingsSection>
-		<div v-if="!isBetaUser" class="section">
-			<h2>
-				{{
-					t('ecloud-accounts', 'Do you want to become a beta user?')
-				}}
-			</h2>
-			<p class="settings-hint">
-				{{
-					t('ecloud-accounts', 'You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')
-				}}
-			</p>
-			<p class="settings-hint">
-				{{
-					t('ecloud-accounts', 'To get a preview of our new features you need to become part of our beta users.To do so, simply click on the button below.You can opt out of beta features at anytime.')
-				}}
-			</p>
-			<div id="groups" class="aliases-info">
-				<input type="button"
-					class="width300"
-					:value="becomeBetaUserButtonLabel"
-					@click="becomeBetaUser()">
-			</div>
-			<div class="margin-top-10">
+		<p v-if="loading">
+			{{
+				t('ecloud-accounts', 'Loading...')
+			}}
+		</p>
+		<div v-else>
+			<div v-if="!isBetaUser" class="section padding-0">
+				<h2>
+					{{
+						t('ecloud-accounts', 'Do you want to become a beta user?')
+					}}
+				</h2>
 				<p class="settings-hint">
-					{{ t('ecloud-accounts', 'Here is the list of currently available beta features: ') }}
+					{{
+						t('ecloud-accounts', 'You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')
+					}}
 				</p>
-				<ul class="beta-apps settings-hint">
-					<li v-for="app in betaApps" :key="app">
-						{{ app }}
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div v-if="isBetaUser" class="section">
-			<h2>
-				{{ t('ecloud-accounts','You are part of the beta users.') }}
-			</h2>
-			<p class="settings-hint">
-				{{ t('ecloud-accounts','Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.') }}
-			</p>
-			<div>
 				<p class="settings-hint">
-					{{ t('ecloud-accounts','Here is the list of currently available beta features:') }}
+					{{
+						t('ecloud-accounts', 'To get a preview of our new features you need to become part of our beta users.To do so, simply click on the button below.You can opt out of beta features at anytime.')
+					}}
 				</p>
-				<ul class="beta-apps settings-hint">
-					<li v-for="app in betaApps" :key="app">
-						{{ app }}
-					</li>
-				</ul>
-			</div>
-			<form id="issue-submit-form" class="mt-20" @submit="submitFeedback">
-				<p>
-					<label id="title_label" for="title">
-						<b>
-							{{ t('ecloud-accounts','Title') }} <sup class="color-red">*</sup>
-						</b>
-					</label>
-				</p>
-				<p>
-					<input id="title"
-						v-model="title"
-						type="text"
-						:placeholder="summaryOfFeedbackPlaceholderText">
-				</p>
-				<p class="mt-20">
-					<label id="description_label" for="description">
-						<b>
-							{{ t('ecloud-accounts','Description') }} <sup class="color-red">*</sup>
-						</b>
-					</label>
-				</p>
-				<p>
-					<textarea id="description" v-model="description" :placeholder="moreDetailsPlaceholderText" />
-				</p>
-				<p class="mt-20">
-					<input type="submit"
-						:value="submitButtonLabel"
+				<div id="groups" class="aliases-info">
+					<input type="button"
 						class="width300"
-						:disabled="isDisabled">
+						:value="becomeBetaUserButtonLabel"
+						@click="becomeBetaUser()">
+				</div>
+				<div class="margin-top-10">
+					<p class="settings-hint">
+						{{ t('ecloud-accounts', 'Here is the list of currently available beta features: ') }}
+					</p>
+					<ul class="beta-apps settings-hint">
+						<li v-for="app in betaApps" :key="app">
+							{{ app }}
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div v-if="isBetaUser" class="section padding-0">
+				<h2>
+					{{ t('ecloud-accounts','You are part of the beta users.') }}
+				</h2>
+				<p class="settings-hint">
+					{{ t('ecloud-accounts','Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.') }}
 				</p>
-			</form>
-			<p class="settings-hint mt-20">
-				{{ t('ecloud-accounts','Want to take a break from beta features? Just click on the button below. You can become a beta user again anytime!') }}
-			</p>
+				<div>
+					<p class="settings-hint">
+						{{ t('ecloud-accounts','Here is the list of currently available beta features:') }}
+					</p>
+					<ul class="beta-apps settings-hint">
+						<li v-for="app in betaApps" :key="app">
+							{{ app }}
+						</li>
+					</ul>
+				</div>
+				<form id="issue-submit-form" class="mt-20" @submit="submitFeedback">
+					<p>
+						<label id="title_label" for="title">
+							<b>
+								{{ t('ecloud-accounts','Title') }} <sup class="color-red">*</sup>
+							</b>
+						</label>
+					</p>
+					<p>
+						<input id="title"
+							v-model="title"
+							type="text"
+							:placeholder="summaryOfFeedbackPlaceholderText">
+					</p>
+					<p class="mt-20">
+						<label id="description_label" for="description">
+							<b>
+								{{ t('ecloud-accounts','Description') }} <sup class="color-red">*</sup>
+							</b>
+						</label>
+					</p>
+					<p>
+						<textarea id="description" v-model="description" :placeholder="moreDetailsPlaceholderText" />
+					</p>
+					<p class="mt-20">
+						<input type="submit"
+							:value="submitButtonLabel"
+							class="width300"
+							:disabled="isDisabled">
+					</p>
+				</form>
+				<p class="settings-hint mt-20">
+					{{ t('ecloud-accounts','Want to take a break from beta features? Just click on the button below. You can become a beta user again anytime!') }}
+				</p>
 
-			<div id="beta-form">
-				<input type="submit"
-					class="width300 btn-optout"
-					:value="optOutBetaUserButtonLabel"
-					@click="optOutFromBetaUser()">
+				<div id="beta-form">
+					<input type="submit"
+						class="width300 btn-optout"
+						:value="optOutBetaUserButtonLabel"
+						@click="optOutFromBetaUser()">
+				</div>
 			</div>
 		</div>
 	</SettingsSection>
@@ -118,6 +125,7 @@ export default {
 			betaApps: [],
 			title: '',
 			description: '',
+			loading: true,
 		}
 	},
 	computed: {
@@ -143,10 +151,9 @@ export default {
 					this.isBetaUser = data.isBetaUser
 					this.betaApps = data.betaApps
 				}
-				if (status === 400) {
-					this.enableDeleteAccountEvent()
-				}
+				this.loading = false
 			} catch (e) {
+				this.loading = false
 			}
 		},
 		async becomeBetaUser() {
@@ -263,5 +270,9 @@ ul.beta-apps > li:before {
 	content: '-';
 	width: 1em;
 	margin-left: -1em;
+}
+
+.padding-0{
+	padding: 0;
 }
 </style>
