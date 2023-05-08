@@ -65,7 +65,7 @@ class UserController extends ApiController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted): DataResponse {
+	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
 
 		if (!$this->checkAppCredentials($token)) {
@@ -87,7 +87,7 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', strval($tosAccepted));
+		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
