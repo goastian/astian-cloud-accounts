@@ -94,7 +94,6 @@ class BetaUserController extends Controller {
 		$message->useTemplate($template);
 
 		$this->mailer->send($message);
-
 		return true;
 	}
 }
