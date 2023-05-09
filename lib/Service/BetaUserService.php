@@ -26,7 +26,12 @@ class BetaUserService {
 		$this->userSession = $userSession;
 		$this->appManager = $appManager;
 	}
-
+	
+	/**
+	 * Method getBetaUserStatusAndApps is used to get beta user status and beta apps
+	 *
+	 * @return void
+	 */
 	public function getBetaUserStatusAndApps() {
 		$uid = $this->userSession->getUser()->getUID();
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
