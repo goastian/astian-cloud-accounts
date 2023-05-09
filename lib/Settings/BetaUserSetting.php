@@ -41,9 +41,10 @@ class BetaUserSetting implements ISettings {
 	}
 
 	public function getForm(): TemplateResponse {
-		$betaDetails = $this->betaUserService->getBetaUserStatusAndApps();
-		$this->initialState->provideInitialState('is_beta_user', $betaDetails['isBetaUser']);
-		$this->initialState->provideInitialState('beta_apps', $betaDetails['betaApps']);
+		$betaUserStatus = $this->betaUserService->getBetaUserStatus();
+		$betaApps = $this->betaUserService->getBetaApps();
+		$this->initialState->provideInitialState('is_beta_user', $betaUserStatus);
+		$this->initialState->provideInitialState('beta_apps', $betaApps);
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
 		return new TemplateResponse($this->appName, 'beta');
 	}

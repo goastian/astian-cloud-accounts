@@ -26,14 +26,27 @@ class BetaUserService {
 		$this->userSession = $userSession;
 		$this->appManager = $appManager;
 	}
-	
+		
 	/**
-	 * Method getBetaUserStatusAndApps is used to get beta user status and beta apps
+	 * Method getBetaUserStatus used to get beta user status
 	 *
 	 * @return void
 	 */
-	public function getBetaUserStatusAndApps() {
+	public function getBetaUserStatus() {
 		$uid = $this->userSession->getUser()->getUID();
+		$betaGroupName = $this->config->getSystemValue("beta_group_name");
+		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Method getBetaApps used to get beta apps
+	 *
+	 * @return void
+	 */
+	public function getBetaApps() {
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
 		$group = $this->groupManager->get($betaGroupName);
 		$betaGroupApps = $this->appManager->getEnabledAppsForGroup($group);
@@ -45,9 +58,6 @@ class BetaUserService {
 				$betaApps[] = $info['name'];
 			}
 		}
-		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
-			return ['isBetaUser' => true, 'betaApps' => $betaApps];
-		}
-		return ['isBetaUser' => false, 'betaApps' => $betaApps];
+		return $betaApps;
 	}
 }
