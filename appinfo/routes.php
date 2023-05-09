@@ -25,9 +25,5 @@ return ['routes' => [
 	[
 		'name' => 'beta_user#submit_issue',
 		'url' => '/issue/submit', 'verb' => 'POST'
-	],
-	[
-		'name' => 'beta_user#check_user_in_group',
-		'url' => '/beta/check', 'verb' => 'GET'
 	]
 ]];

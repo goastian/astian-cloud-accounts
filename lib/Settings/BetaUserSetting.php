@@ -6,49 +6,44 @@ namespace OCA\EcloudAccounts\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IGroupManager;
-use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
 use OCP\IConfig;
-use OCP\App\IAppManager;
 use OCP\ILogger;
+use OCP\AppFramework\Services\IInitialState;
+use OCA\EcloudAccounts\Service\BetaUserService;
 
 class BetaUserSetting implements ISettings {
-	/** @var IUserSession */
-	private $userSession;
-
-	/** @var IGroupManager */
 	protected $groupManager;
-
-	/** @var Util */
 	protected $util;
-
-	private $appName;
-
-	private $appManager;
-
-	/** @var ILogger */
 	private $logger;
+	private $initialState;
+	private $config;
+	private $appName;
+	private $betaUserService;
 
 	public function __construct(
 		$appName,
-		IUserSession $userSession,
 		IGroupManager $groupManager,
 		Util $util,
 		IConfig $config,
-		IAppManager $appManager,
-		ILogger $logger
+		ILogger $logger,
+		IInitialState $initialState,
+		BetaUserService $betaUserService
 	) {
-		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->util = $util;
-		$this->appManager = $appManager;
 		$this->logger = $logger;
+		$this->initialState = $initialState;
+		$this->betaUserService = $betaUserService;
 	}
 
 	public function getForm(): TemplateResponse {
+		$betaDetails = $this->betaUserService->getBetaUserStatusAndApps();
+		$this->initialState->provideInitialState('is_beta_user', $betaDetails['isBetaUser']);
+		$this->initialState->provideInitialState('beta_apps', $betaDetails['betaApps']);
 		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
 		return new TemplateResponse($this->appName, 'beta');
 	}
