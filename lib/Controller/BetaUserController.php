@@ -82,7 +82,6 @@ class BetaUserController extends Controller {
 		$fromEmail = $user->getEMailAddress();
 		$fromName = $user->getDisplayName();
 
-
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
 		$template->addHeader();
 		$template->setSubject($title);
