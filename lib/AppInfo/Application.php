@@ -74,7 +74,8 @@ class Application extends App implements IBootstrap {
 			}
 			$userId = $user->getUID();
 			$principal = 'principals/users/' . $userId;
-			if ($calDav->getCalendarsForUserCount($principal) === 0) {
+			$calendar = $calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_NAME);
+			if ($calendar === null) {
 				$calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
 					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
 					'{http://apple.com/ns/ical/}calendar-color' => $themingDefaults->getColorPrimary(),
