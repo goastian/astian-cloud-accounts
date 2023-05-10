@@ -37,9 +37,15 @@ use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
+use OCP\Defaults;
+use OCP\IUser;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
+	public const TASKS_CALENDAR_URI = 'tasks';
+	public const TASKS_CALENDAR_NAME = 'Tasks';
 
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
@@ -52,9 +58,31 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
+		$context->injectFn([$this, 'createTasksCalendar']);
 		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($c) {
 			return new LDAPConnectionService();
+		});
+	}
+
+	public function createTasksCalendar(CalDavBackend $calDav, Defaults $themingDefaults, EventDispatcherInterface $dispatcher): void {
+		$dispatcher->addListener(IUser::class . '::firstLogin', function (GenericEvent $event) use ($calDav, $themingDefaults) {
+			$user = $event->getSubject();
+			if (!$user instanceof IUser) {
+				return;
+			}
+			$userId = $user->getUID();
+			$principal = 'principals/users/' . $userId;
+			if ($calDav->getCalendarsForUserCount($principal) === 0) {
+
+				$calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
+					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
+					'{http://apple.com/ns/ical/}calendar-color' => $themingDefaults->getColorPrimary(),
+					'components' => 'VEVENT'
+				]);
+
+			}
+
 		});
 	}
 }
