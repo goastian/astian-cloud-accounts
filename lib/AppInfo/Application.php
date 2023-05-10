@@ -35,6 +35,7 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCA\DAV\CalDAV\CalDavBackend;
 use OCP\Defaults;
 use OCP\IUser;
 use OCP\User\Events\BeforeUserDeletedEvent;
