@@ -31,11 +31,11 @@ use OCP\IUser;
 use OCP\IUserManager;
 
 /**
- * Class EcloudAccounts
+ * Class CreateTasksCalendar
  *
  * @package OCA\EcloudAccounts\Migration
  */
-class EcloudAccounts implements IRepairStep {
+class CreateTasksCalendar implements IRepairStep {
 	public const APP_ID = 'ecloud-accounts';
 	public const TASKS_CALENDAR_URI = 'tasks';
 	public const TASKS_CALENDAR_NAME = 'Tasks';
