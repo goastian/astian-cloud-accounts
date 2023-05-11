@@ -90,7 +90,7 @@ class CreateTasksCalendar implements IRepairStep {
 			$userId = $user->getUID();
 			\OC::$server->getLogger()->error("here user".$userId);
 			$principal = 'principals/users/' . $userId;
-			$calendar = $this->calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_NAME);
+			$calendar = $this->calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_URI);
 			if ($calendar === null) {
 				\OC::$server->getLogger()->error("here4");
 				\OC::$server->getLogger()->error("here user enter".$userId);
