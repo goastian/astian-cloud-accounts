@@ -30,6 +30,7 @@ use OCP\Migration\IRepairStep;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCA\DAV\CalDAV\CalDavBackend;
+use OCP\Defaults;
 
 /**
  * Class CreateTasksCalendar
@@ -53,11 +54,16 @@ class CreateTasksCalendar implements IRepairStep {
 	/** @var CalDavBackend */
 	protected $calDav;
 
-	public function __construct(IDBConnection $connection, IConfig $config, IUserManager $userManager, CalDavBackend $calDav) {
+	/** @var Defaults */
+	protected $themingDefaults;
+
+
+	public function __construct(IDBConnection $connection, IConfig $config, IUserManager $userManager, CalDavBackend $calDav, Defaults $themingDefaults) {
 		$this->connection = $connection;
 		$this->config = $config;
 		$this->userManager = $userManager;
 		$this->calDav = $calDav;
+		$this->themingDefaults = $themingDefaults;
 	}
 
 	/**
@@ -85,7 +91,7 @@ class CreateTasksCalendar implements IRepairStep {
 			if ($calendar === null) {
 				$this->calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
 					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
-					'{http://apple.com/ns/ical/}calendar-color' => $themingDefaults->getColorPrimary(),
+					'{http://apple.com/ns/ical/}calendar-color' => $this->themingDefaults->getColorPrimary(),
 					'components' => 'VEVENT'
 				]);
 			}
