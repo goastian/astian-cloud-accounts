@@ -85,7 +85,6 @@ class EcloudAccounts implements IRepairStep {
 				]);
 			}
 		});
-
 		// if everything is done, no need to redo the repair during next upgrade
 		$this->config->setAppValue(self::APP_ID, 'CreateTasksHasRun', 'yes');
 	}
