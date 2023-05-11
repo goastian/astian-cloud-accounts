@@ -27,9 +27,9 @@
     <commands>
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
     </commands>
-    	<repair-steps>
-		<post-migration>
-			<step>OCA\EcloudAccounts\Migration\CreateTasksCalendar</step>
-		</post-migration>
+    <repair-steps>
+        <install>
+            <step>OCA\EcloudAccounts\Migration\CreateTasksCalendar</step>
+        </install>
 	</repair-steps>
 </info>
