@@ -80,15 +80,20 @@ class CreateTasksCalendar implements IRepairStep {
 	 * @param IOutput $output
 	 */
 	public function run(IOutput $output) {
+		\OC::$server->getLogger()->error("here1");
 		if ($this->config->getAppValue(self::APP_ID, 'CreateTasksHasRun') === 'yes') {
 			$output->info('Repair step already executed');
 			return;
 		}
+		\OC::$server->getLogger()->error("here2");
 		$this->userManager->callForSeenUsers(function (IUser $user) {
 			$userId = $user->getUID();
+			\OC::$server->getLogger()->error("here user".$userId);
 			$principal = 'principals/users/' . $userId;
 			$calendar = $this->calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_NAME);
 			if ($calendar === null) {
+				\OC::$server->getLogger()->error("here4");
+				\OC::$server->getLogger()->error("here user enter".$userId);
 				$this->calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
 					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
 					'{http://apple.com/ns/ical/}calendar-color' => $this->themingDefaults->getColorPrimary(),
