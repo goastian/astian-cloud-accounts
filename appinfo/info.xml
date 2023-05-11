@@ -31,5 +31,5 @@
         <install>
             <step>OCA\EcloudAccounts\Migration\CreateTasksCalendar</step>
         </install>
-	</repair-steps>
+    </repair-steps>
 </info>
