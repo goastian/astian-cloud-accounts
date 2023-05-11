@@ -30,15 +30,13 @@ use OCP\Migration\IRepairStep;
 use OCP\IUser;
 use OCP\IUserManager;
 
-
 /**
  * Class EcloudAccounts
  *
  * @package OCA\EcloudAccounts\Migration
  */
 class EcloudAccounts implements IRepairStep {
-
-    public const APP_ID = 'ecloud-accounts';
+	public const APP_ID = 'ecloud-accounts';
 	public const TASKS_CALENDAR_URI = 'tasks';
 	public const TASKS_CALENDAR_NAME = 'Tasks';
 
@@ -48,13 +46,13 @@ class EcloudAccounts implements IRepairStep {
 	/** @var  IConfig */
 	protected $config;
 
-    /** @var IUserManager */
+	/** @var IUserManager */
 	private $userManager;
 
 	public function __construct(IDBConnection $connection, IConfig $config, IUserManager $userManager) {
 		$this->connection = $connection;
 		$this->config = $config;
-        $this->userManager = $userManager;
+		$this->userManager = $userManager;
 	}
 
 	/**
@@ -75,8 +73,8 @@ class EcloudAccounts implements IRepairStep {
 			$output->info('Repair step already executed');
 			return;
 		}
-        $this->userManager->callForSeenUsers(function (IUser $user) {
-            $userId = $user->getUID();
+		$this->userManager->callForSeenUsers(function (IUser $user) {
+			$userId = $user->getUID();
 			$principal = 'principals/users/' . $userId;
 			$calendar = $calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_NAME);
 			if ($calendar === null) {
@@ -86,12 +84,9 @@ class EcloudAccounts implements IRepairStep {
 					'components' => 'VEVENT'
 				]);
 			}
+		});
 
-        });
-
-        // if everything is done, no need to redo the repair during next upgrade
+		// if everything is done, no need to redo the repair during next upgrade
 		$this->config->setAppValue(self::APP_ID, 'CreateTasksHasRun', 'yes');
 	}
-
-
 }
