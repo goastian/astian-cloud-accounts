@@ -114,23 +114,13 @@ class CreateTasksCalendar implements IRepairStep
 		//get all principal uri having no task calendar with component as TODO but have personal calendar
 		$result= $this->getPrincipalUriByCalendar();
 		foreach ($result as $row) {
-			$principaluri = $row['principaluri'];
-			$query = $db->getQueryBuilder();
-			$query->select($fields)->from('calendars')
-					->where($query->expr()->eq('uri', $query->createNamedParameter(self::TASKS_CALENDAR_NAME)))
-					->andWhere($query->expr()->eq('principaluri', $query->createNamedParameter($principal)))
-					->andWhere($query->expr()->eq('components', $query->createNamedParameter(self::TASKS_CALENDAR_COMPONENT)))
-					->setMaxResults(1);
-			$stmt = $query->executeQuery();
-			$row = $stmt->fetch();
-			$stmt->closeCursor();
-			if ($row === false) {
-				$this->calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
-					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
-					'{http://apple.com/ns/ical/}calendar-color' => $this->themingDefaults->getColorPrimary(),
-					'components' => 'VTODO'
-				]);
-			}
+			$principal = $row['principaluri'];
+			$this->calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
+				'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
+				'{http://apple.com/ns/ical/}calendar-color' => $this->themingDefaults->getColorPrimary(),
+				'components' => 'VTODO'
+			]);
+
 		};
 		// if everything is done, no need to redo the repair during next upgrade
 		$this->config->setAppValue(self::APP_ID, 'CreateTasksHasRun', 'yes');
