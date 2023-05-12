@@ -111,7 +111,7 @@ export default {
 			appName: 'ecloud-accounts',
 			summaryOfFeedbackPlaceholderText: t('ecloud-accounts', 'Summary of your feedback'),
 			moreDetailsPlaceholderText: t('ecloud-accounts', 'Please give us as many details as possible'),
-			becomeBetaUserButtonLabel: this.t('ecloud-accounts', 'Become a beta user'),
+			becomeBetaUserButtonLabel: t('ecloud-accounts', 'Become a beta user'),
 			optOutBetaUserButtonLabel: t('ecloud-accounts', 'Opt out of beta features'),
 			submitButtonLabel: t('ecloud-accounts', 'Submit'),
 			isBetaUser: false,
