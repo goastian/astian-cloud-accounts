@@ -100,6 +100,7 @@ import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import { translate as t } from '@nextcloud/l10n'
 
 export default {
 	name: 'BecomeBetaUser',
@@ -126,6 +127,7 @@ export default {
 			return (this.description === '' || this.title === '')
 		},
 	},
+
 	methods: {
 		async becomeBetaUser() {
 			try {
