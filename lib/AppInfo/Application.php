@@ -42,11 +42,13 @@ use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use OCP\IDBConnection;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
 	public const TASKS_CALENDAR_URI = 'tasks';
 	public const TASKS_CALENDAR_NAME = 'Tasks';
+	public const TASKS_CALENDAR_COMPONENT = 'VTODO';
 
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
@@ -66,7 +68,7 @@ class Application extends App implements IBootstrap {
 		});
 	}
 
-	public function createTasksCalendar(CalDavBackend $calDav, Defaults $themingDefaults, EventDispatcherInterface $dispatcher): void {
+	public function createTasksCalendar(CalDavBackend $calDav,IDBConnection $db, Defaults $themingDefaults, EventDispatcherInterface $dispatcher): void {
 		$dispatcher->addListener(IUser::class . '::firstLogin', function (GenericEvent $event) use ($calDav, $themingDefaults) {
 			$user = $event->getSubject();
 			if (!$user instanceof IUser) {
@@ -75,11 +77,20 @@ class Application extends App implements IBootstrap {
 			$userId = $user->getUID();
 			$principal = 'principals/users/' . $userId;
 			$calendar = $calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_NAME);
-			if ($calendar === null) {
+			$query = $db->getQueryBuilder();
+			$query->select($fields)->from('calendars')
+					->where($query->expr()->eq('uri', $query->createNamedParameter(self::TASKS_CALENDAR_NAME)))
+					->andWhere($query->expr()->eq('principaluri', $query->createNamedParameter($principal)))
+					->andWhere($query->expr()->eq('components', $query->createNamedParameter(self::TASKS_CALENDAR_COMPONENT)))
+					->setMaxResults(1);
+			$stmt = $query->executeQuery();
+			$row = $stmt->fetch();
+			$stmt->closeCursor();
+			if ($row === false) {
 				$calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
 					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
 					'{http://apple.com/ns/ical/}calendar-color' => $themingDefaults->getColorPrimary(),
-					'components' => 'VEVENT'
+					'components' => self::TASKS_CALENDAR_COMPONENT
 				]);
 			}
 		});

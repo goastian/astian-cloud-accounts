@@ -37,44 +37,71 @@ use OCP\Defaults;
  *
  * @package OCA\EcloudAccounts\Migration
  */
-class CreateTasksCalendar implements IRepairStep {
-	public const APP_ID = 'ecloud-accounts';
-	public const TASKS_CALENDAR_URI = 'tasks';
-	public const TASKS_CALENDAR_NAME = 'Tasks';
+class CreateTasksCalendar implements IRepairStep
+{
+    public const APP_ID = 'ecloud-accounts';
+    public const TASKS_CALENDAR_URI = 'tasks';
+    public const TASKS_CALENDAR_COMPONENT = 'VTODO';
 
-	/** @var IDBConnection */
-	protected $connection;
+    /** @var IDBConnection */
+    protected $connection;
 
-	/** @var  IConfig */
-	protected $config;
+    /** @var  IConfig */
+    protected $config;
 
-	/** @var IUserManager */
-	private $userManager;
+    /** @var IUserManager */
+    private $userManager;
 
-	/** @var CalDavBackend */
-	protected $calDav;
+    /** @var CalDavBackend */
+    protected $calDav;
 
-	/** @var Defaults */
-	protected $themingDefaults;
+    /** @var Defaults */
+    protected $themingDefaults;
 
 
-	public function __construct(IDBConnection $connection, IConfig $config, IUserManager $userManager, CalDavBackend $calDav, Defaults $themingDefaults) {
-		$this->connection = $connection;
-		$this->config = $config;
-		$this->userManager = $userManager;
-		$this->calDav = $calDav;
-		$this->themingDefaults = $themingDefaults;
-	}
+    public function __construct(IDBConnection $connection, IConfig $config, IUserManager $userManager, CalDavBackend $calDav, Defaults $themingDefaults)
+    {
+        $this->connection = $connection;
+        $this->config = $config;
+        $this->userManager = $userManager;
+        $this->calDav = $calDav;
+        $this->themingDefaults = $themingDefaults;
+    }
 
-	/**
-	 * Returns the step's name
-	 *
-	 * @return string
-	 * @since 9.1.0
-	 */
-	public function getName() {
-		return 'Fix by creating Tasks calendar for user if not exist.';
-	}
+    /**
+     * Returns the step's name
+     *
+     * @return string
+     * @since 9.1.0
+     */
+    public function getName()
+    {
+        return 'Fix by creating Tasks calendar for user if not exist.';
+    }
+
+    /**
+     * Returns the step's name
+     *
+     * @return string
+     * @since 9.1.0
+     */
+    public function getPrincipalUriByCalendar():array
+    {
+        $query = $this->db->getQueryBuilder();
+        $query->select(['Distinct c1.principaluri'])
+            ->from('calendars', 'c1')
+            ->leftJoin('c1', 'calendars', 'c2',
+						$query->expr()->andX(
+							$query->expr()->eq('c1.principaluri', 'c2.principaluri'),
+							$query->expr()->eq('c2.uri', 'tasks'),
+							$query->expr()->eq('c2.components', 'vtodo')
+						)
+					)
+			->where($query->expr()->isNull('c2.principaluri'));
+        $stmt = $query->executeQuery();
+        return $stmt->fetchAll();
+    }
+
 
 	/**
 	 * @param IOutput $output
@@ -84,18 +111,27 @@ class CreateTasksCalendar implements IRepairStep {
 			$output->info('Repair step already executed');
 			return;
 		}
-		$this->userManager->callForSeenUsers(function (IUser $user) {
-			$userId = $user->getUID();
-			$principal = 'principals/users/' . $userId;
-			$calendar = $this->calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_URI);
-			if ($calendar === null) {
+		//get all principal uri having no task calendar with component as TODO but have personal calendar
+		$result= $this->getPrincipalUriByCalendar();
+		foreach ($result as $row) {
+			$principaluri = $row['principaluri'];
+			$query = $db->getQueryBuilder();
+			$query->select($fields)->from('calendars')
+					->where($query->expr()->eq('uri', $query->createNamedParameter(self::TASKS_CALENDAR_NAME)))
+					->andWhere($query->expr()->eq('principaluri', $query->createNamedParameter($principal)))
+					->andWhere($query->expr()->eq('components', $query->createNamedParameter(self::TASKS_CALENDAR_COMPONENT)))
+					->setMaxResults(1);
+			$stmt = $query->executeQuery();
+			$row = $stmt->fetch();
+			$stmt->closeCursor();
+			if ($row === false) {
 				$this->calDav->createCalendar($principal, self::TASKS_CALENDAR_URI, [
 					'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
 					'{http://apple.com/ns/ical/}calendar-color' => $this->themingDefaults->getColorPrimary(),
-					'components' => 'VEVENT'
+					'components' => 'VTODO'
 				]);
 			}
-		});
+		};
 		// if everything is done, no need to redo the repair during next upgrade
 		$this->config->setAppValue(self::APP_ID, 'CreateTasksHasRun', 'yes');
 	}
