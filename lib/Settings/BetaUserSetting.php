@@ -7,7 +7,6 @@ namespace OCA\EcloudAccounts\Settings;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IGroupManager;
 use OCP\Settings\ISettings;
-use OCP\Util;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\AppFramework\Services\IInitialState;
@@ -15,7 +14,6 @@ use OCA\EcloudAccounts\Service\BetaUserService;
 
 class BetaUserSetting implements ISettings {
 	protected $groupManager;
-	protected $util;
 	private $logger;
 	private $initialState;
 	private $config;
@@ -25,7 +23,6 @@ class BetaUserSetting implements ISettings {
 	public function __construct(
 		$appName,
 		IGroupManager $groupManager,
-		Util $util,
 		IConfig $config,
 		ILogger $logger,
 		IInitialState $initialState,
@@ -34,7 +31,6 @@ class BetaUserSetting implements ISettings {
 		$this->groupManager = $groupManager;
 		$this->appName = $appName;
 		$this->config = $config;
-		$this->util = $util;
 		$this->logger = $logger;
 		$this->initialState = $initialState;
 		$this->betaUserService = $betaUserService;
@@ -45,8 +41,7 @@ class BetaUserSetting implements ISettings {
 		$betaApps = $this->betaUserService->getBetaApps();
 		$this->initialState->provideInitialState('is_beta_user', $betaUserStatus);
 		$this->initialState->provideInitialState('beta_apps', $betaApps);
-		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
-		return new TemplateResponse($this->appName, 'beta');
+		return new TemplateResponse($this->appName, 'beta', ['appName' => $this->appName], '');
 	}
 
 	public function getSection(): ?string {
