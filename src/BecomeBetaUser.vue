@@ -3,28 +3,28 @@
 		<div v-if="!isBetaUser" class="section padding-0">
 			<h2>
 				{{
-					t('ecloud-accounts', 'Do you want to become a beta user?')
+					t(appName, 'Do you want to become a beta user?')
 				}}
 			</h2>
 			<p class="settings-hint">
 				{{
-					t('ecloud-accounts', 'You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')
+					t(appName, 'You want to experiment new features ahead of the others and provide feedback on them before and if they\'re released? This section is made for you!')
 				}}
 			</p>
 			<p class="settings-hint">
 				{{
-					t('ecloud-accounts', 'To get a preview of our new features you need to become part of our beta users.To do so, simply click on the button below.You can opt out of beta features at anytime.')
+					t(appName, 'To get a preview of our new features you need to become part of our beta users.To do so, simply click on the button below.You can opt out of beta features at anytime.')
 				}}
 			</p>
 			<div id="groups" class="aliases-info">
 				<input type="button"
 					class="width300"
-					:value="becomeBetaUserButtonLabel"
+					:value="t(appName, 'Become a beta user')"
 					@click="becomeBetaUser()">
 			</div>
 			<div class="margin-top-10">
 				<p class="settings-hint">
-					{{ t('ecloud-accounts', 'Here is the list of currently available beta features: ') }}
+					{{ t(appName, 'Here is the list of currently available beta features: ') }}
 				</p>
 				<ul class="beta-apps settings-hint">
 					<li v-for="app in betaApps" :key="app">
@@ -35,14 +35,14 @@
 		</div>
 		<div v-if="isBetaUser" class="section padding-0">
 			<h2>
-				{{ t('ecloud-accounts','You are part of the beta users.') }}
+				{{ t(appName,'You are part of the beta users.') }}
 			</h2>
 			<p class="settings-hint">
-				{{ t('ecloud-accounts','Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.') }}
+				{{ t(appName,'Note : as the features are not released yet, you may encounter some bugs. Please report them or give your feedback using the form below.') }}
 			</p>
 			<div>
 				<p class="settings-hint">
-					{{ t('ecloud-accounts','Here is the list of currently available beta features:') }}
+					{{ t(appName,'Here is the list of currently available beta features:') }}
 				</p>
 				<ul class="beta-apps settings-hint">
 					<li v-for="app in betaApps" :key="app">
@@ -54,7 +54,7 @@
 				<p>
 					<label id="title_label" for="title">
 						<b>
-							{{ t('ecloud-accounts','Title') }} <sup class="color-red">*</sup>
+							{{ t(appName,'Title') }} <sup class="color-red">*</sup>
 						</b>
 					</label>
 				</p>
@@ -62,32 +62,32 @@
 					<input id="title"
 						v-model="title"
 						type="text"
-						:placeholder="summaryOfFeedbackPlaceholderText">
+						:placeholder="t(appName, 'Summary of your feedback')">
 				</p>
 				<p class="mt-20">
 					<label id="description_label" for="description">
 						<b>
-							{{ t('ecloud-accounts','Description') }} <sup class="color-red">*</sup>
+							{{ t(appName,'Description') }} <sup class="color-red">*</sup>
 						</b>
 					</label>
 				</p>
 				<p>
-					<textarea id="description" v-model="description" :placeholder="moreDetailsPlaceholderText" />
+					<textarea id="description" v-model="description" :placeholder="t(appName, 'Please give us as many details as possible')" />
 				</p>
 				<p class="mt-20">
 					<input type="submit"
-						:value="submitButtonLabel"
+						:value="t(appName, 'Submit')"
 						class="width300"
 						:disabled="isDisabled">
 				</p>
 			</form>
 			<p class="settings-hint mt-20">
-				{{ t('ecloud-accounts','Want to take a break from beta features? Just click on the button below. You can become a beta user again anytime!') }}
+				{{ t(appName,'Want to take a break from beta features? Just click on the button below. You can become a beta user again anytime!') }}
 			</p>
 			<div id="beta-form">
 				<input type="submit"
 					class="width300 btn-optout"
-					:value="optOutBetaUserButtonLabel"
+					:value="t(appName, 'Opt out of beta features')"
 					@click="optOutFromBetaUser()">
 			</div>
 		</div>
@@ -110,13 +110,8 @@ export default {
 	data() {
 		return {
 			appName: 'ecloud-accounts',
-			summaryOfFeedbackPlaceholderText: t('ecloud-accounts', 'Summary of your feedback'),
-			moreDetailsPlaceholderText: t('ecloud-accounts', 'Please give us as many details as possible'),
-			becomeBetaUserButtonLabel: t('ecloud-accounts', 'Become a beta user'),
-			optOutBetaUserButtonLabel: t('ecloud-accounts', 'Opt out of beta features'),
-			submitButtonLabel: t('ecloud-accounts', 'Submit'),
-			isBetaUser: loadState(this.appName, 'is_beta_user'),
-			betaApps: loadState(this.appName, 'beta_apps'),
+			isBetaUser: loadState('ecloud-accounts', 'is_beta_user'),
+			betaApps: loadState('ecloud-accounts', 'beta_apps'),
 			title: '',
 			description: '',
 			loading: true,
@@ -127,20 +122,17 @@ export default {
 			return (this.description === '' || this.title === '')
 		},
 	},
-
 	methods: {
 		async becomeBetaUser() {
 			try {
 				const url = generateUrl(
 					`/apps/${this.appName}/beta/add`
 				)
-				const { status } = await Axios.get(url)
-				if (status === 200) {
-					this.isBetaUser = true
-					showSuccess(t('ecloud-accounts', 'Congratulations! You\'ve successfully been added to the beta users.'))
-				}
+				await Axios.get(url)
+				this.isBetaUser = true
+				showSuccess(t(this.appName, 'Congratulations! You\'ve successfully been added to the beta users.'))
 			} catch (e) {
-				showError(t('ecloud-accounts', 'Something went wrong.'))
+				showError(t(this.appName, 'Something went wrong.'))
 			}
 		},
 		async optOutFromBetaUser() {
@@ -148,13 +140,11 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/beta/remove`
 				)
-				const { status } = await Axios.get(url)
-				if (status === 200) {
-					this.isBetaUser = false
-					showSuccess(t('ecloud-accounts', 'You no longer have access to experimental features.'))
-				}
+				await Axios.get(url)
+				this.isBetaUser = false
+				showSuccess(t(this.appName, 'You no longer have access to experimental features.'))
 			} catch (e) {
-				showError(t('ecloud-accounts', 'Something went wrong.'))
+				showError(t(this.appName, 'Something went wrong.'))
 			}
 		},
 		async submitFeedback(e) {
@@ -163,14 +153,12 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/issue/submit`
 				)
-				const { status } = await Axios.post(url, { title: this.title, description: this.description })
-				if (status === 200) {
-					showSuccess(t('ecloud-accounts', 'Issue submitted successfully.'))
-					this.description = ''
-					this.title = ''
-				}
+				await Axios.post(url, { title: this.title, description: this.description })
+				showSuccess(t(this.appName, 'Issue submitted successfully.'))
+				this.description = ''
+				this.title = ''
 			} catch (e) {
-				showError(t('ecloud-accounts', 'Something went wrong.'))
+				showError(t(this.appName, 'Something went wrong.'))
 			}
 		},
 	},
