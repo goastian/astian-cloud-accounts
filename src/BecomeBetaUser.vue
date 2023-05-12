@@ -114,7 +114,6 @@ export default {
 			betaApps: loadState('ecloud-accounts', 'beta_apps'),
 			title: '',
 			description: '',
-			loading: true,
 		}
 	},
 	computed: {
