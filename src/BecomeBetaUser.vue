@@ -114,8 +114,8 @@ export default {
 			becomeBetaUserButtonLabel: t('ecloud-accounts', 'Become a beta user'),
 			optOutBetaUserButtonLabel: t('ecloud-accounts', 'Opt out of beta features'),
 			submitButtonLabel: t('ecloud-accounts', 'Submit'),
-			isBetaUser: false,
-			betaApps: [],
+			isBetaUser: loadState(this.appName, 'is_beta_user'),
+			betaApps: loadState(this.appName, 'beta_apps'),
 			title: '',
 			description: '',
 			loading: true,
@@ -125,14 +125,6 @@ export default {
 		isDisabled() {
 			return (this.description === '' || this.title === '')
 		},
-	},
-	created() {
-		try {
-			this.isBetaUser = loadState(this.appName, 'is_beta_user')
-			this.betaApps = loadState(this.appName, 'beta_apps')
-		} catch (e) {
-			console.error('Error fetching initial state', e)
-		}
 	},
 	methods: {
 		async becomeBetaUser() {
