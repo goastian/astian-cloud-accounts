@@ -101,6 +101,7 @@ import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { translate as t } from '@nextcloud/l10n'
+const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'BecomeBetaUser',
@@ -109,9 +110,9 @@ export default {
 	},
 	data() {
 		return {
-			appName: 'ecloud-accounts',
-			isBetaUser: loadState('ecloud-accounts', 'is_beta_user'),
-			betaApps: loadState('ecloud-accounts', 'beta_apps'),
+			appName: APPLICATION_NAME,
+			isBetaUser: loadState(APPLICATION_NAME, 'is_beta_user'),
+			betaApps: loadState(APPLICATION_NAME, 'beta_apps'),
 			title: '',
 			description: '',
 		}
