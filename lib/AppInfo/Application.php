@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
+use OCA\DAV\CalDAV\CalDavBackend;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
@@ -35,14 +36,13 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
-use OCA\DAV\CalDAV\CalDavBackend;
 use OCP\Defaults;
+use OCP\IDBConnection;
 use OCP\IUser;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
-use OCP\IDBConnection;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -68,7 +68,7 @@ class Application extends App implements IBootstrap {
 		});
 	}
 
-	public function createTasksCalendar(CalDavBackend $calDav,IDBConnection $db, Defaults $themingDefaults, EventDispatcherInterface $dispatcher): void {
+	public function createTasksCalendar(CalDavBackend $calDav, IDBConnection $db, Defaults $themingDefaults, EventDispatcherInterface $dispatcher): void {
 		$dispatcher->addListener(IUser::class . '::firstLogin', function (GenericEvent $event) use ($calDav, $themingDefaults) {
 			$user = $event->getSubject();
 			if (!$user instanceof IUser) {
