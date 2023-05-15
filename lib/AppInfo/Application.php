@@ -69,7 +69,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function createTasksCalendar(CalDavBackend $calDav, IDBConnection $db, Defaults $themingDefaults, EventDispatcherInterface $dispatcher): void {
-		$dispatcher->addListener(IUser::class . '::firstLogin', function (GenericEvent $event) use ($calDav, $themingDefaults) {
+		$dispatcher->addListener(IUser::class . '::firstLogin', function (GenericEvent $event) use ($calDav, $themingDefaults, $db) {
 			$user = $event->getSubject();
 			if (!$user instanceof IUser) {
 				return;
