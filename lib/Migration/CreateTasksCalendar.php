@@ -83,14 +83,14 @@ class CreateTasksCalendar implements IRepairStep {
 	 */
 	public function getPrincipalUriByCalendar():array {
 		$query = $this->connection->getQueryBuilder();
+        $query= $expr = $qb->expr();
 		$query->select(['Distinct c1.principaluri'])
 			->from('calendars', 'c1')
-			->leftJoin('c1', 'calendars', 'c2',
-				$query->expr()->andX(
-					$query->expr()->eq('c1.principaluri', 'c2.principaluri'),
-					$query->expr()->eq('c2.uri', 'tasks'),
-					$query->expr()->eq('c2.components', 'VTODO')
-				)
+			->leftJoin('c1', 'calendars', 'c2',$expr->andX(
+                    $expr->eq('c1.principaluri', 'c2.principaluri'),
+                    $expr->eq('c2.uri', $qb->createNamedParameter('tasks')),
+                    $expr->eq('c2.components', $qb->createNamedParameter('VTODO'))
+                )
 			)
 			->where($query->expr()->isNull('c2.principaluri'));
 		$stmt = $query->executeQuery();
