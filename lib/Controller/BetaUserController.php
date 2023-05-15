@@ -12,7 +12,6 @@ use OCP\IConfig;
 use OCP\IUserManager;
 use OCP\IGroupManager;
 use OCP\IUserSession;
-use OCP\ILogger;
 use OCP\Mail\IMailer;
 use OCP\Util;
 
@@ -29,7 +28,6 @@ class BetaUserController extends Controller {
 		$AppName,
 		IRequest $request,
 		IConfig $config,
-		ILogger $logger,
 		IUserManager $userManager,
 		IGroupManager $groupManager,
 		IUserSession $userSession,
@@ -39,7 +37,6 @@ class BetaUserController extends Controller {
 		$this->appName = $AppName;
 		$this->request = $request;
 		$this->config = $config;
-		$this->logger = $logger;
 		$this->userManager = $userManager;
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
@@ -85,7 +82,6 @@ class BetaUserController extends Controller {
 		$fromEmail = $user->getEMailAddress();
 		$fromName = $user->getDisplayName();
 
-
 		$template = $this->mailer->createEMailTemplate('betauser.SubmitGitIssue', []);
 		$template->addHeader();
 		$template->setSubject($title);
@@ -98,7 +94,6 @@ class BetaUserController extends Controller {
 		$message->useTemplate($template);
 
 		$this->mailer->send($message);
-
 		return true;
 	}
 }
