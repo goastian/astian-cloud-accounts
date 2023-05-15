@@ -16,11 +16,11 @@ return ['routes' => [
 	],
 	[
 		'name' => 'beta_user#remove_user_in_group',
-		'url' => '/beta/update', 'verb' => 'DELETE'
+		'url' => '/beta/remove', 'verb' => 'GET'
 	],
 	[
 		'name' => 'beta_user#add_user_in_group',
-		'url' => '/beta/update', 'verb' => 'POST'
+		'url' => '/beta/add', 'verb' => 'GET'
 	],
 	[
 		'name' => 'beta_user#submit_issue',

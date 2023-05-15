@@ -6,66 +6,42 @@ namespace OCA\EcloudAccounts\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IGroupManager;
-use OCP\IUserSession;
 use OCP\Settings\ISettings;
-use OCP\Util;
 use OCP\IConfig;
-use OCP\App\IAppManager;
 use OCP\ILogger;
+use OCP\AppFramework\Services\IInitialState;
+use OCA\EcloudAccounts\Service\BetaUserService;
 
 class BetaUserSetting implements ISettings {
-	/** @var IUserSession */
-	private $userSession;
-
-	/** @var IGroupManager */
 	protected $groupManager;
-
-	/** @var Util */
-	protected $util;
-
-	private $appName;
-
-	private $appManager;
-
-	/** @var ILogger */
 	private $logger;
+	private $initialState;
+	private $config;
+	private $appName;
+	private $betaUserService;
 
 	public function __construct(
 		$appName,
-		IUserSession $userSession,
 		IGroupManager $groupManager,
-		Util $util,
 		IConfig $config,
-		IAppManager $appManager,
-		ILogger $logger
+		ILogger $logger,
+		IInitialState $initialState,
+		BetaUserService $betaUserService
 	) {
-		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
 		$this->appName = $appName;
 		$this->config = $config;
-		$this->util = $util;
-		$this->appManager = $appManager;
 		$this->logger = $logger;
+		$this->initialState = $initialState;
+		$this->betaUserService = $betaUserService;
 	}
 
 	public function getForm(): TemplateResponse {
-		$uid = $this->userSession->getUser()->getUID();
-		$betaGroupName = $this->config->getSystemValue("beta_group_name");
-		$this->util->addScript($this->appName, $this->appName . '-beta-user-setting');
-		$group = $this->groupManager->get($betaGroupName);
-		$betaGroupApps = $this->appManager->getEnabledAppsForGroup($group);
-		$betaApps = [];
-		foreach ($betaGroupApps as $app) {
-			$appEnabledGroups = $this->config->getAppValue($app, 'enabled', 'no');
-			if (str_contains($appEnabledGroups, $betaGroupName)) {
-				$info = $this->appManager->getAppInfo($app);
-				$betaApps[] = $info['name'];
-			}
-		}
-		if ($this->groupManager->isInGroup($uid, $betaGroupName)) {
-			return new TemplateResponse($this->appName, 'opt_out_beta_user', ['betaApps' => $betaApps], '');
-		}
-		return new TemplateResponse($this->appName, 'become_beta_user', ['betaApps' => $betaApps], '');
+		$betaUserStatus = $this->betaUserService->getBetaUserStatus();
+		$betaApps = $this->betaUserService->getBetaApps();
+		$this->initialState->provideInitialState('is_beta_user', $betaUserStatus);
+		$this->initialState->provideInitialState('beta_apps', $betaApps);
+		return new TemplateResponse($this->appName, 'beta', ['appName' => $this->appName], '');
 	}
 
 	public function getSection(): ?string {
