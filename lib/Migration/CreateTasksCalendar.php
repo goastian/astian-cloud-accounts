@@ -39,6 +39,7 @@ use OCP\Migration\IRepairStep;
 class CreateTasksCalendar implements IRepairStep {
 	public const APP_ID = 'ecloud-accounts';
 	public const TASKS_CALENDAR_URI = 'tasks';
+    public const TASKS_CALENDAR_NAME = 'Tasks';
 	public const TASKS_CALENDAR_COMPONENT = 'VTODO';
 
 	/** @var IDBConnection */
@@ -84,7 +85,7 @@ class CreateTasksCalendar implements IRepairStep {
 	public function getPrincipalUriByCalendar():array {
 		$query = $this->connection->getQueryBuilder();
 		$expr = $query->expr();
-		$query->select(['Distinct c1.principaluri'])
+		$query->select($query->createFunction('DISTINCT ' . $query->getColumnName('c1.principaluri')))
 			->from('calendars', 'c1')
 			->leftJoin('c1', 'calendars', 'c2', $expr->andX(
 				$expr->eq('c1.principaluri', 'c2.principaluri'),
