@@ -116,7 +116,7 @@ class CreateTasksCalendar implements IRepairStep {
 			$i = 1;
 			while ($count > 0) {
 				$newUriName = $taskUri . ' - ' . $i;
-				$qb->setParameter('name', $newUriName);
+				$qb->setParameter('uri', $newUriName);
 				$count = $qb->execute()->fetchColumn();
 				$i++;
 			}
