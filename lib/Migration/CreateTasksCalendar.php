@@ -106,9 +106,8 @@ class CreateTasksCalendar implements IRepairStep {
 		$qb = $this->connection->getQueryBuilder();
 		$qb->select('uri')
 		->from('calendars')
-		->where('uri = :uri')
-		->setParameter('uri', $taskUri);
-
+		->where($qb->expr()->eq('uri', $qb->createNamedParameter($taskUri)))
+		->andWhere($qb->expr()->eq('principaluri', $qb->createNamedParameter($principal)));
 		$count = $qb->execute()->fetchColumn();
 
 		// If the name already exists, add a suffix until you find an available task uri
@@ -116,7 +115,8 @@ class CreateTasksCalendar implements IRepairStep {
 			$i = 1;
 			while ($count > 0) {
 				$newUriName = $taskUri . ' - ' . $i;
-				$qb->setParameter('uri', $newUriName);
+				$qb->where($qb->expr()->eq('uri', $qb->createNamedParameter($newUriName)));
+				$qb->andWhere($qb->expr()->eq('principaluri', $qb->createNamedParameter($principal)));
 				$count = $qb->execute()->fetchColumn();
 				$i++;
 			}
@@ -139,7 +139,7 @@ class CreateTasksCalendar implements IRepairStep {
 		$result = $this->getPrincipalUriByCalendar();
 		foreach ($result as $row) {
 			$principal = $row['principaluri'];
-			$taskUri = $this->getUniqueTaskUri(self::TASKS_CALENDAR_NAME);
+			$taskUri = $this->getUniqueTaskUri($principal, self::TASKS_CALENDAR_NAME);
 			$this->calDav->createCalendar($principal, $taskUri, [
 				'{DAV:}displayname' => self::TASKS_CALENDAR_NAME,
 				'{http://apple.com/ns/ical/}calendar-color' => $this->themingDefaults->getColorPrimary(),
