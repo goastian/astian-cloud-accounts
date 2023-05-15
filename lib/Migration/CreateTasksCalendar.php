@@ -105,9 +105,9 @@ class CreateTasksCalendar implements IRepairStep {
 	private function getUniqueTaskUri($taskUri):string {
 		$qb = $this->connection->getQueryBuilder();
 		$qb->select('COUNT(*)')
-		->from('tasks')
-		->where('name = :name')
-		->setParameter('name', $taskUri);
+		->from('calendars')
+		->where('uri = :uri')
+		->setParameter('uri', $taskUri);
 
 		$count = $qb->execute()->fetchColumn();
 
