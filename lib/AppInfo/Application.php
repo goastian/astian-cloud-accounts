@@ -76,10 +76,10 @@ class Application extends App implements IBootstrap {
 			}
 			$userId = $user->getUID();
 			$principal = 'principals/users/' . $userId;
-			$calendar = $calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_NAME);
+			$calendar = $calDav->getCalendarByUri($principal, self::TASKS_CALENDAR_URI);
 			$query = $db->getQueryBuilder();
-			$query->select($fields)->from('calendars')
-					->where($query->expr()->eq('uri', $query->createNamedParameter(self::TASKS_CALENDAR_NAME)))
+			$query->select('uri')->from('calendars')
+					->where($query->expr()->eq('uri', $query->createNamedParameter(self::TASKS_CALENDAR_URI)))
 					->andWhere($query->expr()->eq('principaluri', $query->createNamedParameter($principal)))
 					->andWhere($query->expr()->eq('components', $query->createNamedParameter(self::TASKS_CALENDAR_COMPONENT)))
 					->setMaxResults(1);
