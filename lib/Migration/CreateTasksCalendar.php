@@ -82,7 +82,7 @@ class CreateTasksCalendar implements IRepairStep {
 	 * @since 9.1.0
 	 */
 	public function getPrincipalUriByCalendar():array {
-		$query = $this->db->getQueryBuilder();
+		$query = $this->connection->getQueryBuilder();
 		$query->select(['Distinct c1.principaluri'])
 			->from('calendars', 'c1')
 			->leftJoin('c1', 'calendars', 'c2',
