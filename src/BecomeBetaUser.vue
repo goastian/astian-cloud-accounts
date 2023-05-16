@@ -128,7 +128,7 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/beta/add`
 				)
-				await Axios.post(url,{})
+				await Axios.post(url, {})
 				this.isBetaUser = true
 				showSuccess(t(this.appName, 'Congratulations! You\'ve successfully been added to the beta users.'))
 			} catch (e) {
