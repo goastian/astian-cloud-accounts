@@ -128,7 +128,7 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/beta/add`
 				)
-				await Axios.get(url)
+				await Axios.post(url, {})
 				this.isBetaUser = true
 				showSuccess(t(this.appName, 'Congratulations! You\'ve successfully been added to the beta users.'))
 			} catch (e) {
@@ -140,7 +140,7 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/beta/remove`
 				)
-				await Axios.get(url)
+				await Axios.delete(url)
 				this.isBetaUser = false
 				showSuccess(t(this.appName, 'You no longer have access to experimental features.'))
 			} catch (e) {
