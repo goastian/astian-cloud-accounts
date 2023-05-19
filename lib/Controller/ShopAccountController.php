@@ -86,7 +86,13 @@ class ShopAccountController extends Controller {
 			if (!$userId) {
 				throw new Exception("Invalid user id");
 			}
-			$data = ['order_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
+			$data = ['order_count' => 0];
+
+			$shopUrls = $this->shopAccountService->getShopUrls();
+			$data['my_order_urls'] = array_map(function($url) {
+				return $url . '/my-account/orders';
+			}, $shopUrls);
+
 			$orders = $this->shopAccountService->getOrders($userId);
 			$data['order_count'] = count($orders);
 			$response = new DataResponse();
@@ -109,13 +115,10 @@ class ShopAccountController extends Controller {
 			}
 			$data = ['subscription_count' => 0];
 			$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
-			$total_subscriptions = 0;
-			foreach ($subscriptions as $subscription) {
-				if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
-					$total_subscriptions++;
-				}
-			}
-			$data['subscription_count'] = $total_subscriptions;
+			$subscriptions = array_filter($subscriptions, function($subscription) {
+				return in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST);
+			});
+			$data['subscription_count'] = count($subscriptions);;
 			$response = new DataResponse();
 			$response->setData($data);
 			return $response;
@@ -129,18 +132,23 @@ class ShopAccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function getShopUser() {
+	public function getShopUsers() {
 		$response = new DataResponse();
 		$user = $this->userSession->getUser();
 		$email = $user->getEMailAddress();
 
-		$shopUser = $this->shopAccountService->getUser($email);
+		$shopUsers = $this->shopAccountService->getUsers($email);
 
-		if (!$shopUser || !$this->shopAccountService->isUserOIDC($shopUser)) {
+		$shopUsers = array_filter($shopUsers, function($shopUser) {
+			return $this->shopAccountService->isUserOIDC($shopUser);
+		});
+
+		if (empty($shopUsers)) {
 			$response->setStatus(404);
 			return $response;
 		}
-		$response->setData($shopUser);
+
+		$response->setData($shopUsers);
 		return $response;
 	}
 }

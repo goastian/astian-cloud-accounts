@@ -7,17 +7,27 @@ use Exception;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Service\CurlService;
 
 class ShopAccountService {
-	private $config;
-	private $appName;
-	private $curl;
-	private $logger;
+	private IConfig $config;
+	private string $appName;
+	private CurlService $curl;
+	private ILogger $logger;
+	private array $shops = [];
+
+	private const ORDERS_ENDPOINT = "/wp-json/wc/v3/orders";
+	private const USERS_ENDPOINT = "/wp-json/wp/v2/users";
+	private const SUBSCRIPTIONS_ENDPOINT = "/wp-json/wc/v3/subscriptions";
 
 	public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger) {
 		$this->config = $config;
 		$this->appName = $appName;
 
+		$shops = $this->config->getSystemValue('murena_shops', []);
+		foreach ($shops as $shop) {
+			$this->shops[$shop['url']] = $shop;
+		}
 		$shopUsername = $this->config->getSystemValue('murena_shop_username');
 		$shopPassword = $this->config->getSystemValue('murena_shop_password');
 		$this->shopUrl = $this->config->getSystemValue('murena_shop_url', '');
@@ -32,8 +42,10 @@ class ShopAccountService {
 		$this->logger = $logger;
 	}
 
-	public function getShopUrl() {
-		return $this->shopUrl;
+	public function getShopUrls() : array {
+		return array_map(function($shop) {
+			return $shop['url'];
+		}, $this->shops);
 	}
 
 	public function setShopDeletePreference($userId, bool $delete) {
@@ -71,12 +83,25 @@ class ShopAccountService {
 	}
 
 	public function getOrders(int $userId): ?array {
-		return $this->callShopAPI($this->shopOrdersUrl, 'GET', ['customer' => $userId]);
+		$orders = [];
+		foreach ($this->shops as $shop) {
+			$orders[] = $this->callShopAPI($shop, self::ORDERS_ENDPOINT, 'GET', ['customer' => $userId]);
+		}
+		return $orders;
 	}
 
 	public function getUsers(string $searchTerm): ?array {
 		try {
-			return $this->callShopAPI($this->shopUserUrl, 'GET', ['search' => $searchTerm]);
+			$users = [];
+			foreach ($this->shops as $shop) {
+				$usersFromThisShop = $this->callShopAPI($shop, self::USERS_ENDPOINT, 'GET', ['search' => $searchTerm]);
+				foreach ($usersFromThisShop as $user) {
+					$user['shop_url'] = $shop['url'];
+				}
+				$users[] = $usersFromThisShop;
+			}
+			
+			return $users;
 		} catch (Exception $e) {
 			$this->logger->error('There was an issue querying shop for users');
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
@@ -91,15 +116,16 @@ class ShopAccountService {
 		return $users[0];
 	}
 
-	public function deleteUser(int $userId) : void {
+	public function deleteUser(string $shopUrl, int $userId) : void {
+		$shop = $this->shops[$shopUrl];
 		$params = [
 			'force' => true,
-			'reassign' => $this->shopReassignUserId
+			'reassign' => $shop['reassign_user_id']
 		];
-		$deleteUrl = $this->shopUserUrl . '/' . strval($userId);
+		$deleteEndpoint = self::USERS_ENDPOINT . '/' . strval($userId);
 
 		try {
-			$answer = $this->callShopAPI($deleteUrl, 'DELETE', $params);
+			$answer = $this->callShopAPI($shop, $deleteEndpoint, 'DELETE', $params);
 
 			if (!$answer['deleted']) {
 				throw new Exception('Unknown error while deleting!');
@@ -110,8 +136,9 @@ class ShopAccountService {
 		}
 	}
 
-	public function updateUserEmailAndEmptyOIDC(int $userId, string $email) : void {
-		$updateUrl = $this->shopUserUrl . '/' . strval($userId);
+	public function updateUserEmailAndEmptyOIDC(string $shopUrl, int $userId, string $email) : void {
+		$shop = $this->shops[$shopUrl];
+		$updateEndpoint = self::USERS_ENDPOINT . '/' . strval($userId);
 
 		$params = [
 			'email' => $email,
@@ -119,7 +146,7 @@ class ShopAccountService {
 		];
 
 		try {
-			$answer = $this->callShopAPI($updateUrl, 'POST', $params);
+			$answer = $this->callShopAPI($shop, $updateEndpoint, 'POST', $params);
 
 			if ($answer['email'] !== $email) {
 				throw new Exception('Unknown error while updating!');
@@ -130,26 +157,39 @@ class ShopAccountService {
 		}
 	}
 
-	private function callShopAPI(string $url, string $method, array $data = []) {
-		if (empty($this->shopUrl)) {
+	public function isUserOIDC(array $user) {
+		return !empty($user['openid-connect-generic-last-user-claim']);
+	}
+
+	public function getSubscriptions(int $userId, string $status): ?array {
+		$subscriptions = [];
+		foreach ($this->shops as $shop) {
+			$subscriptions[] = $this->callShopAPI($shop, self::SUBSCRIPTIONS_ENDPOINT, 'GET', ['customer' => $userId , 'status' => $status]);
+		}
+		return $subscriptions;
+	}
+	
+	private function callShopAPI(array $shop, string $endpoint, string $method, array $data = []) {
+		if (empty($shop['url'])) {
 			return [];
 		}
+		$shopCredentials = $shop['username'] . ':' . $shop['password'];
 		$headers = [
 			"cache-control: no-cache",
 			"content-type: application/json",
-			"Authorization: Basic " . $this->shopCredentials
+			"Authorization: Basic " . $shopCredentials
 		];
 
 		if ($method === 'GET') {
-			$answer = $this->curl->get($url, $data, $headers);
+			$answer = $this->curl->get($endpoint, $data, $headers);
 		}
 
 		if ($method === 'DELETE') {
-			$answer = $this->curl->delete($url, $data, $headers);
+			$answer = $this->curl->delete($endpoint, $data, $headers);
 		}
 
 		if ($method === 'POST') {
-			$answer = $this->curl->post($url, json_encode($data), $headers);
+			$answer = $this->curl->post($endpoint, json_encode($data), $headers);
 		}
 
 		$answer = json_decode($answer, true);
@@ -160,11 +200,5 @@ class ShopAccountService {
 		return $answer;
 	}
 
-	public function isUserOIDC(array $user) {
-		return !empty($user['openid-connect-generic-last-user-claim']);
-	}
-
-	public function getSubscriptions(int $userId, string $status): ?array {
-		return $this->callShopAPI($this->subscriptionUrl, 'GET', ['customer' => $userId , 'status' => $status]);
-	}
+	
 }
