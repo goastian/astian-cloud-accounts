@@ -1,11 +1,6 @@
 <template>
-	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
-		<p v-if="loading">
-			{{
-				t('ecloud-accounts', 'Loading...')
-			}}
-		</p>
-		<div v-else>
+	<SettingsSection v-if="shopUsers.length > 0" :title="t('ecloud-accounts', 'Options')">
+		<div>
 			<p>
 				{{
 					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
@@ -82,6 +77,8 @@ import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
 
+const APPLICATION_NAME = 'ecloud-accounts'
+
 export default {
 	name: 'PersonalSettings',
 	components: {
@@ -89,49 +86,41 @@ export default {
 	},
 	data() {
 		return {
-			shopUserExists: false,
-			shopUser: {},
-			deleteShopAccount: false,
-			shopEmailPostDelete: '',
-			shopEmailDefault: '',
-			appName: 'ecloud-accounts',
-			userEmail: '',
-			onlyAdmin: false,
-			onlyUser: false,
+			shopUsers: loadState(APPLICATION_NAME, 'shopUsers'),
+			deleteShopAccount: loadState(APPLICATION_NAME, 'delete_shop_account'),
+			shopEmailPostDelete: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
+			shopEmailDefault: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
+			appName: APPLICATION_NAME,
+			userEmail: loadState(APPLICATION_NAME, 'email'),
+			onlyAdmin: loadState(APPLICATION_NAME, 'only_admin'),
+			onlyUser: loadState(APPLICATION_NAME, 'only_user'),
 			orderCount: 0,
 			subscriptionCount: 0,
-			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
-			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
-			loading: true,
+			ordersDescription: this.t(APPLICATION_NAME, "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
+			subscriptionDescription: this.t(APPLICATION_NAME, 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
 			showError: false,
 			allowDelete: true,
 		}
 	},
 	created() {
-		try {
-			this.onlyUser = loadState(this.appName, 'only_user')
-			this.onlyAdmin = loadState(this.appName, 'only_admin')
-			this.deleteShopAccount = loadState(this.appName, 'delete_shop_account')
-			this.shopEmailPostDelete = loadState(this.appName, 'shop_email_post_delete')
-			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
-			this.userEmail = loadState(this.appName, 'email')
-			this.getShopUser().then(() => {
-				if (this.shopUserExists) {
-					this.getOrdersInfo()
-					this.getSubscriptionInfo()
-				} else {
-					this.disableOrEnableDeleteAccount()
-				}
-
-			})
-		} catch (e) {
-			console.error('Error fetching initial state', e)
-		}
+		this.disableOrEnableDeleteAccount()
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
-			if (this.shopUserExists && !this.deleteShopAccount) {
+			if (this.shopUsers.length > 0 && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
+				let hasActiveSubscription = false
+				for (let i = 0; i < this.shopUsers.length; i++) {
+					if (this.shopUsers[i].has_active_subscription) {
+						hasActiveSubscription = true
+						break
+					}
+				}
+				if (hasActiveSubscription) {
+					this.allowDelete = false
+					return
+				}
+
 				const status = await this.checkShopEmailPostDelete()
 				if (status === 200) {
 					this.enableDeleteAccountEvent()
@@ -166,7 +155,6 @@ export default {
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					this.shopUserExists = true
 					this.shopUser = data
 				}
 				if (status === 400) {
@@ -178,7 +166,7 @@ export default {
 		async getOrdersInfo() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info?userId=${this.shopUser.id}`
+					`/apps/${this.appName}/shop-accounts/order_info?user=${this.shopUser.id}`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
@@ -187,31 +175,7 @@ export default {
 						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
 					}
 				}
-				this.loading = false
 			} catch (e) {
-				this.loading = false
-			}
-		},
-		async getSubscriptionInfo() {
-			try {
-				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/subscription_info?userId=${this.shopUser.id}`
-				)
-				const { status, data } = await Axios.get(url)
-				if (status === 200) {
-					this.subscriptionCount = data.subscription_count
-					if (this.subscriptionCount > 0) {
-						this.disableDeleteAccountEvent()
-					}
-				}
-				this.loading = false
-			} catch (e) {
-				this.disableDeleteAccountEvent()
-				showError(
-					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
-				)
-				this.loading = false
-				this.allowDelete = false
 			}
 		},
 		async updateDeleteShopPreference() {

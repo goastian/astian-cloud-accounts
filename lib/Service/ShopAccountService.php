@@ -16,9 +16,15 @@ class ShopAccountService {
 	private ILogger $logger;
 	private array $shops = [];
 
-	private const ORDERS_ENDPOINT = "/wp-json/wc/v3/orders";
-	private const USERS_ENDPOINT = "/wp-json/wp/v2/users";
-	private const SUBSCRIPTIONS_ENDPOINT = "/wp-json/wc/v3/subscriptions";
+	private const ORDERS_ENDPOINT = '/wp-json/wc/v3/orders';
+	private const USERS_ENDPOINT = '/wp-json/wp/v2/users';
+	private const SUBSCRIPTIONS_ENDPOINT = '/wp-json/wc/v3/subscriptions';
+	private const MY_ORDERS_ENDPOINT = '/my-account/orders';
+	private const SUBSCRIPTION_STATUS_LIST = [
+		'pending',
+		'active',
+		'on-hold'
+	];
 
 	public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger) {
 		$this->config = $config;
@@ -95,10 +101,10 @@ class ShopAccountService {
 			$users = [];
 			foreach ($this->shops as $shop) {
 				$usersFromThisShop = $this->callShopAPI($shop, self::USERS_ENDPOINT, 'GET', ['search' => $searchTerm]);
-				foreach ($usersFromThisShop as $user) {
-					$user['shop_url'] = $shop['url'];
+				if (empty($usersFromThisShop)) {
+					continue;
 				}
-				$users[] = $usersFromThisShop;
+				$users[] =  $usersFromThisShop[0];
 			}
 			
 			return $users;
@@ -161,7 +167,7 @@ class ShopAccountService {
 		return !empty($user['openid-connect-generic-last-user-claim']);
 	}
 
-	public function getSubscriptions(int $userId, string $status): ?array {
+	public function getSubscriptions(int $userId, string $status = 'any'): ?array {
 		$subscriptions = [];
 		foreach ($this->shops as $shop) {
 			$subscriptions[] = $this->callShopAPI($shop, self::SUBSCRIPTIONS_ENDPOINT, 'GET', ['customer' => $userId , 'status' => $status]);
@@ -181,15 +187,15 @@ class ShopAccountService {
 		];
 
 		if ($method === 'GET') {
-			$answer = $this->curl->get($endpoint, $data, $headers);
+			$answer = $this->curl->get($shop['url'] . $endpoint, $data, $headers);
 		}
 
 		if ($method === 'DELETE') {
-			$answer = $this->curl->delete($endpoint, $data, $headers);
+			$answer = $this->curl->delete($shop['url'] . $endpoint, $data, $headers);
 		}
 
 		if ($method === 'POST') {
-			$answer = $this->curl->post($endpoint, json_encode($data), $headers);
+			$answer = $this->curl->post($shop['url'] . $endpoint, json_encode($data), $headers);
 		}
 
 		$answer = json_decode($answer, true);

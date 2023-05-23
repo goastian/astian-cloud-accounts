@@ -12,7 +12,7 @@ use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCP\App\IAppManager;
 use OCP\IUserManager;
 
-class Personal implements ISettings {
+class DeleteShopAccountSetting implements ISettings {
 	private const DROP_ACCOUNT_APP_ID = 'drop_account';
 	/** @var IUserSession */
 	private $userSession;
@@ -65,6 +65,8 @@ class Personal implements ISettings {
 			$this->initialState->provideInitialState('shop_email_post_delete', $shopEmailPostDelete);
 			$this->initialState->provideInitialState('only_user', $onlyUser);
 			$this->initialState->provideInitialState('only_admin', $onlyAdmin);
+			$shopUsers = $this->shopAccountService->getUsers($user->getEMailAddress());
+			$this->initialState->provideInitialState('shopUsers', $shopUsers);
 		}
 
 		return new TemplateResponse($this->appName, 'personal');
