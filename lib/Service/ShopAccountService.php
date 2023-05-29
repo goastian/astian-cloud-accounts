@@ -84,9 +84,8 @@ class ShopAccountService {
 	}
 
 	public function getUser(array $shop, string $email) : ?array {
-
 		$user = $this->callShopAPI($shop, self::OIDC_USERS_ENDPOINT, 'GET', ['email' => $email]);
-		if(empty($user)) {
+		if (empty($user)) {
 			return null;
 		}
 		$user['shop_url'] = $shop['url'];

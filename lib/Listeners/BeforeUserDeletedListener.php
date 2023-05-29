@@ -63,7 +63,7 @@ class BeforeUserDeletedListener implements IEventListener {
 		$shopUsers = $this->shopAccountService->getUsers($email);
 
 		if (!empty($shopUsers)) {
-			foreach($shopUsers as $shopUser) {
+			foreach ($shopUsers as $shopUser) {
 				if ($deleteShopAccount) {
 					$this->shopAccountService->deleteUser($shopUser['shop_url'], $shopUser['id']);
 				} else {
