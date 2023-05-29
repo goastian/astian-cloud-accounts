@@ -6,7 +6,7 @@ const path = require('path')
 module.exports = {
 	...webpackConfig,
 	entry: {
-		'personal-settings': path.join(__dirname, 'src/personal.js'),
+		'delete-shop-account-settings': path.join(__dirname, 'src/delete-shop-account.js'),
 		'delete-account-listeners': path.join(__dirname, 'src/delete-account-listeners.js'),
 		'beta-user-setting': path.join(__dirname, 'src/beta-user-setting.js'),
 	},

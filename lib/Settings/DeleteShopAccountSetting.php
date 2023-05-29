@@ -4,13 +4,11 @@ namespace OCA\EcloudAccounts\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
 use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCP\App\IAppManager;
-use OCP\IUserManager;
 
 class DeleteShopAccountSetting implements ISettings {
 	private const DROP_ACCOUNT_APP_ID = 'drop_account';
@@ -27,21 +25,15 @@ class DeleteShopAccountSetting implements ISettings {
 
 	private $appManager;
 
-	private IGroupManager $groupManager;
-
-	private IUserManager $userManager;
-
 	/** @var Util */
 	protected $util;
 
-	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager, IGroupManager $groupManager, IUserManager $userManager, Util $util) {
+	public function __construct($appName, IUserSession $userSession, IInitialState $initialState, ShopAccountService $shopAccountService, IAppManager $appManager, Util $util) {
 		$this->userSession = $userSession;
 		$this->initialState = $initialState;
 		$this->appName = $appName;
 		$this->shopAccountService = $shopAccountService;
 		$this->appManager = $appManager;
-		$this->userManager = $userManager;
-		$this->groupManager = $groupManager;
 		$this->util = $util;
 	}
 
@@ -52,9 +44,6 @@ class DeleteShopAccountSetting implements ISettings {
 	public function getForm(): TemplateResponse {
 		$user = $this->userSession->getUser();
 		if ($user) {
-			$onlyUser = $this->userManager->countUsers() < 2;
-			$adminGroup = $this->groupManager->get('admin');
-			$onlyAdmin = $adminGroup && $adminGroup->count() < 2 && $this->groupManager->isAdmin($user->getUID());
 			$this->util->addScript($this->appName, $this->appName.'-personal-settings');
 			$this->util->addScript($this->appName, $this->appName.'-delete-account-listeners');
 			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
@@ -63,10 +52,7 @@ class DeleteShopAccountSetting implements ISettings {
 			$this->initialState->provideInitialState('email', $user->getEMailAddress());
 			$this->initialState->provideInitialState('delete_shop_account', $deleteShopAccount);
 			$this->initialState->provideInitialState('shop_email_post_delete', $shopEmailPostDelete);
-			$this->initialState->provideInitialState('only_user', $onlyUser);
-			$this->initialState->provideInitialState('only_admin', $onlyAdmin);
-			$shopUsers = $this->shopAccountService->getUsers($user->getEMailAddress());
-			$this->initialState->provideInitialState('shopUsers', $shopUsers);
+
 		}
 
 		return new TemplateResponse($this->appName, 'personal');

@@ -16,15 +16,9 @@ class ShopAccountService {
 	private ILogger $logger;
 	private array $shops = [];
 
-	private const ORDERS_ENDPOINT = '/wp-json/wc/v3/orders';
+	private const OIDC_USERS_ENDPOINT = '/wp-json/wp/v2/users/get_oidc_user_by_email';
 	private const USERS_ENDPOINT = '/wp-json/wp/v2/users';
-	private const SUBSCRIPTIONS_ENDPOINT = '/wp-json/wc/v3/subscriptions';
-	private const MY_ORDERS_ENDPOINT = '/my-account/orders';
-	private const SUBSCRIPTION_STATUS_LIST = [
-		'pending',
-		'active',
-		'on-hold'
-	];
+	private const MY_ORDERS_URL = '/my-account/orders';
 
 	public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger) {
 		$this->config = $config;
@@ -34,24 +28,9 @@ class ShopAccountService {
 		foreach ($shops as $shop) {
 			$this->shops[$shop['url']] = $shop;
 		}
-		$shopUsername = $this->config->getSystemValue('murena_shop_username');
-		$shopPassword = $this->config->getSystemValue('murena_shop_password');
-		$this->shopUrl = $this->config->getSystemValue('murena_shop_url', '');
-		$this->shopReassignUserId = $this->config->getSystemValue('murena_shop_reassign_user_id');
 
-
-		$this->shopUserUrl = $this->shopUrl . "/wp-json/wp/v2/users";
-		$this->shopOrdersUrl = $this->shopUrl . "/wp-json/wc/v3/orders";
-		$this->subscriptionUrl = $this->shopUrl . "/wp-json/wc/v3/subscriptions";
-		$this->shopCredentials = base64_encode($shopUsername . ":" . $shopPassword);
 		$this->curl = $curlService;
 		$this->logger = $logger;
-	}
-
-	public function getShopUrls() : array {
-		return array_map(function($shop) {
-			return $shop['url'];
-		}, $this->shops);
 	}
 
 	public function setShopDeletePreference($userId, bool $delete) {
@@ -88,28 +67,21 @@ class ShopAccountService {
 		return $this->config->getUserValue($userId, $this->appName, 'shop_email_post_delete', $recoveryEmail);
 	}
 
-	public function getOrders(int $userId): ?array {
-		$orders = [];
-		foreach ($this->shops as $shop) {
-			$orders[] = $this->callShopAPI($shop, self::ORDERS_ENDPOINT, 'GET', ['customer' => $userId]);
-		}
-		return $orders;
-	}
-
-	public function getUsers(string $searchTerm): ?array {
+	public function getUsers(string $email): ?array {
 		try {
 			$users = [];
 			foreach ($this->shops as $shop) {
-				$usersFromThisShop = $this->callShopAPI($shop, self::USERS_ENDPOINT, 'GET', ['search' => $searchTerm]);
+				$usersFromThisShop = $this->callShopAPI($shop, self::OIDC_USERS_ENDPOINT, 'GET', ['email' => $email]);
 				if (empty($usersFromThisShop)) {
 					continue;
 				}
+				$user = $usersFromThisShop[0];
+				$user['my_orders_url'] = $shop['url'] . self::MY_ORDERS_URL;
 				$users[] =  $usersFromThisShop[0];
 			}
 			
 			return $users;
 		} catch (Exception $e) {
-			$this->logger->error('There was an issue querying shop for users');
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
 	}
@@ -163,18 +135,6 @@ class ShopAccountService {
 		}
 	}
 
-	public function isUserOIDC(array $user) {
-		return !empty($user['openid-connect-generic-last-user-claim']);
-	}
-
-	public function getSubscriptions(int $userId, string $status = 'any'): ?array {
-		$subscriptions = [];
-		foreach ($this->shops as $shop) {
-			$subscriptions[] = $this->callShopAPI($shop, self::SUBSCRIPTIONS_ENDPOINT, 'GET', ['customer' => $userId , 'status' => $status]);
-		}
-		return $subscriptions;
-	}
-	
 	private function callShopAPI(array $shop, string $endpoint, string $method, array $data = []) {
 		if (empty($shop['url'])) {
 			return [];

@@ -7,12 +7,16 @@
 				}}
 				<span v-if="subscriptionCount === 0">
 					{{
-						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account.')
+						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account(s).')
 					}}
 				</span>
 			</p>
-			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
-			<p><b v-if="subscriptionCount > 0" v-html="subscriptionDescription" /></p>
+
+			<ShopUserOrders v-for="(s, index) in shopUsers"
+				:key="s.id"
+				:index="index"
+				v-bind="s" />
+
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
@@ -50,22 +54,6 @@
 					</div>
 				</div>
 			</form>
-			<p v-if="onlyUser" class="warnings">
-				{{
-					t(
-						"drop_account",
-						"You are the only user of this instance, you can't delete your account."
-					)
-				}}
-			</p>
-			<p v-if="onlyAdmin" class="warnings">
-				{{
-					t(
-						"drop_account",
-						"You are the only admin of this instance, you can't delete your account."
-					)
-				}}
-			</p>
 		</div>
 	</SettingsSection>
 </template>
@@ -76,31 +64,33 @@ import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
+import ShopUserOrders from './components/ShopUserOrders.vue'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
-	name: 'PersonalSettings',
+	name: 'DeleteShopAccountSetting',
 	components: {
 		SettingsSection,
+		ShopUserOrders,
 	},
 	data() {
 		return {
-			shopUsers: loadState(APPLICATION_NAME, 'shopUsers'),
+			shopUsers: [],
 			deleteShopAccount: loadState(APPLICATION_NAME, 'delete_shop_account'),
 			shopEmailPostDelete: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
 			shopEmailDefault: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
 			appName: APPLICATION_NAME,
 			userEmail: loadState(APPLICATION_NAME, 'email'),
-			onlyAdmin: loadState(APPLICATION_NAME, 'only_admin'),
-			onlyUser: loadState(APPLICATION_NAME, 'only_user'),
 			orderCount: 0,
 			subscriptionCount: 0,
-			ordersDescription: this.t(APPLICATION_NAME, "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
-			subscriptionDescription: this.t(APPLICATION_NAME, 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
+			loading: true,
 			showError: false,
 			allowDelete: true,
 		}
+	},
+	mounted() {
+		this.getShopUsers()
 	},
 	created() {
 		this.disableOrEnableDeleteAccount()
@@ -148,14 +138,14 @@ export default {
 				return err.response.status
 			}
 		},
-		async getShopUser() {
+		async getShopUsers() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/user`
+					`/apps/${this.appName}/shop-accounts/users`
 				)
 				const { status, data } = await Axios.get(url)
 				if (status === 200) {
-					this.shopUser = data
+					this.shopUsers = data
 				}
 				if (status === 400) {
 					this.enableDeleteAccountEvent()
