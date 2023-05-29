@@ -12,10 +12,14 @@
 				</span>
 			</p>
 
-			<ShopUserOrders v-for="(s, index) in shopUsers"
-				:key="s.id"
-				:index="index"
-				v-bind="s" />
+			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
+			<p v-if="hasActiveSubscription">
+				<b>
+					{{
+						t(appName, 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.')
+					}}
+				</b>
+			</p>
 
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
@@ -64,7 +68,6 @@ import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
-import ShopUserOrders from './components/ShopUserOrders.vue'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
@@ -72,7 +75,6 @@ export default {
 	name: 'DeleteShopAccountSetting',
 	components: {
 		SettingsSection,
-		ShopUserOrders,
 	},
 	data() {
 		return {
@@ -85,6 +87,7 @@ export default {
 			loading: true,
 			showError: false,
 			allowDelete: true,
+			ordersDescription: '',
 		}
 	},
 	computed: {
@@ -95,7 +98,7 @@ export default {
 				}
 			}
 			return false
-		}
+		},
 	},
 	mounted() {
 		this.getShopUsers()
@@ -134,6 +137,26 @@ export default {
 				return err.response.status
 			}
 		},
+		setOrderDescription() {
+			if (this.shopUsers.length === 1) {
+				const ordersDescription = this.t(APPLICATION_NAME, "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.")
+				const orderCount = this.shopUsers[0].order_count
+				const myOrdersUrl = this.shopUsers[0].my_orders_url
+				this.ordersDescription = ordersDescription.replace('%d', orderCount).replace('%s', myOrdersUrl)
+			} else if (this.shopUsers.length >= 1) {
+				let ordersDescription = this.t(APPLICATION_NAME, 'For your information you have %d order(s) in your accounts: ')
+
+				const orderCount = this.shopUsers.reduce((accumulator, user) => {
+					return accumulator + user.order_count
+				}, 0)
+				ordersDescription = ordersDescription.replace('%d', orderCount)
+
+				const links = this.shopUsers.map((user, index) => {
+					return `<a href='${user.shop_url}' target='_blank'>[${index}]</a>`
+				})
+				this.ordersDescription = ordersDescription + links.join(' ')
+			}
+		},
 		async getShopUsers() {
 			try {
 				const url = generateUrl(
@@ -141,6 +164,7 @@ export default {
 				)
 				const { data } = await Axios.get(url)
 				this.shopUsers = data
+				this.setOrderDescription()
 				this.loading = false
 			} catch (e) {
 				this.disableDeleteAccountEvent()
