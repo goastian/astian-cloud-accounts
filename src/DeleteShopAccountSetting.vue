@@ -1,13 +1,13 @@
 <template>
-	<SettingsSection v-if="shopUsers.length > 0" :title="t('ecloud-accounts', 'Options')">
+	<SettingsSection v-if="shopUsers.length > 0" :title="t(appName, 'Options')">
 		<div>
 			<p>
 				{{
-					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
+					t(appName, 'We are going to proceed with your cloud account suppression.')
 				}}
-				<span v-if="subscriptionCount === 0">
+				<span v-if="hasActiveSubscription">
 					{{
-						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account(s).')
+						t(appName, 'Check the box below if you also want to delete the associated shop account(s).')
 					}}
 				</span>
 			</p>
@@ -25,11 +25,11 @@
 							type="checkbox"
 							name="shop-accounts_confirm"
 							class="checkbox"
-							:disabled="subscriptionCount > 0 || !allowDelete"
+							:disabled="hasActiveSubscription || !allowDelete"
 							@change="updateDeleteShopPreference()">
 						<label for="shop-accounts_confirm">{{
 							t(
-								"ecloud-accounts",
+								appName,
 								"I also want to delete my shop account"
 							)
 						}}</label>
@@ -38,7 +38,7 @@
 						<label for="shop-alternate-email">
 							{{
 								t(
-									"ecloud-accounts",
+									appName,
 									"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
 								)
 							}}
@@ -47,9 +47,9 @@
 							v-model="shopEmailPostDelete"
 							type="email"
 							name="shop-alternate-email"
-							:placeholder="t('ecloud-accounts', 'Email Address')"
+							:placeholder="t(appName, 'Email Address')"
 							class="form-control"
-							:disabled="subscriptionCount > 0 || !allowDelete"
+							:disabled="hasActiveSubscription || !allowDelete"
 							@blur="updateEmailPostDelete($event)">
 					</div>
 				</div>
@@ -82,11 +82,19 @@ export default {
 			shopEmailDefault: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
 			appName: APPLICATION_NAME,
 			userEmail: loadState(APPLICATION_NAME, 'email'),
-			orderCount: 0,
-			subscriptionCount: 0,
 			loading: true,
 			showError: false,
 			allowDelete: true,
+		}
+	},
+	computed: {
+		hasActiveSubscription() {
+			for (let index = 0; index < this.shopUsers.length; index++) {
+				if (this.shopUsers[index].has_active_subscription) {
+					return true
+				}
+			}
+			return false
 		}
 	},
 	mounted() {
@@ -99,18 +107,6 @@ export default {
 		async disableOrEnableDeleteAccount() {
 			if (this.shopUsers.length > 0 && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
-				let hasActiveSubscription = false
-				for (let i = 0; i < this.shopUsers.length; i++) {
-					if (this.shopUsers[i].has_active_subscription) {
-						hasActiveSubscription = true
-						break
-					}
-				}
-				if (hasActiveSubscription) {
-					this.allowDelete = false
-					return
-				}
-
 				const status = await this.checkShopEmailPostDelete()
 				if (status === 200) {
 					this.enableDeleteAccountEvent()
@@ -143,29 +139,16 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/users`
 				)
-				const { status, data } = await Axios.get(url)
-				if (status === 200) {
-					this.shopUsers = data
-				}
-				if (status === 400) {
-					this.enableDeleteAccountEvent()
-				}
+				const { data } = await Axios.get(url)
+				this.shopUsers = data
+				this.loading = false
 			} catch (e) {
-			}
-		},
-		async getOrdersInfo() {
-			try {
-				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info?user=${this.shopUser.id}`
+				this.disableDeleteAccountEvent()
+				showError(
+					t(APPLICATION_NAME, 'Temporary error contacting murena.com; please try again later!')
 				)
-				const { status, data } = await Axios.get(url)
-				if (status === 200) {
-					this.orderCount = data.order_count
-					if (this.orderCount) {
-						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
-					}
-				}
-			} catch (e) {
+				this.allowDelete = false
+				this.loading = false
 			}
 		},
 		async updateDeleteShopPreference() {
@@ -179,12 +162,12 @@ export default {
 				})
 				if (status !== 200) {
 					showError(
-						t('ecloud-accounts', 'Error while setting shop delete preference')
+						t(APPLICATION_NAME, 'Error while setting shop delete preference')
 					)
 				}
 			} catch (e) {
 				showError(
-					t('ecloud-accounts', 'Error while setting shop delete preference')
+					t(APPLICATION_NAME, 'Error while setting shop delete preference')
 				)
 			}
 		},
@@ -208,7 +191,7 @@ export default {
 			if (this.shopEmailPostDelete === this.userEmail) {
 				showError(
 					t(
-						'ecloud-accounts',
+						APPLICATION_NAME,
 						"Murena.com email cannot be same as this account's email."
 					)
 				)
@@ -218,7 +201,7 @@ export default {
 					this.disableDeleteAccountEvent()
 					showError(
 						t(
-							'ecloud-accounts',
+							APPLICATION_NAME,
 							data.message
 						)
 					)
