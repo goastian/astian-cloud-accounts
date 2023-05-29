@@ -44,7 +44,7 @@ class DeleteShopAccountSetting implements ISettings {
 	public function getForm(): TemplateResponse {
 		$user = $this->userSession->getUser();
 		if ($user) {
-			$this->util->addScript($this->appName, $this->appName.'-personal-settings');
+			$this->util->addScript($this->appName, $this->appName.'-delete-shop-account-setting');
 			$this->util->addScript($this->appName, $this->appName.'-delete-account-listeners');
 			$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($user->getUID());
 			$shopEmailPostDelete = $this->shopAccountService->getShopEmailPostDeletePreference($user->getUID());
