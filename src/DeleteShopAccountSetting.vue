@@ -5,7 +5,7 @@
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
 				}}
-				<span v-if="hasActiveSubscription">
+				<span v-if="!hasActiveSubscription">
 					{{
 						t(appName, 'Check the box below if you also want to delete the associated shop account(s).')
 					}}
