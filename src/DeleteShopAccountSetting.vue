@@ -1,6 +1,12 @@
 <template>
 	<SettingsSection v-if="shopUsers.length > 0" :title="t(appName, 'Options')">
-		<div>
+		<p v-if="loading">
+			{{
+				t(appName, 'Loading...')
+			}}
+		</p>
+
+		<div v-else>
 			<p>
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
