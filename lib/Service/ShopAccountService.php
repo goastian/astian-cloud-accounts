@@ -37,7 +37,12 @@ class ShopAccountService {
 	}
 
 	public function shopEmailExists(string $shopEmail) : bool {
-		return !empty($this->getUser($shopEmail));
+		foreach ($this->shops as $shop) {
+			if (!empty($this->getUser($shop, $shopEmail))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function validateShopEmailPostDelete(string $shopEmailPostDelete, string $cloudEmail) : void {
@@ -139,7 +144,7 @@ class ShopAccountService {
 		if (empty($shop['url'])) {
 			return [];
 		}
-		$shopCredentials = $shop['username'] . ':' . $shop['password'];
+		$shopCredentials = base64_encode($shop['username'] . ':' . $shop['password']);
 		$headers = [
 			"cache-control: no-cache",
 			"content-type: application/json",
