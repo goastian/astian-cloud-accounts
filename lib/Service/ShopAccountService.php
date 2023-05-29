@@ -15,7 +15,7 @@ class ShopAccountService {
 	private ILogger $logger;
 	private array $shops = [];
 
-	private const OIDC_USERS_ENDPOINT = '/wp-json/wp/v2/users/get_oidc_user_by_email';
+	private const OIDC_USERS_ENDPOINT = '/wp-json/openid-connect-generic/users/get_by_email';
 	private const USERS_ENDPOINT = '/wp-json/wp/v2/users';
 	private const MY_ORDERS_URL = '/my-account/orders';
 
@@ -70,13 +70,11 @@ class ShopAccountService {
 		try {
 			$users = [];
 			foreach ($this->shops as $shop) {
-				$usersFromThisShop = $this->callShopAPI($shop, self::OIDC_USERS_ENDPOINT, 'GET', ['email' => $email]);
-				if (empty($usersFromThisShop)) {
+				$user = $this->getUser($shop, $email);
+				if (empty($user)) {
 					continue;
 				}
-				$user = $usersFromThisShop[0];
-				$user['my_orders_url'] = $shop['url'] . self::MY_ORDERS_URL;
-				$users[] = $usersFromThisShop[0];
+				$users[] = $user;
 			}
 			
 			return $users;
@@ -85,12 +83,16 @@ class ShopAccountService {
 		}
 	}
 
-	public function getUser(string $email) : ?array {
-		$users = $this->getUsers($email);
-		if (empty($users)) {
+	public function getUser(array $shop, string $email) : ?array {
+
+		$user = $this->callShopAPI($shop, self::OIDC_USERS_ENDPOINT, 'GET', ['email' => $email]);
+		if(empty($user)) {
 			return null;
 		}
-		return $users[0];
+		$user['shop_url'] = $shop['url'];
+		$user['my_orders_url'] = $shop['url'] . self::MY_ORDERS_URL;
+		
+		return $user;
 	}
 
 	public function deleteUser(string $shopUrl, int $userId) : void {
