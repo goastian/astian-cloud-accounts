@@ -52,7 +52,6 @@ class DeleteShopAccountSetting implements ISettings {
 			$this->initialState->provideInitialState('email', $user->getEMailAddress());
 			$this->initialState->provideInitialState('delete_shop_account', $deleteShopAccount);
 			$this->initialState->provideInitialState('shop_email_post_delete', $shopEmailPostDelete);
-
 		}
 
 		return new TemplateResponse($this->appName, 'personal');

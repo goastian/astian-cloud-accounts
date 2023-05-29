@@ -7,7 +7,6 @@ use Exception;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
-use OCA\EcloudAccounts\Service\CurlService;
 
 class ShopAccountService {
 	private IConfig $config;
@@ -77,7 +76,7 @@ class ShopAccountService {
 				}
 				$user = $usersFromThisShop[0];
 				$user['my_orders_url'] = $shop['url'] . self::MY_ORDERS_URL;
-				$users[] =  $usersFromThisShop[0];
+				$users[] = $usersFromThisShop[0];
 			}
 			
 			return $users;
@@ -165,6 +164,4 @@ class ShopAccountService {
 
 		return $answer;
 	}
-
-	
 }
