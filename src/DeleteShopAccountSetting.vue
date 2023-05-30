@@ -140,6 +140,7 @@ export default {
 				const ordersDescription = this.t(APPLICATION_NAME, "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.")
 				const orderCount = this.shopUsers[0].order_count
 				const myOrdersUrl = this.shopUsers[0].my_orders_url
+				this.orderCount = orderCount
 				this.ordersDescription = ordersDescription.replace('%d', orderCount).replace('%s', myOrdersUrl)
 			} else if (this.shopUsers.length >= 1) {
 				let ordersDescription = this.t(APPLICATION_NAME, 'For your information you have %d order(s) in your accounts: ')
@@ -147,6 +148,8 @@ export default {
 				const orderCount = this.shopUsers.reduce((accumulator, user) => {
 					return accumulator + user.order_count
 				}, 0)
+
+				this.orderCount = orderCount
 				ordersDescription = ordersDescription.replace('%d', orderCount)
 
 				const links = this.shopUsers.map((user, index) => {
