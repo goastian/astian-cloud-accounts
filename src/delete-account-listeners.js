@@ -14,6 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	elem.addEventListener('enable-delete-account', function() {
 	  document.querySelector(checkboxSelector).disabled = false
 	  const enableDeleteAccount = document.querySelector(checkboxSelector).checked
-	  document.getElementById(buttonSelector).disabled = !enableDeleteAccount
+	  document.querySelector(buttonSelector).disabled = !enableDeleteAccount
 	})
 })

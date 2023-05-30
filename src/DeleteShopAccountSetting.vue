@@ -1,12 +1,6 @@
 <template>
 	<SettingsSection v-if="shopUsers.length > 0" :title="t(appName, 'Options')">
-		<p v-if="loading">
-			{{
-				t(appName, 'Loading...')
-			}}
-		</p>
-
-		<div v-else>
+		<div>
 			<p>
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
@@ -90,7 +84,6 @@ export default {
 			shopEmailDefault: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
 			appName: APPLICATION_NAME,
 			userEmail: loadState(APPLICATION_NAME, 'email'),
-			loading: true,
 			showError: false,
 			allowDelete: true,
 			ordersDescription: '',
@@ -109,12 +102,11 @@ export default {
 	mounted() {
 		this.getShopUsers()
 	},
-	created() {
-		this.disableOrEnableDeleteAccount()
-	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
-			if (this.shopUsers.length > 0 && !this.deleteShopAccount) {
+			if (!this.allowDelete || this.hasActiveSubscription) {
+				this.disableDeleteAccountEvent()
+			} else if (this.shopUsers.length > 0 && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
 				const status = await this.checkShopEmailPostDelete()
 				if (status === 200) {
@@ -171,7 +163,6 @@ export default {
 				const { data } = await Axios.get(url)
 				this.shopUsers = data
 				this.setOrderDescription()
-				this.loading = false
 			} catch (e) {
 				if (e.response.status !== 404) {
 					this.disableDeleteAccountEvent()
@@ -179,9 +170,9 @@ export default {
 						t(APPLICATION_NAME, 'Temporary error contacting murena.com; please try again later!')
 					)
 					this.allowDelete = false
-					this.loading = false
 				}
 			}
+			this.disableOrEnableDeleteAccount()
 		},
 		async updateDeleteShopPreference() {
 			await this.disableOrEnableDeleteAccount()
