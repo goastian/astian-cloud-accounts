@@ -173,7 +173,7 @@ export default {
 				this.setOrderDescription()
 				this.loading = false
 			} catch (e) {
-				if (!e.response.status === 404) {
+				if (e.response.status !== 404) {
 					this.disableDeleteAccountEvent()
 					showError(
 						t(APPLICATION_NAME, 'Temporary error contacting murena.com; please try again later!')
