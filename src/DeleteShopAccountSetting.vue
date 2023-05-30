@@ -151,7 +151,7 @@ export default {
 				ordersDescription = ordersDescription.replace('%d', this.orderCount)
 
 				const links = this.shopUsers.map((user, index) => {
-					return `<a href='${user.shop_url}' target='_blank'>[${index}]</a>`
+					return `<a href='${user.my_orders_url}' target='_blank'>[${index}]</a>`
 				})
 				this.ordersDescription = ordersDescription + links.join(' ')
 			}
