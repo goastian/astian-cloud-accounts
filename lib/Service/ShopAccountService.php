@@ -27,7 +27,7 @@ class ShopAccountService {
 
 		$shops = $this->config->getSystemValue('murena_shops', []);
 		foreach ($shops as $shop) {
-			if(!array_key_exists(self::MULTISITE_KEY, $shop)) {
+			if (!array_key_exists(self::MULTISITE_KEY, $shop)) {
 				$shop[self::MULTISITE_KEY] = false;
 			}
 			$this->shops[$shop['url']] = $shop;
@@ -108,7 +108,7 @@ class ShopAccountService {
 		$shop = $this->shops[$shopUrl];
 
 		$deleteEndpoint = self::USERS_ENDPOINT;
-		if($shop[self::MULTISITE_KEY]) {
+		if ($shop[self::MULTISITE_KEY]) {
 			$deleteEndpoint = self::MULTISITE_DELETE_USERS_ENDPOINT;
 		}
 
