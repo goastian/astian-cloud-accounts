@@ -18,6 +18,8 @@ class ShopAccountService {
 	private const OIDC_USERS_ENDPOINT = '/wp-json/openid-connect-generic/users/get_by_email';
 	private const USERS_ENDPOINT = '/wp-json/wp/v2/users';
 	private const MY_ORDERS_URL = '/my-account/orders';
+	private const MULTISITE_KEY = 'is_multisite';
+	private const MULTISITE_DELETE_USERS_ENDPOINT = '/wp-json/wp/v2/multisite/users';
 
 	public function __construct($appName, IConfig $config, CurlService $curlService, ILogger $logger) {
 		$this->config = $config;
@@ -25,6 +27,9 @@ class ShopAccountService {
 
 		$shops = $this->config->getSystemValue('murena_shops', []);
 		foreach ($shops as $shop) {
+			if(!array_key_exists(self::MULTISITE_KEY, $shop)) {
+				$shop[self::MULTISITE_KEY] = false;
+			}
 			$this->shops[$shop['url']] = $shop;
 		}
 
@@ -101,11 +106,18 @@ class ShopAccountService {
 
 	public function deleteUser(string $shopUrl, int $userId) : void {
 		$shop = $this->shops[$shopUrl];
+
+		$deleteEndpoint = self::USERS_ENDPOINT;
+		if($shop[self::MULTISITE_KEY]) {
+			$deleteEndpoint = self::MULTISITE_DELETE_USERS_ENDPOINT;
+		}
+
+		$deleteEndpoint = $deleteEndpoint . '/' . strval($userId);
+
 		$params = [
 			'force' => true,
 			'reassign' => $shop['reassign_user_id']
 		];
-		$deleteEndpoint = self::USERS_ENDPOINT . '/' . strval($userId);
 
 		try {
 			$answer = $this->callShopAPI($shop, $deleteEndpoint, 'DELETE', $params);
