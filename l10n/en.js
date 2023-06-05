@@ -10,7 +10,7 @@ OC.L10N.register(
 		"For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.": "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.",
 		"For your information you have %d order(s) in your accounts: ": "For your information you have %d order(s) in your accounts: ",
 		"I also want to delete my shop account": "I also want to delete my shop account",
-		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ": "If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ",
+		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop.": "If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop.",
 		"Error while setting shop delete preference": "Error while setting shop delete preference",
 		"Shop email cannot be same as this account's email.": "Murena.com email cannot be same as this account's email.",
 		"Invalid Email Format.": "Invalid Email Format.",

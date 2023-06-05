@@ -8,7 +8,7 @@ OC.L10N.register(
 		"For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.": "Per vostra informazione, avete %d ordini in <a class='text-color-active' href='%s' target='_blank'>il tuo account</a>.",
 		"For your information you have %d order(s) in your accounts: ": "Per vostra informazione, avete %d ordini in i vostri conti: ",
 		"I also want to delete my shop account": "Voglio anche cancellare il mio account del negozio",
-		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop. ": "Se volete mantenere il vostro account del negozio, convalidate o modificate l'indirizzo e-mail qui sotto. Questo indirizzo e-mail diventerà il vostro nuovo login al negozio. ",
+		"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop.": "Se volete mantenere il vostro account del negozio, convalidate o modificate l'indirizzo e-mail qui sotto. Questo indirizzo e-mail diventerà il vostro nuovo login al negozio.",
 		"Error while setting shop delete preference": "Errore durante l'impostazione della preferenza di cancellazione del negozio",
 		"Shop email cannot be same as this account's email.": "L'e-mail di Murena.com non può essere uguale a quella di questo account.",
 		"Invalid Email Format.": "Formato email non valido.",
