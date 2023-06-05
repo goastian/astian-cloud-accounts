@@ -4,7 +4,7 @@ OC.L10N.register(
 		"Email Address": "Indirizzo e-mail",
 		"Options": "Opzioni",
 		"We are going to proceed with your cloud account suppression.": "Procederemo con la soppressione dell'account cloud.",
-		"Check the box below if you also want to delete the associated shop account.": "Selezionare la casella sottostante se si desidera eliminare anche l'account del negozio associato.",
+		"Check the box below if you also want to delete the associated shop account(s).": "Selezionare la casella sottostante se si desidera eliminare anche gli account del negozio associati.",
 		"For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.": "Per vostra informazione, avete %d ordini in <a class='text-color-active' href='%s' target='_blank'>il tuo account</a>.",
 		"For your information you have %d order(s) in your accounts: ": "Per vostra informazione, avete %d ordini in i vostri conti: ",
 		"I also want to delete my shop account": "Voglio anche cancellare il mio account del negozio",
