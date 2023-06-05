@@ -81,7 +81,6 @@ export default {
 			shopUsers: [],
 			deleteShopAccount: loadState(APPLICATION_NAME, 'delete_shop_account'),
 			shopEmailPostDelete: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
-			shopEmailDefault: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
 			appName: APPLICATION_NAME,
 			userEmail: loadState(APPLICATION_NAME, 'email'),
 			showError: false,
