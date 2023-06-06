@@ -1,23 +1,26 @@
 <template>
-	<SettingsSection v-if="shopUserExists" :title="t('ecloud-accounts', 'Options')">
-		<p v-if="loading">
-			{{
-				t('ecloud-accounts', 'Loading...')
-			}}
-		</p>
-		<div v-else>
+	<SettingsSection v-if="shopUsers.length > 0" :title="t(appName, 'Options')">
+		<div>
 			<p>
 				{{
-					t('ecloud-accounts', 'We are going to proceed with your cloud account suppression.')
+					t(appName, 'We are going to proceed with your cloud account suppression.')
 				}}
-				<span v-if="subscriptionCount === 0">
+				<span v-if="!hasActiveSubscription">
 					{{
-						t('ecloud-accounts', 'Check the box below if you also want to delete the associated shop account.')
+						t(appName, 'Check the box below if you also want to delete the associated shop account(s).')
 					}}
 				</span>
 			</p>
+
 			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
-			<p><b v-if="subscriptionCount > 0" v-html="subscriptionDescription" /></p>
+			<p v-if="hasActiveSubscription">
+				<b>
+					{{
+						t(appName, 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.')
+					}}
+				</b>
+			</p>
+
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
@@ -26,11 +29,11 @@
 							type="checkbox"
 							name="shop-accounts_confirm"
 							class="checkbox"
-							:disabled="subscriptionCount > 0 || !allowDelete"
+							:disabled="hasActiveSubscription || !allowDelete"
 							@change="updateDeleteShopPreference()">
 						<label for="shop-accounts_confirm">{{
 							t(
-								"ecloud-accounts",
+								appName,
 								"I also want to delete my shop account"
 							)
 						}}</label>
@@ -39,7 +42,7 @@
 						<label for="shop-alternate-email">
 							{{
 								t(
-									"ecloud-accounts",
+									appName,
 									"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
 								)
 							}}
@@ -48,29 +51,13 @@
 							v-model="shopEmailPostDelete"
 							type="email"
 							name="shop-alternate-email"
-							:placeholder="t('ecloud-accounts', 'Email Address')"
+							:placeholder="t(appName, 'Email Address')"
 							class="form-control"
-							:disabled="subscriptionCount > 0 || !allowDelete"
+							:disabled="hasActiveSubscription || !allowDelete"
 							@blur="updateEmailPostDelete($event)">
 					</div>
 				</div>
 			</form>
-			<p v-if="onlyUser" class="warnings">
-				{{
-					t(
-						"drop_account",
-						"You are the only user of this instance, you can't delete your account."
-					)
-				}}
-			</p>
-			<p v-if="onlyAdmin" class="warnings">
-				{{
-					t(
-						"drop_account",
-						"You are the only admin of this instance, you can't delete your account."
-					)
-				}}
-			</p>
 		</div>
 	</SettingsSection>
 </template>
@@ -82,55 +69,48 @@ import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
 
+const APPLICATION_NAME = 'ecloud-accounts'
+
 export default {
-	name: 'PersonalSettings',
+	name: 'DeleteShopAccountSetting',
 	components: {
 		SettingsSection,
 	},
 	data() {
 		return {
-			shopUserExists: false,
-			shopUser: {},
-			deleteShopAccount: false,
-			shopEmailPostDelete: '',
-			shopEmailDefault: '',
-			appName: 'ecloud-accounts',
-			userEmail: '',
-			onlyAdmin: false,
-			onlyUser: false,
-			orderCount: 0,
-			subscriptionCount: 0,
-			ordersDescription: this.t('ecloud-accounts', "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>."),
-			subscriptionDescription: this.t('ecloud-accounts', 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.'),
-			loading: true,
+			shopUsers: [],
+			deleteShopAccount: loadState(APPLICATION_NAME, 'delete_shop_account'),
+			shopEmailPostDelete: loadState(APPLICATION_NAME, 'shop_email_post_delete'),
+			appName: APPLICATION_NAME,
+			userEmail: loadState(APPLICATION_NAME, 'email'),
 			showError: false,
 			allowDelete: true,
+			ordersDescription: ''
 		}
 	},
-	created() {
-		try {
-			this.onlyUser = loadState(this.appName, 'only_user')
-			this.onlyAdmin = loadState(this.appName, 'only_admin')
-			this.deleteShopAccount = loadState(this.appName, 'delete_shop_account')
-			this.shopEmailPostDelete = loadState(this.appName, 'shop_email_post_delete')
-			this.shopEmailDefault = loadState(this.appName, 'shop_email_post_delete')
-			this.userEmail = loadState(this.appName, 'email')
-			this.getShopUser().then(() => {
-				if (this.shopUserExists) {
-					this.getOrdersInfo()
-					this.getSubscriptionInfo()
-				} else {
-					this.disableOrEnableDeleteAccount()
+	computed: {
+		hasActiveSubscription() {
+			for (let index = 0; index < this.shopUsers.length; index++) {
+				if (this.shopUsers[index].has_active_subscription) {
+					return true
 				}
-
-			})
-		} catch (e) {
-			console.error('Error fetching initial state', e)
+			}
+			return false
+		},
+		orderCount() {
+			return this.shopUsers.reduce((accumulator, user) => {
+				return accumulator + user.order_count
+			}, 0)
 		}
+	},
+	mounted() {
+		this.getShopUsers()
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
-			if (this.shopUserExists && !this.deleteShopAccount) {
+			if (!this.allowDelete || this.hasActiveSubscription) {
+				this.disableDeleteAccountEvent()
+			} else if (this.shopUsers.length > 0 && !this.deleteShopAccount) {
 				this.disableDeleteAccountEvent()
 				const status = await this.checkShopEmailPostDelete()
 				if (status === 200) {
@@ -159,60 +139,40 @@ export default {
 				return err.response.status
 			}
 		},
-		async getShopUser() {
-			try {
-				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/user`
-				)
-				const { status, data } = await Axios.get(url)
-				if (status === 200) {
-					this.shopUserExists = true
-					this.shopUser = data
-				}
-				if (status === 400) {
-					this.enableDeleteAccountEvent()
-				}
-			} catch (e) {
+		setOrderDescription() {
+			if (this.shopUsers.length === 1) {
+				const ordersDescription = this.t(APPLICATION_NAME, "For your information you have %d order(s) in <a class='text-color-active' href='%s' target='_blank'>your account</a>.")
+				const myOrdersUrl = this.shopUsers[0].my_orders_url
+				this.ordersDescription = ordersDescription.replace('%d', this.orderCount).replace('%s', myOrdersUrl)
+			} else if (this.shopUsers.length >= 1) {
+				let ordersDescription = this.t(APPLICATION_NAME, 'For your information you have %d order(s) in your accounts: ')
+
+				ordersDescription = ordersDescription.replace('%d', this.orderCount)
+
+				const links = this.shopUsers.map((user, index) => {
+					return `<a href='${user.my_orders_url}' target='_blank'>[${index}]</a>`
+				})
+				this.ordersDescription = ordersDescription + links.join(' ')
 			}
 		},
-		async getOrdersInfo() {
+		async getShopUsers() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/order_info?userId=${this.shopUser.id}`
+					`/apps/${this.appName}/shop-accounts/users`
 				)
-				const { status, data } = await Axios.get(url)
-				if (status === 200) {
-					this.orderCount = data.order_count
-					if (this.orderCount) {
-						this.ordersDescription = this.ordersDescription.replace('%d', this.orderCount).replace('%s', data.my_orders_url)
-					}
-				}
-				this.loading = false
+				const { data } = await Axios.get(url)
+				this.shopUsers = data
+				this.setOrderDescription()
 			} catch (e) {
-				this.loading = false
-			}
-		},
-		async getSubscriptionInfo() {
-			try {
-				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/subscription_info?userId=${this.shopUser.id}`
-				)
-				const { status, data } = await Axios.get(url)
-				if (status === 200) {
-					this.subscriptionCount = data.subscription_count
-					if (this.subscriptionCount > 0) {
-						this.disableDeleteAccountEvent()
-					}
+				if (e.response.status !== 404) {
+					this.disableDeleteAccountEvent()
+					showError(
+						t(APPLICATION_NAME, 'Temporary error contacting murena.com; please try again later!')
+					)
+					this.allowDelete = false
 				}
-				this.loading = false
-			} catch (e) {
-				this.disableDeleteAccountEvent()
-				showError(
-					t('ecloud-accounts', 'Temporary error contacting murena.com; please try again later!')
-				)
-				this.loading = false
-				this.allowDelete = false
 			}
+			this.disableOrEnableDeleteAccount()
 		},
 		async updateDeleteShopPreference() {
 			await this.disableOrEnableDeleteAccount()
@@ -225,12 +185,12 @@ export default {
 				})
 				if (status !== 200) {
 					showError(
-						t('ecloud-accounts', 'Error while setting shop delete preference')
+						t(APPLICATION_NAME, 'Error while setting shop delete preference')
 					)
 				}
 			} catch (e) {
 				showError(
-					t('ecloud-accounts', 'Error while setting shop delete preference')
+					t(APPLICATION_NAME, 'Error while setting shop delete preference')
 				)
 			}
 		},
@@ -254,7 +214,7 @@ export default {
 			if (this.shopEmailPostDelete === this.userEmail) {
 				showError(
 					t(
-						'ecloud-accounts',
+						APPLICATION_NAME,
 						"Murena.com email cannot be same as this account's email."
 					)
 				)
@@ -264,7 +224,7 @@ export default {
 					this.disableDeleteAccountEvent()
 					showError(
 						t(
-							'ecloud-accounts',
+							APPLICATION_NAME,
 							data.message
 						)
 					)
