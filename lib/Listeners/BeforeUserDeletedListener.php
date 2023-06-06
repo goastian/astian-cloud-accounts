@@ -60,14 +60,16 @@ class BeforeUserDeletedListener implements IEventListener {
 		}
 
 		$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($uid);
-		$shopUser = $this->shopAccountService->getUser($email);
+		$shopUsers = $this->shopAccountService->getUsers($email);
 
-		if ($shopUser && $this->shopAccountService->isUserOIDC($shopUser)) {
-			if ($deleteShopAccount) {
-				$this->shopAccountService->deleteUser($shopUser['id']);
-			} else {
-				$newEmail = $this->shopAccountService->getShopEmailPostDeletePreference($uid);
-				$newEmail = $this->shopAccountService->updateUserEmailAndEmptyOIDC($shopUser['id'], $newEmail);
+		if (!empty($shopUsers)) {
+			foreach ($shopUsers as $shopUser) {
+				if ($deleteShopAccount) {
+					$this->shopAccountService->deleteUser($shopUser['shop_url'], $shopUser['id']);
+				} else {
+					$newEmail = $this->shopAccountService->getShopEmailPostDeletePreference($uid);
+					$newEmail = $this->shopAccountService->updateUserEmailAndEmptyOIDC($shopUser['shop_url'], $shopUser['id'], $newEmail);
+				}
 			}
 		}
 	}
