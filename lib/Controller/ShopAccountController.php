@@ -10,19 +10,14 @@ use OCP\IUserSession;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http;
 use OCP\ILogger;
 
 class ShopAccountController extends Controller {
-	private $shopAccountService;
-	private $userSession;
+	private ShopAccountService $shopAccountService;
+	private IUserSession $userSession;
 
-	private $logger;
-	private const SUBSCRIPTION_STATUS_LIST = [
-		'pending',
-		'active',
-		'on-hold'
-	];
+	private ILogger $logger;
+
 
 	public function __construct($appName, IRequest $request, IUserSession $userSession, ShopAccountService $shopAccountService, ILogger $logger) {
 		parent::__construct($appName, $request);
@@ -81,66 +76,19 @@ class ShopAccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function getOrderInfo(int $userId) {
-		try {
-			if (!$userId) {
-				throw new Exception("Invalid user id");
-			}
-			$data = ['order_count' => 0, 'my_orders_url' => $this->shopAccountService->getShopUrl() . '/my-account/orders'];
-			$orders = $this->shopAccountService->getOrders($userId);
-			$data['order_count'] = count($orders);
-			$response = new DataResponse();
-			$response->setData($data);
-			return $response;
-		} catch (Exception $e) {
-			$this->logger->error('There was an issue querying order for user : ' . strval($userId));
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-			return new DataResponse([], Http::STATUS_BAD_REQUEST);
-		}
-	}
-
-	/**
-	 * @NoAdminRequired
-	 */
-	public function getSubscriptionInfo(int $userId) {
-		try {
-			if (!$userId) {
-				throw new Exception("Invalid user id");
-			}
-			$data = ['subscription_count' => 0];
-			$subscriptions = $this->shopAccountService->getSubscriptions($userId, 'any');
-			$total_subscriptions = 0;
-			foreach ($subscriptions as $subscription) {
-				if (in_array($subscription['status'], self::SUBSCRIPTION_STATUS_LIST)) {
-					$total_subscriptions++;
-				}
-			}
-			$data['subscription_count'] = $total_subscriptions;
-			$response = new DataResponse();
-			$response->setData($data);
-			return $response;
-		} catch (Exception $e) {
-			$this->logger->error('There was an issue querying subscription for user : ' . strval($userId));
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-			return new DataResponse([], Http::STATUS_BAD_REQUEST);
-		}
-	}
-
-	/**
-	 * @NoAdminRequired
-	 */
-	public function getShopUser() {
+	public function getShopUsers() {
 		$response = new DataResponse();
 		$user = $this->userSession->getUser();
 		$email = $user->getEMailAddress();
 
-		$shopUser = $this->shopAccountService->getUser($email);
+		$shopUsers = $this->shopAccountService->getUsers($email);
 
-		if (!$shopUser || !$this->shopAccountService->isUserOIDC($shopUser)) {
+		if (empty($shopUsers)) {
 			$response->setStatus(404);
 			return $response;
 		}
-		$response->setData($shopUser);
+
+		$response->setData($shopUsers);
 		return $response;
 	}
 }
