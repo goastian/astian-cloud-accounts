@@ -24,7 +24,7 @@
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
-						<checkboxRadioSwitch id="shop-accounts_confirm" 
+						<checkboxRadioSwitch id="shop-accounts_confirm"
 							:checked.sync="deleteShopAccount"
 							:disabled="hasActiveSubscription || !allowDelete"
 							@update:checked="updateDeleteShopPreference">
@@ -74,7 +74,7 @@ export default {
 	name: 'DeleteShopAccountSetting',
 	components: {
 		SettingsSection,
-		checkboxRadioSwitch
+		checkboxRadioSwitch,
 	},
 	data() {
 		return {
@@ -85,7 +85,7 @@ export default {
 			userEmail: loadState(APPLICATION_NAME, 'email'),
 			showError: false,
 			allowDelete: true,
-			ordersDescription: ''
+			ordersDescription: '',
 		}
 	},
 	computed: {
@@ -101,7 +101,7 @@ export default {
 			return this.shopUsers.reduce((accumulator, user) => {
 				return accumulator + user.order_count
 			}, 0)
-		}
+		},
 	},
 	mounted() {
 		this.getShopUsers()
