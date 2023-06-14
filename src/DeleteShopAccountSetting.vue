@@ -24,19 +24,16 @@
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
-						<input id="shop-accounts_confirm"
-							v-model="deleteShopAccount"
-							type="checkbox"
-							name="shop-accounts_confirm"
-							class="checkbox"
+						<checkboxRadioSwitch :checked.sync="deleteShopAccount"
 							:disabled="hasActiveSubscription || !allowDelete"
-							@change="updateDeleteShopPreference()">
-						<label for="shop-accounts_confirm">{{
-							t(
-								appName,
-								"I also want to delete my shop account"
-							)
-						}}</label>
+							@update:checked="updateDeleteShopPreference">
+							{{
+								t(
+									appName,
+									"I also want to delete my shop account"
+								)
+							}}
+						</checkboxRadioSwitch>
 					</div>
 					<div v-if="!deleteShopAccount" class="delete-shop-input">
 						<label for="shop-alternate-email">
@@ -68,6 +65,7 @@ import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
+import checkboxRadioSwitch from '@nextcloud/vue/dist/Components/checkboxRadioSwitch.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
@@ -75,6 +73,7 @@ export default {
 	name: 'DeleteShopAccountSetting',
 	components: {
 		SettingsSection,
+		checkboxRadioSwitch
 	},
 	data() {
 		return {
