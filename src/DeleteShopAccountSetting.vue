@@ -24,7 +24,8 @@
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
-						<checkboxRadioSwitch :checked.sync="deleteShopAccount"
+						<checkboxRadioSwitch id="shop-accounts_confirm" 
+							:checked.sync="deleteShopAccount"
 							:disabled="hasActiveSubscription || !allowDelete"
 							@update:checked="updateDeleteShopPreference">
 							{{
