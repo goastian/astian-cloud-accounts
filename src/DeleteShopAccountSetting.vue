@@ -274,13 +274,13 @@ input#shop-alternate-email:disabled {
 .delete-shop-input {
 	margin-bottom: 1em;
 }
-#delete-shop-account-settings .checkbox-radio-switch:not(.checkbox-radio-switch--disabled) .checkbox-radio-switch__label:hover,#delete-shop-account-settings  .checkbox-radio-switch:not(.checkbox-radio-switch--disabled) .checkbox-radio-switch__label:focus-within{
-	background-color: var(--color-primary-light);
-}
 #delete-shop-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label .checkbox-radio-switch__icon{
 	color: var(--color-primary-element);
 }
 #delete-shop-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label{
 	opacity: 1;
+}
+#delete-shop-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label:hover{
+	background-color: var(--color-primary-light);
 }
 </style>
