@@ -96,7 +96,7 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import SettingsSection from '@nextcloud/vue/dist/Components/NcSettingsSection.js'
+import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showSuccess, showError } from '@nextcloud/dialogs'
