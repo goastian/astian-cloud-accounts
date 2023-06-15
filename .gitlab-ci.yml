@@ -1,19 +1,12 @@
-#include:
-#  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
-#    ref: main
-#    file: "nc-apps-lint-build-frontend.yml"
-#  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
-#    ref: main
-#    file: "nc-apps-deploy.yml"
-
 variables:
-  APP_NAME: $CI_PROJECT_NAME
-  TO_PACKAGE: 'appinfo js css l10n lib templates'
-  CONTAINER_IMAGE: ubuntu
-  CONTAINER_TAG: focal
-  CONTAINER_NAME: nextcloud
-  APP_ENABLE_ARGS: ''
-
+    TO_PACKAGE: 'appinfo l10n lib templates js img'
+include:
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: main
+    file: "nc-apps-lint-build-frontend.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: main
+    file: "nc-apps-deploy.yml"
 .frontend:base:
   image: node:15.14.0-stretch
   before_script:
