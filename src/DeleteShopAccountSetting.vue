@@ -274,4 +274,13 @@ input#shop-alternate-email:disabled {
 .delete-shop-input {
 	margin-bottom: 1em;
 }
+.checkbox-radio-switch:not(.checkbox-radio-switch--disabled) .checkbox-radio-switch__label:hover, .checkbox-radio-switch:not(.checkbox-radio-switch--disabled) .checkbox-radio-switch__label:focus-within{
+	background-color: var(--color-primary-light);
+}
+.checkbox-radio-switch--disabled .checkbox-radio-switch__label .checkbox-radio-switch__icon{
+	color: var(--color-primary-element);
+}
+.checkbox-radio-switch--disabled .checkbox-radio-switch__label{
+	opacity: 1;
+}
 </style>
