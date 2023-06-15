@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Disable initially
 	document.querySelector(checkboxSelector).disabled = true
 	document.querySelector(buttonSelector).disabled = true
+	document.querySelector(checkboxSpanSelector).classList.add(disabledClass)
 
 	const elem = document.getElementById('body-settings')
 	elem.addEventListener('disable-delete-account', function() {
