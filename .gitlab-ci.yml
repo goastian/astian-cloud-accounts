@@ -8,7 +8,7 @@
 
 variables:
   APP_NAME: $CI_PROJECT_NAME
-  TO_PACKAGE: 'appinfo l10n lib templates js img'
+  TO_PACKAGE: 'appinfo js css l10n lib templates'
   CONTAINER_IMAGE: ubuntu
   CONTAINER_TAG: focal
   CONTAINER_NAME: nextcloud
