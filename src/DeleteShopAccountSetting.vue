@@ -62,11 +62,11 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
+import SettingsSection from '@nextcloud/vue/dist/Components/NcSettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
-import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
+import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
