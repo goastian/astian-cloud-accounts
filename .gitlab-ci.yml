@@ -7,7 +7,6 @@
 #    file: "nc-apps-deploy.yml"
 
 variables:
-  APP_NAME: $CI_PROJECT_NAME
   TO_PACKAGE: 'appinfo js css l10n lib templates'
   CONTAINER_IMAGE: ubuntu
   CONTAINER_TAG: focal
