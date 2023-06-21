@@ -24,19 +24,17 @@
 			<form @submit.prevent>
 				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
 					<div class="delete-shop-input">
-						<input id="shop-accounts_confirm"
-							v-model="deleteShopAccount"
-							type="checkbox"
-							name="shop-accounts_confirm"
-							class="checkbox"
+						<CheckboxRadioSwitch id="shop-accounts_confirm"
+							:checked.sync="deleteShopAccount"
 							:disabled="hasActiveSubscription || !allowDelete"
-							@change="updateDeleteShopPreference()">
-						<label for="shop-accounts_confirm">{{
-							t(
-								appName,
-								"I also want to delete my shop account"
-							)
-						}}</label>
+							@update:checked="updateDeleteShopPreference">
+							{{
+								t(
+									appName,
+									"I also want to delete my shop account"
+								)
+							}}
+						</CheckboxRadioSwitch>
 					</div>
 					<div v-if="!deleteShopAccount" class="delete-shop-input">
 						<label for="shop-alternate-email">
@@ -68,6 +66,7 @@ import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
+import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
@@ -75,6 +74,7 @@ export default {
 	name: 'DeleteShopAccountSetting',
 	components: {
 		SettingsSection,
+		CheckboxRadioSwitch,
 	},
 	data() {
 		return {
@@ -85,7 +85,7 @@ export default {
 			userEmail: loadState(APPLICATION_NAME, 'email'),
 			showError: false,
 			allowDelete: true,
-			ordersDescription: ''
+			ordersDescription: '',
 		}
 	},
 	computed: {
@@ -101,7 +101,7 @@ export default {
 			return this.shopUsers.reduce((accumulator, user) => {
 				return accumulator + user.order_count
 			}, 0)
-		}
+		},
 	},
 	mounted() {
 		this.getShopUsers()
@@ -273,5 +273,14 @@ input#shop-alternate-email:disabled {
 }
 .delete-shop-input {
 	margin-bottom: 1em;
+}
+#delete-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label .checkbox-radio-switch__icon{
+	color: var(--color-text-light);
+}
+#delete-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label{
+	opacity: 0.5;
+}
+#delete-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label:hover{
+	background-color: unset;
 }
 </style>
