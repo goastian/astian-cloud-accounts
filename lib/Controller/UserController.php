@@ -106,6 +106,7 @@ class UserController extends ApiController {
 			'setAccountData-benchmark: starting at: ' . $startTime
 			. ' userExists time: ' . $existsTime
 			. ' getUser time: ' . $getUserTime
+			. ' setQuota time: ' . $setQuotaTime
 			. ' setEmail time: ' . $setEmailTime
 			. ' setTos time: ' . $setTosTime
 			. ' setRecovery time: ' . $setRecoveryTime
