@@ -71,46 +71,57 @@ class UserController extends ApiController {
 			$response->setStatus(401);
 			return $response;
 		}
-		$startTime = time();
+		$startTimestamp = time();
 
 		if (!$this->userService->userExists($uid)) {
 			$response->setStatus(404);
 			return $response;
 		}
-		$existsTime = time() - $startTime;
+		$existsTimestamp = time();
+		$existsTime = $existsTimestamp - $startTimestamp;
+		
 		$user = $this->userService->getUser($uid);
-
 		if (is_null($user)) {
 			$response->setStatus(404);
 			return $response;
 		}
-		$getUserTime = time() - $existsTime;
+		$getUserTimestamp = time();
+		$getUserTime = $getUserTimestamp - $existsTimestamp;
 
 		$user->setEMailAddress($email);
-		$setEmailTime = time() - $getUserTime;
+		$setEmailTimestamp = time();
+		$setEmailTime = $setEmailTimestamp - $getUserTimestamp;
+
 		$user->setQuota($quota);
-		$setQuotaTime = time() - $setEmailTime;
+		$setQuotaTimestamp = time();
+		$setQuotaTime = $setQuotaTimestamp - $setEmailTimestamp;
+
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
-		$setTosTime = time() - $setQuotaTime;
+		$setTosTimestamp = time();
+		$setTosTime = $setTosTimestamp - $setQuotaTimestamp;
+
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
 		}
-		$setRecoveryTime = time() - $setTosTime;
+		$setRecoveryTimestamp = time();
+		$setRecoveryTime = $setRecoveryTimestamp - $setTosTimestamp;
+
 		$hmeAliasAdded = $this->userService->addHMEAliasInConfig($uid, $hmeAlias);
 		if (!$hmeAliasAdded) {
 			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
 		}
-		$setHmeTime = time() - $setRecoveryTime;
+		$setHmeTimestamp = time();
+		$setHmeTime = $setHmeTimestamp - $setRecoveryTimestamp;
 		$this->logger->error(
-			'setAccountData-benchmark: starting at: ' . $startTime
-			. ' userExists time: ' . $existsTime
-			. ' getUser time: ' . $getUserTime
-			. ' setQuota time: ' . $setQuotaTime
-			. ' setEmail time: ' . $setEmailTime
-			. ' setTos time: ' . $setTosTime
-			. ' setRecovery time: ' . $setRecoveryTime
-			. ' setHme time: ' . $setHmeTime
+			'setAccountData-benchmark: starting at: ' . $startTimestamp . "\n"
+			. ' userExists time: ' . $existsTime . "\n"
+			. ' getUser time: ' . $getUserTime . "\n"
+			. ' setQuota time: ' . $setQuotaTime . "\n"
+			. ' setEmail time: ' . $setEmailTime . "\n"
+			. ' setTos time: ' . $setTosTime . "\n"
+			. ' setRecovery time: ' . $setRecoveryTime . "\n"
+			. ' setHme time: ' . $setHmeTime . "\n"
 		);
 
 		return $response;
