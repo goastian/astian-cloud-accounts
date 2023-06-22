@@ -67,35 +67,51 @@ class UserController extends ApiController {
 	 */
 	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
-
 		if (!$this->checkAppCredentials($token)) {
 			$response->setStatus(401);
 			return $response;
 		}
+		$startTime = time();
 
 		if (!$this->userService->userExists($uid)) {
 			$response->setStatus(404);
 			return $response;
 		}
-
+		$existsTime = time() - $startTime;
 		$user = $this->userService->getUser($uid);
 
 		if (is_null($user)) {
 			$response->setStatus(404);
 			return $response;
 		}
+		$getUserTime = time() - $existsTime;
 
 		$user->setEMailAddress($email);
+		$setEmailTime = time() - $getUserTime;
 		$user->setQuota($quota);
+		$setQuotaTime = time() - $setEmailTime;
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
+		$setTosTime = time() - $setQuotaTime;
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
 		}
+		$setRecoveryTime = time() - $setTosTime;
 		$hmeAliasAdded = $this->userService->addHMEAliasInConfig($uid, $hmeAlias);
 		if (!$hmeAliasAdded) {
 			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
 		}
+		$setHmeTime = time() - $setRecoveryTime;
+		$this->logger->error(
+			'setAccountData-benchmark: starting at: ' . $startTime
+			. ' userExists time: ' . $existsTime
+			. ' getUser time: ' . $getUserTime
+			. ' setEmail time: ' . $setEmailTime
+			. ' setTos time: ' . $setTosTime
+			. ' setRecovery time: ' . $setRecoveryTime
+			. ' setHme time: ' . $setHmeTime
+		);
+
 		return $response;
 	}
 
