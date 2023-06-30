@@ -2,11 +2,9 @@
 
 namespace OCA\EcloudAccounts\Db;
 
-
 use OCP\IDBConnection;
 
 class TwoFactorMapper {
-
 	private IDBConnection $conn;
 	private const TOTP_SECRET_TABLE = 'twofactor_totp_secrets';
 

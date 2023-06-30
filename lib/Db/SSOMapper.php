@@ -10,7 +10,6 @@ use OCP\IUserManager;
 use OCP\Security\ICrypto;
 use OCP\IUser;
 
-
 class SSOMapper {
 	private IConfig $config;
 	private ILogger $logger;
@@ -76,7 +75,6 @@ class SSOMapper {
 
 		$entry = $this->getCredentialEntry($decryptedSecret, $ssoUserId, $language);
 		$this->insertCredential($entry);
-		
 	}
 
 	public function insertCredential(array $entry) : void {
@@ -165,11 +163,11 @@ class SSOMapper {
 	}
 
 		/**
-	 *	From https://www.uuidgenerator.net/dev-corner/php
-	 *	As keycloak generates random UUIDs using the java.util.UUID class which is RFC 4122 compliant
-	 *
-	 *   @return string
-	 */
+		 *	From https://www.uuidgenerator.net/dev-corner/php
+		 *	As keycloak generates random UUIDs using the java.util.UUID class which is RFC 4122 compliant
+		 *
+		 *   @return string
+		 */
 	private function randomUUID($data = null) : string {
 		// Generate 16 bytes (128 bits) of random data or use the data passed into the function.
 		$data = $data ?? random_bytes(16);
@@ -183,6 +181,4 @@ class SSOMapper {
 		// Output the 36 character UUID.
 		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 	}
-
-
 }

@@ -27,7 +27,7 @@ class TwoFactorStateChangedListener implements IEventListener {
 		$this->ssoMapper = $ssoMapper;
 		$this->twoFactorMapper = $twoFactorMapper;
 		$this->logger = $logger;
-	}	
+	}
 
 
 	public function handle(Event $event): void {
@@ -48,11 +48,9 @@ class TwoFactorStateChangedListener implements IEventListener {
 
 			$secret = $this->twoFactorMapper->getSecret($username);
 			$this->ssoMapper->migrateSecret($username, $secret);
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			$stateText = $event->isEnabled() ? 'new secret enabled' : 'disabled';
 			$this->logger->error('Error updating secret state(' . $stateText  .') for user: ' . $username . ': ' . $e->getMessage());
 		}
 	}
-	
 }
