@@ -55,7 +55,8 @@ class SSOMapper {
 		$qb = $this->conn->createQueryBuilder();
 		$qb->delete(self::CREDENTIAL_TABLE)
 			->where('USER_ID = :username')
-			->andWhere('CREDENTIAL_DATA LIKE "%nextcloud_totp%"')
+			->andWhere('TYPE = "otp"')
+			->andWhere($qb->expr()->like('CREDENTIAL_DATA', '%"subType":"nextcloud_totp"%'))
 			->setParameter('username', $userId)
 			->execute();
 	}
