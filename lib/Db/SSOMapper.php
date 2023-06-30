@@ -63,7 +63,7 @@ class SSOMapper {
 		}
 
 		$decryptedSecret = $this->crypto->decrypt($secret);
-		$ssoUserId = $this->getUserId($username, $this->conn);
+		$ssoUserId = $this->getUserId($username);
 		if (empty($ssoUserId)) {
 			throw new \Exception('Does not exist in SSO database');
 		}
@@ -98,7 +98,7 @@ class SSOMapper {
 		$credentialEntry = [
 			'ID' => $id,
 			'USER_ID' => $ssoUserId,
-			'USER_LABEL' => 'Murena Cloud 2FA',
+			'USER_LABEL' => $userLabel,
 			'TYPE' => 'otp',
 			'SECRET_DATA' => json_encode([
 				'value' => $secret
