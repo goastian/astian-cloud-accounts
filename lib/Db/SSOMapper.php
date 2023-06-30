@@ -9,6 +9,7 @@ use Doctrine\DBAL\Connection;
 use OCP\IUserManager;
 use OCP\Security\ICrypto;
 use OCP\IUser;
+use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 
 class SSOMapper {
 	private IConfig $config;
@@ -50,11 +51,13 @@ class SSOMapper {
 	}
 
 	public function deleteSecret(string $username) {
+		$userId = $this->getUserId($username);
 		$qb = $this->conn->createQueryBuilder();
 		$qb->delete(self::CREDENTIAL_TABLE)
 			->where('USER_ID = :username')
-			->andWhere('CREDENTIAL_DATA LIKE %nextcloud_totp%')
-			->setParameter('username', $username);
+			->andWhere('CREDENTIAL_DATA LIKE "%nextcloud_totp%"')
+			->setParameter('username', $userId)
+			->execute();
 	}
 
 	public function migrateSecret(string $username, string $secret) {
@@ -148,7 +151,7 @@ class SSOMapper {
 		$config = $this->config->getSystemValue(self::SSO_CONFIG_KEY);
 		
 		if (!$this->isDbConfigValid($config)) {
-			throw new DbConnectionParamsException('Invalid SQL raw configuration!');
+			throw new DbConnectionParamsException('Invalid SSO database configuration!');
 		}
 
 		$params = [
