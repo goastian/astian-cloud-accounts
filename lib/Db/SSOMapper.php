@@ -50,7 +50,7 @@ class SSOMapper {
 		return (string) $result->fetchOne();
 	}
 
-	public function deleteSecret(string $username) {
+	public function deleteCredential(string $username) {
 		$userId = $this->getUserId($username);
 		$qb = $this->conn->createQueryBuilder();
 		$qb->delete(self::CREDENTIAL_TABLE)
@@ -60,7 +60,7 @@ class SSOMapper {
 			->execute();
 	}
 
-	public function migrateSecret(string $username, string $secret) {
+	public function migrateCredential(string $username, string $secret) {
 		if (!$this->userManager->get($username) instanceof IUser) {
 			throw new \Exception('No user found in nextcloud with given username');
 		}
@@ -75,6 +75,9 @@ class SSOMapper {
 		if (!array_key_exists($language, self::USER_LABELS)) {
 			$language = 'en';
 		}
+
+		// Only one "nextcloud_totp" at a time
+		$this->deleteCredential($username);
 
 		$entry = $this->getCredentialEntry($decryptedSecret, $ssoUserId, $language);
 		$this->insertCredential($entry);

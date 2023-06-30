@@ -37,17 +37,15 @@ class TwoFactorStateChangedListener implements IEventListener {
 
 		$user = $event->getUser();
 		$username = $user->getUID();
-		try {
-			// Delete old secret as 2FA secret state has changed
-			$this->ssoMapper->deleteSecret($username);
-		
-			// When state change event is fired by user disabling 2FA, just return
+		try {		
+			// When state change event is fired by user disabling 2FA, delete existing credential and return
 			if (!$event->isEnabled()) {
+				$this->ssoMapper->deleteCredential($username);
 				return;
 			}
 
 			$secret = $this->twoFactorMapper->getSecret($username);
-			$this->ssoMapper->migrateSecret($username, $secret);
+			$this->ssoMapper->migrateCredential($username, $secret);
 		} catch (Exception $e) {
 			$stateText = $event->isEnabled() ? 'new secret enabled' : 'disabled';
 			$this->logger->error('Error updating secret state(' . $stateText  .') for user: ' . $username . ': ' . $e->getMessage());
