@@ -141,7 +141,7 @@ class AppsService {
 		unset($entriesByHref['/apps/murena-dashboard/']);
 		unset($entriesByHref['']);
 
-		return array_values($entriesByHref);
+		return array('apps' => array_values($entriesByHref));
 	}
 
 	public function updateOrder(string $order) {
