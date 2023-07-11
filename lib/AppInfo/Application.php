@@ -37,6 +37,9 @@ use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
+use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
+use OCA\TwoFactorTOTP\Event\StateChanged;
+use OCP\IUserManager;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -48,13 +51,16 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
+		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		// $context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 	}
 
 	public function boot(IBootContext $context): void {
 		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($c) {
-			return new LDAPConnectionService();
+			return new LDAPConnectionService(
+				$c->get(IUserManager::class)
+			);
 		});
 	}
 }
