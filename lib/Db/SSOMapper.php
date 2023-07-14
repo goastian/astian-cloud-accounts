@@ -56,8 +56,7 @@ class SSOMapper {
 		$qb->delete(self::CREDENTIAL_TABLE)
 			->where('USER_ID = :username')
 			->andWhere('TYPE = "otp"')
-			->andWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"nextcloud_totp\"%"')
-			->orWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"totp\"%"')
+			->andWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"nextcloud_totp\"%" OR CREDENTIAL_DATA LIKE "%\"subType\":\"totp\"%"')
 			->setParameter('username', $userId)
 			->execute();
 	}
