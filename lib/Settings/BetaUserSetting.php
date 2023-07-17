@@ -47,12 +47,12 @@ class BetaUserSetting implements ISettings {
 	public function getSection(): ?string {
 		$betaGroupName = $this->config->getSystemValue("beta_group_name");
 		if (empty($betaGroupName)) {
-			$this->logger->warning('Beta group name is not set in config.php', ['app' => 'ecloud-accounts']);
+			$this->logger->debug('Beta group name is not set in config.php', ['app' => 'ecloud-accounts']);
 			return null;
 		}
 		$groupExists = $this->groupManager->groupExists($betaGroupName);
 		if (! $groupExists) {
-			$this->logger->warning('Beta group does not exist!', ['app' => 'ecloud-accounts']);
+			$this->logger->debug('Beta group does not exist!', ['app' => 'ecloud-accounts']);
 			return null;
 		}
 		return 'beta-user';
