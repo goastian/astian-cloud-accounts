@@ -46,7 +46,7 @@ class SSOMapper {
 		return (string) $result->fetchOne();
 	}
 
-	public function deleteCredential(string $username) {
+	public function deleteCredentials(string $username) {
 		$userId = $this->getUserId($username);
 		$qb = $this->conn->createQueryBuilder();
 		$qb->delete(self::CREDENTIAL_TABLE)
@@ -70,8 +70,8 @@ class SSOMapper {
 
 		$language = $this->config->getUserValue($username, 'core', 'lang', 'en');
 
-		// Only one "nextcloud_totp" at a time
-		$this->deleteCredential($username);
+		// Only one 2FA device at  a time
+		$this->deleteCredentials($username);
 
 		$entry = $this->getCredentialEntry($decryptedSecret, $ssoUserId, $language);
 		$this->insertCredential($entry);

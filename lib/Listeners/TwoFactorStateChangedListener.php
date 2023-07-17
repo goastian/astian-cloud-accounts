@@ -38,9 +38,10 @@ class TwoFactorStateChangedListener implements IEventListener {
 		$user = $event->getUser();
 		$username = $user->getUID();
 		try {
-			// When state change event is fired by user disabling 2FA, delete existing credential and return
+			// When state change event is fired by user disabling 2FA, delete existing 2FA credentials and return
+			// i.e. disable 2FA for user at SSO
 			if (!$event->isEnabled()) {
-				$this->ssoMapper->deleteCredential($username);
+				$this->ssoMapper->deleteCredentials($username);
 				return;
 			}
 
