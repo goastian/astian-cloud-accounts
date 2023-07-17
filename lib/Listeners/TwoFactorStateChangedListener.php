@@ -31,7 +31,7 @@ class TwoFactorStateChangedListener implements IEventListener {
 
 
 	public function handle(Event $event): void {
-		if (!($event instanceof StateChanged) || !$this->appManager->isEnabledForUser(self::TWOFACTOR_APP_ID)) {
+		if (!($event instanceof StateChanged) || !$this->appManager->isEnabledForUser(self::TWOFACTOR_APP_ID) || !$this->ssoMapper->isSSOEnabled()) {
 			return;
 		}
 

@@ -34,6 +34,10 @@ class SSOMapper {
 		$this->initConnection();
 	}
 
+	public function isSSOEnabled() : bool {
+		return isset($this->conn);
+	}
+
 	public function getUserId(string $username) : string {
 		$qb = $this->conn->createQueryBuilder();
 		$qb->select('USER_ID')
