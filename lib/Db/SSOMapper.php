@@ -6,10 +6,12 @@ use OCP\IConfig;
 use OCP\ILogger;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
+use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\IUserManager;
 use OCP\Security\ICrypto;
 use OCP\IUser;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
+use OCP\L10N\IFactory;
 
 class SSOMapper {
 	private IConfig $config;
@@ -17,25 +19,23 @@ class SSOMapper {
 	private Connection $conn;
 	private IUserManager $userManager;
 	private ICrypto $crypto;
+	private IFactory $l10nFactory;
 
 	private const USER_ATTRIBUTE_TABLE = 'USER_ATTRIBUTE';
 	private const CREDENTIAL_TABLE = 'CREDENTIAL';
-
 	private const SSO_CONFIG_KEY = 'keycloak';
-	private const USER_LABELS = [
-		'en' => 'Murena Cloud 2FA',
-		'es' => 'Murena Cloud 2FA',
-		'de' => 'Murena Cloud 2FA',
-		'it' => 'Murena Cloud 2FA',
-		'fr' => 'Murena Cloud 2FA',
-	];
 
-	public function __construct(IConfig $config, IUserManager $userManager, ILogger $logger, ICrypto $crypto) {
+	public function __construct(IConfig $config, IUserManager $userManager, ILogger $logger, ICrypto $crypto, IFactory $l10nFactory) {
+		$this->l10nFactory = $l10nFactory;
 		$this->config = $config;
 		$this->logger = $logger;
 		$this->userManager = $userManager;
 		$this->crypto = $crypto;
 		$this->initConnection();
+	}
+
+	public function isSSOEnabled() : bool {
+		return isset($this->conn);
 	}
 
 	public function getUserId(string $username) : string {
@@ -50,13 +50,13 @@ class SSOMapper {
 		return (string) $result->fetchOne();
 	}
 
-	public function deleteCredential(string $username) {
+	public function deleteCredentials(string $username) {
 		$userId = $this->getUserId($username);
 		$qb = $this->conn->createQueryBuilder();
 		$qb->delete(self::CREDENTIAL_TABLE)
 			->where('USER_ID = :username')
 			->andWhere('TYPE = "otp"')
-			->andWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"nextcloud_totp\"%"')
+			->andWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"nextcloud_totp\"%" OR CREDENTIAL_DATA LIKE "%\"subType\":\"totp\"%"')
 			->setParameter('username', $userId)
 			->execute();
 	}
@@ -73,12 +73,9 @@ class SSOMapper {
 		}
 
 		$language = $this->config->getUserValue($username, 'core', 'lang', 'en');
-		if (!array_key_exists($language, self::USER_LABELS)) {
-			$language = 'en';
-		}
 
-		// Only one "nextcloud_totp" at a time
-		$this->deleteCredential($username);
+		// Only one 2FA device at  a time
+		$this->deleteCredentials($username);
 
 		$entry = $this->getCredentialEntry($decryptedSecret, $ssoUserId, $language);
 		$this->insertCredential($entry);
@@ -101,7 +98,9 @@ class SSOMapper {
 		// Create the random UUID from the sso user ID so multiple entries of same credential do not happen
 		$id = $this->randomUUID(substr($ssoUserId, 0, 16));
 
-		$userLabel = self::USER_LABELS[$language];
+		$l10n = $this->l10nFactory->get(Application::APP_ID, $language);
+		$userLabel = $l10n->t('Murena Cloud 2FA');
+
 		$credentialEntry = [
 			'ID' => $id,
 			'USER_ID' => $ssoUserId,
