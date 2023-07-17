@@ -38,6 +38,7 @@ OC.L10N.register(
 		"Here is the list of currently available beta features:": "Voici la liste des fonctionnalités de la version bêta actuellement disponibles :",
 		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Un abonnement est actif dans ce compte. Veuillez l'annuler ou le laisser expirer avant de supprimer votre compte.",
 		"Loading...": "Chargement...",
-		"Temporary error contacting murena.com; please try again later!": "Erreur temporaire en contactant murena.com ; veuillez réessayer plus tard !"
+		"Temporary error contacting murena.com; please try again later!": "Erreur temporaire en contactant murena.com ; veuillez réessayer plus tard !",
+		"Murena Cloud 2FA": "Authentification à 2 facteurs Murena Cloud"
 	},
 	"nplurals=2; plural=(n != 1);");
