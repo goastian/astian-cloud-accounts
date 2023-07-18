@@ -31,7 +31,9 @@ class SSOMapper {
 		$this->logger = $logger;
 		$this->userManager = $userManager;
 		$this->crypto = $crypto;
-		$this->initConnection();
+		if (!empty($this->config->getSystemValue(self::SSO_CONFIG_KEY))) {
+			$this->initConnection();
+		}
 	}
 
 	public function isSSOEnabled() : bool {
