@@ -55,7 +55,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		}
 		$accountId = $this->getAccountId();
 		try {
-			$actions = \RainLoop\Api::Actions();	
+			$actions = \RainLoop\Api::Actions();
 			if (empty($accountId) || $actions->getMainAccountFromToken(false)) {
 				return;
 			}
