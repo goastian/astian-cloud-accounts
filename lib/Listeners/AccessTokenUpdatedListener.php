@@ -12,7 +12,6 @@ use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
 use OCA\SnappyMail\Util\SnappyMailHelper;
 use OCP\EventDispatcher\IEventListener;
 
-
 class AccessTokenUpdatedListener implements IEventListener {
 	private IUserSession $userSession;
 	private ISession $session;
@@ -22,7 +21,7 @@ class AccessTokenUpdatedListener implements IEventListener {
 	private const OIDC_LOGIN_APP_ID = 'oidc_login';
 
 
-	public function __construct( IUserSession $userSession, ISession $session,IAppManager $appManager) {
+	public function __construct(IUserSession $userSession, ISession $session, IAppManager $appManager) {
 		$this->userSession = $userSession;
 		$this->session = $session;
 		$this->appManager = $appManager;
@@ -43,5 +42,4 @@ class AccessTokenUpdatedListener implements IEventListener {
 
 		$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
 	}
-
 }

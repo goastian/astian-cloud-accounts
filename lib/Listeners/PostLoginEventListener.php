@@ -11,7 +11,6 @@ use OCP\User\Events\PostLoginEvent;
 use OCA\SnappyMail\Util\SnappyMailHelper;
 use OCP\EventDispatcher\IEventListener;
 
-
 class PostLoginEventListener implements IEventListener {
 	private ISession $session;
 	private IAppManager $appManager;
@@ -21,7 +20,7 @@ class PostLoginEventListener implements IEventListener {
 	private const ACCESS_TOKEN_KEY = 'oidc_access_token';
 
 
-	public function __construct(ISession $session,IAppManager $appManager) {
+	public function __construct(ISession $session, IAppManager $appManager) {
 		$this->session = $session;
 		$this->appManager = $appManager;
 	}
@@ -40,7 +39,5 @@ class PostLoginEventListener implements IEventListener {
 		$username = $event->getUser()->getUID();
 
 		$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
-
 	}
-
 }
