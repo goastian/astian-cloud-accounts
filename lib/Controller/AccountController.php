@@ -8,6 +8,10 @@ namespace OCA\EcloudAccounts\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\IRequest;
+use OCP\AppFramework\Http\TemplateResponse;
+use OC_App;
+use OCA\EcloudAccounts\AppInfo\Application;
+
 
 class AccountController extends Controller {
 	protected $appName;
@@ -22,21 +26,18 @@ class AccountController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
 	 */
 	public function index() {
-		echo 'index page'; die;
-		return true;
+		return new TemplateResponse(
+            Application::APP_ID,
+            'signup',
+            ['appName' => Application::APP_ID],
+            TemplateResponse::RENDER_AS_GUEST
+        );
 	}
-	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
-	 */
-	public function signup() {
-		echo 'signup page'; die;
-		return true;
-	}
+	
 }
