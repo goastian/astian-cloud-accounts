@@ -23,5 +23,6 @@ return ['routes' => [
 	[
 		'name' => 'beta_user#submit_issue',
 		'url' => '/issue/submit', 'verb' => 'POST'
-	]
+	],
+	['name' => 'account#index', 'url' => '/account/signup', 'verb' => 'GET'],
 ]];
