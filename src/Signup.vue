@@ -2,7 +2,7 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
-				<h1 class="has-text-centered subtitle is-3" id="registerHeading">
+				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
 					{{ getLocalizedText('Request Murena Account') }}
 				</h1>
 				<form id="registrationForm">
@@ -10,9 +10,13 @@
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Email') }}<sup>*</sup></label>
-								<input id="email" name="email" type="email" class="form-input" v-model="email"
-									:placeholder="getLocalizedText('Enter email to receive invitation')" />
-								<p id="displayEmailError" v-if="isEmailEmpty" class="validation-error">
+								<input id="email"
+									v-model="email"
+									name="email"
+									type="email"
+									class="form-input"
+									:placeholder="getLocalizedText('Enter email to receive invitation')">
+								<p v-if="isEmailEmpty" id="displayEmailError" class="validation-error">
 									{{ getLocalizedText('Email is required.') }}
 								</p>
 							</div>
@@ -22,11 +26,14 @@
 							<div class="control">
 								<label>{{ getLocalizedText('Confirm email') }}<sup>*</sup></label>
 								<div class="confirm-email">
-									<input id="confirm-email" name="confirm-email" type="text" class="form-input"
+									<input id="confirm-email"
 										v-model="confirmEmail"
-										:placeholder="getLocalizedText('Verify your email address')" />
+										name="confirm-email"
+										type="text"
+										class="form-input"
+										:placeholder="getLocalizedText('Verify your email address')">
 								</div>
-								<p id="displayConfirmEmailError" v-if="isConfirmEmailEmpty" class="validation-error">
+								<p v-if="isConfirmEmailEmpty" id="displayConfirmEmailError" class="validation-error">
 									{{ getLocalizedText('Confirm email is required.') }}
 								</p>
 							</div>
@@ -46,12 +53,12 @@
 
 <script>
 import NcButton from '@nextcloud/vue/dist/Components/Button'
-const APPLICATION_NAME = 'ecloud-accounts';
+const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'Signup',
 	components: {
-		NcButton
+		NcButton,
 	},
 	data() {
 		return {
@@ -60,28 +67,28 @@ export default {
 			confirmEmail: '',
 			isEmailEmpty: false,
 			isConfirmEmailEmpty: false,
-		};
+		}
 	},
 	methods: {
 		async submitSignupForm() {
 			try {
 				if (this.email === '') {
-					this.isEmailEmpty = true;
+					this.isEmailEmpty = true
 				} else {
-					this.isEmailEmpty = false;
+					this.isEmailEmpty = false
 				}
 
 				if (this.confirmEmail === '') {
-					this.isConfirmEmailEmpty = true;
+					this.isConfirmEmailEmpty = true
 				} else {
-					this.isConfirmEmailEmpty = false;
+					this.isConfirmEmailEmpty = false
 				}
 
 				if (!this.isEmailEmpty && !this.isConfirmEmailEmpty) {
-					console.log('No error');
+					console.log('No error')
 				}
 			} catch (error) {
-				this.showError(this.getLocalizedText('Something went wrong.'));
+				this.showError(this.getLocalizedText('Something went wrong.'))
 			}
 		},
 		getLocalizedText(text) {
@@ -91,7 +98,7 @@ export default {
 			// Implement your showError function here
 		},
 	},
-};
+}
 </script>
 <style scoped>
 /** mobile font sizes **/
