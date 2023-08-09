@@ -9,9 +9,7 @@ namespace OCA\EcloudAccounts\Controller;
 use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
-use OC_App;
 use OCA\EcloudAccounts\AppInfo\Application;
-
 
 class AccountController extends Controller {
 	protected $appName;
@@ -33,11 +31,10 @@ class AccountController extends Controller {
 	 */
 	public function index() {
 		return new TemplateResponse(
-            Application::APP_ID,
-            'signup',
-            ['appName' => Application::APP_ID],
-            TemplateResponse::RENDER_AS_GUEST
-        );
+			Application::APP_ID,
+			'signup',
+			['appName' => Application::APP_ID],
+			TemplateResponse::RENDER_AS_GUEST
+		);
 	}
-	
 }

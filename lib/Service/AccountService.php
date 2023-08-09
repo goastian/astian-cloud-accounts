@@ -26,5 +26,4 @@ class AccountService {
 		$this->userSession = $userSession;
 		$this->appManager = $appManager;
 	}
-	
 }
