@@ -37,4 +37,21 @@ class AccountController extends Controller {
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
+
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 */
+	public function createAccount() {
+		return new TemplateResponse(
+			Application::APP_ID,
+			'create-account',
+			['appName' => Application::APP_ID],
+			TemplateResponse::RENDER_AS_GUEST
+		);
+	}
+
+	
 }
