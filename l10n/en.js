@@ -41,6 +41,14 @@ OC.L10N.register(
 		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "A subscription is active in this account. Please cancel it or let it expire before deleting your account.",
 		"Loading...": "Loading...",
 		"Temporary error contacting murena.com; please try again later!": "Temporary error contacting murena.com; please try again later!",
-		"Murena Cloud 2FA": "Murena Cloud 2FA"
+		"Murena Cloud 2FA": "Murena Cloud 2FA",
+		"Request Murena Account": "Request Murena Account",
+		"Email": "Email",
+		"Enter email to receive invitation": "Enter email to receive invitation",
+		"Email is required.": "Email is required.",
+		"Confirm email": "Confirm email",
+		"Verify your email address": "Verify your email address",
+		"Confirm email is required.": "Confirm email is required.",
+		"Request Invitation": "Request Invitation"
 	},
 	"nplurals=2; plural=(n != 1);");

@@ -39,6 +39,14 @@ OC.L10N.register(
 		"A subscription is active in this account. Please cancel it or let it expire before deleting your account.": "Un abonnement est actif dans ce compte. Veuillez l'annuler ou le laisser expirer avant de supprimer votre compte.",
 		"Loading...": "Chargement...",
 		"Temporary error contacting murena.com; please try again later!": "Erreur temporaire en contactant murena.com ; veuillez réessayer plus tard !",
-		"Murena Cloud 2FA": "Authentification à 2 facteurs Murena Cloud"
+		"Murena Cloud 2FA": "Authentification à 2 facteurs Murena Cloud",
+		"Request Murena Account": "Création d'un compte Murena",
+		"Email": "Email",
+		"Enter email to receive invitation": "Saisissez votre adresse e-mail pour recevoir l'invitation",
+		"Email is required.": "L'adresse électronique est requise.",
+		"Confirm email": "Confirmez votre email",
+		"Verify your email address": "Confirmez votre adresse e-mail",
+		"Confirm email is required.": "Confirmer l'email est nécessaire.",
+		"Request Invitation": "Demander une invitation"
 	},
 	"nplurals=2; plural=(n != 1);");
