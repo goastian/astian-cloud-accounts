@@ -13,6 +13,7 @@ use OCP\User\Events\BeforeUserDeletedEvent;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCA\EcloudAccounts\Service\UserService;
+use OCA\EcloudAccounts\Exception\DeletingUserWithActiveSubscriptionException;
 
 class BeforeUserDeletedListener implements IEventListener {
 	private $logger;
@@ -38,6 +39,10 @@ class BeforeUserDeletedListener implements IEventListener {
 		$user = $event->getUser();
 		$email = $user->getEMailAddress();
 		$uid = $user->getUID();
+
+		// Handle shop accounts first; none of the other things should happen before the active subscription check
+		$this->handleShopAccounts($uid, $email);
+
 		$isUserOnLDAP = $this->LDAPConnectionService->isUserOnLDAPBackend($user);
 
 		$this->logger->info("PostDelete user {user}", array('user' => $uid));
@@ -58,12 +63,22 @@ class BeforeUserDeletedListener implements IEventListener {
 		} catch (Exception $e) {
 			$this->logger->error('Error deleting aliases for user '. $uid . ' :' . $e->getMessage());
 		}
+	}
 
+	private function handleShopAccounts(string $uid, string $email) {
 		$deleteShopAccount = $this->shopAccountService->getShopDeletePreference($uid);
 		$shopUsers = $this->shopAccountService->getUsers($email);
 
 		if (!empty($shopUsers)) {
 			foreach ($shopUsers as $shopUser) {
+				if ($shopUser['has_active_subscription']) {
+					throw new DeletingUserWithActiveSubscriptionException('Cannot delete user ' . $uid . ' as an active subscription exists');
+				}
+
+				if (!isset($shopUser['id'])) {
+					continue;
+				}
+
 				if ($deleteShopAccount) {
 					$this->shopAccountService->deleteUser($shopUser['shop_url'], $shopUser['id']);
 				} else {
