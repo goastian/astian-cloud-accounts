@@ -25,4 +25,5 @@ return ['routes' => [
 		'url' => '/issue/submit', 'verb' => 'POST'
 	],
 	['name' => 'account#index', 'url' => '/account/signup', 'verb' => 'GET'],
+	['name' => 'account#create_account', 'url' => '/account/create-account', 'verb' => 'GET'],
 ]];
