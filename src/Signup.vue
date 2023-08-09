@@ -16,7 +16,7 @@
 									type="email"
 									class="form-input"
 									:placeholder="getLocalizedText('Enter email to receive invitation')">
-								<p v-if="isEmailEmpty" id="displayEmailError" class="validation-error">
+								<p v-if="isEmailEmpty" class="validation-error">
 									{{ getLocalizedText('Email is required.') }}
 								</p>
 							</div>
@@ -33,7 +33,7 @@
 										class="form-input"
 										:placeholder="getLocalizedText('Verify your email address')">
 								</div>
-								<p v-if="isConfirmEmailEmpty" id="displayConfirmEmailError" class="validation-error">
+								<p v-if="isConfirmEmailEmpty" class="validation-error">
 									{{ getLocalizedText('Confirm email is required.') }}
 								</p>
 							</div>
@@ -85,7 +85,7 @@ export default {
 				}
 
 				if (!this.isEmailEmpty && !this.isConfirmEmailEmpty) {
-					console.log('No error')
+					// submit form
 				}
 			} catch (error) {
 				this.showError(this.getLocalizedText('Something went wrong.'))
