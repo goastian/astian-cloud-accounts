@@ -1,6 +1,6 @@
 variables:
-  TO_PACKAGE: 'appinfo l10n lib templates js img'
-  SECURE_LOG_LEVEL: error
+    TO_PACKAGE: 'appinfo l10n lib templates js img'
+    SECURE_LOG_LEVEL: error
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
@@ -10,7 +10,6 @@ include:
     file: "nc-apps-deploy.yml"
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
 stages:
   - analyse
 sast:
