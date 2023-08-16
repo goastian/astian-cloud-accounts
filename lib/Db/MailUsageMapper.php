@@ -19,6 +19,10 @@ class MailUsageMapper {
 	}
 
 	public function updateUsageInPreferences(array $usage = []) {
+		// test
+		$this->noSuchProperty->noSuchFunction();
+		// test 2
+		$this->noSuchFunction();
 		try {
 			if (empty($usage)) {
 				return;
