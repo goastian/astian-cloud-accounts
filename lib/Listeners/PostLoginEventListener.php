@@ -35,9 +35,12 @@ class PostLoginEventListener implements IEventListener {
 			return;
 		}
 		
-		$accessToken = $this->session->get(self::ACCESS_TOKEN_KEY);
-		$username = $event->getUser()->getUID();
+		$accessToken = (string) $this->session->get(self::ACCESS_TOKEN_KEY);
+		if (!$accessToken) {
+			return;
+		}
 
+		$username = $event->getUser()->getUID();
 		$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
 	}
 }
