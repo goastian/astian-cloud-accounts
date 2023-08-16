@@ -1,5 +1,5 @@
 variables:
-    TO_PACKAGE: 'appinfo l10n lib templates js img'
+  TO_PACKAGE: 'appinfo l10n lib templates js img'
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
@@ -9,3 +9,7 @@ include:
     file: "nc-apps-deploy.yml"
   - template: Jobs/SAST.gitlab-ci.yml
 
+stages:
+  - analyse
+sast:
+  - stage: analyse
