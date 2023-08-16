@@ -20,6 +20,8 @@ class MailUsageMapper {
 
 	public function updateUsageInPreferences(array $usage = []) {
 		// test
+		$xyz = [1];
+		echo $xyz[4]->newProperty;
 		$this->noSuchProperty->noSuchFunction();
 		// test 2
 		$this->noSuchFunction();
