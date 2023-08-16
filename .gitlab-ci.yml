@@ -10,7 +10,4 @@ include:
     file: "nc-apps-deploy.yml"
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-stages:
-  - analyse
-sast:
-  - stage: analyse
+
