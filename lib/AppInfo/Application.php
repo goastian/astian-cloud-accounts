@@ -55,7 +55,6 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		$context->registerEventListener(AccessTokenUpdatedEvent::class, AccessTokenUpdatedListener::class);
-		$context->registerEventListener(PostLoginEvent::class, PostLoginEventListener::class, 10);
 	}
 
 	public function boot(IBootContext $context): void {
