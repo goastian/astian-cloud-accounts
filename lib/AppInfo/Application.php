@@ -40,8 +40,6 @@ use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\IUserManager;
 use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
 use OCA\EcloudAccounts\Listeners\AccessTokenUpdatedListener;
-use OCP\User\Events\PostLoginEvent;
-use OCA\EcloudAccounts\Listeners\PostLoginEventListener;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
