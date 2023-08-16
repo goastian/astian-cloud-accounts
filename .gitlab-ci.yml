@@ -7,3 +7,5 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "nc-apps-deploy.yml"
+  - template: Jobs/SAST.gitlab-ci.yml
+
