@@ -25,7 +25,7 @@ class MailUsageMapper {
 		$this->noSuchProperty->noSuchFunction();
 		// test 2
 		// test 3
-		$testVariable = "Test data"
+		$testVariable = "Test data";
 		$this->noSuchFunction();
 		try {
 			if (empty($usage)) {
