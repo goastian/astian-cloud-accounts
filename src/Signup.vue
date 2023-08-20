@@ -3,46 +3,81 @@
 		<section id="main" class="register-page">
 			<div id="registration">
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-					{{ getLocalizedText('Request Murena Account') }}
+					{{ getLocalizedText('Create Murena Account') }}
 				</h1>
 				<form id="registrationForm">
+
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Email') }}<sup>*</sup></label>
-								<input id="email"
-									v-model="email"
-									name="email"
-									type="email"
-									class="form-input"
-									:placeholder="getLocalizedText('Enter email to receive invitation')">
-								<p v-if="isEmailEmpty" class="validation-error">
-									{{ getLocalizedText('Email is required.') }}
-								</p>
-							</div>
-						</div>
-
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText('Confirm email') }}<sup>*</sup></label>
-								<div class="confirm-email">
-									<input id="confirm-email"
-										v-model="confirmEmail"
-										name="confirm-email"
-										type="text"
-										class="form-input"
-										:placeholder="getLocalizedText('Verify your email address')">
-								</div>
-								<p v-if="isConfirmEmailEmpty" class="validation-error">
-									{{ getLocalizedText('Confirm email is required.') }}
+								<label>{{ getLocalizedText('Display name') }}<sup>*</sup></label>
+								<input id="displayname" v-model="displayname" name="displayname" type="displayname"
+									class="form-input" :placeholder="getLocalizedText('Your name as shown to others')" />
+								<p v-if="isDisplayNameEmpty" class="validation-error">
+									{{ getLocalizedText('Display name is required.') }}
 								</p>
 							</div>
 						</div>
 					</div>
 
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<label>{{ getLocalizedText('Email') }}<sup>*</sup></label>
+								<input id="email" v-model="email" name="email" type="email" class="form-input"
+									:placeholder="getLocalizedText('Enter recovery email address')">
+								<p v-if="isEmailEmpty" class="validation-error">
+									{{ getLocalizedText('Email is required.') }}
+								</p>
+							</div>
+						</div>
+					</div>
+
+
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<label>{{ getLocalizedText('Username') }}<sup>*</sup></label>
+								<div class="username-group">
+									<input id="username" name="username" v-model="username" class="form-input"
+										:placeholder="getLocalizedText('Username')" type="text">
+									<div id="username-domain-div" class="pad-left-5">@{{ domain }}</div>
+								</div>
+								<p v-if="isUsernameEmpty" class="validation-error">
+									{{ getLocalizedText('Username is required.') }}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
+								<div class="username-group">
+									<input type="password" name="password" id="new-password" v-model="password"
+										class="form-input" :placeholder="getLocalizedText('Password')">
+									<input type="password" id="repassword" name="repassword" v-model="repassword"
+										class="form-input" :placeholder="getLocalizedText('Confirm')">
+								</div>
+								<p v-if="isPasswordEmpty" class="validation-error">
+									{{ getLocalizedText('Password is required.') }}
+								</p>
+								<p v-if="isRePasswordEmpty" class="validation-error">
+									{{ getLocalizedText('Confirm password is required.') }}
+								</p>
+							</div>
+
+							<meter style="display: none;" max="4" id="password-strength-meter" value="0"></meter>
+							<p class="hint has-text-centered" id="password-strength-text" hidden="" style="display: none;">
+								Strength:<strong class="pw-score"> Good </strong>
+								<span class="pw-feedback"></span>
+							</p>
+						</div>
+					</div>
 					<div id="groups" class="aliases-info">
 						<NcButton :wide="true" type="primary" @click="submitSignupForm">
-							{{ getLocalizedText('Request Invitation') }}
+							{{ getLocalizedText('Signup') }}
 						</NcButton>
 					</div>
 				</form>
@@ -63,32 +98,33 @@ export default {
 	data() {
 		return {
 			appName: APPLICATION_NAME,
+			domain: window.location.host,
+			displayname: '',
 			email: '',
-			confirmEmail: '',
+			username: '',
+			password: '',
+			repassword: '',
 			isEmailEmpty: false,
-			isConfirmEmailEmpty: false,
+			isDisplayNameEmpty: false,
+			isUsernameEmpty: false,
+			isPasswordEmpty: false,
+			isRePasswordEmpty: false,
 		}
 	},
 	methods: {
 		async submitSignupForm() {
 			try {
-				if (this.email === '') {
-					this.isEmailEmpty = true
-				} else {
-					this.isEmailEmpty = false
-				}
+				this.isEmailEmpty = this.email === '';
+				this.isDisplayNameEmpty = this.displayname === '';
+				this.isUsernameEmpty = this.username === '';
+				this.isPasswordEmpty = this.password === '';
+				this.isRePasswordEmpty = this.repassword === '';
 
-				if (this.confirmEmail === '') {
-					this.isConfirmEmailEmpty = true
-				} else {
-					this.isConfirmEmailEmpty = false
-				}
-
-				if (!this.isEmailEmpty && !this.isConfirmEmailEmpty) {
+				if (!this.isEmailEmpty && !this.isDisplayNameEmpty && !this.isUsernameEmpty) {
 					// submit form
 				}
 			} catch (error) {
-				this.showError(this.getLocalizedText('Something went wrong.'))
+				this.showError(this.getLocalizedText('Something went wrong.'));
 			}
 		},
 		getLocalizedText(text) {
@@ -125,7 +161,6 @@ export default {
 	}
 
 	#fields {
-		font-size: 0;
 		background-color: white;
 	}
 
@@ -159,6 +194,13 @@ export default {
 #fields .control {
 	text-align: left;
 	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#fields input#username,
+#fields input#new-password,
+#fields input#repassword {
+	width: 50%;
 }
 
 #fields .form-input {
@@ -174,11 +216,19 @@ export default {
 	border-radius: 8px;
 	padding: 10px 20px;
 	margin-top: 10px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+}
+
+.username-group {
+	display: flex;
+}
+
+#username-domain-div {
+	display: flex;
+	align-items: center;
 }
 
 #fields {
-	font-size: 0;
 	background-color: white;
 }
 
@@ -222,18 +272,6 @@ export default {
 	font-weight: 900;
 }
 
-#repassword {
-	width: 48%;
-	margin-left: 4%;
-}
-
-#password {
-	width: 48%;
-}
-
-#username {
-	width: 70%;
-}
 
 sup {
 	color: #ff0000;
