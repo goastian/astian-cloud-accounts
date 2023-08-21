@@ -10,8 +10,12 @@
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Display name') }}<sup>*</sup></label>
-								<input id="displayname" v-model="displayname" name="displayname" type="displayname"
-									class="form-input" :placeholder="getLocalizedText('Your name as shown to others')">
+								<input id="displayname"
+									v-model="displayname"
+									name="displayname"
+									type="displayname"
+									class="form-input"
+									:placeholder="getLocalizedText('Your name as shown to others')">
 								<p v-if="isDisplayNameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
@@ -23,7 +27,11 @@
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Email') }}<sup>*</sup></label>
-								<input id="email" v-model="email" name="email" type="email" class="form-input"
+								<input id="email"
+									v-model="email"
+									name="email"
+									type="email"
+									class="form-input"
 									:placeholder="getLocalizedText('Enter recovery email address')">
 								<p v-if="isEmailEmpty" class="validation-error">
 									{{ getLocalizedText('Email is required.') }}
@@ -37,8 +45,12 @@
 							<div class="control">
 								<label>{{ getLocalizedText('Username') }}<sup>*</sup></label>
 								<div class="username-group">
-									<input id="username" v-model="username" name="username" class="form-input"
-										:placeholder="getLocalizedText('Username')" type="text">
+									<input id="username"
+										v-model="username"
+										name="username"
+										class="form-input"
+										:placeholder="getLocalizedText('Username')"
+										type="text">
 									<div id="username-domain-div" class="pad-left-5">
 										@{{ domain }}
 									</div>
@@ -55,10 +67,18 @@
 							<div class="control">
 								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
 								<div class="username-group">
-									<input id="new-password" v-model="password" type="password" name="password"
-										class="form-input" :placeholder="getLocalizedText('Password')">
-									<input id="repassword" v-model="repassword" type="password" name="repassword"
-										class="form-input" :placeholder="getLocalizedText('Confirm')">
+									<input id="new-password"
+										v-model="password"
+										type="password"
+										name="password"
+										class="form-input"
+										:placeholder="getLocalizedText('Password')">
+									<input id="repassword"
+										v-model="repassword"
+										type="password"
+										name="repassword"
+										class="form-input"
+										:placeholder="getLocalizedText('Confirm')">
 								</div>
 								<p v-if="isPasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Password is required.') }}
@@ -69,20 +89,25 @@
 								<p v-if="!isPasswordEmpty && !isRePasswordEmpty && isRePasswordMatched" class="validation-error">
 									{{ getLocalizedText('The confirm password does not match the password.') }}
 								</p>
-
 							</div>
 
-							<meter id="password-strength-meter" style="display: none;" max="4" value="0" />
-							<p id="password-strength-text" class="hint has-text-centered" hidden="" style="display: none;">
+							<meter id="password-strength-meter"
+								style="display: none;"
+								max="4"
+								value="0" />
+							<p id="password-strength-text"
+								class="hint has-text-centered"
+								hidden=""
+								style="display: none;">
 								Strength:<strong class="pw-score"> Good </strong>
 								<span class="pw-feedback" />
 							</p>
 						</div>
 					</div>
 					<div id="groups" class="aliases-info">
-						<NcButton :wide="true" type="primary" @click="submitSignupForm">
+						<button :wide="true" type="primary" @click="submitSignupForm">
 							{{ getLocalizedText('Signup') }}
-						</NcButton>
+						</button>
 					</div>
 				</form>
 			</div>
@@ -91,7 +116,6 @@
 </template>
 
 <script>
-import NcButton from '@nextcloud/vue/dist/Components/Button'
 import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
@@ -99,9 +123,6 @@ const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'Signup',
-	components: {
-		NcButton,
-	},
 	data() {
 		return {
 			appName: APPLICATION_NAME,
@@ -116,7 +137,7 @@ export default {
 			isUsernameEmpty: false,
 			isPasswordEmpty: false,
 			isRePasswordEmpty: false,
-			isRePasswordMatched: false
+			isRePasswordMatched: false,
 		}
 	},
 	methods: {
@@ -137,12 +158,11 @@ export default {
 						displayname: this.displayname,
 						email: this.email,
 						username: this.username,
-						password: this.password
+						password: this.password,
 					})
 					showSuccess(t(this.appName, 'Congratulations! You\'ve successfully created Murena account.'))
 				}
 			} catch (error) {
-				console.log(error)
 				showError(this.getLocalizedText('Something went wrong.'))
 			}
 		},
