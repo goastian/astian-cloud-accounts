@@ -6,13 +6,12 @@
 					{{ getLocalizedText('Create Murena Account') }}
 				</h1>
 				<form id="registrationForm">
-
 					<div id="fields">
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Display name') }}<sup>*</sup></label>
 								<input id="displayname" v-model="displayname" name="displayname" type="displayname"
-									class="form-input" :placeholder="getLocalizedText('Your name as shown to others')" />
+									class="form-input" :placeholder="getLocalizedText('Your name as shown to others')">
 								<p v-if="isDisplayNameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
@@ -33,15 +32,16 @@
 						</div>
 					</div>
 
-
 					<div id="fields">
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Username') }}<sup>*</sup></label>
 								<div class="username-group">
-									<input id="username" name="username" v-model="username" class="form-input"
+									<input id="username" v-model="username" name="username" class="form-input"
 										:placeholder="getLocalizedText('Username')" type="text">
-									<div id="username-domain-div" class="pad-left-5">@{{ domain }}</div>
+									<div id="username-domain-div" class="pad-left-5">
+										@{{ domain }}
+									</div>
 								</div>
 								<p v-if="isUsernameEmpty" class="validation-error">
 									{{ getLocalizedText('Username is required.') }}
@@ -55,9 +55,9 @@
 							<div class="control">
 								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
 								<div class="username-group">
-									<input type="password" name="password" id="new-password" v-model="password"
+									<input id="new-password" v-model="password" type="password" name="password"
 										class="form-input" :placeholder="getLocalizedText('Password')">
-									<input type="password" id="repassword" name="repassword" v-model="repassword"
+									<input id="repassword" v-model="repassword" type="password" name="repassword"
 										class="form-input" :placeholder="getLocalizedText('Confirm')">
 								</div>
 								<p v-if="isPasswordEmpty" class="validation-error">
@@ -66,12 +66,16 @@
 								<p v-if="isRePasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Confirm password is required.') }}
 								</p>
+								<p v-if="!isPasswordEmpty && !isRePasswordEmpty && isRePasswordMatched" class="validation-error">
+									{{ getLocalizedText('The confirm password does not match the password.') }}
+								</p>
+
 							</div>
 
-							<meter style="display: none;" max="4" id="password-strength-meter" value="0"></meter>
-							<p class="hint has-text-centered" id="password-strength-text" hidden="" style="display: none;">
+							<meter id="password-strength-meter" style="display: none;" max="4" value="0" />
+							<p id="password-strength-text" class="hint has-text-centered" hidden="" style="display: none;">
 								Strength:<strong class="pw-score"> Good </strong>
-								<span class="pw-feedback"></span>
+								<span class="pw-feedback" />
 							</p>
 						</div>
 					</div>
@@ -88,6 +92,9 @@
 
 <script>
 import NcButton from '@nextcloud/vue/dist/Components/Button'
+import Axios from '@nextcloud/axios'
+import { showSuccess, showError } from '@nextcloud/dialogs'
+import { generateUrl } from '@nextcloud/router'
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
@@ -109,29 +116,38 @@ export default {
 			isUsernameEmpty: false,
 			isPasswordEmpty: false,
 			isRePasswordEmpty: false,
+			isRePasswordMatched: false
 		}
 	},
 	methods: {
 		async submitSignupForm() {
 			try {
-				this.isEmailEmpty = this.email === '';
-				this.isDisplayNameEmpty = this.displayname === '';
-				this.isUsernameEmpty = this.username === '';
-				this.isPasswordEmpty = this.password === '';
-				this.isRePasswordEmpty = this.repassword === '';
+				this.isEmailEmpty = this.email === ''
+				this.isDisplayNameEmpty = this.displayname === ''
+				this.isUsernameEmpty = this.username === ''
+				this.isPasswordEmpty = this.password === ''
+				this.isRePasswordEmpty = this.repassword === ''
+				this.isRePasswordMatched = this.repassword !== this.password
 
-				if (!this.isEmailEmpty && !this.isDisplayNameEmpty && !this.isUsernameEmpty) {
-					// submit form
+				if (!this.isEmailEmpty && !this.isDisplayNameEmpty && !this.isUsernameEmpty && !this.isPasswordEmpty && !this.isRePasswordEmpty && !this.isRePasswordMatched) {
+					const url = generateUrl(
+						`/apps/${this.appName}/account/create`
+					)
+					await Axios.post(url, {
+						displayname: this.displayname,
+						email: this.email,
+						username: this.username,
+						password: this.password
+					})
+					showSuccess(t(this.appName, 'Congratulations! You\'ve successfully created Murena account.'))
 				}
 			} catch (error) {
-				this.showError(this.getLocalizedText('Something went wrong.'));
+				console.log(error)
+				showError(this.getLocalizedText('Something went wrong.'))
 			}
 		},
 		getLocalizedText(text) {
 			return t(this.appName, text)
-		},
-		showError(message) {
-			// Implement your showError function here
 		},
 	},
 }
@@ -271,7 +287,6 @@ export default {
 	font-size: 16px;
 	font-weight: 900;
 }
-
 
 sup {
 	color: #ff0000;
