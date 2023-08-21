@@ -20,7 +20,7 @@ class LDAPConnectionService {
 	private $access;
 	private $ldapConfig;
 
-	public function __construct(IUserManager $userManager,Helper $ldapBackendHelper) {
+	public function __construct(IUserManager $userManager, Helper $ldapBackendHelper) {
 		$this->userManager = $userManager;
 		$this->getConfigurationFromBackend();
 		$ldapConfigPrefixes = $ldapBackendHelper->getServerConfigurationPrefixes(true);
@@ -102,7 +102,7 @@ class LDAPConnectionService {
 
 	public function getLDAPBaseUsers(): array {
 		$bases = $this->ldapConfig->ldapBaseUsers;
-		if(empty($bases)) {
+		if (empty($bases)) {
 			$bases = $this->ldapConfig->ldapBase;
 		}
 		return $bases;

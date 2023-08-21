@@ -11,15 +11,13 @@ use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
-use OCA\EcloudAccounts\Service\AccountService;
 use OCP\ISession;
 use Psr\Log\LoggerInterface;
 use OCA\LdapWriteSupport\Service\Configuration;
 use OCP\LDAP\ILDAPProvider;
 use Exception;
 
-class AccountController extends Controller
-{
+class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	// private ISession $session;
@@ -41,7 +39,7 @@ class AccountController extends Controller
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
-		// $this->session = $session; 
+		// $this->session = $session;
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$this->ldapProvider = $LDAPProvider;
 		$this->configuration = $configuration;
@@ -54,8 +52,7 @@ class AccountController extends Controller
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function index()
-	{
+	public function index() {
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
@@ -69,8 +66,7 @@ class AccountController extends Controller
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email, string $username, string $password)
-	{
+	public function create(string $displayname, string $email, string $username, string $password) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		// $base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		// $displayNameAttribute = $this->LDAPConnectionService->getDisplayNameAttribute();
@@ -119,8 +115,7 @@ class AccountController extends Controller
 		}
 		return $ret ? $newUserDN : false;
 	}
-	public function buildNewEntry($username, $password, $base): array
-	{
+	public function buildNewEntry($username, $password, $base): array {
 		// Make sure the parameters don't fool the following algorithm
 		if (strpos($username, PHP_EOL) !== false) {
 			throw new Exception('Username contains a new line');
@@ -146,7 +141,7 @@ class AccountController extends Controller
 			$value = trim($split[1]);
 			if (!isset($entry[$key])) {
 				$entry[$key] = $value;
-			} else if (is_array($entry[$key])) {
+			} elseif (is_array($entry[$key])) {
 				$entry[$key][] = $value;
 			} else {
 				$entry[$key] = [$entry[$key], $value];
@@ -157,8 +152,7 @@ class AccountController extends Controller
 
 		return [$dn, $entry];
 	}
-	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void
-	{
+	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void {
 		$lowerCasedLDIF = array_change_key_case($ldif, CASE_LOWER);
 		if (!isset($lowerCasedLDIF[strtolower($attribute)])) {
 			$ldif[$attribute] = $fallbackValue;
