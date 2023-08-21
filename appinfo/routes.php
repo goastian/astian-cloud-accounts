@@ -25,5 +25,6 @@ return ['routes' => [
 		'url' => '/issue/submit', 'verb' => 'POST'
 	],
 	['name' => 'account#index', 'url' => '/account/signup', 'verb' => 'GET'],
+	['name' => 'account#create', 'url' => '/account/create', 'verb' => 'POST'],
 	// ['name' => 'account#recaptcha', 'url' => '/account/recaptcha', 'verb' => 'GET'],
 ]];

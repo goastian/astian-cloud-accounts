@@ -6,6 +6,8 @@ namespace OCA\EcloudAccounts\Service;
 
 use Exception;
 use OCP\IUserManager;
+use OCA\User_LDAP\Configuration;
+use OCA\User_LDAP\Helper;
 
 class LDAPConnectionService {
 	/** @var IUserManager */
@@ -16,10 +18,14 @@ class LDAPConnectionService {
 	private $ldapEnabled;
 
 	private $access;
+	private $ldapConfig;
 
-	public function __construct(IUserManager $userManager) {
+	public function __construct(IUserManager $userManager,Helper $ldapBackendHelper) {
 		$this->userManager = $userManager;
 		$this->getConfigurationFromBackend();
+		$ldapConfigPrefixes = $ldapBackendHelper->getServerConfigurationPrefixes(true);
+		$prefix = array_shift($ldapConfigPrefixes);
+		$this->ldapConfig = new Configuration($prefix);
 	}
 
 
@@ -92,5 +98,16 @@ class LDAPConnectionService {
 			throw new Exception('Access not defined!');
 		}
 		return $this->access;
+	}
+
+	public function getLDAPBaseUsers(): array {
+		$bases = $this->ldapConfig->ldapBaseUsers;
+		if(empty($bases)) {
+			$bases = $this->ldapConfig->ldapBase;
+		}
+		return $bases;
+	}
+	public function getDisplayNameAttribute(): string {
+		return $this->ldapConfig->ldapUserDisplayName;
 	}
 }

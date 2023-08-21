@@ -10,23 +10,42 @@ use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCA\EcloudAccounts\Service\AccountService;
 use OCP\ISession;
+use Psr\Log\LoggerInterface;
+use OCA\LdapWriteSupport\Service\Configuration;
+use OCP\LDAP\ILDAPProvider;
+use Exception;
 
 class AccountController extends Controller
 {
 	protected $appName;
 	protected $request;
 	// private ISession $session;
+	private $LDAPConnectionService;
+	private $logger;
+	private $configuration;
+	private $ldapProvider;
+	private $ldapConnect;
 
 
 	public function __construct(
 		$AppName,
 		IRequest $request,
-		ISession $session
+		// ISession $session,
+		LDAPConnectionService $LDAPConnectionService,
+		LoggerInterface $logger,
+		ILDAPProvider $LDAPProvider,
+		Configuration $configuration
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		// $this->session = $session; 
+		$this->LDAPConnectionService = $LDAPConnectionService;
+		$this->ldapProvider = $LDAPProvider;
+		$this->configuration = $configuration;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -43,6 +62,107 @@ class AccountController extends Controller
 			['appName' => Application::APP_ID],
 			TemplateResponse::RENDER_AS_GUEST
 		);
+	}
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 */
+	public function create(string $displayname, string $email, string $username, string $password)
+	{
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		// $base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+		// $displayNameAttribute = $this->LDAPConnectionService->getDisplayNameAttribute();
+		$base = '';
+		[$newUserDN, $newUserEntry] = $this->buildNewEntry($username, $password, $base);
+		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
+		// $this->ensureAttribute($newUserEntry, $displayNameAttribute, $username);
+
+		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+
+		$message = 'Create LDAP user \'{username}\' ({dn})';
+		$logMethod = 'info';
+		if ($ret === false) {
+			$message = 'Unable to create LDAP user \'{username}\' ({dn})';
+			$logMethod = 'error';
+		}
+		$this->logger->$logMethod($message, [
+			'app' => Application::APP_ID,
+			'username' => $username,
+			'dn' => $newUserDN,
+		]);
+
+		if (!$ret && $this->configuration->isPreventFallback()) {
+			throw new \Exception('Cannot create user: ' . ldap_error($connection), ldap_errno($connection));
+		}
+
+		// Set password through ldap password exop, if supported
+		try {
+			$ret = ldap_exop_passwd($connection, $newUserDN, '', $password);
+			if ($ret === false) {
+				$message = 'ldap_exop_passwd failed, falling back to ldap_mod_replace to to set password for new user';
+				$this->logger->debug($message, ['app' => Application::APP_ID]);
+
+				// Fallback to `userPassword` in case the server does not support exop_passwd
+				$ret = ldap_mod_replace($connection, $newUserDN, ['userPassword' => $password]);
+				if ($ret === false) {
+					$message = 'Failed to set password for new user {dn}';
+					$this->logger->error($message, [
+						'app' => Application::APP_ID,
+						'dn' => $newUserDN,
+					]);
+				}
+			}
+		} catch (\Exception $e) {
+			$this->logger->error($e->getMessage(), ['exception' => $e, 'app' => Application::APP_ID]);
+		}
+		return $ret ? $newUserDN : false;
+	}
+	public function buildNewEntry($username, $password, $base): array
+	{
+		// Make sure the parameters don't fool the following algorithm
+		if (strpos($username, PHP_EOL) !== false) {
+			throw new Exception('Username contains a new line');
+		}
+		if (strpos($password, PHP_EOL) !== false) {
+			throw new Exception('Password contains a new line');
+		}
+		if (strpos($base, PHP_EOL) !== false) {
+			throw new Exception('Base DN contains a new line');
+		}
+
+		$ldif = $this->configuration->getUserTemplate();
+
+		$ldif = str_replace('{UID}', $username, $ldif);
+		$ldif = str_replace('{PWD}', $password, $ldif);
+		$ldif = str_replace('{BASE}', $base, $ldif);
+
+		$entry = [];
+		$lines = explode(PHP_EOL, $ldif);
+		foreach ($lines as $line) {
+			$split = explode(':', $line, 2);
+			$key = trim($split[0]);
+			$value = trim($split[1]);
+			if (!isset($entry[$key])) {
+				$entry[$key] = $value;
+			} else if (is_array($entry[$key])) {
+				$entry[$key][] = $value;
+			} else {
+				$entry[$key] = [$entry[$key], $value];
+			}
+		}
+		$dn = $entry['dn'];
+		unset($entry['dn']);
+
+		return [$dn, $entry];
+	}
+	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void
+	{
+		$lowerCasedLDIF = array_change_key_case($ldif, CASE_LOWER);
+		if (!isset($lowerCasedLDIF[strtolower($attribute)])) {
+			$ldif[$attribute] = $fallbackValue;
+		}
 	}
 
 	/**
