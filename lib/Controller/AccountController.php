@@ -72,48 +72,49 @@ class AccountController extends Controller {
 		// $displayNameAttribute = $this->LDAPConnectionService->getDisplayNameAttribute();
 		
 		[$newUserDN, $newUserEntry] = $this->buildNewEntry($username, $password, $base);
-		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
-		// $this->ensureAttribute($newUserEntry, $displayNameAttribute, $username);
 
-		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+		// $newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
+		// // $this->ensureAttribute($newUserEntry, $displayNameAttribute, $username);
 
-		$message = 'Create LDAP user \'{username}\' ({dn})';
-		$logMethod = 'info';
-		if ($ret === false) {
-			$message = 'Unable to create LDAP user \'{username}\' ({dn})';
-			$logMethod = 'error';
-		}
-		$this->logger->$logMethod($message, [
-			'app' => Application::APP_ID,
-			'username' => $username,
-			'dn' => $newUserDN,
-		]);
+		// $ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
-		if (!$ret && $this->configuration->isPreventFallback()) {
-			throw new \Exception('Cannot create user: ' . ldap_error($connection), ldap_errno($connection));
-		}
+		// $message = 'Create LDAP user \'{username}\' ({dn})';
+		// $logMethod = 'info';
+		// if ($ret === false) {
+		// 	$message = 'Unable to create LDAP user \'{username}\' ({dn})';
+		// 	$logMethod = 'error';
+		// }
+		// $this->logger->$logMethod($message, [
+		// 	'app' => Application::APP_ID,
+		// 	'username' => $username,
+		// 	'dn' => $newUserDN,
+		// ]);
 
-		// Set password through ldap password exop, if supported
-		try {
-			$ret = ldap_exop_passwd($connection, $newUserDN, '', $password);
-			if ($ret === false) {
-				$message = 'ldap_exop_passwd failed, falling back to ldap_mod_replace to to set password for new user';
-				$this->logger->debug($message, ['app' => Application::APP_ID]);
+		// if (!$ret && $this->configuration->isPreventFallback()) {
+		// 	throw new \Exception('Cannot create user: ' . ldap_error($connection), ldap_errno($connection));
+		// }
 
-				// Fallback to `userPassword` in case the server does not support exop_passwd
-				$ret = ldap_mod_replace($connection, $newUserDN, ['userPassword' => $password]);
-				if ($ret === false) {
-					$message = 'Failed to set password for new user {dn}';
-					$this->logger->error($message, [
-						'app' => Application::APP_ID,
-						'dn' => $newUserDN,
-					]);
-				}
-			}
-		} catch (\Exception $e) {
-			$this->logger->error($e->getMessage(), ['exception' => $e, 'app' => Application::APP_ID]);
-		}
-		return $ret ? $newUserDN : false;
+		// // Set password through ldap password exop, if supported
+		// try {
+		// 	$ret = ldap_exop_passwd($connection, $newUserDN, '', $password);
+		// 	if ($ret === false) {
+		// 		$message = 'ldap_exop_passwd failed, falling back to ldap_mod_replace to to set password for new user';
+		// 		$this->logger->debug($message, ['app' => Application::APP_ID]);
+
+		// 		// Fallback to `userPassword` in case the server does not support exop_passwd
+		// 		$ret = ldap_mod_replace($connection, $newUserDN, ['userPassword' => $password]);
+		// 		if ($ret === false) {
+		// 			$message = 'Failed to set password for new user {dn}';
+		// 			$this->logger->error($message, [
+		// 				'app' => Application::APP_ID,
+		// 				'dn' => $newUserDN,
+		// 			]);
+		// 		}
+		// 	}
+		// } catch (\Exception $e) {
+		// 	$this->logger->error($e->getMessage(), ['exception' => $e, 'app' => Application::APP_ID]);
+		// }
+		return [$newUserDN, $newUserEntry];
 	}
 	public function buildNewEntry($username, $password, $base): array {
 		// Make sure the parameters don't fool the following algorithm
