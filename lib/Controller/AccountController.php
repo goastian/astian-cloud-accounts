@@ -132,6 +132,7 @@ class AccountController extends Controller {
 		$ldif = str_replace('{UID}', $username, $ldif);
 		$ldif = str_replace('{PWD}', $password, $ldif);
 		$ldif = str_replace('{BASE}', $base, $ldif);
+		$ldif = str_replace('uid=', 'username=', $ldif);
 
 		$entry = [];
 		$lines = explode(PHP_EOL, $ldif);
