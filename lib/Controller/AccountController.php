@@ -68,9 +68,9 @@ class AccountController extends Controller {
 	 */
 	public function create(string $displayname, string $email, string $username, string $password) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		// $base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		// $displayNameAttribute = $this->LDAPConnectionService->getDisplayNameAttribute();
-		$base = '';
+		
 		[$newUserDN, $newUserEntry] = $this->buildNewEntry($username, $password, $base);
 		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
 		// $this->ensureAttribute($newUserEntry, $displayNameAttribute, $username);
