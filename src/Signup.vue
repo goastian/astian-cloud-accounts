@@ -5,7 +5,7 @@
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
 					{{ getLocalizedText('Create Murena Account') }}
 				</h1>
-				<form id="registrationForm">
+				<div id="registrationForm">
 					<div id="fields">
 						<div class="field">
 							<div class="control">
@@ -109,7 +109,7 @@
 							{{ getLocalizedText('Signup') }}
 						</button>
 					</div>
-				</form>
+				</div>
 			</div>
 		</section>
 	</div>
