@@ -151,7 +151,8 @@ class AccountController extends Controller {
 		}
 		$dn = $entry['dn'];
 		unset($entry['dn']);
-
+		$entry['username'] = $entry['uid'];
+		unset($entry['uid']);
 		return [$dn, $entry];
 	}
 	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void {
