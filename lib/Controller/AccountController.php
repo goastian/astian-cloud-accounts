@@ -77,7 +77,6 @@ class AccountController extends Controller {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
-		// $ldif = 'username={UID},{BASE}';
 		$newUserDN = "username=$username," . $base;
 		$newUserEntry = [
 			'mail' => $email,
@@ -86,7 +85,7 @@ class AccountController extends Controller {
 			'cn' => $username,
 			'sn' => $username,
 			'userPassword' => $password,
-			'objectclass' => 'inetOrgPerson'
+			'objectclass' => 'murenaUser'
 		];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
