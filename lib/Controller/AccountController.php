@@ -79,22 +79,17 @@ class AccountController extends Controller {
 
 		// Replace placeholders with actual values
 		// $ldif = 'username={UID},{BASE}';
-		$newUserDN = "username=$username," . $base;
+		$newUserDN = "uid=$username," . $base;
 		// $userClusterID = getenv('CLUSTER_ID');
 		$newUserEntry = [
-			'mailAddress' => $email,
-			'username' => $username,
-			'usernameWithoutDomain' => $username,
-			'userPassword' => $password,
-			'displayName' => $displayname,
-			'quota' => $this->ldapQuota,
-			'mailAlternate' => $email,
-			'recoveryMailAddress' => $email,
-			'active' => 'TRUE',
-			'mailActive' => 'TRUE',
-			// 'userClusterID' => $userClusterID,
+			'mail' => $email,
+			'uid' => $username,
+			'displayName' => $username,
+			'cn' => $username,
+			'sn' => $username,
+			'userPassword' => $password
 		];
-		$newUserEntry['objectclass'] = ['inetOrgPerson'];
+		// $newUserEntry['objectclass'] = ['inetOrgPerson'];
 		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
