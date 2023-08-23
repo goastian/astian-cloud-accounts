@@ -73,23 +73,15 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email, string $username, string $password) {
+	public function create(string $displayname, string $email, string $username, string $password, string $domain) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
 		$newUserDN = "username=$username," . $base;
-		// $newUserEntry = [
-		// 	'mail' => $email,
-		// 	'uid' => $username,
-		// 	'displayName' => $displayname,
-		// 	'cn' => $username,
-		// 	'sn' => $username,
-		// 	'userPassword' => $password,
-		// 	'objectclass' => ['murenaUser', 'simpleSecurityObject']
-		// ];
+		$HEL01 = 'HEL01';
 		$newUserEntry = [
 			'mailAddress' => $email,
-			'username' => $username,
+			'username' => $username.'@'.$domain,
 			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
 			'displayName' => $displayname,
@@ -98,7 +90,7 @@ class AccountController extends Controller {
 			'recoveryMailAddress' => $email,
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
-			'userClusterID' => 'HEL01',
+			'userClusterID' => $HEL01,
 			'objectClass' => ['murenaUser', 'simpleSecurityObject']
 		];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);

@@ -159,6 +159,7 @@ export default {
 						email: this.email,
 						username: this.username,
 						password: this.password,
+						domain: domain
 					})
 					showSuccess(t(this.appName, 'Congratulations! You\'ve successfully created Murena account.'))
 				}
