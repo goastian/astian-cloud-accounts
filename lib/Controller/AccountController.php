@@ -17,8 +17,7 @@ use OCA\LdapWriteSupport\Service\Configuration;
 use OCP\LDAP\ILDAPProvider;
 use Exception;
 
-class AccountController extends Controller
-{
+class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	// private ISession $session;
@@ -47,11 +46,11 @@ class AccountController extends Controller
 		$this->configuration = $configuration;
 		$this->logger = $logger;
 		$quota = getenv('CLOUD_QUOTA_IN_BYTES');
-        if (!$quota) {
-            $this->ldapQuota = $this->quotaInBytes;
-        } else {
-            $this->ldapQuota = intval($quota);
-        }
+		if (!$quota) {
+			$this->ldapQuota = $this->quotaInBytes;
+		} else {
+			$this->ldapQuota = intval($quota);
+		}
 	}
 
 	/**
@@ -60,8 +59,7 @@ class AccountController extends Controller
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function index()
-	{
+	public function index() {
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
@@ -75,8 +73,7 @@ class AccountController extends Controller
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email, string $username, string $password)
-	{
+	public function create(string $displayname, string $email, string $username, string $password) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
@@ -98,7 +95,7 @@ class AccountController extends Controller
 			// 'userClusterID' => $userClusterID,
 		];
 		$newUserEntry['objectclass'][0] = "murenaUser";
-  		$newUserEntry['objectclass'][1] = "simpleSecurityObject";
+		$newUserEntry['objectclass'][1] = "simpleSecurityObject";
 		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
@@ -172,8 +169,7 @@ class AccountController extends Controller
 	// // Close the LDAP connection
 	// ldap_close($ldap);
 
-	public function buildNewEntry($username, $password, $base): array
-	{
+	public function buildNewEntry($username, $password, $base): array {
 		// Make sure the parameters don't fool the following algorithm
 		if (strpos($username, PHP_EOL) !== false) {
 			throw new Exception('Username contains a new line');
@@ -219,8 +215,7 @@ class AccountController extends Controller
 
 		return [$dn, $info];
 	}
-	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void
-	{
+	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void {
 		$lowerCasedLDIF = array_change_key_case($ldif, CASE_LOWER);
 		if (!isset($lowerCasedLDIF[strtolower($attribute)])) {
 			$ldif[$attribute] = $fallbackValue;
