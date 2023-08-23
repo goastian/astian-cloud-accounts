@@ -78,14 +78,28 @@ class AccountController extends Controller {
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
 		$newUserDN = "username=$username," . $base;
+		// $newUserEntry = [
+		// 	'mail' => $email,
+		// 	'uid' => $username,
+		// 	'displayName' => $displayname,
+		// 	'cn' => $username,
+		// 	'sn' => $username,
+		// 	'userPassword' => $password,
+		// 	'objectclass' => ['murenaUser', 'simpleSecurityObject']
+		// ];
 		$newUserEntry = [
-			'mail' => $email,
-			'uid' => $username,
-			'displayName' => $displayname,
-			'cn' => $username,
-			'sn' => $username,
+			'mailAddress' => $email,
+			'username' => $username,
+			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
-			'objectclass' => ['murenaUser', 'simpleSecurityObject']
+			'displayName' => $displayname,
+			'quota' => $this->ldapQuota,
+			'mailAlternate' => $email,
+			'recoveryMailAddress' => $email,
+			'active' => 'TRUE',
+			'mailActive' => 'TRUE',
+			'userClusterID' => 'HEL01',
+			'objectClass' => ['murenaUser', 'simpleSecurityObject']
 		];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
