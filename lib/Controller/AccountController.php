@@ -77,10 +77,8 @@ class AccountController extends Controller {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
-		// Replace placeholders with actual values
 		// $ldif = 'username={UID},{BASE}';
 		$newUserDN = "username=$username," . $base;
-		// $userClusterID = getenv('CLUSTER_ID');
 		$newUserEntry = [
 			'mail' => $email,
 			'uid' => $username,
@@ -88,10 +86,8 @@ class AccountController extends Controller {
 			'cn' => $username,
 			'sn' => $username,
 			'userPassword' => $password,
-			'objectclass' => 'inetOrgPerson'
+			'objectclass' => 'murenaUser'
 		];
-		// $newUserEntry['objectclass'] = ['inetOrgPerson'];
-		// $newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
 		$message = 'Create LDAP user \'{username}\' ({dn})';
