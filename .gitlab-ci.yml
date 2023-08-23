@@ -13,6 +13,6 @@ include:
   - template: Code-Quality.gitlab-ci.yml
 
 code_quality:
-  tags:
+  tags: # For picking privileged infra-runners
     - privileged
     - infra
