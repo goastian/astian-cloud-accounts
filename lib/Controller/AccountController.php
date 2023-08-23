@@ -17,7 +17,8 @@ use OCA\LdapWriteSupport\Service\Configuration;
 use OCP\LDAP\ILDAPProvider;
 use Exception;
 
-class AccountController extends Controller {
+class AccountController extends Controller
+{
 	protected $appName;
 	protected $request;
 	// private ISession $session;
@@ -52,7 +53,8 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function index() {
+	public function index()
+	{
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
@@ -66,11 +68,12 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email, string $username, string $password) {
+	public function create(string $displayname, string $email, string $username, string $password)
+	{
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		// $displayNameAttribute = $this->LDAPConnectionService->getDisplayNameAttribute();
-		
+
 		[$newUserDN, $newUserEntry] = $this->buildNewEntry($username, $password, $base);
 
 		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
@@ -116,7 +119,40 @@ class AccountController extends Controller {
 		}
 		return [$newUserDN, $newUserEntry];
 	}
-	public function buildNewEntry($username, $password, $base): array {
+
+	// // Create a new LDAP connection
+	// $ldap = ldap_connect("ldap.example.com");
+
+	// // Bind to the LDAP server
+	// ldap_bind($ldap, "cn=admin,dc=example,dc=com", "secret");
+
+	// // Create a new LDAP user
+	// $user = array(
+	//   "cn" => "John Doe",
+	//   "sn" => "Doe",
+	//   "givenName" => "John",
+	//   "uid" => "jdoe",
+	//   "userPassword" => "secret",
+	// );
+
+	// // Add the user to the LDAP server
+	// ldap_add($ldap, "cn=John Doe,dc=example,dc=com", $user);
+
+	// // Create a new LDAP group
+	// $group = array(
+	//   "cn" => "Sales",
+	//   "objectClass" => "groupOfNames",
+	//   "member" => array("cn=John Doe,dc=example,dc=com"),
+	// );
+
+	// // Add the group to the LDAP server
+	// ldap_add($ldap, "cn=Sales,dc=example,dc=com", $group);
+
+	// // Close the LDAP connection
+	// ldap_close($ldap);
+
+	public function buildNewEntry($username, $password, $base): array
+	{
 		// Make sure the parameters don't fool the following algorithm
 		if (strpos($username, PHP_EOL) !== false) {
 			throw new Exception('Username contains a new line');
@@ -128,12 +164,16 @@ class AccountController extends Controller {
 			throw new Exception('Base DN contains a new line');
 		}
 
-		$ldif = $this->configuration->getUserTemplate();
+		$ldif = 'dn: username={UID},{BASE}' . PHP_EOL .
+			'objectClass: inetOrgPerson' . PHP_EOL .
+			'username: {UID}' . PHP_EOL .
+			'displayName: {UID}' . PHP_EOL .
+			'cn: {UID}' . PHP_EOL .
+			'sn: {UID}';
 
 		$ldif = str_replace('{UID}', $username, $ldif);
 		$ldif = str_replace('{PWD}', $password, $ldif);
 		$ldif = str_replace('{BASE}', $base, $ldif);
-		$ldif = str_replace('uid=', 'username=', $ldif);
 
 		$entry = [];
 		$lines = explode(PHP_EOL, $ldif);
@@ -155,7 +195,8 @@ class AccountController extends Controller {
 		unset($entry['uid']);
 		return [$dn, $entry];
 	}
-	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void {
+	public function ensureAttribute(array &$ldif, string $attribute, string $fallbackValue): void
+	{
 		$lowerCasedLDIF = array_change_key_case($ldif, CASE_LOWER);
 		if (!isset($lowerCasedLDIF[strtolower($attribute)])) {
 			$ldif[$attribute] = $fallbackValue;
