@@ -78,9 +78,10 @@ class AccountController extends Controller {
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
 		// Replace placeholders with actual values
-		$ldif = 'username={UID},{BASE}';
-		$ldif = str_replace('{UID}', ldap_escape($username), $ldif); // Escape username
-		$newUserDN = str_replace('{BASE}', ldap_escape($base), $ldif); // Escape base
+		// $ldif = 'username={UID},{BASE}';
+		$newUserDN = "username=$username," . $base;
+		// $ldif = str_replace('{UID}', $username, $ldif); // Escape username
+		// $newUserDN = str_replace('{BASE}', $base, $ldif); // Escape base
 
 		// $userClusterID = getenv('CLUSTER_ID');
 		$newUserEntry = [
@@ -97,7 +98,7 @@ class AccountController extends Controller {
 			// 'userClusterID' => $userClusterID,
 		];
 		$newUserEntry['objectclass'] = ['murenaUser', 'simpleSecurityObject'];
-		$newUserDN = ldap_escape($newUserDN);
+		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
 		$message = 'Create LDAP user \'{username}\' ({dn})';
