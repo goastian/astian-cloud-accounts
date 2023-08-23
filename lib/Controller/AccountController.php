@@ -88,7 +88,16 @@ class AccountController extends Controller {
 			'cn' => $username,
 			'sn' => $username,
 			'userPassword' => $password,
-			'objectclass' => 'inetOrgPerson'
+			'objectclass' => 'inetOrgPerson',
+			'mailAddress' => $email,
+			'username' => $username,
+			'usernameWithoutDomain' => $username,
+			'quota' => $this->ldapQuota,
+			'mailAlternate' => $email,
+			'recoveryMailAddress' => $email,
+			'active' => 'TRUE',
+			'mailActive' => 'TRUE',
+			// 'userClusterID' => $userClusterID,
 		];
 		// $newUserEntry['objectclass'] = ['inetOrgPerson'];
 		// $newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
