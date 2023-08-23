@@ -87,7 +87,8 @@ class AccountController extends Controller {
 			'displayName' => $username,
 			'cn' => $username,
 			'sn' => $username,
-			'userPassword' => $password
+			'userPassword' => $password,
+			'objectclass' => 'inetOrgPerson'
 		];
 		// $newUserEntry['objectclass'] = ['inetOrgPerson'];
 		// $newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
