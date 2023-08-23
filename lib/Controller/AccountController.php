@@ -84,7 +84,7 @@ class AccountController extends Controller {
 		$newUserEntry = [
 			'mail' => $email,
 			'uid' => $username,
-			'displayName' => $username,
+			'displayName' => $displayname,
 			'cn' => $username,
 			'sn' => $username,
 			'userPassword' => $password,
