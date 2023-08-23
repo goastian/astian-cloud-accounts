@@ -77,7 +77,7 @@ class AccountController extends Controller {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 
-		$newUserDN = "username=$username," . $base;
+		$newUserDN = "username=$username.'@'.$domain.','" . $base;
 		$HEL01 = 'HEL01';
 		$newUserEntry = [
 			'mailAddress' => $email,
