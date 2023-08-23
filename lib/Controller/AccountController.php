@@ -79,11 +79,11 @@ class AccountController extends Controller {
 
 		// Replace placeholders with actual values
 		// $ldif = 'username={UID},{BASE}';
-		$newUserDN = "username=$username," . $base;
+		$newUserDN = "uid=$username," . $base;
 		// $userClusterID = getenv('CLUSTER_ID');
 		$newUserEntry = [
 			'mail' => $email,
-			'username' => $username,
+			'uid' => $username,
 			'displayName' => $username,
 			'cn' => $username,
 			'sn' => $username,
