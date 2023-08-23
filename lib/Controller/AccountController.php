@@ -90,7 +90,7 @@ class AccountController extends Controller {
 			'userPassword' => $password
 		];
 		// $newUserEntry['objectclass'] = ['inetOrgPerson'];
-		$newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
+		// $newUserDN = $this->ldapProvider->sanitizeDN([$newUserDN])[0];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
 		$message = 'Create LDAP user \'{username}\' ({dn})';
