@@ -85,7 +85,7 @@ class AccountController extends Controller {
 			'cn' => $username,
 			'sn' => $username,
 			'userPassword' => $password,
-			'objectclass' => 'murenaUser'
+			'objectclass' => ['murenaUser', 'simpleSecurityObject']
 		];
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 
