@@ -263,7 +263,7 @@ section#main {
 	width: 50%;
 }
 
-#fields input, input[type="password"] {
+#fields input,#fields input[type="password"] {
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
@@ -352,10 +352,11 @@ sup {
 }
 
 .btn-primary {
-	width: 300px;
+	width: 20vw;
 	background-color: var(--color-primary);
 	color: white;
 	border-color: var(--color-primary);
+	font-size: large;
 }
 
 @media screen and (max-width: 500px) {
