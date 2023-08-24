@@ -13,7 +13,7 @@
 								<input id="displayname"
 									v-model="displayname"
 									name="displayname"
-									type="displayname"
+									type="text"
 									class="form-input"
 									:placeholder="getLocalizedText('Your name as shown to others')">
 								<p v-if="validation.isDisplayNameEmpty" class="validation-error">
@@ -67,12 +67,13 @@
 							<div class="control">
 								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
 								<div class="username-group">
-									<input id="new-password"
-										v-model="password"
+									<Password v-model="password"
+										:toggle="true"
 										type="password"
 										name="password"
 										class="form-input"
-										:placeholder="getLocalizedText('Password')">
+										:placeholder="getLocalizedText('Password')" />
+									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
 										v-model="repassword"
 										type="password"
@@ -94,10 +95,12 @@
 						</div>
 					</div>
 					<div id="groups" class="aliases-info">
-						<input type="button"
-							class="width300"
-							:value="getLocalizedText('Signup')"
+						<button :wide="true"
+							class="btn-primary"
+							type="primary"
 							@click="submitSignupForm">
+							{{ getLocalizedText('Signup') }}
+						</button>
 					</div>
 				</div>
 			</div>
@@ -109,11 +112,13 @@
 import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
+import Password from 'vue-password-strength-meter'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'Signup',
+	components: { Password },
 	data() {
 		return {
 			appName: APPLICATION_NAME,
@@ -337,8 +342,12 @@ sup {
 .validation-error {
 	color: #ff0000;
 }
-.width300{
+
+.btn-primary {
 	width: 300px;
+	background-color: var(--color-primary);
+	color: white;
+	border-color: var(--color-primary);
 }
 
 @media screen and (max-width: 500px) {
