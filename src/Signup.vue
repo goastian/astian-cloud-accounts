@@ -163,7 +163,6 @@ export default {
 				} catch (error) {
 					const errorMessage = error.response?.data?.message || this.getLocalizedText('Something went wrong.')
 					this.showMessage(errorMessage, 'error')
-					this.setAllFieldsBlank()
 				}
 			}
 		},
