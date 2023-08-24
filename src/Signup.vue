@@ -72,7 +72,7 @@
 										:badge="false"
 										type="password"
 										name="password"
-										:defaultClass="form-input"
+										:default-class="form-input"
 										:placeholder="getLocalizedText('Password')" />
 									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
@@ -260,7 +260,7 @@ export default {
 	width: 50%;
 }
 
-#fields .form-input {
+#fields input, input[type="password"] {
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
@@ -287,6 +287,10 @@ export default {
 
 #fields {
 	background-color: white;
+}
+#fields .Password{
+	max-width: unset;
+    margin: unset;
 }
 
 #fields .field {
