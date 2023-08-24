@@ -16,7 +16,7 @@
 									type="displayname"
 									class="form-input"
 									:placeholder="getLocalizedText('Your name as shown to others')">
-								<p v-if="isDisplayNameEmpty" class="validation-error">
+								<p v-if="validation.isDisplayNameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
 							</div>
@@ -33,7 +33,7 @@
 									type="email"
 									class="form-input"
 									:placeholder="getLocalizedText('Enter recovery email address')">
-								<p v-if="isEmailEmpty" class="validation-error">
+								<p v-if="validation.isEmailEmpty" class="validation-error">
 									{{ getLocalizedText('Email is required.') }}
 								</p>
 							</div>
@@ -55,7 +55,7 @@
 										@{{ domain }}
 									</div>
 								</div>
-								<p v-if="isUsernameEmpty" class="validation-error">
+								<p v-if="validation.isUsernameEmpty" class="validation-error">
 									{{ getLocalizedText('Username is required.') }}
 								</p>
 							</div>
@@ -80,28 +80,17 @@
 										class="form-input"
 										:placeholder="getLocalizedText('Confirm')">
 								</div>
-								<p v-if="isPasswordEmpty" class="validation-error">
+								<p v-if="validation.isPasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Password is required.') }}
 								</p>
-								<p v-if="isRePasswordEmpty" class="validation-error">
+								<p v-if="validation.isRePasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Confirm password is required.') }}
 								</p>
-								<p v-if="!isPasswordEmpty && !isRePasswordEmpty && isRePasswordMatched" class="validation-error">
+								<p v-if="!validation.isPasswordEmpty && !validation.isRePasswordEmpty && validation.isRePasswordMatched"
+									class="validation-error">
 									{{ getLocalizedText('The confirm password does not match the password.') }}
 								</p>
 							</div>
-
-							<meter id="password-strength-meter"
-								style="display: none;"
-								max="4"
-								value="0" />
-							<p id="password-strength-text"
-								class="hint has-text-centered"
-								hidden=""
-								style="display: none;">
-								Strength:<strong class="pw-score"> Good </strong>
-								<span class="pw-feedback" />
-							</p>
 						</div>
 					</div>
 					<div id="groups" class="aliases-info">
@@ -119,6 +108,7 @@
 import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
+
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
@@ -132,43 +122,67 @@ export default {
 			username: '',
 			password: '',
 			repassword: '',
-			isEmailEmpty: false,
-			isDisplayNameEmpty: false,
-			isUsernameEmpty: false,
-			isPasswordEmpty: false,
-			isRePasswordEmpty: false,
-			isRePasswordMatched: false,
+			validation: {
+				isEmailEmpty: false,
+				isDisplayNameEmpty: false,
+				isUsernameEmpty: false,
+				isPasswordEmpty: false,
+				isRePasswordEmpty: false,
+				isRePasswordMatched: false,
+			},
 		}
 	},
 	methods: {
+		validateForm() {
+			const fieldsToValidate = ['email', 'displayname', 'username', 'password', 'repassword']
+			fieldsToValidate.forEach(field => {
+				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
+			})
+			this.validation.isRePasswordMatched = this.repassword !== this.password
+		},
 		async submitSignupForm() {
-			try {
-				this.isEmailEmpty = this.email === ''
-				this.isDisplayNameEmpty = this.displayname === ''
-				this.isUsernameEmpty = this.username === ''
-				this.isPasswordEmpty = this.password === ''
-				this.isRePasswordEmpty = this.repassword === ''
-				this.isRePasswordMatched = this.repassword !== this.password
+			this.validateForm()
 
-				if (!this.isEmailEmpty && !this.isDisplayNameEmpty && !this.isUsernameEmpty && !this.isPasswordEmpty && !this.isRePasswordEmpty && !this.isRePasswordMatched) {
-					const url = generateUrl(
-						`/apps/${this.appName}/account/create`
-					)
-					await Axios.post(url, {
+			const isFormValid = Object.values(this.validation).every(value => !value)
+
+			if (isFormValid) {
+				try {
+					const url = generateUrl(`/apps/${this.appName}/account/create`)
+					const response = await Axios.post(url, {
 						displayname: this.displayname,
 						email: this.email,
 						username: this.username,
 						password: this.password,
 						domain: this.domain,
 					})
-					showSuccess(t(this.appName, 'Congratulations! You\'ve successfully created Murena account.'))
+
+					if (response.data && response.data.message) {
+						this.showMessage(response.data.message, 'success')
+						this.setAllFieldsBlank()
+					}
+				} catch (error) {
+					const errorMessage = error.response?.data?.message || this.getLocalizedText('Something went wrong.')
+					this.showMessage(errorMessage, 'error')
+					this.setAllFieldsBlank()
 				}
-			} catch (error) {
-				showError(this.getLocalizedText('Something went wrong.'))
+			}
+		},
+		showMessage(message, type) {
+			if (type === 'success') {
+				showSuccess(message)
+			} else {
+				showError(message)
 			}
 		},
 		getLocalizedText(text) {
 			return t(this.appName, text)
+		},
+		setAllFieldsBlank() {
+			this.displayname = ''
+			this.email = ''
+			this.username = ''
+			this.password = ''
+			this.repassword = ''
 		},
 	},
 }
