@@ -194,6 +194,9 @@ export default {
 }
 </script>
 <style scoped>
+section#main {
+    overflow-x: hidden;
+}
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	#fields .field .control input {
