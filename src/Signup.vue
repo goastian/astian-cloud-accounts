@@ -68,7 +68,8 @@
 								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
 								<div class="username-group">
 									<Password v-model="password"
-										:toggle="true"
+										:toggle="false"
+										:badge="false"
 										type="password"
 										name="password"
 										class="form-input"
