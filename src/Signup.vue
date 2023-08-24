@@ -72,7 +72,7 @@
 										:badge="false"
 										type="password"
 										name="password"
-										class="form-input"
+										:defaultClass="form-input"
 										:placeholder="getLocalizedText('Password')" />
 									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
