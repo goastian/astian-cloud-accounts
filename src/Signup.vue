@@ -16,7 +16,7 @@
 									type="text"
 									class="form-input"
 									:placeholder="getLocalizedText('Your name as shown to others')">
-								<p v-if="validation.isDisplayNameEmpty" class="validation-error">
+								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
 							</div>
@@ -132,7 +132,7 @@ export default {
 			repassword: '',
 			validation: {
 				isEmailEmpty: false,
-				isDisplayNameEmpty: false,
+				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
 				isPasswordEmpty: false,
 				isRepasswordEmpty: false,
