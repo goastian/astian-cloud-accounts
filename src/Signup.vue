@@ -94,9 +94,10 @@
 						</div>
 					</div>
 					<div id="groups" class="aliases-info">
-						<button :wide="true" type="primary" @click="submitSignupForm">
-							{{ getLocalizedText('Signup') }}
-						</button>
+						<input type="button"
+							class="width300"
+							:value="getLocalizedText('Signup')"
+							@click="submitSignupForm">
 					</div>
 				</div>
 			</div>
@@ -335,6 +336,9 @@ sup {
 
 .validation-error {
 	color: #ff0000;
+}
+.width300{
+	width: 300px;
 }
 
 @media screen and (max-width: 500px) {
