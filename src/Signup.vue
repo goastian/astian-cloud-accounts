@@ -68,6 +68,7 @@
 								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
 								<div class="username-group">
 									<Password v-model="password"
+										:secureLength="7"
 										:toggle="false"
 										:badge="false"
 										type="password"
