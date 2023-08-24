@@ -86,10 +86,10 @@
 								<p v-if="validation.isPasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Password is required.') }}
 								</p>
-								<p v-if="validation.isRePasswordEmpty" class="validation-error">
+								<p v-if="validation.isRepasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Confirm password is required.') }}
 								</p>
-								<p v-if="!validation.isPasswordEmpty && !validation.isRePasswordEmpty && validation.isRePasswordMatched"
+								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 									class="validation-error">
 									{{ getLocalizedText('The confirm password does not match the password.') }}
 								</p>
@@ -135,7 +135,7 @@ export default {
 				isDisplayNameEmpty: false,
 				isUsernameEmpty: false,
 				isPasswordEmpty: false,
-				isRePasswordEmpty: false,
+				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
 			},
 		}
