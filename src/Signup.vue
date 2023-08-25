@@ -98,7 +98,7 @@
 					</div>
 
 					<div id="fields">
-						<div class="field np-captcha-section">
+						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Human verification') }}<sup>*</sup></label>
 								<div class="humanverification-group">
@@ -116,8 +116,12 @@
 									{{ getLocalizedText('Secure code is not correct!') }}
 								</p>
 							</div>
+						</div>
+					</div>
 
-							<div class="control np-captcha-container">
+					<div id="fields">
+						<div class="field np-captcha-section">
+							<div class="control">
 								<div v-if="captcha && captcha.length" class="np-captcha">
 									<div v-for="(c, i) in captcha"
 										:key="i"
@@ -131,9 +135,12 @@
 									</div>
 								</div>
 							</div>
-							<button class="np-button" @click="createCaptcha">&#x21bb;</button>
+							<button class="np-button" @click="createCaptcha">
+								&#x21bb;
+							</button>
 						</div>
 					</div>
+
 					<div id="groups" class="aliases-info">
 						<button :wide="true"
 							class="btn-primary"
@@ -446,11 +453,12 @@ sup {
 		font-size: 10px;
 	}
 }
-.np-captcha-section
-{
+
+.np-captcha-section {
 	display: flex;
-    width: fit-content;
+	width: fit-content;
 }
+
 .np-captcha-container {
 	background: #ffdada;
 	width: max-content;
@@ -474,4 +482,5 @@ sup {
 .np-captcha-character {
 	display: inline-block;
 	letter-spacing: 14px;
-}</style>
+}
+</style>
