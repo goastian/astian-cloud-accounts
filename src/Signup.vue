@@ -121,7 +121,7 @@
 
 					<div id="fields">
 						<div class="field np-captcha-section">
-							<div class="control">
+							<div class="control np-captcha-container">
 								<div v-if="captcha && captcha.length" class="np-captcha">
 									<div v-for="(c, i) in captcha"
 										:key="i"
@@ -469,14 +469,18 @@ sup {
 
 .np-captcha {
 	font-size: 24px;
+    width: 200px;
+    text-align: center;
 }
 
 .np-button {
-	padding: 6px 10px;
-	background: #fff;
-	border: 1px solid #eee;
-	border-radius: 6px;
-	font-size: 16px;
+	padding: 5px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 16px;
+    margin: auto;
+    min-width: 30px;
 }
 
 .np-captcha-character {
