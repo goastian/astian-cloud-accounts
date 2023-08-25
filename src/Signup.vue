@@ -98,7 +98,25 @@
 					</div>
 
 					<div id="fields">
-						<div class="field">
+						<div class="field np-captcha-section">
+							<div class="control">
+								<label>{{ getLocalizedText('Human verification') }}<sup>*</sup></label>
+								<div class="humanverification-group">
+									<input id="humanverification"
+										v-model="humanverification"
+										name="humanverification"
+										class="form-input"
+										:placeholder="getLocalizedText('Human verification')"
+										type="text">
+								</div>
+								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
+									{{ getLocalizedText('Human Verification is required.') }}
+								</p>
+								<p v-if="validation.isHumanverificationMatched" class="validation-error">
+									{{ getLocalizedText('Secure code is not correct!') }}
+								</p>
+							</div>
+
 							<div class="control np-captcha-container">
 								<div v-if="captcha && captcha.length" class="np-captcha">
 									<div v-for="(c, i) in captcha"
@@ -113,10 +131,7 @@
 									</div>
 								</div>
 							</div>
-							{{ captchatext }}
-							<button class="np-button" @click="createCaptcha">
-								Generate new
-							</button>
+							<button class="np-button" @click="createCaptcha">&#x21bb;</button>
 						</div>
 					</div>
 					<div id="groups" class="aliases-info">
@@ -153,6 +168,7 @@ export default {
 			username: '',
 			password: '',
 			repassword: '',
+			humanverification: '',
 			validation: {
 				isEmailEmpty: false,
 				isDisplaynameEmpty: false,
@@ -160,6 +176,8 @@ export default {
 				isPasswordEmpty: false,
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
+				isHumanverificationEmpty: false,
+				isHumanverificationMatched: false,
 			},
 			captchaLength: 5,
 			captcha: [],
@@ -171,11 +189,12 @@ export default {
 	},
 	methods: {
 		validateForm() {
-			const fieldsToValidate = ['email', 'displayname', 'username', 'password', 'repassword']
+			const fieldsToValidate = ['email', 'displayname', 'username', 'password', 'repassword', 'humanverification']
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
 			})
 			this.validation.isRePasswordMatched = this.repassword !== this.password
+			this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
 		},
 		async submitSignupForm() {
 			this.validateForm()
@@ -406,7 +425,7 @@ sup {
 }
 
 .btn-primary {
-	width: 20vw;
+	width: 95%;
 	background-color: var(--color-primary);
 	color: white;
 	border-color: var(--color-primary);
@@ -427,10 +446,14 @@ sup {
 		font-size: 10px;
 	}
 }
-
+.np-captcha-section
+{
+	display: flex;
+    width: fit-content;
+}
 .np-captcha-container {
 	background: #eee;
-	width: 300px;
+	width: max-content;
 	margin: 0 auto;
 	margin-bottom: 20px;
 }
