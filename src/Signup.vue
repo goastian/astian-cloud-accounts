@@ -113,7 +113,7 @@
 									{{ getLocalizedText('Human Verification is required.') }}
 								</p>
 								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationMatched" class="validation-error">
-									{{ getLocalizedText('Secure code is not correct!') }}
+									{{ getLocalizedText('Human Verification code is not correct!') }}
 								</p>
 							</div>
 						</div>
