@@ -452,10 +452,11 @@ sup {
     width: fit-content;
 }
 .np-captcha-container {
-	background: #eee;
+	background: #ffdada;
 	width: max-content;
 	margin: 0 auto;
 	margin-bottom: 20px;
+	padding: 10px;
 }
 
 .np-captcha {
