@@ -191,7 +191,7 @@ export default {
 			captchatext: '',
 		}
 	},
-	mounted() {
+	created() {
 		this.createCaptcha()
 	},
 	methods: {
