@@ -462,6 +462,7 @@ sup {
 .np-captcha-container {
 	background: #ffdada;
 	width: max-content;
+	height: 30px;
 	margin: 0 auto;
 	margin-bottom: 20px;
 	padding: 10px;
