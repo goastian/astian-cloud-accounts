@@ -122,7 +122,7 @@
 					<div id="fields">
 						<div class="field np-captcha-section">
 							<div class="control np-captcha-container">
-								<div v-if="captcha && captcha.length" class="np-captcha" v-once>
+								<div v-if="captcha && captcha.length" v-once class="np-captcha">
 									<div v-for="(c, i) in captcha"
 										:key="i"
 										:style="{
@@ -135,9 +135,9 @@
 									</div>
 								</div>
 							</div>
-							<button class="np-button" @click="createCaptcha">
+							<!-- <button class="np-button" @click="createCaptcha">
 								&#x21bb;
-							</button>
+							</button> -->
 						</div>
 					</div>
 
