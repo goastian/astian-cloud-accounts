@@ -73,7 +73,7 @@
 										:badge="false"
 										type="password"
 										name="password"
-										:default-class="form-input"
+										:default-class="form - input"
 										:placeholder="getLocalizedText('Password')" />
 									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
@@ -94,6 +94,29 @@
 									{{ getLocalizedText('The confirm password does not match the password.') }}
 								</p>
 							</div>
+						</div>
+					</div>
+
+					<div id="fields">
+						<div class="field">
+							<div class="control np-captcha-container">
+								<div v-if="captcha && captcha.length" class="np-captcha">
+									<div v-for="(c, i) in captcha"
+										:key="i"
+										:style="{
+											fontSize: getFontSize() + 'px',
+											fontWeight: 800,
+											transform: 'rotate(' + getRotationAngle() + 'deg)',
+										}"
+										class="np-captcha-character">
+										{{ c }}
+									</div>
+								</div>
+							</div>
+							{{ captchatext }}
+							<button class="np-button" @click="createCaptcha">
+								Generate new
+							</button>
 						</div>
 					</div>
 					<div id="groups" class="aliases-info">
@@ -138,7 +161,13 @@ export default {
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
 			},
+			captchaLength: 5,
+			captcha: [],
+			captchatext: '',
 		}
+	},
+	mounted() {
+		this.createCaptcha()
 	},
 	methods: {
 		validateForm() {
@@ -191,13 +220,35 @@ export default {
 			this.password = ''
 			this.repassword = ''
 		},
+		createCaptcha() {
+			let tempCaptcha = ''
+			for (let i = 0; i < this.captchaLength; i++) {
+				tempCaptcha += this.getRandomCharacter()
+			}
+			this.captchatext = tempCaptcha
+			this.captcha = tempCaptcha.split('')
+		},
+		getRandomCharacter() {
+			const symbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+			const randomNumber = Math.floor(Math.random() * 36)
+			return symbols[randomNumber]
+		},
+		getFontSize() {
+			const fontVariations = [14, 20, 30, 36, 40]
+			return fontVariations[Math.floor(Math.random() * 5)]
+		},
+		getRotationAngle() {
+			const rotationVariations = [5, 10, 20, 25, -5, -10, -20, -25]
+			return rotationVariations[Math.floor(Math.random() * 8)]
+		},
 	},
 }
 </script>
 <style scoped>
 section#main {
-    overflow-x: hidden;
+	overflow-x: hidden;
 }
+
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	#fields .field .control input {
@@ -264,7 +315,8 @@ section#main {
 	width: 50%;
 }
 
-#fields input,#fields input[type="password"] {
+#fields input,
+#fields input[type="password"] {
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
@@ -292,9 +344,10 @@ section#main {
 #fields {
 	background-color: white;
 }
-#fields .Password{
+
+#fields .Password {
 	max-width: unset;
-    margin: unset;
+	margin: unset;
 }
 
 #fields .field {
@@ -374,4 +427,27 @@ sup {
 		font-size: 10px;
 	}
 }
-</style>
+
+.np-captcha-container {
+	background: #eee;
+	width: 300px;
+	margin: 0 auto;
+	margin-bottom: 20px;
+}
+
+.np-captcha {
+	font-size: 24px;
+}
+
+.np-button {
+	padding: 6px 10px;
+	background: #fff;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	font-size: 16px;
+}
+
+.np-captcha-character {
+	display: inline-block;
+	letter-spacing: 14px;
+}</style>
