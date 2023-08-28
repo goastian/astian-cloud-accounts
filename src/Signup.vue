@@ -219,7 +219,7 @@ export default {
 					})
 
 					if (response.data && response.data.message) {
-						this.showMessage(response.data.message, 'success')
+						this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
 						this.setAllFieldsBlank()
 					}
 				} catch (error) {
@@ -244,6 +244,7 @@ export default {
 			this.username = ''
 			this.password = ''
 			this.repassword = ''
+			this.captcha = ''
 		},
 		createCaptcha() {
 			let tempCaptcha = ''
