@@ -31,7 +31,7 @@ class LDAPConnectionService {
 		$prefix = array_shift($ldapConfigPrefixes);
 		$this->ldapConfig = new Configuration($prefix);
 		$this->config = $config;
-		$quota = $this->config->getAppValue('files', 'default_quota', 'none');
+		$quota = $this->config->getSystemValue('defaault_quota', '');
 		if ($quota) {
 			$this->ldapQuota = intval($quota);
 		} else {
