@@ -216,7 +216,6 @@ export default {
 						email: this.email,
 						username: this.username,
 						password: this.password,
-						domain: this.domain,
 					})
 
 					if (response.data && response.data.message) {
