@@ -244,7 +244,7 @@ export default {
 			this.username = ''
 			this.password = ''
 			this.repassword = ''
-			this.captcha = ''
+			this.humanverification = ''
 		},
 		createCaptcha() {
 			let tempCaptcha = ''
