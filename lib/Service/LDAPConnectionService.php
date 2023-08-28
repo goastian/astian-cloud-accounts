@@ -13,11 +13,8 @@ use OCP\IConfig;
 class LDAPConnectionService {
 	/** @var IUserManager */
 	private $userManager;
-
 	private $configuration;
-
 	private $ldapEnabled;
-
 	private $access;
 	private $ldapConfig;
 	private int $quotaInBytes = 1000000000;
@@ -71,15 +68,6 @@ class LDAPConnectionService {
 	public function username2dn(string $username) {
 		return $this->access->username2dn($username);
 	}
-
-
-	public function getUserBaseDn(): string {
-		if (isset($this->configuration['ldap_base_users'])) {
-			return $this->configuration['ldap_base_users'];
-		}
-		throw new Exception('User Base Dn not set!');
-	}
-
 	public function getLDAPConnection() {
 		if (!$this->ldapEnabled) {
 			throw new Exception('LDAP backend is not enabled');
