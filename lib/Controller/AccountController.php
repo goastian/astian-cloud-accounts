@@ -51,7 +51,6 @@ class AccountController extends Controller {
 	 */
 	public function create(string $displayname, string $email, string $username, string $password) {
 		$response = new DataResponse();
-
 		try {
 			$result = $this->accountService->registerUser($displayname, $email, $username, $password);
 			if ($result) {

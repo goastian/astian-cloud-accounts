@@ -219,7 +219,7 @@ export default {
 				})
 				if (response.status === 200) {
 					this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
-				} else if (response.status === 409) {
+				} else if (response.status === 403) {
 					this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
 				} else {
 					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
