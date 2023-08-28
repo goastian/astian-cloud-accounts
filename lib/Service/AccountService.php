@@ -39,7 +39,7 @@ class AccountService {
 			$userClusterID = 'HEL01';
 			$newUserEntry = [
 				'mailAddress' => $username . '@' . $domain,
-				'username' => $username . '@' . $domain,
+				'username' => $username,
 				'usernameWithoutDomain' => $username,
 				'userPassword' => $password,
 				'displayName' => $displayname,
