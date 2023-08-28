@@ -210,26 +210,21 @@ export default {
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
 			if (isFormValid) {
-				try {
-					const url = generateUrl(`/apps/${this.appName}/account/create`)
-					const response = await Axios.post(url, {
-						displayname: this.displayname,
-						email: this.email,
-						username: this.username,
-						password: this.password,
-					})
-					if (response.status === 200) {
-						this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
-					} else if (response.status === 409) {
-						this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
-					} else {
-						this.showMessage('Something went wrong.', 'error')
-					}
-					this.setAllFieldsBlank()
-				} catch (error) {
-					const errorMessage = error.response?.data?.message || this.getLocalizedText('Something went wrong.')
-					this.showMessage(errorMessage, 'error')
+				const url = generateUrl(`/apps/${this.appName}/account/create`)
+				const response = await Axios.post(url, {
+					displayname: this.displayname,
+					email: this.email,
+					username: this.username,
+					password: this.password,
+				})
+				if (response.status === 200) {
+					this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
+				} else if (response.status === 409) {
+					this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
+				} else {
+					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
 				}
+				this.setAllFieldsBlank()
 			}
 		},
 		showMessage(message, type) {
