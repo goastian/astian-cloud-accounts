@@ -125,7 +125,7 @@ class LDAPConnectionService {
 		$entries = ldap_get_entries($connection, $searchResult);
 		$domain = $this->config->getSystemValue('main_domain', '');
 		if ($entries['count'] > 0) {
-			throw new Exception("Username already exists.");
+			return false;
 		} else {
 			$newUserDN = "username=$username@$domain," . $base;
 			$userClusterID = 'HEL01';

@@ -54,12 +54,10 @@ class AccountController extends Controller {
 		try {
 			$this->LDAPConnectionService->registerUser($displayname, $email, $username, $password);
 			$response->setStatus(200);
-			$msg = "Congratulations! You've successfully created a Murena account.";
 		} catch (Exception $e) {
-			$msg = $e->getMessage();
 			$response->setStatus(403);
 		}
-		$response->setData(['message' => $msg]);
+		$response->setData([]);
 		return $response;
 	}
 }
