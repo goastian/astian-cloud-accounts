@@ -112,7 +112,8 @@
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
 									{{ getLocalizedText('Human Verification is required.') }}
 								</p>
-								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationMatched" class="validation-error">
+								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationMatched"
+									class="validation-error">
 									{{ getLocalizedText('Human Verification code is not correct.') }}
 								</p>
 							</div>
@@ -217,11 +218,14 @@ export default {
 						username: this.username,
 						password: this.password,
 					})
-
-					if (response.data && response.data.message) {
+					if (response.status === 200) {
 						this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
-						this.setAllFieldsBlank()
+					} else if (response.status === 409) {
+						this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
+					} else {
+						this.showMessage('Something went wrong.', 'error')
 					}
+					this.setAllFieldsBlank()
 				} catch (error) {
 					const errorMessage = error.response?.data?.message || this.getLocalizedText('Something went wrong.')
 					this.showMessage(errorMessage, 'error')
@@ -470,18 +474,18 @@ sup {
 
 .np-captcha {
 	font-size: 24px;
-    width: 200px;
-    text-align: center;
+	width: 200px;
+	text-align: center;
 }
 
 .np-button {
 	padding: 5px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    font-size: 16px;
-    margin: auto;
-    min-width: 30px;
+	background: #fff;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	font-size: 16px;
+	margin: auto;
+	min-width: 30px;
 }
 
 .np-captcha-character {
