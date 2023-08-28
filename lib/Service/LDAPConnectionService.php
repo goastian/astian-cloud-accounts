@@ -8,6 +8,7 @@ use Exception;
 use OCP\IUserManager;
 use OCA\User_LDAP\Configuration;
 use OCA\User_LDAP\Helper;
+use OCP\IConfig;
 
 class LDAPConnectionService {
 	/** @var IUserManager */
@@ -19,13 +20,23 @@ class LDAPConnectionService {
 
 	private $access;
 	private $ldapConfig;
+	private int $quotaInBytes = 1000000000;
+	private int $ldapQuota;
+	private IConfig $config;
 
-	public function __construct(IUserManager $userManager, Helper $ldapBackendHelper) {
+	public function __construct(IUserManager $userManager, Helper $ldapBackendHelper, IConfig $config) {
 		$this->userManager = $userManager;
 		$this->getConfigurationFromBackend();
 		$ldapConfigPrefixes = $ldapBackendHelper->getServerConfigurationPrefixes(true);
 		$prefix = array_shift($ldapConfigPrefixes);
 		$this->ldapConfig = new Configuration($prefix);
+		$this->config = $config;
+		$quota = $this->config->getAppValue('files', 'default_quota', 'none');
+		if ($quota) {
+			$this->ldapQuota = intval($quota);
+		} else {
+			$this->ldapQuota = $this->quotaInBytes;
+		}
 	}
 
 
@@ -53,16 +64,16 @@ class LDAPConnectionService {
 		return $backend->getBackendName() === 'LDAP';
 	}
 
-	public function isLDAPEnabled() : bool {
+	public function isLDAPEnabled(): bool {
 		return $this->ldapEnabled;
 	}
 
 	public function username2dn(string $username) {
 		return $this->access->username2dn($username);
 	}
-	
 
-	public function getUserBaseDn() : string {
+
+	public function getUserBaseDn(): string {
 		if (isset($this->configuration['ldap_base_users'])) {
 			return $this->configuration['ldap_base_users'];
 		}
@@ -89,7 +100,7 @@ class LDAPConnectionService {
 		return $conn;
 	}
 
-	public function closeLDAPConnection($conn) : void {
+	public function closeLDAPConnection($conn): void {
 		ldap_close($conn);
 	}
 
@@ -109,5 +120,48 @@ class LDAPConnectionService {
 	}
 	public function getDisplayNameAttribute(): string {
 		return $this->ldapConfig->ldapUserDisplayName;
+	}
+
+	public function registerUser(string $displayname, string $email, string $username, string $password) {
+		$connection = $this->getLDAPConnection();
+		$base = $this->getLDAPBaseUsers()[0];
+
+		// Check if the username already exists
+		$filter = "(usernameWithoutDomain=$username)";
+		$searchResult = ldap_search($connection, $base, $filter);
+
+		if (!$searchResult) {
+			throw new Exception("Error while searching Murena username.");
+		}
+
+		$entries = ldap_get_entries($connection, $searchResult);
+		$domain = $this->config->getSystemValue('main_domain', '');
+		if ($entries['count'] > 0) {
+			throw new Exception("Username already exists.");
+		} else {
+			$newUserDN = "username=$username@$domain," . $base;
+			$userClusterID = 'HEL01';
+			$newUserEntry = [
+				'mailAddress' => $username . '@' . $domain,
+				'username' => $username . '@' . $domain,
+				'usernameWithoutDomain' => $username,
+				'userPassword' => $password,
+				'displayName' => $displayname,
+				'quota' => $this->ldapQuota,
+				'mailAlternate' => '',
+				'recoveryMailAddress' => $email,
+				'active' => 'TRUE',
+				'mailActive' => 'TRUE',
+				'userClusterID' => $userClusterID,
+				'objectClass' => ['murenaUser', 'simpleSecurityObject']
+			];
+
+			$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+
+			if (!$ret) {
+				throw new Exception("Error while creating Murena account.");
+			}
+			return true;
+		}
 	}
 }
