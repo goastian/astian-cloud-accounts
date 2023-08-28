@@ -235,11 +235,7 @@ export default {
 			}
 		},
 		showMessage(message, type) {
-			if (type === 'success') {
-				showSuccess(message)
-			} else {
-				showError(message)
-			}
+			type === 'success' ? showSuccess(message) : showError(message)
 		},
 		getLocalizedText(text) {
 			return t(this.appName, text)
@@ -253,25 +249,21 @@ export default {
 			this.humanverification = ''
 		},
 		createCaptcha() {
-			let tempCaptcha = ''
-			for (let i = 0; i < this.captchaLength; i++) {
-				tempCaptcha += this.getRandomCharacter()
-			}
-			this.captchatext = tempCaptcha
-			this.captcha = tempCaptcha.split('')
+			this.captchatext = Array.from({ length: this.captchaLength }, () => this.getRandomCharacter()).join('')
+			this.captcha = this.captchatext.split('')
 		},
 		getRandomCharacter() {
 			const symbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-			const randomNumber = Math.floor(Math.random() * 36)
-			return symbols[randomNumber]
+			const randomNumber = Math.floor(Math.random() * symbols.length)
+			return symbols.charAt(randomNumber)
 		},
 		getFontSize() {
 			const fontVariations = [14, 20, 30, 36, 40]
-			return fontVariations[Math.floor(Math.random() * 5)]
+			return fontVariations[Math.floor(Math.random() * fontVariations.length)]
 		},
 		getRotationAngle() {
 			const rotationVariations = [5, 10, 20, 25, -5, -10, -20, -25]
-			return rotationVariations[Math.floor(Math.random() * 8)]
+			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 	},
 }
