@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 use OCA\LdapWriteSupport\Service\Configuration;
 use OCP\LDAP\ILDAPProvider;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\IConfig;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -29,6 +30,8 @@ class AccountController extends Controller {
 	private int $quotaInBytes = 1073741824;
 	private int $ldapQuota;
 
+	private IConfig $config;
+
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -36,7 +39,8 @@ class AccountController extends Controller {
 		LDAPConnectionService $LDAPConnectionService,
 		LoggerInterface $logger,
 		ILDAPProvider $LDAPProvider,
-		Configuration $configuration
+		Configuration $configuration,
+		IConfig $config,
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -45,7 +49,8 @@ class AccountController extends Controller {
 		$this->ldapProvider = $LDAPProvider;
 		$this->configuration = $configuration;
 		$this->logger = $logger;
-		$quota = getenv('CLOUD_QUOTA_IN_BYTES');
+		$this->config = $config;
+		$quota = $this->config->getAppValue('files', 'default_quota', 'none');
 		if (!$quota) {
 			$this->ldapQuota = $this->quotaInBytes;
 		} else {
@@ -73,7 +78,7 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email, string $username, string $password, string $domain) {
+	public function create(string $displayname, string $email, string $username, string $password) {
 		$response = new DataResponse();
 		try {
 			$connection = $this->LDAPConnectionService->getLDAPConnection();
@@ -88,7 +93,7 @@ class AccountController extends Controller {
 			}
 			
 			$entries = ldap_get_entries($connection, $searchResult);
-			
+			$domain = $this->config->getSystemValue('main_domain', '');
 			if ($entries['count'] > 0) {
 				$msg = "Username already exists.";
 				$response->setStatus(403);
@@ -96,13 +101,13 @@ class AccountController extends Controller {
 				$newUserDN = "username=$username@$domain," . $base;
 				$userClusterID = 'HEL01';
 				$newUserEntry = [
-					'mailAddress' => $email,
+					'mailAddress' => $username . '@' . $domain,
 					'username' => $username . '@' . $domain,
 					'usernameWithoutDomain' => $username,
 					'userPassword' => $password,
 					'displayName' => $displayname,
 					'quota' => $this->ldapQuota,
-					'mailAlternate' => $email,
+					'mailAlternate' => $username . '@' . $domain,
 					'recoveryMailAddress' => $email,
 					'active' => 'TRUE',
 					'mailActive' => 'TRUE',
