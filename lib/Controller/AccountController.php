@@ -10,23 +10,23 @@ use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCA\EcloudAccounts\AppInfo\Application;
-use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCA\EcloudAccounts\Service\AccountService;
 use OCP\AppFramework\Http\DataResponse;
 
 class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	// private ISession $session;
-	private $LDAPConnectionService;
+	private $accountService;
 
 	public function __construct(
 		$AppName,
 		IRequest $request,
-		LDAPConnectionService $LDAPConnectionService,
+		AccountService $accountService,
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
-		$this->LDAPConnectionService = $LDAPConnectionService;
+		$this->accountService = $accountService;
 	}
 
 	/**
@@ -53,11 +53,11 @@ class AccountController extends Controller {
 		$response = new DataResponse();
 
 		try {
-			$result = $this->LDAPConnectionService->registerUser($displayname, $email, $username, $password);
+			$result = $this->accountService->registerUser($displayname, $email, $username, $password);
 			if ($result) {
 				$response->setStatus(200);
 			} else {
-				$response->setStatus(409);
+				$response->setStatus(403);
 			}
 		} catch (Exception $e) {
 			$response->setStatus(500);
