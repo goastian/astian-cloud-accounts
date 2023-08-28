@@ -51,13 +51,17 @@ class AccountController extends Controller {
 	 */
 	public function create(string $displayname, string $email, string $username, string $password) {
 		$response = new DataResponse();
+
 		try {
-			$this->LDAPConnectionService->registerUser($displayname, $email, $username, $password);
-			$response->setStatus(200);
+			$result = $this->LDAPConnectionService->registerUser($displayname, $email, $username, $password);
+			if ($result) {
+				$response->setStatus(200);
+			} else {
+				$response->setStatus(409);
+			}
 		} catch (Exception $e) {
-			$response->setStatus(403);
+			$response->setStatus(500);
 		}
-		$response->setData([]);
 		return $response;
 	}
 }
