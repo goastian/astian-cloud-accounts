@@ -56,7 +56,7 @@ class AccountController extends Controller {
 			if ($result) {
 				$response->setStatus(200);
 			} else {
-				$response->setStatus(403);
+				$response->setStatus(409);
 			}
 		} catch (Exception $e) {
 			$response->setStatus(500);
