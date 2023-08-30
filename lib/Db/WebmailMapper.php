@@ -12,6 +12,7 @@ use \Sabre\VObject\Reader;
 use OCP\IUserManager;
 use OCP\IUser;
 use OCA\DAV\CardDAV\CardDavBackend;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 class WebmailMapper {
 	private IConfig $config;
@@ -53,15 +54,16 @@ class WebmailMapper {
 	public function getUsers(int $limit, int $offset = 0, array $emails = []) : array {
 		$qb = $this->conn->createQueryBuilder();
 		$qb->select('rl_email, id_user')
-			->from(self::USERS_TABLE)
-			->setFirstResult($offset)
-			// We can set max to $limit without default as NULL => all results
-			->setMaxResults($limit);
-
-		if (!empty($emails)) {
-			$qb->where('rl_email IN :emails')
-				->setParameter('emails', $emails);
+			->from(self::USERS_TABLE, 'u')
+			->setFirstResult($offset);
+		if ($limit) {
+			$qb->setMaxResults($limit);
 		}
+		if (!empty($emails)) {
+			$qb->where('rl_email in (:emails)');
+			$qb->setParameter('emails', $emails, IQueryBuilder::PARAM_STR_ARRAY);
+		}
+		
 		$result = $qb->execute();
 
 		$users = [];
@@ -78,20 +80,24 @@ class WebmailMapper {
 	private function getUserContacts(string $uid) : array {
 		$qb = $this->conn->createQueryBuilder();
 
-		$qb->select('id_contact,jcard')
-			->from('rainloop_ab_contacts')
-			->where('id_user = :uid')
-			->setParameter('uid', $uid);
+		$qb->select('p.prop_value')
+			->from('rainloop_ab_contacts', 'c')
+			->where('c.id_user = :uid')
+			->andWhere('p.prop_value IS NOT NULL')
+			->setParameter('uid', $uid)
+			->leftJoin('c', 'rainloop_ab_properties', 'p', 'p.id_contact = c.id_contact AND p.prop_type = 251');
+
 		$result = $qb->execute();
 		$contacts = [];
 		while ($row = $result->fetch()) {
-			$contacts[] = Reader::readJson($row['jcard']);
+			$contacts[] = Reader::readJson($row['prop_value']);
 		}
 		return $contacts;
 	}
 
 	private function createCloudAddressBook(array $contacts, string $email) {
-		$user = $this->userManager->getUserByEmail($email);
+		$users = $this->userManager->getByEmail($email);
+		$user = $users[0];
 
 		if (!$user instanceof IUser) {
 			return;
@@ -116,7 +122,7 @@ class WebmailMapper {
 			$this->cardDavBackend->createCard(
 				$addressBookId,
 				UUIDUtil::getUUID() . '.vcf',
-				$contact,
+				$contact->serialize(),
 				true
 			);
 		}

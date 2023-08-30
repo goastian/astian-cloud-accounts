@@ -82,7 +82,7 @@ class MigrateWebmailAddressbooks extends Command {
 				$emails[] = $email;
 			}
 			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
-			$this->webmailMapper->migrateContacts($emails);
+			$this->webmailMapper->migrateContacts($users);
 			return;
 		}
 		$users = $this->webmailMapper->getUsers($limit, $offset);
