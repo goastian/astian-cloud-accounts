@@ -40,12 +40,17 @@ use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\IUserManager;
+use OCP\IUser;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use OCA\EcloudAccounts\Service\AccountService;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
+	private $accountService;
 
-	public function __construct(array $urlParams = []) {
+	public function __construct(array $urlParams = [], AccountService $accountService) {
 		parent::__construct(self::APP_ID, $urlParams);
+		$this->accountService = $accountService;
 	}
 
 	public function register(IRegistrationContext $context): void {
@@ -61,6 +66,13 @@ class Application extends App implements IBootstrap {
 			return new LDAPConnectionService(
 				$c->get(IUserManager::class)
 			);
+		});
+		$context->injectFn([$this, 'registerHooks']);
+	}
+	public function registerHooks(EventDispatcherInterface $dispatcher) {
+		// first time login event setup
+		$dispatcher->addListener(IUser::class . '::firstLogin', function ($e) {
+			$this->accountService->sendWelcomeEmail();
 		});
 	}
 }

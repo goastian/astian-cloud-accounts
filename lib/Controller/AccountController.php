@@ -19,6 +19,7 @@ class AccountController extends Controller {
 	// private ISession $session;
 	private $accountService;
 
+
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -51,7 +52,7 @@ class AccountController extends Controller {
 	 */
 	public function create(string $displayname, string $email, string $username, string $password) {
 		$response = new DataResponse();
-		
+
 		try {
 			$result = $this->accountService->registerUser($displayname, $email, $username, $password);
 			$response->setStatus($result ? 200 : 409);
