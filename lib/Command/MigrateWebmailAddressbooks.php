@@ -73,17 +73,19 @@ class MigrateWebmailAddressbooks extends Command {
 	 * @return void
 	 */
 	private function migrateUsers(int $limit, int $offset = 0, array $usernames = []) : void {
-		$emails = [];
+		$users = [];
 		if (!empty($usernames)) {
+			$emails = [];
 			foreach ($usernames as $username) {
-				$user = $this->userManager->getUser($username);
-				$emails[] = $user->getEMailAddress();
+				$user = $this->userManager->get($username);
+				$email = $user->getEMailAddress();
+				$emails[] = $email;
 			}
-
+			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
 			$this->webmailMapper->migrateContacts($emails);
 			return;
 		}
-		$emails = $this->webmailMapper->getUserEmails($limit, $offset);
-		$this->webmailMapper->migrateContacts($emails);
+		$users = $this->webmailMapper->getUsers($limit, $offset);
+		$this->webmailMapper->migrateContacts($users);
 	}
 }

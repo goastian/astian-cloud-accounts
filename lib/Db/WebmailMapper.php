@@ -7,8 +7,8 @@ use OCP\ILogger;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
-use \RainLoop\Providers\AddressBook\PdoAddressBook;
 use Sabre\VObject\UUIDUtil;
+use \Sabre\VObject\Reader;
 use OCP\IUserManager;
 use OCP\IUser;
 use OCA\DAV\CardDAV\CardDavBackend;
@@ -49,35 +49,45 @@ class WebmailMapper {
 			&& isset($config['db_port']) ;
 	}
 
-	public function getUserEmails(int $limit, int $offset = 0) : array {
+
+	public function getUsers(int $limit, int $offset = 0, array $emails = []) : array {
 		$qb = $this->conn->createQueryBuilder();
-		$qb->select('rl_email')
+		$qb->select('rl_email, id_user')
 			->from(self::USERS_TABLE)
 			->setFirstResult($offset)
 			// We can set max to $limit without default as NULL => all results
 			->setMaxResults($limit);
+
+		if (!empty($emails)) {
+			$qb->where('rl_email IN :emails')
+				->setParameter('emails', $emails);
+		}
 		$result = $qb->execute();
 
-		$emails = [];
+		$users = [];
 		while ($row = $result->fetch()) {
-			$emails[] = $row['rl_email'];
+			$user = [
+				'email' => $row['rl_email'],
+				'id' => $row['id_user']
+			];
+			$users[] = $user;
 		}
-		return $emails;
+		return $users;
 	}
 
-	private function getUserContactIds(string $uid) : array {
+	private function getUserContacts(string $uid) : array {
 		$qb = $this->conn->createQueryBuilder();
 
-		$qb->select('id_contact')
+		$qb->select('id_contact,jcard')
 			->from('rainloop_ab_contacts')
 			->where('id_user = :uid')
 			->setParameter('uid', $uid);
 		$result = $qb->execute();
-		$contactIds = [];
+		$contacts = [];
 		while ($row = $result->fetch()) {
-			$contactIds[] = $row['id_contact'];
+			$contacts[] = Reader::readJson($row['jcard']);
 		}
-		return $contactIds;
+		return $contacts;
 	}
 
 	private function createCloudAddressBook(array $contacts, string $email) {
@@ -112,23 +122,13 @@ class WebmailMapper {
 		}
 	}
 
-	public function migrateContacts(array $emails) {
-		$rainloopContactsProvider = new PdoAddressBook();
-		foreach ($emails as $email) {
-			$uid = $rainloopContactsProvider->setEmail($email);
-			$contactIds = $this->getUserContactIds($uid);
-
-			if (!count($contactIds)) {
+	public function migrateContacts(array $users) {
+		foreach ($users as $user) {
+			$contacts = $this->getUserContacts($user['id']);
+			if (!count($contacts)) {
 				return;
 			}
-			$contacts = [];
-			foreach ($contactIds as $id) {
-				$contact = $rainloopContactsProvider->GetContactByID($id, false, $uid);
-
-				$contacts[] = $contact->vCard->serialize();
-			}
-
-			$this->createCloudAddressBook($contacts, $email);
+			$this->createCloudAddressBook($contacts, $user['email']);
 		}
 	}
 
