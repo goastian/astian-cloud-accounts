@@ -62,5 +62,10 @@ class Application extends App implements IBootstrap {
 				$c->get(IUserManager::class)
 			);
 		});
+		$context->injectFn([$this, 'registerHooks']);
+	}
+	public function registerHooks(EventDispatcherInterface $dispatcher) {
+		// first time login event setup
+		$dispatcher->addListener(IUser::class . '::firstLogin', FirstLoginListener::class);
 	}
 }
