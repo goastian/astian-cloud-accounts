@@ -85,6 +85,5 @@ class Migrate2FASecrets extends Command {
 		}
 		$emails = $this->webmailMapper->getUserEmails($limit, $offset);
 		$this->webmailMapper->migrateContacts($emails);
-		
 	}
 }
