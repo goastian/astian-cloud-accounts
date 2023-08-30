@@ -26,5 +26,6 @@
 	</settings>
     <commands>
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
+        <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
     </commands>
 </info>

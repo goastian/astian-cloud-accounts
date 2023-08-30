@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OCA\EcloudAccounts\Db\WebmailMapper;
 use OCP\IUserManager;
 
-class Migrate2FASecrets extends Command {
+class MigrateWebmailAddressbooks extends Command {
 	private OutputInterface $commandOutput;
 	private WebmailMapper $webmailMapper;
 	private IUserManager $userManager;
