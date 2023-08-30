@@ -42,15 +42,12 @@ use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\IUserManager;
 use OCP\IUser;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use OCA\EcloudAccounts\Service\AccountService;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
-	private $accountService;
 
-	public function __construct(array $urlParams = [], AccountService $accountService) {
+	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
-		$this->accountService = $accountService;
 	}
 
 	public function register(IRegistrationContext $context): void {
@@ -72,7 +69,7 @@ class Application extends App implements IBootstrap {
 	public function registerHooks(EventDispatcherInterface $dispatcher) {
 		// first time login event setup
 		$dispatcher->addListener(IUser::class . '::firstLogin', function ($e) {
-			$this->accountService->sendWelcomeEmail();
+			// $this->accountService->sendWelcomeEmail();
 		});
 	}
 }
