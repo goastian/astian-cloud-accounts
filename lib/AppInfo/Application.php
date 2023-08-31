@@ -40,9 +40,6 @@ use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\IUserManager;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use OCA\EcloudAccounts\Listeners\FirstLoginListener;
-use OCP\IUser;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -65,10 +62,5 @@ class Application extends App implements IBootstrap {
 				$c->get(IUserManager::class)
 			);
 		});
-		$context->injectFn([$this, 'registerHooks']);
-	}
-	public function registerHooks(EventDispatcherInterface $dispatcher) {
-		// first time login event setup
-		// $dispatcher->addListener(IUser::class . '::firstLogin', FirstLoginListener::class);
 	}
 }
