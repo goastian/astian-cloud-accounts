@@ -40,8 +40,6 @@ class FirstLoginListener implements IEventListener {
 		/** @var self $listener */
 		$listener = Server::get(self::class);
 		$listener->sendEmail($displayname, $username);
-
-		// $this->userService->sendWelcomeEmail($displayname, $username);
 		return true;
 	}
 	public function sendEmail($displayname, $username) {
