@@ -31,7 +31,7 @@ class FirstLoginListener implements IEventListener {
 	 * @param string $username
 	 * @return bool
 	 */
-	public function sendWelcomeEmail(string $displayname, string $username) {
+	public static function sendWelcomeEmail(string $displayname, string $username) {
 		$title = 'Welcome to Murena Email Service!';
 		$description = 'Dear '.$displayname.',\nWe are thrilled to welcome you to Murena Email Service! It\'s a pleasure to have you on board and we are excited about the journey ahead.
 		\nAt Murena, we are committed to providing you with a seamless and secure email experience. Our user-friendly interface, advanced features, and robust security measures have been designed to ensure that your communication remains efficient, effective, and protected.
