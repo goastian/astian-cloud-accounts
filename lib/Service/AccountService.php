@@ -6,26 +6,17 @@ namespace OCA\EcloudAccounts\Service;
 
 use OCP\IConfig;
 use Exception;
-use OCP\IUserSession;
-use OCP\Mail\IMailer;
-use OCP\Util;
 
 class AccountService {
 	private $config;
 	private $LDAPConnectionService;
-	protected $mailer;
-	private $userSession;
 
 	public function __construct(
 		IConfig $config,
 		LDAPConnectionService $LDAPConnectionService,
-		IUserSession $userSession,
-		IMailer $mailer
 	) {
 		$this->config = $config;
 		$this->LDAPConnectionService = $LDAPConnectionService;
-		$this->userSession = $userSession;
-		$this->mailer = $mailer;
 	}
 	public function registerUser(string $displayname, string $email, string $username, string $password) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
