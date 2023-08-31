@@ -55,7 +55,6 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
-		// $context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 	}
 
 	public function boot(IBootContext $context): void {
@@ -68,7 +67,10 @@ class Application extends App implements IBootstrap {
 		$context->injectFn([$this, 'registerHooks']);
 	}
 	public function registerHooks(EventDispatcherInterface $dispatcher) {
+		// $dispatcher->addListener(IUser::class . '::firstLogin', function ($event) {
+
+		// });
 		// first time login event setup
-		// $dispatcher->addListener(IUser::class . '::firstLogin', FirstLoginListener::class);
+		$dispatcher->addListener(IUser::class . '::firstLogin', FirstLoginListener::class);
 	}
 }
