@@ -10,6 +10,7 @@ use OCP\ILogger;
 use OCP\Mail\IMailer;
 use OCP\IConfig;
 use OCA\EcloudAccounts\Service\UserService;
+use OCP\Server;
 
 class FirstLoginListener implements IEventListener {
 	private $logger;
@@ -36,7 +37,14 @@ class FirstLoginListener implements IEventListener {
 	public static function sendWelcomeEmail() {
 		$displayname = 'Ronak Patel';
 		$username = 'rptest46';
-		$this->userService->sendWelcomeEmail($displayname, $username);
+		/** @var self $listener */
+		$listener = Server::get(self::class);
+		$listener->sendEmail($displayname, $username);
+
+		// $this->userService->sendWelcomeEmail($displayname, $username);
 		return true;
+	}
+	public function sendEmail($displayname, $username) {
+		$this->userService->sendWelcomeEmail($displayname, $username);
 	}
 }
