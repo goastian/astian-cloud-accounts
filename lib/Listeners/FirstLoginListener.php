@@ -29,7 +29,6 @@ class FirstLoginListener implements IEventListener {
 	public function handle(Event $event): void {
 		if ($event instanceof FirstLoginEvent) {
 			$this->logger->info("First time login detected for user: " . $event->getUserId());
-
 			// Send a welcome email to the user
 			$user = $this->userSession->getUser();
 			$email = $user->getEMailAddress();
