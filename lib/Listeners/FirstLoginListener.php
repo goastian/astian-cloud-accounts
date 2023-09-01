@@ -20,14 +20,9 @@ class FirstLoginListener implements IEventListener {
 		$this->userService = $userService;
 		$this->userSession = $userSession;
 	}
-
 	public function handle(Event $event): void {
 		$this->logger->error("FIRST TIME LOGIN LISTENER CALLED");
 	}
-
-	/**
-	 * Summary of sendWelcomeEmail
-	 */
 	public static function firstLogin() {
 		/** @var self $listener */
 		$listener = Server::get(self::class);
