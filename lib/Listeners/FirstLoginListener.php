@@ -28,13 +28,13 @@ class FirstLoginListener implements IEventListener {
 	/**
 	 * Summary of sendWelcomeEmail
 	 */
-	public static function sendWelcomeEmail() {
+	public static function firstLogin() {
 		/** @var self $listener */
 		$listener = Server::get(self::class);
-		$listener->sendEmail();
+		$listener->sendWelcomeEmail();
 		return;
 	}
-	public function sendEmail() {
+	public function sendWelcomeEmail() {
 		$user = $this->userSession->getUser();
 		$email = $user->getEMailAddress();
 		$displayname = $user->getDisplayName();
