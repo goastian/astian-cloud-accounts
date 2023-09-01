@@ -65,6 +65,6 @@ class Application extends App implements IBootstrap {
 		$context->injectFn([$this, 'registerHooks']);
 	}
 	public function registerHooks(EventDispatcherInterface $dispatcher) {
-		$dispatcher->addListener(IUser::class . '::firstLogin', [FirstLoginListener::class, 'firstLogin']);
+		$dispatcher->addListener(IUser::class . '::firstLogin', [FirstLoginListener::class, 'handle']);
 	}
 }
