@@ -7,22 +7,16 @@ namespace OCA\EcloudAccounts\Listeners;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\ILogger;
-use OCP\Mail\IMailer;
-use OCP\IConfig;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\Server;
 use OCP\IUserSession;
 
 class FirstLoginListener implements IEventListener {
 	private $logger;
-	private $mailer;
-	private $config;
 	private $userService;
 	private $userSession;
-	public function __construct(ILogger $logger, IMailer $mailer, IConfig $config, UserService $userService, IUserSession $userSession) {
+	public function __construct(ILogger $logger, UserService $userService, IUserSession $userSession) {
 		$this->logger = $logger;
-		$this->mailer = $mailer;
-		$this->config = $config;
 		$this->userService = $userService;
 		$this->userSession = $userSession;
 	}
