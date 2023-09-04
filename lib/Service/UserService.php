@@ -13,6 +13,7 @@ use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Mail\IMailer;
 use OCP\Util;
+use OCP\Defaults;
 
 use UnexpectedValueException;
 
@@ -28,14 +29,16 @@ class UserService {
 
 	private $curl;
 	private $mailer;
+	private $defaults;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, IMailer $mailer) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, IMailer $mailer, Defaults $defaults) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
 		$this->curl = $curlService;
 		$this->logger = $logger;
 		$this->mailer = $mailer;
+		$this->defaults = $defaults;
 	}
 
 
@@ -141,15 +144,21 @@ class UserService {
 		$templateID = 'd-fd8cdc9225f54e688b1513656620ddcb';
 		
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
+		$fromName = $this->defaults->getName();
+		$mailDomain = $this->config->getSystemValue('mail_domain', '');
 		
 		$email = new \SendGrid\Mail\Mail();
-		$email->setFrom($fromEmail, "Murena Team");
-		$email->setSubject("Sending with SendGrid is Fun");
+		$email->setFrom($fromEmail, $fromName);
 		$email->addTo($toEmail, $displayname);
 		$email->setTemplateId($templateID);
+		$email->addDynamicTemplateDatas([
+			"username" => $displayname,
+			"mail_domain" => $mailDomain,
+			"display_name" => $displayname
+		]);
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		try {
-			return $sendgrid->send($email);
+			$sendgrid->send($email);
 		} catch (\Exception $e) {
 			echo 'Caught exception: ' . $e->getMessage() . "\n";
 		}
