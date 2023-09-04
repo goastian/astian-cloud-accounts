@@ -11,9 +11,7 @@ use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Mail\IMailer;
 use OCP\Util;
-use SendGrid\Mail\From;
-use SendGrid\Mail\To;
-use SendGrid\Mail\Mail;
+use SendGrid\Mail\Mail as SendGridMail;
 
 
 use UnexpectedValueException;
@@ -141,18 +139,13 @@ class UserService {
 	public function sendWelcomeEmail(string $displayname, string $toEmail) {
 		$sendgridAPIkey = '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';
 		$templateID = 'd-fd8cdc9225f54e688b1513656620ddcb';
+		
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
-		$from = new From($fromEmail, "Murena Team");
-		$to = new To(
-			$toEmail
-		);
-		$email = new Mail($from, $to);
-		$email->addDynamicTemplateDatas([
-			"username" => $displayname,
-			"mail_domain" => "dev.eeo.one",
-			"display_name" => $displayname
-		]);
-
+		
+		$email = new SendGridMail();
+		$email->setFrom($fromEmail, "Murena Team");
+		$email->setSubject("Sending with SendGrid is Fun");
+		$email->addTo($toEmail, $displayname);
 		$email->setTemplateId($templateID);
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		try {
@@ -160,46 +153,6 @@ class UserService {
 		} catch (\Exception $e) {
 			echo 'Caught exception: ' . $e->getMessage() . "\n";
 		}
-
-		
-		// $email = new \SendGrid\Mail\Mail();
-		// $email->setFrom(Util::getDefaultEmailAddress('noreply'), "Murena Team");
-		// $email->setSubject("Sending with SendGrid is Fun");
-		// $email->addTo($fromEmail, $displayname);
-		// $email->setTemplateId('d-fd8cdc9225f54e688b1513656620ddcb');
-		// $email->addDynamicTemplateDatas([
-		// 	"username" => $displayname,
-		// 	"mail_domain" => "Ankit",
-		// 	"display_name" => $displayname
-		// ]);
-		
-		
 		return true;
 	}
-
-	// public function sendWelcomeEmail(string $displayname, string $fromEmail) {
-	// 	$title = 'Welcome to Murena Email Service!';
-	// 	$description = 'Dear '.$displayname.',<br />We are thrilled to welcome you to Murena Email Service! It\'s a pleasure to have you on board and we are excited about the journey ahead.
-	// 	<br />At Murena, we are committed to providing you with a seamless and secure email experience. Our user-friendly interface, advanced features, and robust security measures have been designed to ensure that your communication remains efficient, effective, and protected.
-	// 	<br />As you explore our platform, you will discover a range of features tailored to meet your email needs. From easy-to-use organization tools to powerful search capabilities, we aim to enhance your productivity and streamline your communication.
-	// 	<br />Your privacy and security are of utmost importance to us. Rest assured that we employ state-of-the-art encryption and multi-layered security protocols to safeguard your sensitive information.
-	// 	<br />Should you require any assistance or have any questions, our dedicated support team is here to help. Don\'t hesitate to reach out at [support email] for any inquiries or concerns.
-	// 	<br />Once again, welcome to the Murena Email Service community! We\'re excited to have you on board and look forward to serving your email needs.
-	// 	<br />Best regards,
-	// 	<br />Murena Team';
-
-	// 	$template = $this->mailer->createEMailTemplate('account.SendWelcomeEmail', []);
-	// 	$template->addHeader();
-	// 	$template->setSubject($title);
-	// 	$template->addBodyText(htmlspecialchars($description), $description);
-
-	// 	$message = $this->mailer->createMessage();
-	// 	$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
-	// 	$message->setReplyTo([$fromEmail => $displayname]);
-	// 	$message->setTo([$fromEmail]);
-	// 	$message->useTemplate($template);
-
-	// 	$this->mailer->send($message);
-	// 	return true;
-	// }
 }
