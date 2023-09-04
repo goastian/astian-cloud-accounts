@@ -13,6 +13,7 @@ use OCP\IUserManager;
 use OCP\IUser;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use Throwable;
 
 class WebmailMapper {
 	private IConfig $config;
@@ -107,24 +108,37 @@ class WebmailMapper {
 
 		$principalUri = 'principals/users/'. $username;
 		$addressbookUri = 'webmail'; // some unique identifier
-		$alreadyImported = $this->cardDavBackend->getAddressBooksByUri($principalUri, $addressbookUri);
+		try {
+			$alreadyImported = $this->cardDavBackend->getAddressBooksByUri($principalUri, $addressbookUri);
 
-		if ($alreadyImported) {
-			return;
-		}
+			if ($alreadyImported) {
+				return;
+			}
 
-		$addressBookId = $this->cardDavBackend->createAddressBook($principalUri, $addressbookUri, ['{DAV:}displayname' => 'Webmail',
-			'{urn:ietf:params:xml:ns:carddav}addressbook-description' => 'Contacts imported from snappymail']);
-
-		foreach ($contacts as $contact) {
-			$contact->PRODID = '-//IDN murena.io//Migrated contact//EN';
-
-			$this->cardDavBackend->createCard(
-				$addressBookId,
-				UUIDUtil::getUUID() . '.vcf',
-				$contact->serialize(),
-				true
+			$addressBookId = $this->cardDavBackend->createAddressBook(
+				$principalUri, 
+				$addressbookUri, 
+				[
+					'{DAV:}displayname' => 'Webmail',
+					'{urn:ietf:params:xml:ns:carddav}addressbook-description' => 'Contacts imported from snappymail'
+				]
 			);
+		} catch (Throwable $e) {
+			$this->logger->error('Error creating address book for user: ' . $username . ' ' . $e->getMessage());
+		}
+		foreach ($contacts as $contact) {
+			try {
+				$contact->PRODID = '-//IDN murena.io//Migrated contact//EN';
+
+				$this->cardDavBackend->createCard(
+					$addressBookId,
+					UUIDUtil::getUUID() . '.vcf',
+					$contact->serialize(),
+					true
+				);
+			} catch (Throwable $e) {
+				$this->logger->error('Error inserting contact for user: ' . $username . ' contact: ' . $contact->serialize() . ' ' . $e->getMessage());
+			}
 		}
 	}
 

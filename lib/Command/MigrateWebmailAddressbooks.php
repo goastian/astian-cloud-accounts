@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use OCA\EcloudAccounts\Db\WebmailMapper;
 use OCP\IUserManager;
+use OCP\IUser;
 
 class MigrateWebmailAddressbooks extends Command {
 	private OutputInterface $commandOutput;
@@ -78,10 +79,20 @@ class MigrateWebmailAddressbooks extends Command {
 			$emails = [];
 			foreach ($usernames as $username) {
 				$user = $this->userManager->get($username);
+				if (!$user instanceof IUser) {
+					$this->commandOutput->writeln('User ' . $username . ' does not exist!');
+					continue;
+				}
+
 				$email = $user->getEMailAddress();
 				$emails[] = $email;
 			}
+
+			
 			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
+			if (empty($users)) {
+				return;
+			}
 			$this->webmailMapper->migrateContacts($users);
 			return;
 		}
