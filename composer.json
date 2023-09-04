@@ -12,6 +12,7 @@
     },
     "autoload": {
         "psr-4": {
+            "OCA\\EcloudAccounts\\Service\\": "lib/Service/",
             "SendGrid\\": "vendor/sendgrid/sendgrid"
         }
     }
