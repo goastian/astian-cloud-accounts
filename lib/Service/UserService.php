@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
+require_once './vendor/autoload.php';
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\IConfig;
