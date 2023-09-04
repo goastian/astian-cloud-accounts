@@ -13,7 +13,6 @@ use OCP\Mail\IMailer;
 use OCP\Util;
 use SendGrid\Mail\Mail as SendGridMail;
 
-
 use UnexpectedValueException;
 
 class UserService {
