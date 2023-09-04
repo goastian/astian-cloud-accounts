@@ -11,6 +11,10 @@ use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Mail\IMailer;
 use OCP\Util;
+use SendGrid\Mail\From;
+use SendGrid\Mail\To;
+use SendGrid\Mail\Mail;
+
 
 use UnexpectedValueException;
 
@@ -134,24 +138,42 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $displayname, string $fromEmail) {
-		$email = new \SendGrid\Mail\Mail();
-		$email->setFrom(Util::getDefaultEmailAddress('noreply'), "Murena Team");
-		$email->setSubject("Sending with SendGrid is Fun");
-		$email->addTo($fromEmail, $displayname);
-		$email->setTemplateId('d-fd8cdc9225f54e688b1513656620ddcb');
+	public function sendWelcomeEmail(string $displayname, string $toEmail) {
+		$sendgridAPIkey = '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';
+		$templateID = 'd-fd8cdc9225f54e688b1513656620ddcb';
+		$fromEmail = Util::getDefaultEmailAddress('noreply');
+		$from = new From($fromEmail, "Murena Team");
+		$to = new To(
+			$toEmail
+		);
+		$email = new Mail($from, $to);
 		$email->addDynamicTemplateDatas([
 			"username" => $displayname,
-			"mail_domain" => "Ankit",
+			"mail_domain" => "dev.eeo.one",
 			"display_name" => $displayname
 		]);
-		$sendgridAPIkey = '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';
+
+		$email->setTemplateId($templateID);
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		try {
-			$response = $sendgrid->send($email);
+			return $sendgrid->send($email);
 		} catch (\Exception $e) {
 			echo 'Caught exception: ' . $e->getMessage() . "\n";
 		}
+
+		
+		// $email = new \SendGrid\Mail\Mail();
+		// $email->setFrom(Util::getDefaultEmailAddress('noreply'), "Murena Team");
+		// $email->setSubject("Sending with SendGrid is Fun");
+		// $email->addTo($fromEmail, $displayname);
+		// $email->setTemplateId('d-fd8cdc9225f54e688b1513656620ddcb');
+		// $email->addDynamicTemplateDatas([
+		// 	"username" => $displayname,
+		// 	"mail_domain" => "Ankit",
+		// 	"display_name" => $displayname
+		// ]);
+		
+		
 		return true;
 	}
 
