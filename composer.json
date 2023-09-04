@@ -9,11 +9,5 @@
     },
     "require": {
         "sendgrid/sendgrid": "^8.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "OCA\\EcloudAccounts\\Service\\": "lib/Service/",
-            "SendGrid\\": "vendor/sendgrid/sendgrid"
-        }
     }
 }
