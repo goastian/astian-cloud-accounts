@@ -55,7 +55,7 @@ class UserService {
 		foreach ($backends as $backend) {
 			if ($backend->getBackendName() === 'LDAP') {
 				$access = $backend->getLDAPAccess($uid);
-				$users = $access->fetchUsersByLoginName($uid) ;
+				$users = $access->fetchUsersByLoginName($uid);
 				if (count($users) > 0) {
 					$exists = true;
 				}
@@ -77,7 +77,7 @@ class UserService {
 		}
 	}
 
-	public function getHMEAliasesFromConfig($uid) : array {
+	public function getHMEAliasesFromConfig($uid): array {
 		$aliases = $this->config->getUserValue($uid, 'hide-my-email', 'email-aliases', []);
 		if (!empty($aliases)) {
 			$aliases = json_decode($aliases, true);
@@ -85,7 +85,7 @@ class UserService {
 		return $aliases;
 	}
 
-	public function addHMEAliasInConfig($uid, $alias) : bool {
+	public function addHMEAliasInConfig($uid, $alias): bool {
 		$aliases = $this->getHMEAliasesFromConfig($uid);
 		$aliases[] = $alias;
 		$aliases = json_encode($aliases);
@@ -135,28 +135,49 @@ class UserService {
 		return null;
 	}
 	public function sendWelcomeEmail(string $displayname, string $fromEmail) {
-		$title = 'Welcome to Murena Email Service!';
-		$description = 'Dear '.$displayname.',<br />We are thrilled to welcome you to Murena Email Service! It\'s a pleasure to have you on board and we are excited about the journey ahead.
-		<br />At Murena, we are committed to providing you with a seamless and secure email experience. Our user-friendly interface, advanced features, and robust security measures have been designed to ensure that your communication remains efficient, effective, and protected.
-		<br />As you explore our platform, you will discover a range of features tailored to meet your email needs. From easy-to-use organization tools to powerful search capabilities, we aim to enhance your productivity and streamline your communication.
-		<br />Your privacy and security are of utmost importance to us. Rest assured that we employ state-of-the-art encryption and multi-layered security protocols to safeguard your sensitive information.
-		<br />Should you require any assistance or have any questions, our dedicated support team is here to help. Don\'t hesitate to reach out at [support email] for any inquiries or concerns.
-		<br />Once again, welcome to the Murena Email Service community! We\'re excited to have you on board and look forward to serving your email needs.
-		<br />Best regards,
-		<br />Murena Team';
-
-		$template = $this->mailer->createEMailTemplate('account.SendWelcomeEmail', []);
-		$template->addHeader();
-		$template->setSubject($title);
-		$template->addBodyText(htmlspecialchars($description), $description);
-
-		$message = $this->mailer->createMessage();
-		$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
-		$message->setReplyTo([$fromEmail => $displayname]);
-		$message->setTo([$fromEmail]);
-		$message->useTemplate($template);
-
-		$this->mailer->send($message);
+		$email = new \SendGrid\Mail\Mail();
+		$email->setFrom(Util::getDefaultEmailAddress('noreply'), "Murena Team");
+		$email->setSubject("Sending with SendGrid is Fun");
+		$email->addTo($fromEmail, $displayname);
+		$email->setTemplateId('d-fd8cdc9225f54e688b1513656620ddcb');
+		$email->addDynamicTemplateDatas([
+			"username" => $displayname,
+			"mail_domain" => "Ankit",
+			"display_name" => $displayname
+		]);
+		$sendgridAPIkey = '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';
+		$sendgrid = new \SendGrid($sendgridAPIkey);
+		try {
+			$response = $sendgrid->send($email);
+		} catch (\Exception $e) {
+			echo 'Caught exception: ' . $e->getMessage() . "\n";
+		}
 		return true;
 	}
+
+	// public function sendWelcomeEmail(string $displayname, string $fromEmail) {
+	// 	$title = 'Welcome to Murena Email Service!';
+	// 	$description = 'Dear '.$displayname.',<br />We are thrilled to welcome you to Murena Email Service! It\'s a pleasure to have you on board and we are excited about the journey ahead.
+	// 	<br />At Murena, we are committed to providing you with a seamless and secure email experience. Our user-friendly interface, advanced features, and robust security measures have been designed to ensure that your communication remains efficient, effective, and protected.
+	// 	<br />As you explore our platform, you will discover a range of features tailored to meet your email needs. From easy-to-use organization tools to powerful search capabilities, we aim to enhance your productivity and streamline your communication.
+	// 	<br />Your privacy and security are of utmost importance to us. Rest assured that we employ state-of-the-art encryption and multi-layered security protocols to safeguard your sensitive information.
+	// 	<br />Should you require any assistance or have any questions, our dedicated support team is here to help. Don\'t hesitate to reach out at [support email] for any inquiries or concerns.
+	// 	<br />Once again, welcome to the Murena Email Service community! We\'re excited to have you on board and look forward to serving your email needs.
+	// 	<br />Best regards,
+	// 	<br />Murena Team';
+
+	// 	$template = $this->mailer->createEMailTemplate('account.SendWelcomeEmail', []);
+	// 	$template->addHeader();
+	// 	$template->setSubject($title);
+	// 	$template->addBodyText(htmlspecialchars($description), $description);
+
+	// 	$message = $this->mailer->createMessage();
+	// 	$message->setFrom([Util::getDefaultEmailAddress('noreply')]);
+	// 	$message->setReplyTo([$fromEmail => $displayname]);
+	// 	$message->setTo([$fromEmail]);
+	// 	$message->useTemplate($template);
+
+	// 	$this->mailer->send($message);
+	// 	return true;
+	// }
 }
