@@ -11,7 +11,6 @@ use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Mail\IMailer;
 use OCP\Util;
-use SendGrid\Mail\Mail as SendGridMail;
 
 use UnexpectedValueException;
 
@@ -141,7 +140,7 @@ class UserService {
 		
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		
-		$email = new SendGridMail();
+		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, "Murena Team");
 		$email->setSubject("Sending with SendGrid is Fun");
 		$email->addTo($toEmail, $displayname);
