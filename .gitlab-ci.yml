@@ -2,7 +2,7 @@ variables:
     TO_PACKAGE: 'appinfo l10n lib templates js img'
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
-    ref: main
+    ref: dev/allow-vendor
     file: "nc-apps-lint-build-frontend.yml"
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
