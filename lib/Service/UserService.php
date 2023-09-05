@@ -159,8 +159,9 @@ class UserService {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		try {
 			$sendgrid->send($email);
+			$this->logger->error("EMAIL SENT SUCCESSFULLY TO ".$email. "(".$displayname.")");
 		} catch (\Exception $e) {
-			echo 'Caught exception: ' . $e->getMessage() . "\n";
+			$this->logger->error('Caught exception: ' . $e->getMessage() . "\n");
 		}
 		return true;
 	}
