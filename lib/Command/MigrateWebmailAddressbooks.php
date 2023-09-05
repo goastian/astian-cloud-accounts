@@ -39,7 +39,7 @@ class MigrateWebmailAddressbooks extends Command {
 				null,
 				InputOption::VALUE_OPTIONAL,
 				'Limit of users to migrate',
-				null
+				0
 			)
 			->addOption(
 				'offset',
@@ -88,7 +88,11 @@ class MigrateWebmailAddressbooks extends Command {
 				$emails[] = $email;
 			}
 
-			$this->commandOutput->writeln('Migrating ' . $limit . ' users starting at ' . $offset);
+			if ($limit === 0) {
+				$this->commandOutput->writeln('Migrating all users starting at ' . $offset);
+			} else {
+				$this->commandOutput->writeln('Migrating ' . $limit . ' users starting at ' . $offset);
+			}
 			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
 			if (empty($users)) {
 				return;

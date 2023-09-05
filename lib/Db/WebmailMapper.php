@@ -52,12 +52,12 @@ class WebmailMapper {
 	}
 
 
-	public function getUsers(int $limit, int $offset = 0, array $emails = []) : array {
+	public function getUsers(int $limit = 0, int $offset = 0, array $emails = []) : array {
 		$qb = $this->conn->createQueryBuilder();
 		$qb->select('rl_email, id_user')
 			->from(self::USERS_TABLE, 'u')
 			->setFirstResult($offset);
-		if ($limit) {
+		if ($limit > 0) {
 			$qb->setMaxResults($limit);
 		}
 		if (!empty($emails)) {
