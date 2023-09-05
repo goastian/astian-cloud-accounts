@@ -54,5 +54,5 @@ The values are:
 The values are:
 ```
 'sendgrid_api_key' => 'SENDGRID_API_KEY',
-'sendgrid_template_ids' => [ 'en' => 'TEMPLATE_ID', 'es' => 'TEMPLATE_ID', ... ]
+'sendgrid_template_ids' => [ 'en' => 'EN_TEMPLATE_ID', 'es' => 'ES_TEMPLATE_ID', ... ]
 ```
