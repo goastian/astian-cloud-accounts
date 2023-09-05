@@ -30,21 +30,21 @@ class MigrateWebmailAddressbooks extends Command {
 			->addOption(
 				'users',
 				null,
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				'comma separated list of users',
 				''
 			)
 			->addOption(
 				'limit',
 				null,
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				'Limit of users to migrate',
 				0
 			)
 			->addOption(
 				'offset',
 				null,
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				'Offset',
 				0
 			);
