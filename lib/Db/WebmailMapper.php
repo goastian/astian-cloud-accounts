@@ -52,12 +52,12 @@ class WebmailMapper {
 	}
 
 
-	public function getUsers(int $limit, int $offset = 0, array $emails = []) : array {
+	public function getUsers(int $limit = 0, int $offset = 0, array $emails = []) : array {
 		$qb = $this->conn->createQueryBuilder();
 		$qb->select('rl_email, id_user')
 			->from(self::USERS_TABLE, 'u')
 			->setFirstResult($offset);
-		if ($limit) {
+		if ($limit > 0) {
 			$qb->setMaxResults($limit);
 		}
 		if (!empty($emails)) {
@@ -142,13 +142,21 @@ class WebmailMapper {
 		}
 	}
 
-	public function migrateContacts(array $users) {
+	public function migrateContacts(array $users, $commandOutput = null) {
+		$userCount = 0;
 		foreach ($users as $user) {
-			$contacts = $this->getUserContacts($user['id']);
-			if (!count($contacts)) {
-				return;
+			$userCount += 1;
+			if ($commandOutput) {
+				$commandOutput->writeln('Migrating user ' . $userCount . ' with email: '.  $user['email']);
 			}
-			$this->createCloudAddressBook($contacts, $user['email']);
+			$contacts = $this->getUserContacts($user['id']);
+			$numberOfContacts = count($contacts);
+			if ($commandOutput) {
+				$commandOutput->writeln('Number of contacts for ' . $user['email'] . ':' . $numberOfContacts);
+			}
+			if ($numberOfContacts > 0) {
+				$this->createCloudAddressBook($contacts, $user['email']);
+			}
 		}
 	}
 

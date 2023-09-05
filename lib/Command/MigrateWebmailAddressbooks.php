@@ -30,21 +30,21 @@ class MigrateWebmailAddressbooks extends Command {
 			->addOption(
 				'users',
 				null,
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				'comma separated list of users',
 				''
 			)
 			->addOption(
 				'limit',
 				null,
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				'Limit of users to migrate',
-				null
+				0
 			)
 			->addOption(
 				'offset',
 				null,
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				'Offset',
 				0
 			);
@@ -88,12 +88,16 @@ class MigrateWebmailAddressbooks extends Command {
 				$emails[] = $email;
 			}
 
-			
+			if ($limit === 0) {
+				$this->commandOutput->writeln('Migrating all users starting at ' . $offset);
+			} else {
+				$this->commandOutput->writeln('Migrating ' . $limit . ' users starting at ' . $offset);
+			}
 			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
 			if (empty($users)) {
 				return;
 			}
-			$this->webmailMapper->migrateContacts($users);
+			$this->webmailMapper->migrateContacts($users, $this->commandOutput);
 			return;
 		}
 		$users = $this->webmailMapper->getUsers($limit, $offset);
