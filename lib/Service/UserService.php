@@ -159,7 +159,7 @@ class UserService {
 		$toEmail = $user->getEMailAddress();
 		$toName = $user->getDisplayName();
 		
-		$mailDomain = $this->config->getSystemValue('mail_domain', '');
+		$mailDomain = $this->config->getSystemValue('main_domain', '');
 		$username = explode('@', $user->getEMailAddress())[0];
 
 		$email = new \SendGrid\Mail\Mail();
