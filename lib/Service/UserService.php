@@ -161,7 +161,7 @@ class UserService {
 			$sendgrid->send($email);
 			$this->logger->error("EMAIL SENT SUCCESSFULLY TO ".$email. "(".$displayname.")");
 		} catch (\Exception $e) {
-			$this->logger->error('Caught exception: ' . $e->getMessage() . "\n");
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
 		return true;
 	}
