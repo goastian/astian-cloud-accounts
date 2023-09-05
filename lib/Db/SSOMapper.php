@@ -170,12 +170,12 @@ class SSOMapper {
 		return $params;
 	}
 
-		/**
-		 *	From https://www.uuidgenerator.net/dev-corner/php
-		 *	As keycloak generates random UUIDs using the java.util.UUID class which is RFC 4122 compliant
-		 *
-		 *   @return string
-		 */
+	/**
+	 *	From https://www.uuidgenerator.net/dev-corner/php
+	 *	As keycloak generates random UUIDs using the java.util.UUID class which is RFC 4122 compliant
+	 *
+	 *   @return string
+	 */
 	private function randomUUID($data = null) : string {
 		// Generate 16 bytes (128 bits) of random data or use the data passed into the function.
 		$data = $data ?? random_bytes(16);

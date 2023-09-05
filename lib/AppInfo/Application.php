@@ -41,6 +41,7 @@ use OCP\IUserManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use OCA\EcloudAccounts\Listeners\FirstLoginListener;
 use OCP\IUser;
+use OCP\User\Events\PostLoginEvent;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -53,6 +54,7 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
+		// $context->registerEventListener(PostLoginEvent::class, FirstLoginListener::class);
 	}
 
 	public function boot(IBootContext $context): void {

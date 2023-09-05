@@ -1,5 +1,10 @@
 variables:
-    TO_PACKAGE: 'appinfo l10n lib templates js img'
+  CONTAINER_IMAGE: ubuntu
+  CONTAINER_TAG: focal
+  CONTAINER_NAME: nextcloud
+  APP_NAME: $CI_PROJECT_NAME
+  APP_ENABLE_ARGS: ''
+  TO_PACKAGE: 'appinfo l10n lib templates js img'
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: dev/allow-vendor
@@ -7,3 +12,43 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "nc-apps-deploy.yml"
+
+.deploy:nextcloud-app:
+  stage: deploy
+  # assuming all deployment will happen with sames image
+  image: $CONTAINER_IMAGE:$CONTAINER_TAG
+  # assuming we will need to add SSH for all deployment
+  before_script:
+    - echo "FAIL" > .job_status
+    - mkdir $HOME/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY_ED" > $HOME/.ssh/id_ed25519
+    - echo "$SSH_PUBKEY_ED" > $HOME/.ssh/id_ed25519.pub
+    - echo "$SSH_KNOWN_HOSTS" > $HOME/.ssh/known_hosts
+    - chmod 600 ~/.ssh/id_ed25519
+    - chmod 644 ~/.ssh/known_hosts ~/.ssh/id_ed25519.pub
+    - apt-get update && apt-get install -y openssh-client rsync
+  script:
+    - echo "Deploying ${APP_NAME} to $CI_ENVIRONMENT_NAME ($DEPLOYMENT_HOST)"
+    - rsync -avzh dist/ $SSH_USER@$DEPLOYMENT_HOST:/tmp/${CI_JOB_ID}
+    - ssh $SSH_USER@$DEPLOYMENT_HOST "sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:disable ${APP_NAME} && 
+      sudo rsync -avzh --chown www-data:www-data --delete /tmp/${CI_JOB_ID}/${APP_NAME} ${DEPLOYMENT_PATH}/html/custom_apps/ && 
+      sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:enable ${APP_ENABLE_ARGS} ${APP_NAME}"
+    - echo "SUCCESS" > .job_status
+  after_script:
+    # reading job status, checking it and implementing additional steps
+    # are not handled here as rm -rf /tmp/${CI_JOB_ID} will always execute
+    - ssh $SSH_USER@$DEPLOYMENT_HOST "rm -rf /tmp/${CI_JOB_ID}"
+
+deploy:staging:
+  extends: .deploy:nextcloud-app
+  when: manual
+  only:
+    - main
+    - murena-main
+    - production
+    - dev/migrate-webmail-contacts
+    - tags
+  environment:
+    name: staging/01
+    url: https://eeo.one
