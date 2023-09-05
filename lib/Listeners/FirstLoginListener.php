@@ -33,7 +33,7 @@ class FirstLoginListener implements IEventListener {
 		$user = $this->userSession->getUser();
 		$email = $user->getEMailAddress();
 		$displayname = $user->getDisplayName();
-		$this->logger->info("SENDING EMAIL TO ".$email. "(".$displayname.")");
+		$this->logger->info("Sending email to ".$email. "(".$displayname.")");
 		$this->userService->sendWelcomeEmail($displayname, $email);
 		return;
 	}
