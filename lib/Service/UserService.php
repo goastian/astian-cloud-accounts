@@ -177,11 +177,9 @@ class UserService {
 			return false;
 		}
 	}
-	
 	private function getSendGridAPIKey() {
 		return $this->config->getSystemValue('sendgrid_api_key', '');
 	}
-	
 	private function getSendGridTemplateIDs() {
 		return $this->config->getSystemValue('sendgrid_template_ids', '');
 	}
@@ -191,7 +189,6 @@ class UserService {
 	private function getUserLanguage($username) {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
-	
 	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mailDomain) {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
