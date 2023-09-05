@@ -73,7 +73,7 @@ class MigrateWebmailAddressbooks extends Command {
 	 *
 	 * @return void
 	 */
-	private function migrateUsers(int $limit = 0 , int $offset = 0, array $usernames = []) : void {
+	private function migrateUsers(int $limit = 0, int $offset = 0, array $usernames = []) : void {
 		$users = [];
 		if (!empty($usernames)) {
 			$emails = [];
