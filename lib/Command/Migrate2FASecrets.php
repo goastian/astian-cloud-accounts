@@ -61,7 +61,7 @@ class Migrate2FASecrets extends Command {
 		foreach ($entries as $entry) {
 			try {
 				$this->ssoMapper->migrateCredential($entry['username'], $entry['secret']);
-			} catch(\Exception $e) {
+			} catch (\Exception $e) {
 				$this->commandOutput->writeln('Error inserting entry for user ' . $entry['username'] . ' message: ' . $e->getMessage());
 				continue;
 			}
