@@ -116,8 +116,8 @@ class WebmailMapper {
 			}
 
 			$addressBookId = $this->cardDavBackend->createAddressBook(
-				$principalUri, 
-				$addressbookUri, 
+				$principalUri,
+				$addressbookUri,
 				[
 					'{DAV:}displayname' => 'Webmail',
 					'{urn:ietf:params:xml:ns:carddav}addressbook-description' => 'Contacts imported from snappymail'
