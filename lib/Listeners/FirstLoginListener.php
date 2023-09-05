@@ -21,7 +21,7 @@ class FirstLoginListener implements IEventListener {
 		$this->userSession = $userSession;
 	}
 	public function handle(Event $event): void {
-		$this->logger->error("FIRST TIME LOGIN LISTENER CALLED");
+		$this->logger->info("FIRST TIME LOGIN LISTENER CALLED");
 	}
 	public static function firstLogin() {
 		/** @var self $listener */
@@ -33,7 +33,7 @@ class FirstLoginListener implements IEventListener {
 		$user = $this->userSession->getUser();
 		$email = $user->getEMailAddress();
 		$displayname = $user->getDisplayName();
-		$this->logger->error("SENDING EMAIL TO ".$email. "(".$displayname.")");
+		$this->logger->info("SENDING EMAIL TO ".$email. "(".$displayname.")");
 		$this->userService->sendWelcomeEmail($displayname, $email);
 		return;
 	}

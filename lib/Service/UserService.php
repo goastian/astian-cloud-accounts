@@ -159,7 +159,7 @@ class UserService {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		try {
 			$sendgrid->send($email);
-			$this->logger->error("EMAIL SENT SUCCESSFULLY TO ".$toEmail. "(".$displayname.")");
+			$this->logger->info("EMAIL SENT SUCCESSFULLY TO ".$toEmail. "(".$displayname.")");
 		} catch (\Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
