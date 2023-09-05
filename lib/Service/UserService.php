@@ -139,29 +139,60 @@ class UserService {
 	}
 	public function sendWelcomeEmail() {
 		$user = $this->userSession->getUser();
-
-		$sendgridAPIkey = $this->config->getSystemValue('sendgrid_api_key', '');
+		$sendgridAPIkey = $this->getSendGridAPIKey();
+	
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
 			return false;
 		}
-		$templateIDs = $this->config->getSystemValue('sendgrid_template_ids', '');
-		if (empty($sendgridAPIkey)) {
+	
+		$templateIDs = $this->getSendGridTemplateIDs();
+		if (empty($templateIDs)) {
 			$this->logger->warning("sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return false;
 		}
-		$language = $this->config->getUserValue($user->getUID(), 'core', 'lang', null);
-		$templateID = $templateIDs[$language] ?? $templateIDs['en'];
-
+		
+		$username = $user->getUID();
+		$language = $this->getUserLanguage($username);
+		
+		$templateID = $templateIDs['en'];
+		if (isset($templateIDs[$language])) {
+			$templateID = $templateIDs[$language];
+		}
+	
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 		
 		$toEmail = $user->getEMailAddress();
 		$toName = $user->getDisplayName();
 		
-		$mailDomain = $this->config->getSystemValue('main_domain', '');
-		$username = explode('@', $user->getEMailAddress())[0];
-
+		$mainDomain = $this->getMainDomain();
+		
+		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
+	
+		try {
+			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
+		} catch (\Exception $e) {
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+	}
+	
+	private function getSendGridAPIKey() {
+		return $this->config->getSystemValue('sendgrid_api_key', '');
+	}
+	
+	private function getSendGridTemplateIDs() {
+		return $this->config->getSystemValue('sendgrid_template_ids', '');
+	}
+	private function getMainDomain() {
+		return $this->config->getSystemValue('main_domain', '');
+	}
+	private function getUserLanguage($username) {
+		return $this->config->getUserValue($username, 'core', 'lang', 'en');
+	}
+	
+	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mailDomain) {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
 		$email->addTo($toEmail, $toName);
@@ -171,14 +202,12 @@ class UserService {
 			"mail_domain" => $mailDomain,
 			"display_name" => $toName
 		]);
+		return $email;
+	}
+	
+	private function sendEmailWithSendGrid($email, $sendgridAPIkey) {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
-
-		try {
-			$sendgrid->send($email);
-			return true;
-		} catch (\Exception $e) {
-			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
-		}
+		$sendgrid->send($email);
+		return true;
 	}
 }
