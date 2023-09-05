@@ -7,7 +7,9 @@
     'e_welcome_domain' => 'welcome.ecloud.global', // Domain of welcome server
     'ecloud-accounts' => [
         'secret' => 'ecloud-accounts-secret', // Secret for incoming requests to authenticate against
-    ]
+    ],
+    'sendgrid_api_key' => 'SENDGRID_API_KEY',
+    'sendgrid_template_ids' => [ 'en' => 'TEMPLATE_ID', 'es' => 'TEMPLATE_ID', . . . ]
 ```
 
 ## User Account creation
