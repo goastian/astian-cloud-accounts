@@ -4,9 +4,8 @@ before_script:
   - composer install
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
-    ref: dev/allow-vendor
+    ref: main
     file: "nc-apps-lint-build-frontend.yml"
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "nc-apps-deploy.yml"
-    
