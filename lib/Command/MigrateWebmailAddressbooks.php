@@ -73,7 +73,7 @@ class MigrateWebmailAddressbooks extends Command {
 	 *
 	 * @return void
 	 */
-	private function migrateUsers(int $limit, int $offset = 0, array $usernames = []) : void {
+	private function migrateUsers(int $limit = 0 , int $offset = 0, array $usernames = []) : void {
 		$users = [];
 		if (!empty($usernames)) {
 			$emails = [];
@@ -87,12 +87,6 @@ class MigrateWebmailAddressbooks extends Command {
 				$email = $user->getEMailAddress();
 				$emails[] = $email;
 			}
-
-			if ($limit === 0) {
-				$this->commandOutput->writeln('Migrating all users starting at ' . $offset);
-			} else {
-				$this->commandOutput->writeln('Migrating ' . $limit . ' users starting at ' . $offset);
-			}
 			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
 			if (empty($users)) {
 				return;
@@ -101,6 +95,11 @@ class MigrateWebmailAddressbooks extends Command {
 			return;
 		}
 		$users = $this->webmailMapper->getUsers($limit, $offset);
-		$this->webmailMapper->migrateContacts($users);
+		if ($limit === 0) {
+			$this->commandOutput->writeln('Migrating all users starting at ' . $offset);
+		} else {
+			$this->commandOutput->writeln('Migrating ' . $limit . ' users starting at ' . $offset);
+		}
+		$this->webmailMapper->migrateContacts($users, $this->commandOutput);
 	}
 }
