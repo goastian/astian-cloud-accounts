@@ -142,9 +142,15 @@ class WebmailMapper {
 		}
 	}
 
-	public function migrateContacts(array $users) {
+	public function migrateContacts(array $users, $commandOutput = null) {
+		$userCount = 0;
 		foreach ($users as $user) {
+			$userCount += 1;
+			if ($commandOutput) {
+				$commandOutput->writeln('Migrating user ' . $userCount . ' with email: '.  $user['email']);
+			}
 			$contacts = $this->getUserContacts($user['id']);
+			$commandOutput->writeln('Number of contacts for ' . $user['email'] . ':' . count($contacts));
 			if (!count($contacts)) {
 				return;
 			}
