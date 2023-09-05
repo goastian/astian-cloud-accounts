@@ -150,11 +150,13 @@ class WebmailMapper {
 				$commandOutput->writeln('Migrating user ' . $userCount . ' with email: '.  $user['email']);
 			}
 			$contacts = $this->getUserContacts($user['id']);
-			$commandOutput->writeln('Number of contacts for ' . $user['email'] . ':' . count($contacts));
-			if (!count($contacts)) {
-				return;
+			$numberOfContacts = count($contacts);
+			if ($commandOutput) {
+				$commandOutput->writeln('Number of contacts for ' . $user['email'] . ':' . $numberOfContacts);
 			}
-			$this->createCloudAddressBook($contacts, $user['email']);
+			if ($numberOfContacts > 0) {
+				$this->createCloudAddressBook($contacts, $user['email']);
+			}
 		}
 	}
 
