@@ -8,8 +8,6 @@
     'ecloud-accounts' => [
         'secret' => 'ecloud-accounts-secret', // Secret for incoming requests to authenticate against
     ],
-    'sendgrid_api_key' => 'SENDGRID_API_KEY',
-    'sendgrid_template_ids' => [ 'en' => 'TEMPLATE_ID', 'es' => 'TEMPLATE_ID', . . . ]
 ```
 
 ## User Account creation
@@ -44,4 +42,17 @@ The values are:
 ```
 'beta_group_name' => 'beta',
 'beta_gitlab_email_id' => 'xyz@e.email',
+```
+
+## Welcome User Email notification
+
+- The app is using system values which are configured in `/config/config.php`. 
+- Below keys to add:
+1. sendgrid_api_key
+2. sendgrid_template_ids
+
+The values are:
+```
+'sendgrid_api_key' => 'SENDGRID_API_KEY',
+'sendgrid_template_ids' => [ 'en' => 'TEMPLATE_ID', 'es' => 'TEMPLATE_ID', . . . ]
 ```
