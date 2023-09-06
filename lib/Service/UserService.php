@@ -168,8 +168,23 @@ class UserService {
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 		
-		$toEmail = $user->getEMailAddress();
-		$toName = $user->getDisplayName();
+		try {
+			$toName = $user->getDisplayName();
+			$this->logger->warning("toName:".$toName, ['app' => Application::APP_ID]);
+		} catch (\Exception $e) {
+			$this->logger->warning("Error while getting toName", ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+		try {
+			$toEmail = $user->getEMailAddress();
+			$this->logger->warning("toEmail:".$toEmail, ['app' => Application::APP_ID]);
+		} catch (\Exception $e) {
+			$this->logger->warning("Error while getting toEmail", ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+		
 		
 		$mainDomain = $this->getMainDomain();
 		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
