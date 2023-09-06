@@ -137,6 +137,11 @@ class UserService {
 
 		return null;
 	}
+	/**
+	 * Sends a welcome email to the user.
+	 *
+	 * @return bool Returns true on successful email sending, false otherwise.
+	 */
 	public function sendWelcomeEmail() {
 		$user = $this->userSession->getUser();
 
@@ -177,18 +182,53 @@ class UserService {
 			return false;
 		}
 	}
+	/**
+	 * Retrieves the SendGrid API key from configuration.
+	 *
+	 * @return string The SendGrid API key.
+	 */
 	private function getSendGridAPIKey() {
 		return $this->config->getSystemValue('sendgrid_api_key', '');
 	}
+	/**
+	 * Retrieves the SendGrid template IDs from configuration.
+	 *
+	 * @return array The SendGrid template IDs.
+	 */
 	private function getSendGridTemplateIDs() {
 		return $this->config->getSystemValue('sendgrid_template_ids', '');
 	}
+	/**
+	 * Retrieves the main domain from configuration.
+	 *
+	 * @return string The main domain.
+	 */
 	private function getMainDomain() {
 		return $this->config->getSystemValue('main_domain', '');
 	}
+	/**
+	 * Retrieves the user's language based on the username.
+	 *
+	 * @param string $username The user's username.
+	 *
+	 * @return string The user's language.
+	 */
 	private function getUserLanguage($username) {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
+	/**
+	 * Creates a SendGrid email object.
+	 *
+	 * @param string $fromEmail    The sender's email address.
+	 * @param string $fromName     The sender's name.
+	 * @param string $toEmail      The recipient's email address.
+	 * @param string $toName       The recipient's name.
+	 * @param string $templateID   The SendGrid template ID.
+	 * @param string $username     The username.
+	 * @param string $mainDomain   The main domain.
+	 *
+	 * @return \SendGrid\Mail\Mail The SendGrid email object.
+	 */
 	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain) {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
@@ -201,10 +241,22 @@ class UserService {
 		]);
 		return $email;
 	}
-	
+	/**
+	 * Sends an email using SendGrid.
+	 *
+	 * @param \SendGrid\Mail\Mail $email         The SendGrid email object.
+	 * @param string              $sendgridAPIkey The SendGrid API key.
+	 *
+	 * @return bool Returns true on successful email sending, false otherwise.
+	 */
 	private function sendEmailWithSendGrid($email, $sendgridAPIkey) {
-		$sendgrid = new \SendGrid($sendgridAPIkey);
-		$sendgrid->send($email);
-		return true;
+		try {
+			$sendgrid = new \SendGrid($sendgridAPIkey);
+			$sendgrid->send($email);
+			return true;
+		} catch (\Exception $e) {
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
 	}
 }
