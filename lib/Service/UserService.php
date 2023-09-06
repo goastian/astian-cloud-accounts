@@ -152,7 +152,8 @@ class UserService {
 			return false;
 		}
 		
-		$username = $user->getUID();
+		$uID = $user->getUID();
+		$username = explode('@', $uID)[0];
 		$language = $this->getUserLanguage($username);
 		
 		$templateID = $templateIDs['en'];
