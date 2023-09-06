@@ -139,8 +139,8 @@ class UserService {
 	}
 	public function sendWelcomeEmail() {
 		$user = $this->userSession->getUser();
+
 		$sendgridAPIkey = $this->getSendGridAPIKey();
-	
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
 			return false;
@@ -154,8 +154,8 @@ class UserService {
 		
 		$uID = $user->getUID();
 		$username = explode('@', $uID)[0];
-		$language = $this->getUserLanguage($username);
 		
+		$language = $this->getUserLanguage($username);
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
 			$templateID = $templateIDs[$language];
@@ -168,7 +168,6 @@ class UserService {
 		$toName = $user->getDisplayName();
 		
 		$mainDomain = $this->getMainDomain();
-		
 		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
 	
 		try {
@@ -190,14 +189,14 @@ class UserService {
 	private function getUserLanguage($username) {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
-	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mailDomain) {
+	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain) {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
 		$email->addTo($toEmail, $toName);
 		$email->setTemplateId($templateID);
 		$email->addDynamicTemplateDatas([
 			"username" => $username,
-			"mail_domain" => $mailDomain,
+			"mail_domain" => $mainDomain,
 			"display_name" => $toName
 		]);
 		return $email;
