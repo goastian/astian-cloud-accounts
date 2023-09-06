@@ -39,7 +39,6 @@ use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\IUserManager;
 use OCA\EcloudAccounts\Listeners\FirstLoginListener;
-use OCP\IUser;
 use OCP\IUserSession;
 use OCP\IServerContainer;
 use OC\User\Session as UserSession;
