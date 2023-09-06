@@ -137,7 +137,6 @@ class UserService {
 
 		return null;
 	}
-	
 	public function sendWelcomeEmail($username) : bool {
 		if ($username !== null && $username !== '') {
 			$user = $this->userManager->get($username);
