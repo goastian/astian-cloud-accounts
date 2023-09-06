@@ -137,13 +137,14 @@ class UserService {
 
 		return null;
 	}
-	/**
-	 * Sends a welcome email to the user.
-	 *
-	 * @return bool Returns true on successful email sending, false otherwise.
-	 */
-	public function sendWelcomeEmail() {
-		$user = $this->userSession->getUser();
+	
+	public function sendWelcomeEmail($username) : bool {
+		if ($username !== null && $username !== '') {
+			$user = $this->userManager->get($username);
+		} else {
+			$this->logger->warning("username is not available!", ['app' => Application::APP_ID]);
+			return false;
+		}
 
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -157,7 +158,6 @@ class UserService {
 			return false;
 		}
 		
-		$username = $user->getUID();
 		$language = $this->getUserLanguage($username);
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
@@ -185,7 +185,7 @@ class UserService {
 	 *
 	 * @return string The SendGrid API key.
 	 */
-	private function getSendGridAPIKey() {
+	private function getSendGridAPIKey() : string {
 		return $this->config->getSystemValue('sendgrid_api_key', '');
 	}
 	/**
@@ -193,7 +193,7 @@ class UserService {
 	 *
 	 * @return array The SendGrid template IDs.
 	 */
-	private function getSendGridTemplateIDs() {
+	private function getSendGridTemplateIDs() : array {
 		return $this->config->getSystemValue('sendgrid_template_ids', '');
 	}
 	/**
@@ -201,7 +201,7 @@ class UserService {
 	 *
 	 * @return string The main domain.
 	 */
-	private function getMainDomain() {
+	private function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
 	/**
@@ -211,7 +211,7 @@ class UserService {
 	 *
 	 * @return string The user's language.
 	 */
-	private function getUserLanguage($username) {
+	private function getUserLanguage($username) : string {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
 	/**
@@ -227,7 +227,7 @@ class UserService {
 	 *
 	 * @return \SendGrid\Mail\Mail The SendGrid email object.
 	 */
-	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain) {
+	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain): \Sendgrid\Mail\Mail {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
 		$email->addTo($toEmail, $toName);
@@ -247,7 +247,7 @@ class UserService {
 	 *
 	 * @return bool Returns true on successful email sending, false otherwise.
 	 */
-	private function sendEmailWithSendGrid($email, $sendgridAPIkey) {
+	private function sendEmailWithSendGrid($email, $sendgridAPIkey) : bool {
 		try {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
 			$sendgrid->send($email);
