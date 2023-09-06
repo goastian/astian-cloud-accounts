@@ -179,6 +179,11 @@ class UserService {
 		try {
 			$toEmail = $user->getEMailAddress();
 			$this->logger->warning("toEmail:".$toEmail, ['app' => Application::APP_ID]);
+			if (!$toEmail) {
+				$toEmail = $username;
+				$this->logger->warning("Revised toEmail:".$toEmail, ['app' => Application::APP_ID]);
+			}
+			$this->logger->warning("Revised toEmail:".$toEmail, ['app' => Application::APP_ID]);
 		} catch (\Exception $e) {
 			$this->logger->warning("Error while getting toEmail", ['app' => Application::APP_ID]);
 			$this->logger->error($e, ['app' => Application::APP_ID]);
