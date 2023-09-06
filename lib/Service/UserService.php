@@ -157,9 +157,7 @@ class UserService {
 			return false;
 		}
 		
-		$uID = $user->getUID();
-		$username = explode('@', $uID)[0];
-		
+		$username = $user->getUID();
 		$language = $this->getUserLanguage($username);
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
