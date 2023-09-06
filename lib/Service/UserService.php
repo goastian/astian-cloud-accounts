@@ -181,19 +181,24 @@ class UserService {
 			$this->logger->warning("toEmail:".$toEmail, ['app' => Application::APP_ID]);
 			if (!$toEmail) {
 				$toEmail = $username;
-				$this->logger->warning("Revised toEmail:".$toEmail, ['app' => Application::APP_ID]);
 			}
-			$this->logger->warning("Revised toEmail:".$toEmail, ['app' => Application::APP_ID]);
 		} catch (\Exception $e) {
 			$this->logger->warning("Error while getting toEmail", ['app' => Application::APP_ID]);
 			$this->logger->error($e, ['app' => Application::APP_ID]);
 			return false;
 		}
 		
-		
 		$mainDomain = $this->getMainDomain();
-		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
-	
+		$this->logger->warning("fromEmail:".$fromEmail. " fromName:".$fromName. " toEmail:".$toEmail. " templateID:".$templateID. " username:".$username. " mainDomain:".$mainDomain, ['app' => Application::APP_ID]);
+		try {
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
+			$this->logger->warning("created SendGridEmail", ['app' => Application::APP_ID]);
+		} catch (\Exception $e) {
+			$this->logger->warning("Error while creating createSendGridEmail", ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+		
 		try {
 			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (\Exception $e) {
@@ -248,7 +253,7 @@ class UserService {
 	 *
 	 * @return \SendGrid\Mail\Mail The SendGrid email object.
 	 */
-	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain): \Sendgrid\Mail\Mail {
+	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain) {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
 		$email->addTo($toEmail, $toName);
@@ -272,8 +277,10 @@ class UserService {
 		try {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
 			$sendgrid->send($email);
+			$this->logger->warning("Successfully sent sendEmailWithSendGrid", ['app' => Application::APP_ID]);
 			return true;
 		} catch (\Exception $e) {
+			$this->logger->warning("Error while sending sendEmailWithSendGrid", ['app' => Application::APP_ID]);
 			$this->logger->error($e, ['app' => Application::APP_ID]);
 			return false;
 		}
