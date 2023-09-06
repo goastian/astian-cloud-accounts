@@ -141,6 +141,7 @@ class UserService {
 	public function sendWelcomeEmail($username) : bool {
 		if ($username !== null && $username !== '') {
 			$user = $this->userManager->get($username);
+			$this->logger->warning("username:".$username, ['app' => Application::APP_ID]);
 		} else {
 			$this->logger->warning("username is not available!", ['app' => Application::APP_ID]);
 			return false;
@@ -158,6 +159,7 @@ class UserService {
 			return false;
 		}
 		
+		$username = $user->getUID();
 		$language = $this->getUserLanguage($username);
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
