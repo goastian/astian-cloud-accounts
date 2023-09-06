@@ -38,10 +38,12 @@ use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\IUserManager;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use OCA\EcloudAccounts\Listeners\FirstLoginListener;
 use OCP\IUser;
-use OCP\User\Events\PostLoginEvent;
+use OCP\IUserSession;
+use OCP\IServerContainer;
+use OC\User\Session as UserSession;
+use OCA\EcloudAccounts\Service\UserService;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -64,9 +66,14 @@ class Application extends App implements IBootstrap {
 				$c->get(IUserManager::class)
 			);
 		});
-		$context->injectFn([$this, 'registerHooks']);
+		$this->registerHooks($serverContainer);
 	}
-	public function registerHooks(EventDispatcherInterface $dispatcher) {
-		$dispatcher->addListener(IUser::class . '::firstLogin', [FirstLoginListener::class, 'firstLogin']);
+	public function registerHooks(IServerContainer $serverContainer) {
+		$this->userManagementHooks($serverContainer->get(IUserSession::class));
+		// $dispatcher->addListener(IUser::class . '::firstLogin', [FirstLoginListener::class, 'firstLogin']);
+	}
+	private function userManagementHooks(IUserSession $userSession): void {
+		assert($userSession instanceof UserSession);
+		$userSession->listen('\OC\User', 'assignedUserId', [UserService::class, 'sendWelcomeEmail']);
 	}
 }
