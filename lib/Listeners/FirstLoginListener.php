@@ -23,10 +23,9 @@ class FirstLoginListener implements IEventListener {
 	public static function firstLogin($userId) {
 		/** @var self $listener */
 		$listener = Server::get(self::class);
-		$listener->handleFirstLogin($userId);
-		return;
+		return $listener->handleFirstLogin($userId);
 	}
 	public function handleFirstLogin($userId) {
-		$this->userService->sendWelcomeEmail($userId);
+		return $this->userService->sendWelcomeEmail($userId);
 	}
 }
