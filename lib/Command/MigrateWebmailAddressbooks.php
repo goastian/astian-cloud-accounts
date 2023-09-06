@@ -74,7 +74,6 @@ class MigrateWebmailAddressbooks extends Command {
 	 * @return void
 	 */
 	private function migrateUsers(int $limit = 0, int $offset = 0, array $usernames = []) : void {
-		$users = [];
 		if (!empty($usernames)) {
 			$emails = [];
 			foreach ($usernames as $username) {
@@ -87,19 +86,18 @@ class MigrateWebmailAddressbooks extends Command {
 				$email = $user->getEMailAddress();
 				$emails[] = $email;
 			}
-			$users = $this->webmailMapper->getUsers($limit, $offset, $emails);
-			if (empty($users)) {
+			if (empty($emails)) {
 				return;
 			}
-			$this->webmailMapper->migrateContacts($users, $this->commandOutput);
+			$this->webmailMapper->migrateContacts($emails, $this->commandOutput);
 			return;
 		}
-		$users = $this->webmailMapper->getUsers($limit, $offset);
+		$emails = $this->webmailMapper->getEmails($limit, $offset);
 		if ($limit === 0) {
 			$this->commandOutput->writeln('Migrating all users starting at ' . $offset);
 		} else {
 			$this->commandOutput->writeln('Migrating ' . $limit . ' users starting at ' . $offset);
 		}
-		$this->webmailMapper->migrateContacts($users, $this->commandOutput);
+		$this->webmailMapper->migrateContacts($emails, $this->commandOutput);
 	}
 }
