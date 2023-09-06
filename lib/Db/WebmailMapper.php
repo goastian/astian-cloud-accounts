@@ -8,11 +8,13 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use Sabre\VObject\UUIDUtil;
-use \Sabre\VObject\Reader;
 use OCP\IUserManager;
 use OCP\IUser;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCA\SnappyMail\Util\SnappyMailHelper;
+use RainLoop\Providers\AddressBook\PdoAddressBook;
+
 use Throwable;
 
 class WebmailMapper {
@@ -52,9 +54,9 @@ class WebmailMapper {
 	}
 
 
-	public function getUsers(int $limit = 0, int $offset = 0, array $emails = []) : array {
+	public function getEmails(int $limit = 0, int $offset = 0, array $emails = []) : array {
 		$qb = $this->conn->createQueryBuilder();
-		$qb->select('rl_email, id_user')
+		$qb->select('rl_email')
 			->from(self::USERS_TABLE, 'u')
 			->setFirstResult($offset);
 		if ($limit > 0) {
@@ -67,33 +69,18 @@ class WebmailMapper {
 		
 		$result = $qb->execute();
 
-		$users = [];
+		$emails = [];
 		while ($row = $result->fetch()) {
-			$user = [
-				'email' => $row['rl_email'],
-				'id' => $row['id_user']
-			];
-			$users[] = $user;
+			$users[] = (string) $row['rl_email'];
 		}
-		return $users;
+		return $emails;
 	}
 
-	private function getUserContacts(string $uid) : array {
-		$qb = $this->conn->createQueryBuilder();
-
-		$qb->select('p.prop_value')
-			->from('rainloop_ab_contacts', 'c')
-			->where('c.id_user = :uid')
-			->andWhere('p.prop_value IS NOT NULL')
-			->setParameter('uid', $uid)
-			->leftJoin('c', 'rainloop_ab_properties', 'p', 'p.id_contact = c.id_contact AND p.prop_type = 251');
-
-		$result = $qb->execute();
-		$contacts = [];
-		while ($row = $result->fetch()) {
-			$contacts[] = Reader::readJson($row['prop_value']);
-		}
-		return $contacts;
+	private function getUserContacts(string $email) : array {
+		SnappyMailHelper::loadApp();
+		$pdoAddressBook = new PdoAddressBook();
+		$pdoAddressBook->SetEmail($email);
+		return $pdoAddressBook->GetContacts(0, PHP_INT_MAX);
 	}
 
 	private function createCloudAddressBook(array $contacts, string $email) {
@@ -129,11 +116,22 @@ class WebmailMapper {
 		foreach ($contacts as $contact) {
 			try {
 				$contact->PRODID = '-//IDN murena.io//Migrated contact//EN';
-
+				if (isset($contact->vCard->REV)) {
+					try {
+						$timeString = $contact->vCard->REV[0]->getJsonValue()[0];
+						$timestamp = strtotime($timeString);
+					} catch (Throwable $e) {
+						// Do nothing
+					}
+				}
+				if (!isset($timestamp)) {
+					$timestamp = time();
+				}
+				$contact->vCard->REV = \gmdate('Ymd\\THis\\Z', $timestamp);
 				$this->cardDavBackend->createCard(
 					$addressBookId,
 					UUIDUtil::getUUID() . '.vcf',
-					$contact->serialize(),
+					$contact->vCard->serialize(),
 					true
 				);
 			} catch (Throwable $e) {
@@ -142,20 +140,20 @@ class WebmailMapper {
 		}
 	}
 
-	public function migrateContacts(array $users, $commandOutput = null) {
+	public function migrateContacts(array $emails, $commandOutput = null) {
 		$userCount = 0;
-		foreach ($users as $user) {
+		foreach ($emails as $email) {
 			$userCount += 1;
 			if ($commandOutput) {
-				$commandOutput->writeln('Migrating user ' . $userCount . ' with email: '.  $user['email']);
+				$commandOutput->writeln('Migrating user ' . $userCount . ' with email: '. $email);
 			}
-			$contacts = $this->getUserContacts($user['id']);
+			$contacts = $this->getUserContacts($email);
 			$numberOfContacts = count($contacts);
 			if ($commandOutput) {
-				$commandOutput->writeln('Number of contacts for ' . $user['email'] . ':' . $numberOfContacts);
+				$commandOutput->writeln('Number of contacts for ' . $email . ':' . $numberOfContacts);
 			}
 			if ($numberOfContacts > 0) {
-				$this->createCloudAddressBook($contacts, $user['email']);
+				$this->createCloudAddressBook($contacts, $email);
 			}
 		}
 	}
