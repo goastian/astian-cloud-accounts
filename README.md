@@ -46,12 +46,12 @@ The values are:
 
 ## Welcome User Email notification
 
-- The app is using system values which are configured in `/config/config.php`. 
-- Below keys to add:
+- This application utilizes system values that should be configured in `/config/config.php`.
+- You need to add the following keys:
 1. sendgrid_api_key
 2. sendgrid_template_ids
 
-The values are:
+The values should be set as follows:
 ```
 'sendgrid_api_key' => 'SENDGRID_API_KEY',
 'sendgrid_template_ids' => [ 'en' => 'EN_TEMPLATE_ID', 'es' => 'ES_TEMPLATE_ID', ... ]
