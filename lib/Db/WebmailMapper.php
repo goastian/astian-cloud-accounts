@@ -2,7 +2,6 @@
 
 namespace OCA\EcloudAccounts\Db;
 
-use DateTime;
 use OCP\IConfig;
 use OCP\ILogger;
 use Doctrine\DBAL\DriverManager;
@@ -121,8 +120,7 @@ class WebmailMapper {
 					try {
 						$timeString = $contact->vCard->REV[0]->getJsonValue()[0];
 						$timestamp = strtotime($timeString);
-					}
-					catch (Throwable $e) {
+					} catch (Throwable $e) {
 						// Do nothing
 					}
 				}
