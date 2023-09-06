@@ -13,6 +13,8 @@ use OCP\IUserManager;
 use OCP\IUser;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCA\SnappyMail\Util\SnappyMailHelper;
+
 use Throwable;
 
 class WebmailMapper {
@@ -78,21 +80,12 @@ class WebmailMapper {
 		return $users;
 	}
 
-	private function getUserContacts(string $uid) : array {
-		$qb = $this->conn->createQueryBuilder();
+	private function getUserContacts(string $email) : array {
+		SnappyMailHelper::loadApp();
+		$pdoAddressBook = new \RainLoop\Providers\AddressBook\PdoAddressBook();
 
-		$qb->select('p.prop_value')
-			->from('rainloop_ab_contacts', 'c')
-			->where('c.id_user = :uid')
-			->andWhere('p.prop_value IS NOT NULL')
-			->setParameter('uid', $uid)
-			->leftJoin('c', 'rainloop_ab_properties', 'p', 'p.id_contact = c.id_contact AND p.prop_type = 251');
-
-		$result = $qb->execute();
-		$contacts = [];
-		while ($row = $result->fetch()) {
-			$contacts[] = Reader::readJson($row['prop_value']);
-		}
+		$pdoAddressBook->SetEmail($email);
+		$contacts = $pdoAddressBook->GetContacts(0, PHP_INT_MAX);
 		return $contacts;
 	}
 
@@ -133,7 +126,7 @@ class WebmailMapper {
 				$this->cardDavBackend->createCard(
 					$addressBookId,
 					UUIDUtil::getUUID() . '.vcf',
-					$contact->serialize(),
+					$contact->vCard->serialize(),
 					true
 				);
 			} catch (Throwable $e) {
@@ -149,7 +142,7 @@ class WebmailMapper {
 			if ($commandOutput) {
 				$commandOutput->writeln('Migrating user ' . $userCount . ' with email: '.  $user['email']);
 			}
-			$contacts = $this->getUserContacts($user['id']);
+			$contacts = $this->getUserContacts($user['email']);
 			$numberOfContacts = count($contacts);
 			if ($commandOutput) {
 				$commandOutput->writeln('Number of contacts for ' . $user['email'] . ':' . $numberOfContacts);
