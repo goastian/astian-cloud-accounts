@@ -70,7 +70,6 @@ class Application extends App implements IBootstrap {
 	}
 	public function registerHooks(IServerContainer $serverContainer) {
 		$this->userManagementHooks($serverContainer->get(IUserSession::class));
-		// $dispatcher->addListener(IUser::class . '::firstLogin', [FirstLoginListener::class, 'firstLogin']);
 	}
 	private function userManagementHooks(IUserSession $userSession): void {
 		assert($userSession instanceof UserSession);
