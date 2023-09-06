@@ -42,7 +42,6 @@ use OCA\EcloudAccounts\Listeners\FirstLoginListener;
 use OCP\IUserSession;
 use OCP\IServerContainer;
 use OC\User\Session as UserSession;
-use OCA\EcloudAccounts\Service\UserService;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -72,6 +71,8 @@ class Application extends App implements IBootstrap {
 	}
 	private function userManagementHooks(IUserSession $userSession): void {
 		assert($userSession instanceof UserSession);
-		$userSession->listen('\OC\User', 'assignedUserId', [UserService::class, 'sendWelcomeEmail']);
+		$userSession->listen('\OC\User', 'assignedUserId', function ($userId) {
+			FirstLoginListener::firstLogin();
+		});
 	}
 }
