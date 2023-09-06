@@ -154,7 +154,7 @@ class UserService {
 	
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
-			$this->logger->warning("sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
+			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return false;
 		}
 		
