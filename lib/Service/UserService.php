@@ -196,7 +196,7 @@ class UserService {
 	 * @return array The SendGrid template IDs.
 	 */
 	private function getSendGridTemplateIDs() : array {
-		return $this->config->getSystemValue('sendgrid_template_ids', '');
+		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
 	}
 	/**
 	 * Retrieves the main domain from configuration.
