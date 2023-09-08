@@ -137,67 +137,43 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail($username) : bool {
-		if ($username !== null && $username !== '') {
-			$user = $this->userManager->get($username);
-			$this->logger->warning("username:".$username, ['app' => Application::APP_ID]);
-		} else {
-			$this->logger->warning("username is not available!", ['app' => Application::APP_ID]);
-			return false;
-		}
+	/**
+	 * Sends a welcome email to the user upon registration or first login.
+	 *
+	 * @return bool True if the email was sent successfully, false otherwise.
+	 *
+	 * @throws \Exception If an error occurs during email sending.
+	 */
+	public function sendWelcomeEmail() : bool {
+		$user = $this->userSession->getUser();
 
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
 			return false;
 		}
-	
+		
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return false;
 		}
-		
+			
 		$username = $user->getUID();
 		$language = $this->getUserLanguage($username);
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
 			$templateID = $templateIDs[$language];
 		}
-	
+		
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
-		
-		try {
-			$toName = $user->getDisplayName();
-			$this->logger->warning("toName:".$toName, ['app' => Application::APP_ID]);
-		} catch (\Exception $e) {
-			$this->logger->warning("Error while getting toName", ['app' => Application::APP_ID]);
-			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
-		}
-		try {
-			$toEmail = $user->getEMailAddress();
-			$this->logger->warning("toEmail:".$toEmail, ['app' => Application::APP_ID]);
-			if (!$toEmail) {
-				$toEmail = $username;
-			}
-		} catch (\Exception $e) {
-			$this->logger->warning("Error while getting toEmail", ['app' => Application::APP_ID]);
-			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
-		}
-		
+			
+		$toEmail = $user->getEMailAddress();
+		$toName = $user->getDisplayName();
+			
 		$mainDomain = $this->getMainDomain();
-		$this->logger->warning("fromEmail:".$fromEmail. " fromName:".$fromName. " toEmail:".$toEmail. " templateID:".$templateID. " username:".$username. " mainDomain:".$mainDomain, ['app' => Application::APP_ID]);
-		try {
-			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
-			$this->logger->warning("created SendGridEmail", ['app' => Application::APP_ID]);
-		} catch (\Exception $e) {
-			$this->logger->warning("Error while creating createSendGridEmail", ['app' => Application::APP_ID]);
-			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
-		}
+		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
 		
 		try {
 			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
@@ -277,7 +253,6 @@ class UserService {
 		try {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
 			$sendgrid->send($email);
-			$this->logger->warning("Successfully sent sendEmailWithSendGrid", ['app' => Application::APP_ID]);
 			return true;
 		} catch (\Exception $e) {
 			$this->logger->warning("Error while sending sendEmailWithSendGrid", ['app' => Application::APP_ID]);
