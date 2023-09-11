@@ -146,7 +146,7 @@ class UserService {
 	 */
 	public function sendWelcomeEmail() : bool {
 		$user = $this->userSession->getUser();
-
+		$this->logger->warning("sendWelcomeEmail function called.", ['app' => Application::APP_ID]);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
