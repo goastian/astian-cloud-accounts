@@ -96,6 +96,7 @@ class UserController extends ApiController {
 		if (!$hmeAliasAdded) {
 			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
 		}
+		$this->userService->sendWelcomeEmail();
 		return $response;
 	}
 
