@@ -71,7 +71,7 @@ class WebmailMapper {
 
 		$emails = [];
 		while ($row = $result->fetch()) {
-			$users[] = (string) $row['rl_email'];
+			$emails[] = (string) $row['rl_email'];
 		}
 		return $emails;
 	}
@@ -85,6 +85,9 @@ class WebmailMapper {
 
 	private function createCloudAddressBook(array $contacts, string $email) {
 		$users = $this->userManager->getByEmail($email);
+		if (empty($users)) {
+			return;
+		}
 		$user = $users[0];
 
 		if (!$user instanceof IUser) {
@@ -135,7 +138,7 @@ class WebmailMapper {
 					true
 				);
 			} catch (Throwable $e) {
-				$this->logger->error('Error inserting contact for user: ' . $username . ' contact: ' . $contact->serialize() . ' ' . $e->getMessage());
+				$this->logger->error('Error inserting contact for user: ' . $username . ' ' . $e->getMessage());
 			}
 		}
 	}
