@@ -10,13 +10,16 @@ use Exception;
 class AccountService {
 	private $config;
 	private $LDAPConnectionService;
+	private $userService;
 
 	public function __construct(
 		IConfig $config,
 		LDAPConnectionService $LDAPConnectionService,
+		UserService $userService
 	) {
 		$this->config = $config;
 		$this->LDAPConnectionService = $LDAPConnectionService;
+		$this->userService = $userService;
 	}
 	public function registerUser(string $displayname, string $email, string $username, string $password) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
@@ -57,7 +60,8 @@ class AccountService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-	
+
+		$this->userService->sendWelcomeEmail($username, $email);
 		return true;
 	}
 }
