@@ -81,7 +81,7 @@ class UserController extends ApiController {
 			$this->logger->error("User is already exists!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
-
+		$this->logger->warning("Trying to get user...", ['app' => 'ecloud-accounts']);
 		$user = $this->userService->getUser($uid);
 
 		if (is_null($user)) {

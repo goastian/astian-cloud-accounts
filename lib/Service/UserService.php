@@ -48,7 +48,7 @@ class UserService {
 	}
 
 
-	public function userExists(string $uid) {
+	public function userExists(string $uid): bool {
 		$this->logger->warning("userExists called...", ['app' => Application::APP_ID]);
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
@@ -82,7 +82,7 @@ class UserService {
 		}
 	}
 
-	public function getHMEAliasesFromConfig($uid): array {
+	public function getHMEAliasesFromConfig($uid) : array {
 		$aliases = $this->config->getUserValue($uid, 'hide-my-email', 'email-aliases', []);
 		if (!empty($aliases)) {
 			$aliases = json_decode($aliases, true);
@@ -90,7 +90,7 @@ class UserService {
 		return $aliases;
 	}
 
-	public function addHMEAliasInConfig($uid, $alias): bool {
+	public function addHMEAliasInConfig($uid, $alias) : bool {
 		$aliases = $this->getHMEAliasesFromConfig($uid);
 		$aliases[] = $alias;
 		$aliases = json_encode($aliases);
@@ -147,6 +147,7 @@ class UserService {
 	 * @throws \Exception If an error occurs during email sending.
 	 */
 	public function sendWelcomeEmail(string $uid, string $email) : bool {
+		$this->logger->warning("sendWelcomeEmail called...", ['app' => 'ecloud-accounts']);
 		$user = $this->userManager->get($uid);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -166,7 +167,9 @@ class UserService {
 			$templateID = $templateIDs[$language];
 		}
 		
+		$this->logger->warning("Getting fromEmail ...", ['app' => 'ecloud-accounts']);
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
+		$this->logger->warning("Got fromEmail ...", ['app' => 'ecloud-accounts']);
 		$fromName = $this->defaults->getName();
 			
 		$toEmail = $email;
