@@ -11,6 +11,7 @@ use OCP\IUser;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCP\Defaults;
 
 use UnexpectedValueException;
 
@@ -25,14 +26,15 @@ class UserService {
 	private $config;
 
 	private $curl;
+	private $defaults;
 
-
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
 		$this->curl = $curlService;
 		$this->logger = $logger;
+		$this->defaults = $defaults;
 	}
 
 
@@ -156,8 +158,8 @@ class UserService {
 			$templateID = $templateIDs[$language];
 		}
 		
-		$fromEmail = 'no-reply@dev.eeo.one';
-		$fromName = 'Murena SAS';
+		$fromEmail = Util::getDefaultEmailAddress('no-reply');
+		$fromName = $this->defaults->getName();
 			
 		$toEmail = $email;
 		$toName = $user->getDisplayName();
