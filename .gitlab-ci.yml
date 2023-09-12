@@ -2,6 +2,7 @@ variables:
     TO_PACKAGE: 'appinfo l10n lib templates js img vendor'
 before_script:
   - composer install
+  - composer dumpautoload
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
