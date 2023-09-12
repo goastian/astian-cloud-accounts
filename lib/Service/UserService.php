@@ -4,39 +4,33 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\IConfig;
-use Psr\Log\LoggerInterface;
+use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
-use OCP\Util;
-use OCP\Defaults;
-use OCP\IUserSession;
 
 use UnexpectedValueException;
 
 class UserService {
 	/** @var IUserManager */
 	private $userManager;
+
 	/** @var array */
 	private $appConfig;
+
 	/** @var IConfig */
 	private $config;
-	private $curl;
-	private $defaults;
-	private $userSession;
-	private $logger;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, LoggerInterface $logger, Defaults $defaults, IUserSession $userSession) {
+	private $curl;
+
+
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
 		$this->curl = $curlService;
 		$this->logger = $logger;
-		$this->defaults = $defaults;
-		$this->userSession = $userSession;
 	}
 
 
@@ -49,7 +43,6 @@ class UserService {
 
 
 	public function userExists(string $uid): bool {
-		$this->logger->warning("userExists called...", ['app' => Application::APP_ID]);
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
 			return $exists;
@@ -58,9 +51,8 @@ class UserService {
 		$backends = $this->userManager->getBackends();
 		foreach ($backends as $backend) {
 			if ($backend->getBackendName() === 'LDAP') {
-				$this->logger->warning("in ldap called...", ['app' => Application::APP_ID]);
 				$access = $backend->getLDAPAccess($uid);
-				$users = $access->fetchUsersByLoginName($uid);
+				$users = $access->fetchUsersByLoginName($uid) ;
 				if (count($users) > 0) {
 					$exists = true;
 				}
@@ -134,133 +126,9 @@ class UserService {
 			return json_decode($answer, true);
 		} catch (\Exception $e) {
 			$this->logger->error('There has been an issue while contacting the external deletion script');
-			$this->logger->error($e, ['app' => Application::APP_ID]);
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
 
 		return null;
-	}
-	/**
-	 * Sends a welcome email to the user upon registration or first login.
-	 *
-	 * @return bool True if the email was sent successfully, false otherwise.
-	 *
-	 * @throws \Exception If an error occurs during email sending.
-	 */
-	public function sendWelcomeEmail(string $uid, string $email) : bool {
-		$this->logger->warning("sendWelcomeEmail called...", ['app' => 'ecloud-accounts']);
-		$user = $this->userManager->get($uid);
-		$sendgridAPIkey = $this->getSendGridAPIKey();
-		if (empty($sendgridAPIkey)) {
-			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
-			return false;
-		}
-		
-		$templateIDs = $this->getSendGridTemplateIDs();
-		if (empty($templateIDs)) {
-			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
-			return false;
-		}
-			
-		$language = $this->getUserLanguage($uid);
-		$templateID = $templateIDs['en'];
-		if (isset($templateIDs[$language])) {
-			$templateID = $templateIDs[$language];
-		}
-		
-		$this->logger->warning("Getting fromEmail ...", ['app' => 'ecloud-accounts']);
-		$fromEmail = Util::getDefaultEmailAddress('noreply');
-		$this->logger->warning("Got fromEmail ...", ['app' => 'ecloud-accounts']);
-		$fromName = $this->defaults->getName();
-			
-		$toEmail = $email;
-		$toName = $user->getDisplayName();
-			
-		$mainDomain = $this->getMainDomain();
-		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
-		
-		try {
-			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
-		} catch (\Exception $e) {
-			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
-		}
-	}
-	/**
-	 * Retrieves the SendGrid API key from configuration.
-	 *
-	 * @return string The SendGrid API key.
-	 */
-	private function getSendGridAPIKey() : string {
-		return $this->config->getSystemValue('sendgrid_api_key', '');
-	}
-	/**
-	 * Retrieves the SendGrid template IDs from configuration.
-	 *
-	 * @return array The SendGrid template IDs.
-	 */
-	private function getSendGridTemplateIDs() : array {
-		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
-	}
-	/**
-	 * Retrieves the main domain from configuration.
-	 *
-	 * @return string The main domain.
-	 */
-	private function getMainDomain() : string {
-		return $this->config->getSystemValue('main_domain', '');
-	}
-	/**
-	 * Retrieves the user's language based on the username.
-	 *
-	 * @param string $username The user's username.
-	 *
-	 * @return string The user's language.
-	 */
-	private function getUserLanguage(string $username) : string {
-		return $this->config->getUserValue($username, 'core', 'lang', 'en');
-	}
-	/**
-	 * Creates a SendGrid email object.
-	 *
-	 * @param string $fromEmail    The sender's email address.
-	 * @param string $fromName     The sender's name.
-	 * @param string $toEmail      The recipient's email address.
-	 * @param string $toName       The recipient's name.
-	 * @param string $templateID   The SendGrid template ID.
-	 * @param string $username     The username.
-	 * @param string $mainDomain   The main domain.
-	 *
-	 * @return \SendGrid\Mail\Mail The SendGrid email object.
-	 */
-	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
-		$email = new \SendGrid\Mail\Mail();
-		$email->setFrom($fromEmail, $fromName);
-		$email->addTo($toEmail, $toName);
-		$email->setTemplateId($templateID);
-		$email->addDynamicTemplateDatas([
-			"username" => $username,
-			"mail_domain" => $mainDomain,
-			"display_name" => $toName
-		]);
-		return $email;
-	}
-	/**
-	 * Sends an email using SendGrid.
-	 *
-	 * @param \SendGrid\Mail\Mail $email         The SendGrid email object.
-	 * @param string              $sendgridAPIkey The SendGrid API key.
-	 *
-	 * @return bool Returns true on successful email sending, false otherwise.
-	 */
-	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string  $sendgridAPIkey) : bool {
-		try {
-			$sendgrid = new \SendGrid($sendgridAPIkey);
-			$sendgrid->send($email);
-			return true;
-		} catch (\Exception $e) {
-			$this->logger->warning("Error while sending sendEmailWithSendGrid", ['app' => Application::APP_ID]);
-			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
-		}
 	}
 }
