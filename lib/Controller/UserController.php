@@ -6,7 +6,7 @@ namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
 use OCP\IRequest;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
@@ -23,7 +23,7 @@ class UserController extends ApiController {
 
 	private $config;
 
-	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
+	public function __construct($appName, IRequest $request, LoggerInterface $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
@@ -82,11 +82,13 @@ class UserController extends ApiController {
 
 		if (is_null($user)) {
 			$response->setStatus(404);
+			$this->logger->error("User not found!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
+		$this->logger->error('New User!' . $email . " is set!", ['app' => 'ecloud-accounts']);
 		$this->userService->sendWelcomeEmail();
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
