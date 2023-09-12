@@ -167,7 +167,7 @@ class UserService {
 			return;
 =======
 
-	public function sendWelcomeEmail($uid, $email) : bool {
+	public function sendWelcomeEmail($displayname, $uid, $email) : bool {
 		$user = $this->userManager->get($uid);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -223,7 +223,7 @@ class UserService {
 =======
 			
 		$toEmail = $email;
-		$toName = $user->getDisplayName();
+		$toName = $displayname;
 			
 		$mainDomain = $this->getMainDomain();
 		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
