@@ -7,7 +7,7 @@
     'e_welcome_domain' => 'welcome.ecloud.global', // Domain of welcome server
     'ecloud-accounts' => [
         'secret' => 'ecloud-accounts-secret', // Secret for incoming requests to authenticate against
-    ],
+    ]
 ```
 
 ## User Account creation
