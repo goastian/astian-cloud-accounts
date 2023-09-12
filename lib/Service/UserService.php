@@ -4,33 +4,38 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\IConfig;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCP\Defaults;
+use OCP\IUserSession;
 
 use UnexpectedValueException;
 
 class UserService {
 	/** @var IUserManager */
 	private $userManager;
-
 	/** @var array */
 	private $appConfig;
-
 	/** @var IConfig */
 	private $config;
-
 	private $curl;
+	private $defaults;
+	private $userSession;
+	private $logger;
 
-
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, LoggerInterface $logger, Defaults $defaults, IUserSession $userSession) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
 		$this->curl = $curlService;
 		$this->logger = $logger;
+		$this->defaults = $defaults;
+		$this->userSession = $userSession;
 	}
 
 
@@ -43,6 +48,7 @@ class UserService {
 
 
 	public function userExists(string $uid): bool {
+		$this->logger->warning("userExists called...", ['app' => Application::APP_ID]);
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
 			return $exists;
@@ -51,8 +57,9 @@ class UserService {
 		$backends = $this->userManager->getBackends();
 		foreach ($backends as $backend) {
 			if ($backend->getBackendName() === 'LDAP') {
+				$this->logger->warning("in ldap called...", ['app' => Application::APP_ID]);
 				$access = $backend->getLDAPAccess($uid);
-				$users = $access->fetchUsersByLoginName($uid) ;
+				$users = $access->fetchUsersByLoginName($uid);
 				if (count($users) > 0) {
 					$exists = true;
 				}
@@ -126,15 +133,87 @@ class UserService {
 			return json_decode($answer, true);
 		} catch (\Exception $e) {
 			$this->logger->error('There has been an issue while contacting the external deletion script');
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
 		}
 
 		return null;
 	}
-
-
+	
 	public function sendWelcomeEmail(string $uid, string $email) : bool {
-		$this->logger->warning("sendWelcomeEmail called...".$uid."::".$email, ['app' => 'ecloud-accounts']);
-		return true;
+		$user = $this->userManager->get($uid);
+		$sendgridAPIkey = $this->getSendGridAPIKey();
+		if (empty($sendgridAPIkey)) {
+			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
+			return false;
+		}
+		
+		$templateIDs = $this->getSendGridTemplateIDs();
+		if (empty($templateIDs)) {
+			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
+			return false;
+		}
+			
+		$language = $this->getUserLanguage($uid);
+		$templateID = $templateIDs['en'];
+		if (isset($templateIDs[$language])) {
+			$templateID = $templateIDs[$language];
+		}
+		
+		$fromEmail = 'no-reply@dev.eeo.one';
+		$fromName = 'Murena SAS';
+			
+		$toEmail = $email;
+		$toName = $user->getDisplayName();
+			
+		$mainDomain = $this->getMainDomain();
+		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
+		
+		try {
+			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
+		} catch (\Exception $e) {
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+	}
+
+	private function getSendGridAPIKey() : mixed {
+		return $this->config->getSystemValue('sendgrid_api_key', '');
+	}
+
+	private function getSendGridTemplateIDs() : mixed {
+		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
+	}
+
+	private function getMainDomain() : mixed {
+		return $this->config->getSystemValue('main_domain', '');
+	}
+
+	private function getUserLanguage(string $username) : string {
+		return $this->config->getUserValue($username, 'core', 'lang', 'en');
+	}
+
+	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
+		$email = new \SendGrid\Mail\Mail();
+		$email->setFrom($fromEmail, $fromName);
+		$email->addTo($toEmail, $toName);
+		$email->setTemplateId($templateID);
+		$email->addDynamicTemplateDatas([
+			"username" => $username,
+			"mail_domain" => $mainDomain,
+			"display_name" => $toName
+		]);
+		return $email;
+	}
+
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string  $sendgridAPIkey) : bool {
+		try {
+			$sendgrid = new \SendGrid($sendgridAPIkey);
+			$sendgrid->send($email);
+			return true;
+		} catch (\Exception $e) {
+			$this->logger->warning("Error while sending sendEmailWithSendGrid", ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
 	}
 }
