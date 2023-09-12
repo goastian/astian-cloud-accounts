@@ -6,7 +6,7 @@ namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
 use OCP\IRequest;
-use Psr\Log\LoggerInterface;
+use OCP\ILogger;
 use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
@@ -23,7 +23,7 @@ class UserController extends ApiController {
 
 	private $config;
 
-	public function __construct($appName, IRequest $request, LoggerInterface $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
+	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
@@ -68,35 +68,25 @@ class UserController extends ApiController {
 	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
 
-		$this->logger->warning("Checking checkAppCredentials...", ['app' => 'ecloud-accounts']);
 		if (!$this->checkAppCredentials($token)) {
 			$response->setStatus(401);
-			$this->logger->error("checkAppCredentials failed!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
 
-		$this->logger->warning("Checking userExists...", ['app' => 'ecloud-accounts']);
 		if (!$this->userService->userExists($uid)) {
 			$response->setStatus(404);
-			$this->logger->error("User is already exists!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
-		$this->logger->warning("Trying to get user...", ['app' => 'ecloud-accounts']);
+
 		$user = $this->userService->getUser($uid);
 
 		if (is_null($user)) {
 			$response->setStatus(404);
-			$this->logger->error("User not found!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
 
-		$this->logger->warning('Setting Primary Email Address! '.$email, ['app' => 'ecloud-accounts']);
 		$user->setEMailAddress($email);
-		$this->logger->warning('Setting Quora! '.$quota, ['app' => 'ecloud-accounts']);
 		$user->setQuota($quota);
-		$this->logger->warning('New User! Email:' . $email . " and UID: ".$uid." is set!", ['app' => 'ecloud-accounts']);
-		$this->logger->warning('Calling sendWelcomeEmail', ['app' => 'ecloud-accounts']);
-		$this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
@@ -106,7 +96,6 @@ class UserController extends ApiController {
 		if (!$hmeAliasAdded) {
 			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
 		}
-		
 		return $response;
 	}
 
