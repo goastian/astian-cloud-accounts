@@ -49,6 +49,7 @@ class UserService {
 
 
 	public function userExists(string $uid): bool {
+		$this->logger->warning("userExists called...", ['app' => Application::APP_ID]);
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
 			return $exists;
