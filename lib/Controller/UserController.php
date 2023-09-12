@@ -70,11 +70,13 @@ class UserController extends ApiController {
 
 		if (!$this->checkAppCredentials($token)) {
 			$response->setStatus(401);
+			$this->logger->error("checkAppCredentials failed!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
 
 		if (!$this->userService->userExists($uid)) {
 			$response->setStatus(404);
+			$this->logger->error("User is already exists!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
 
