@@ -68,12 +68,14 @@ class UserController extends ApiController {
 	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
 
+		$this->logger->warning("Checking checkAppCredentials...", ['app' => 'ecloud-accounts']);
 		if (!$this->checkAppCredentials($token)) {
 			$response->setStatus(401);
 			$this->logger->error("checkAppCredentials failed!", ['app' => 'ecloud-accounts']);
 			return $response;
 		}
 
+		$this->logger->warning("Checking userExists...", ['app' => 'ecloud-accounts']);
 		if (!$this->userService->userExists($uid)) {
 			$response->setStatus(404);
 			$this->logger->error("User is already exists!", ['app' => 'ecloud-accounts']);
