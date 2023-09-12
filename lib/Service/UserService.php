@@ -11,7 +11,6 @@ use OCP\IUser;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
-use SendGrid\Mail\Mail;
 
 use UnexpectedValueException;
 
