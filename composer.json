@@ -8,6 +8,6 @@
         "cs:fix": "php-cs-fixer fix"
     },
     "require": {
-        "sendgrid/sendgrid": "~7"
+        "sendgrid/sendgrid": "~6"
     }
 }
