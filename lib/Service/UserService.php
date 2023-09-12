@@ -136,10 +136,8 @@ class UserService {
 
 		return null;
 	}
-
-
 	public function sendWelcomeEmail(string $uid, string $email) : bool {
-		$this->logger->warning("sendWelcomeEmail called...", ['app' => 'ecloud-accounts']);
+		
 		$user = $this->userManager->get($uid);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -166,14 +164,6 @@ class UserService {
 		$toName = $user->getDisplayName();
 			
 		$mainDomain = $this->getMainDomain();
-		$this->logger->warning("templateID: ".$templateID, ['app' => Application::APP_ID]);
-		$this->logger->warning("fromEmail: ".$fromEmail, ['app' => Application::APP_ID]);
-		$this->logger->warning("fromName: ".$fromName, ['app' => Application::APP_ID]);
-		$this->logger->warning("toEmail: ".$toEmail, ['app' => Application::APP_ID]);
-		$this->logger->warning("toName: ".$toName, ['app' => Application::APP_ID]);
-		$this->logger->warning("mainDomain: ".$mainDomain, ['app' => Application::APP_ID]);
-
-
 		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
 		
 		try {
@@ -182,27 +172,19 @@ class UserService {
 			$this->logger->error($e, ['app' => Application::APP_ID]);
 			return false;
 		}
-
-
-		return true;
 	}
-
 	private function getSendGridAPIKey() : string {
 		return $this->config->getSystemValue('sendgrid_api_key', '');
 	}
-
 	private function getSendGridTemplateIDs() : array {
 		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
 	}
-
 	private function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
-
 	private function getUserLanguage(string $username) : string {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
-
 	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
@@ -215,7 +197,6 @@ class UserService {
 		]);
 		return $email;
 	}
-
 	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string  $sendgridAPIkey) : bool {
 		try {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
