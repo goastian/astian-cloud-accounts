@@ -131,4 +131,10 @@ class UserService {
 
 		return null;
 	}
+
+
+	public function sendWelcomeEmail(string $uid, string $email) : bool {
+		$this->logger->warning("sendWelcomeEmail called...".$uid."::".$email, ['app' => 'ecloud-accounts']);
+		return true;
+	}
 }
