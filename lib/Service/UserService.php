@@ -48,7 +48,7 @@ class UserService {
 	}
 
 
-	public function userExists(string $uid): bool {
+	public function userExists(string $uid) {
 		$this->logger->warning("userExists called...", ['app' => Application::APP_ID]);
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
@@ -58,6 +58,7 @@ class UserService {
 		$backends = $this->userManager->getBackends();
 		foreach ($backends as $backend) {
 			if ($backend->getBackendName() === 'LDAP') {
+				$this->logger->warning("in ldap called...", ['app' => Application::APP_ID]);
 				$access = $backend->getLDAPAccess($uid);
 				$users = $access->fetchUsersByLoginName($uid);
 				if (count($users) > 0) {
