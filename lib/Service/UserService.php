@@ -145,9 +145,8 @@ class UserService {
 	 *
 	 * @throws \Exception If an error occurs during email sending.
 	 */
-	public function sendWelcomeEmail() : bool {
-		$user = $this->userSession->getUser();
-		
+	public function sendWelcomeEmail($uid, $email) : bool {
+		$user = $this->userManager->get($uid);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -160,8 +159,7 @@ class UserService {
 			return false;
 		}
 			
-		$username = $user->getUID();
-		$language = $this->getUserLanguage($username);
+		$language = $this->getUserLanguage($uid);
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
 			$templateID = $templateIDs[$language];
@@ -170,11 +168,11 @@ class UserService {
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 			
-		$toEmail = $user->getEMailAddress();
+		$toEmail = $email;
 		$toName = $user->getDisplayName();
 			
 		$mainDomain = $this->getMainDomain();
-		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain);
+		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
 		
 		try {
 			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
