@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
+
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
+use SendGrid\Mail\Mail;
 
 use UnexpectedValueException;
 
@@ -169,6 +171,17 @@ class UserService {
 		$this->logger->warning("toName: ".$toName, ['app' => Application::APP_ID]);
 		$this->logger->warning("mainDomain: ".$mainDomain, ['app' => Application::APP_ID]);
 
+
+		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
+		
+		try {
+			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
+		} catch (\Exception $e) {
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+
+
 		return true;
 	}
 
@@ -186,5 +199,30 @@ class UserService {
 
 	private function getUserLanguage(string $username) : string {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
+	}
+
+	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
+		$email = new \SendGrid\Mail\Mail();
+		$email->setFrom($fromEmail, $fromName);
+		$email->addTo($toEmail, $toName);
+		$email->setTemplateId($templateID);
+		$email->addDynamicTemplateDatas([
+			"username" => $username,
+			"mail_domain" => $mainDomain,
+			"display_name" => $toName
+		]);
+		return $email;
+	}
+
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string  $sendgridAPIkey) : bool {
+		try {
+			$sendgrid = new \SendGrid($sendgridAPIkey);
+			$sendgrid->send($email);
+			return true;
+		} catch (\Exception $e) {
+			$this->logger->warning("Error while sending sendEmailWithSendGrid", ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
 	}
 }
