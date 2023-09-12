@@ -90,9 +90,12 @@ class UserController extends ApiController {
 			return $response;
 		}
 
+		$this->logger->warning('Setting Primary Email Address! '.$email, ['app' => 'ecloud-accounts']);
 		$user->setEMailAddress($email);
+		$this->logger->warning('Setting Quora! '.$quota, ['app' => 'ecloud-accounts']);
 		$user->setQuota($quota);
-		$this->logger->error('New User! Email:' . $email . " and UID: ".$uid." is set!", ['app' => 'ecloud-accounts']);
+		$this->logger->warning('New User! Email:' . $email . " and UID: ".$uid." is set!", ['app' => 'ecloud-accounts']);
+		$this->logger->warning('Calling sendWelcomeEmail', ['app' => 'ecloud-accounts']);
 		$this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
