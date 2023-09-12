@@ -12,6 +12,7 @@ use OCP\IConfig;
 use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Defaults;
+use OCP\Util;
 
 use UnexpectedValueException;
 
