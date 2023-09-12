@@ -146,7 +146,7 @@ class UserService {
 	 *
 	 * @throws \Exception If an error occurs during email sending.
 	 */
-	public function sendWelcomeEmail($uid, $email) : bool {
+	public function sendWelcomeEmail(string $uid, string $email) : bool {
 		$user = $this->userManager->get($uid);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -213,7 +213,7 @@ class UserService {
 	 *
 	 * @return string The user's language.
 	 */
-	private function getUserLanguage($username) : string {
+	private function getUserLanguage(string $username) : string {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
 	/**
@@ -229,7 +229,7 @@ class UserService {
 	 *
 	 * @return \SendGrid\Mail\Mail The SendGrid email object.
 	 */
-	private function createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $username, $mainDomain) : \SendGrid\Mail\Mail {
+	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
 		$email->addTo($toEmail, $toName);
@@ -249,7 +249,7 @@ class UserService {
 	 *
 	 * @return bool Returns true on successful email sending, false otherwise.
 	 */
-	private function sendEmailWithSendGrid($email, $sendgridAPIkey) : bool {
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string  $sendgridAPIkey) : bool {
 		try {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
 			$sendgrid->send($email);
