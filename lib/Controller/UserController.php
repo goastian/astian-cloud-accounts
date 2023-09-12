@@ -88,7 +88,7 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		$this->logger->error('New User!' . $email . " is set!", ['app' => 'ecloud-accounts']);
+		$this->logger->error('New User! Email:' . $email . " and UID: ".$uid." is set!", ['app' => 'ecloud-accounts']);
 		$this->userService->sendWelcomeEmail();
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
