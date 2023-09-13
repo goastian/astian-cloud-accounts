@@ -1,7 +1,5 @@
 variables:
-    TO_PACKAGE: 'appinfo l10n lib templates js img vendor'
-before_script:
-  - composer install --no-dev
+    TO_PACKAGE: 'appinfo l10n lib templates js img'
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
@@ -9,3 +7,15 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "nc-apps-deploy.yml"
+
+build-vendor:
+  needs: ["build-frontend"]
+  before_script:
+    - composer install --no-dev
+  script:
+    - cp -a vendor dist/${APP_NAME}
+    - find dist/${APP_NAME} -type d -exec chmod 755 {} \;
+    - find dist/${APP_NAME} -type f -exec chmod 644 {} \;
+  artifacts:
+    paths:
+      - dist/
