@@ -2,17 +2,17 @@
 
 namespace OCA\EcloudAccounts\Db;
 
+use \Sabre\VObject\Reader;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use OCA\DAV\CardDAV\CardDavBackend;
+use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IConfig;
 use OCP\ILogger;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Connection;
-use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
-use Sabre\VObject\UUIDUtil;
-use \Sabre\VObject\Reader;
-use OCP\IUserManager;
 use OCP\IUser;
-use OCA\DAV\CardDAV\CardDavBackend;
-use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IUserManager;
+use Sabre\VObject\UUIDUtil;
 use Throwable;
 
 class WebmailMapper {

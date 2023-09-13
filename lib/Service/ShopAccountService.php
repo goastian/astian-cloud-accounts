@@ -4,9 +4,9 @@
 namespace OCA\EcloudAccounts\Service;
 
 use Exception;
+use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\IConfig;
 use OCP\ILogger;
-use OCA\EcloudAccounts\AppInfo\Application;
 
 class ShopAccountService {
 	private IConfig $config;
