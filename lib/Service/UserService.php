@@ -157,7 +157,7 @@ class UserService {
 			$templateID = $templateIDs[$language];
 		}
 		
-		$fromEmail = Util::getDefaultEmailAddress('no-reply');
+		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 			
 		$toEmail = $email;
