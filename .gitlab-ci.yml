@@ -9,6 +9,8 @@ include:
     file: "nc-apps-deploy.yml"
 
 build-vendor:
+  stage: build
+  extends: .composer:base
   needs: ["build-frontend"]
   before_script:
     - composer install --no-dev
