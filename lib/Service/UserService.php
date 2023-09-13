@@ -6,12 +6,12 @@ namespace OCA\EcloudAccounts\Service;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-use OCP\IUserManager;
-use OCP\IUser;
-use OCP\IConfig;
-use OCP\ILogger;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Defaults;
+use OCP\IConfig;
+use OCP\ILogger;
+use OCP\IUser;
+use OCP\IUserManager;
 use OCP\Util;
 
 use UnexpectedValueException;

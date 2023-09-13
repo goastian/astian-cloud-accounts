@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use Exception;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Util;
-use OCP\ILogger;
-use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Db\MailboxMapper;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\ILogger;
+use OCP\User\Events\UserChangedEvent;
+use OCP\Util;
 
 class UserChangedListener implements IEventListener {
 	private const QUOTA_FEATURE = 'quota';

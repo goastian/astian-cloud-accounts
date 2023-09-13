@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use Exception;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\ILogger;
-use OCP\IConfig;
-use OCP\User\Events\BeforeUserDeletedEvent;
+use OCA\EcloudAccounts\Exception\DeletingUserWithActiveSubscriptionException;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCA\EcloudAccounts\Service\ShopAccountService;
 use OCA\EcloudAccounts\Service\UserService;
-use OCA\EcloudAccounts\Exception\DeletingUserWithActiveSubscriptionException;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\IConfig;
+use OCP\ILogger;
+use OCP\User\Events\BeforeUserDeletedEvent;
 
 class BeforeUserDeletedListener implements IEventListener {
 	private $logger;
