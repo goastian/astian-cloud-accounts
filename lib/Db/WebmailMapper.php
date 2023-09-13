@@ -10,7 +10,6 @@ use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IConfig;
 use OCP\ILogger;
-<<<<<<< HEAD
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
@@ -22,11 +21,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCA\SnappyMail\Util\SnappyMailHelper;
 use RainLoop\Providers\AddressBook\PdoAddressBook;
 
-=======
-use OCP\IUser;
-use OCP\IUserManager;
-use Sabre\VObject\UUIDUtil;
->>>>>>> 966a9d6 (cs fixer)
 use Throwable;
 
 class WebmailMapper {
