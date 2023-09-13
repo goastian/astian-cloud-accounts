@@ -2,24 +2,23 @@
 
 namespace OCA\EcloudAccounts\Db;
 
-use \Sabre\VObject\Reader;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\DriverManager;
+use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
+use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
+use OCA\SnappyMail\Util\SnappyMailHelper;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IConfig;
 use OCP\ILogger;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Connection;
-use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
-use Sabre\VObject\UUIDUtil;
-use OCP\IUserManager;
 use OCP\IUser;
-use OCA\DAV\CardDAV\CardDavBackend;
-use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCA\SnappyMail\Util\SnappyMailHelper;
+use OCP\IUserManager;
 use RainLoop\Providers\AddressBook\PdoAddressBook;
+use Sabre\VObject\UUIDUtil;
 
 use Throwable;
 
