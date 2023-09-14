@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Listeners;
 
-use \OCP\EventDispatcher\IEventListener;
-use OCP\App\IAppManager;
-use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\EventDispatcher\Event;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use \OCP\EventDispatcher\IEventListener;
+use OCP\IUserSession;
+use OCP\ISession;
 use OCP\IConfig;
 use OCP\IRequest;
-use OCP\ISession;
-use OCP\IUserSession;
+use OCP\App\IAppManager;
 
 class BeforeTemplateRenderedListener implements IEventListener {
 	private $userSession;

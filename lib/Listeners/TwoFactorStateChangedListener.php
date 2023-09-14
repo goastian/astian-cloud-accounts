@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use Exception;
-use OCA\EcloudAccounts\Db\SSOMapper;
-use OCA\EcloudAccounts\Db\TwoFactorMapper;
 use OCA\TwoFactorTOTP\Event\StateChanged;
-use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\App\IAppManager;
+use OCA\EcloudAccounts\Db\SSOMapper;
+use OCA\EcloudAccounts\Db\TwoFactorMapper;
 use OCP\ILogger;
 
 class TwoFactorStateChangedListener implements IEventListener {
