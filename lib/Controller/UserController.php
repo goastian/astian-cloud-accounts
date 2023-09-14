@@ -57,9 +57,11 @@ class UserController extends ApiController {
 		$mainDomainSuffix = !empty($mainDomain) ? '@' . $mainDomain : '';
 		
 		if (!$exists && str_ends_with($uid, $legacyDomainSuffix)) {
+			$uid = str_replace($legacyDomainSuffix, '', $uid);
 			$exists = $this->userService->userExists($uid . $legacyDomainSuffix);
 		}
 		if (!$exists && str_ends_with($uid, $mainDomainSuffix)) {
+			$uid = str_replace($mainDomainSuffix, '', $uid);
 			$exists = $this->userService->userExists($uid . $mainDomainSuffix);
 		}
 
