@@ -2,10 +2,10 @@
 
 namespace OCA\EcloudAccounts\Db;
 
+use Doctrine\DBAL\DriverManager;
+use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use OCP\IConfig;
 use OCP\ILogger;
-use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
-use Doctrine\DBAL\DriverManager;
 use Throwable;
 
 class MailboxMapper {

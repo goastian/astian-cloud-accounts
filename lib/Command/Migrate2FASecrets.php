@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use OCA\EcloudAccounts\Db\SSOMapper;
 use OCA\EcloudAccounts\Db\TwoFactorMapper;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Migrate2FASecrets extends Command {
 	private SSOMapper $ssoMapper;
