@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
-use OCP\IRequest;
-use OCP\ILogger;
-use OCP\IConfig;
+use OCA\EcloudAccounts\Db\MailUsageMapper;
+use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
-use OCA\EcloudAccounts\Service\UserService;
-use OCA\EcloudAccounts\Db\MailUsageMapper;
+use OCP\IConfig;
+use OCP\ILogger;
+use OCP\IRequest;
 
 class UserController extends ApiController {
 	/** @var UserService */
@@ -87,6 +87,7 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
+		$this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {

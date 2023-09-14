@@ -43,3 +43,17 @@ The values are:
 'beta_group_name' => 'beta',
 'beta_gitlab_email_id' => 'xyz@e.email',
 ```
+
+## Welcome User Email notification
+
+- Configure the following parameters in `config.php` for welcome emails via Sendgrid:
+ - sendgrid_api_key
+ - sendgrid_template_ids
+
+The values should be set as follows:
+```
+...
+'sendgrid_api_key' => 'SENDGRID_API_KEY',
+'welcome_sendgrid_template_ids' => [ 'en' => 'EN_TEMPLATE_ID', 'es' => 'ES_TEMPLATE_ID', ... ]
+...
+```
