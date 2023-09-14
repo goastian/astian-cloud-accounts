@@ -2,16 +2,16 @@
 
 namespace OCA\EcloudAccounts\Db;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
 use OCP\IConfig;
 use OCP\ILogger;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Connection;
-use OCA\EcloudAccounts\AppInfo\Application;
-use OCP\IUserManager;
-use OCP\Security\ICrypto;
 use OCP\IUser;
-use OCA\EcloudAccounts\Exception\DbConnectionParamsException;
+use OCP\IUserManager;
 use OCP\L10N\IFactory;
+use OCP\Security\ICrypto;
 
 class SSOMapper {
 	private IConfig $config;

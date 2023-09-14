@@ -6,11 +6,11 @@ namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
 use OCA\EcloudAccounts\Service\ShopAccountService;
-use OCP\IUserSession;
-use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\ILogger;
+use OCP\IRequest;
+use OCP\IUserSession;
 
 class ShopAccountController extends Controller {
 	private ShopAccountService $shopAccountService;

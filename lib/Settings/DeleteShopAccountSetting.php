@@ -2,13 +2,13 @@
 
 namespace OCA\EcloudAccounts\Settings;
 
+use OCA\EcloudAccounts\Service\ShopAccountService;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
 use OCP\Util;
-use OCA\EcloudAccounts\Service\ShopAccountService;
-use OCP\App\IAppManager;
 
 class DeleteShopAccountSetting implements ISettings {
 	private const DROP_ACCOUNT_APP_ID = 'drop_account';
