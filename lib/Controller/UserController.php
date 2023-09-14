@@ -43,6 +43,11 @@ class UserController extends ApiController {
 			return $response;
 		}
 
+		$exists = $this->checkUserExists($uid);
+		$response->setData($exists);
+		return $response;
+	}
+	public function checkUserExists(string $uid) : bool {
 		$exists = $this->userService->userExists($uid);
 
 		if (!$exists) {
@@ -68,10 +73,8 @@ class UserController extends ApiController {
 				$exists = $this->userService->userExists($uid . $legacyDomainSuffix);
 			}
 		}
-		$response->setData($exists);
-		return $response;
+		return $exists;
 	}
-
 	/**
 	 * @CORS
 	 * @PublicPage
@@ -85,7 +88,7 @@ class UserController extends ApiController {
 			return $response;
 		}
 
-		if (!$this->userService->userExists($uid)) {
+		if (!$this->checkUserExists($uid)) {
 			$response->setStatus(404);
 			return $response;
 		}
