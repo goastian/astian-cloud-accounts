@@ -50,10 +50,17 @@ class UserController extends ApiController {
 		}
 
 		// To check for old accounts
-		$mailDomain = $this->config->getSystemValue('mail_domain');
-		$mailDomainSuffix = !empty($mailDomain) ? '@' . $mailDomain : '';
-		if (!$exists && stristr($uid, $mailDomainSuffix) === false) {
-			$exists = $this->userService->userExists($uid . $mailDomainSuffix);
+		$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
+		$legacyDomainSuffix = !empty($legacyDomain) ? '@' . $legacyDomain : '';
+
+		$mainDomain = $this->config->getSystemValue('main_domain');
+		$mainDomainSuffix = !empty($mainDomain) ? '@' . $mainDomain : '';
+		
+		if (!$exists && str_ends_with($uid, $legacyDomainSuffix)) {
+			$exists = $this->userService->userExists($uid . $legacyDomainSuffix);
+		}
+		if (!$exists && str_ends_with($uid, $mainDomainSuffix)) {
+			$exists = $this->userService->userExists($uid . $mainDomainSuffix);
 		}
 
 		$response->setData($exists);
