@@ -3,8 +3,8 @@
 namespace OCA\EcloudAccounts\Db;
 
 use Exception;
-use OCP\IConfig;
 use OCP\IDBConnection;
+use OCP\IConfig;
 use OCP\ILogger;
 
 class MailUsageMapper {

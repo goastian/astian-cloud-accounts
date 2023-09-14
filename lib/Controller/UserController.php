@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
-use OCA\EcloudAccounts\Db\MailUsageMapper;
-use OCA\EcloudAccounts\Service\UserService;
+use OCP\IRequest;
+use OCP\ILogger;
+use OCP\IConfig;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IConfig;
-use OCP\ILogger;
-use OCP\IRequest;
+use OCA\EcloudAccounts\Service\UserService;
+use OCA\EcloudAccounts\Db\MailUsageMapper;
 
 class UserController extends ApiController {
 	/** @var UserService */
