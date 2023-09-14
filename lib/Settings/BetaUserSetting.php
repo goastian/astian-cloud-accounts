@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Settings;
 
-use OCA\EcloudAccounts\Service\BetaUserService;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\Services\IInitialState;
-use OCP\IConfig;
 use OCP\IGroupManager;
-use OCP\ILogger;
 use OCP\Settings\ISettings;
+use OCP\IConfig;
+use OCP\ILogger;
+use OCP\AppFramework\Services\IInitialState;
+use OCA\EcloudAccounts\Service\BetaUserService;
 
 class BetaUserSetting implements ISettings {
 	protected $groupManager;
