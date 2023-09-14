@@ -7,10 +7,10 @@
 namespace OCA\EcloudAccounts\Controller;
 
 use OCP\AppFramework\Controller;
-use OCP\IRequest;
 use OCP\IConfig;
-use OCP\IUserManager;
 use OCP\IGroupManager;
+use OCP\IRequest;
+use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Mail\IMailer;
 use OCP\Util;
