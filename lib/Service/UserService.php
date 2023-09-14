@@ -138,7 +138,6 @@ class UserService {
 		return null;
 	}
 	public function sendWelcomeEmail(string $uid, string $toEmail) : bool {
-		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -208,15 +207,15 @@ class UserService {
 				$this->logger->error(
 					"Error while sending sendEmailWithSendGrid: SendGrid API error - Status Code: " . $response->statusCode(),
 					['app' => Application::APP_ID]
-				);				
+				);
 				return false;
 			}
 		} catch (\Exception $e) {
 			$this->logger->error(
 				"Error while sending sendEmailWithSendGrid: " . $e->getMessage(),
 				['app' => Application::APP_ID]
-			);			
+			);
 			return false;
 		}
-	}	
+	}
 }
