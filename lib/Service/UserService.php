@@ -137,9 +137,8 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $uid, string $email) : bool {
+	public function sendWelcomeEmail(string $uid, string $toEmail) : bool {
 		
-		$user = $this->userManager->get($uid);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -160,8 +159,8 @@ class UserService {
 		
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
-			
-		$toEmail = $email;
+		
+		$user = $this->userManager->get($uid);
 		$toName = $user->getDisplayName();
 			
 		$mainDomain = $this->getMainDomain();
@@ -198,15 +197,26 @@ class UserService {
 		]);
 		return $email;
 	}
-	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string  $sendgridAPIkey) : bool {
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): bool {
 		try {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
-			$sendgrid->send($email);
-			return true;
+			$response = $sendgrid->send($email);
+	
+			if ($response->statusCode() === 200) {
+				return true;
+			} else {
+				$this->logger->error(
+					"Error while sending sendEmailWithSendGrid: SendGrid API error - Status Code: " . $response->statusCode(),
+					['app' => Application::APP_ID]
+				);				
+				return false;
+			}
 		} catch (\Exception $e) {
-			$this->logger->warning("Error while sending sendEmailWithSendGrid", ['app' => Application::APP_ID]);
-			$this->logger->error($e, ['app' => Application::APP_ID]);
+			$this->logger->error(
+				"Error while sending sendEmailWithSendGrid: " . $e->getMessage(),
+				['app' => Application::APP_ID]
+			);			
 			return false;
 		}
-	}
+	}	
 }
