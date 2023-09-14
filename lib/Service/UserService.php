@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-use OCP\IUserManager;
-use OCP\IUser;
+require __DIR__ . '/../../vendor/autoload.php';
+
+use OCA\EcloudAccounts\AppInfo\Application;
+use OCP\Defaults;
 use OCP\IConfig;
 use OCP\ILogger;
-use OCA\EcloudAccounts\AppInfo\Application;
+use OCP\IUser;
+use OCP\IUserManager;
+use OCP\Util;
 
 use UnexpectedValueException;
 
@@ -23,14 +27,16 @@ class UserService {
 	private $config;
 
 	private $curl;
+	private Defaults $defaults;
+	private ILogger $logger;
 
-
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
 		$this->curl = $curlService;
 		$this->logger = $logger;
+		$this->defaults = $defaults;
 	}
 
 
@@ -130,5 +136,81 @@ class UserService {
 		}
 
 		return null;
+	}
+	public function sendWelcomeEmail(string $uid, string $toEmail) : bool {
+		$sendgridAPIkey = $this->getSendGridAPIKey();
+		if (empty($sendgridAPIkey)) {
+			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
+			return false;
+		}
+		
+		$templateIDs = $this->getSendGridTemplateIDs();
+		if (empty($templateIDs)) {
+			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
+			return false;
+		}
+			
+		$language = $this->getUserLanguage($uid);
+		$templateID = $templateIDs['en'];
+		if (isset($templateIDs[$language])) {
+			$templateID = $templateIDs[$language];
+		}
+		
+		$fromEmail = Util::getDefaultEmailAddress('noreply');
+		$fromName = $this->defaults->getName();
+		
+		$user = $this->userManager->get($uid);
+		$toName = $user->getDisplayName();
+			
+		$mainDomain = $this->getMainDomain();
+		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
+		
+		try {
+			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
+		} catch (\Exception $e) {
+			$this->logger->error($e, ['app' => Application::APP_ID]);
+			return false;
+		}
+	}
+	private function getSendGridAPIKey() : string {
+		return $this->config->getSystemValue('sendgrid_api_key', '');
+	}
+	private function getSendGridTemplateIDs() : array {
+		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
+	}
+	private function getMainDomain() : string {
+		return $this->config->getSystemValue('main_domain', '');
+	}
+	private function getUserLanguage(string $username) : string {
+		return $this->config->getUserValue($username, 'core', 'lang', 'en');
+	}
+	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
+		$email = new \SendGrid\Mail\Mail();
+		$email->setFrom($fromEmail, $fromName);
+		$email->addTo($toEmail, $toName);
+		$email->setTemplateId($templateID);
+		$email->addDynamicTemplateDatas([
+			"username" => $username,
+			"mail_domain" => $mainDomain,
+			"display_name" => $toName
+		]);
+		return $email;
+	}
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): bool {
+		try {
+			$sendgrid = new \SendGrid($sendgridAPIkey);
+			$response = $sendgrid->send($email);
+	
+			if ($response->statusCode() !== 200) {
+				throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
+			}
+			return true;
+		} catch (\Exception $e) {
+			$this->logger->error(
+				"Error while sending sendEmailWithSendGrid: " . $e->getMessage(),
+				['app' => Application::APP_ID]
+			);
+			return false;
+		}
 	}
 }
