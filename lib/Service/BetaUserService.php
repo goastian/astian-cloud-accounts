@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-use OCP\App\IAppManager;
 use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IUserSession;
+use OCP\App\IAppManager;
 
 class BetaUserService {
 	private $config;

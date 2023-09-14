@@ -27,7 +27,8 @@ class UserService {
 	private $config;
 
 	private $curl;
-	private $defaults;
+	private Defaults $defaults;
+	private ILogger $logger;
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults) {
 		$this->userManager = $userManager;
