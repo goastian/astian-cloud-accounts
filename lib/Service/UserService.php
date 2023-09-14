@@ -201,15 +201,10 @@ class UserService {
 			$sendgrid = new \SendGrid($sendgridAPIkey);
 			$response = $sendgrid->send($email);
 	
-			if ($response->statusCode() === 200) {
-				return true;
-			} else {
-				$this->logger->error(
-					"Error while sending sendEmailWithSendGrid: SendGrid API error - Status Code: " . $response->statusCode(),
-					['app' => Application::APP_ID]
-				);
-				return false;
+			if ($response->statusCode() !== 200) {
+				throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 			}
+			return true;
 		} catch (\Exception $e) {
 			$this->logger->error(
 				"Error while sending sendEmailWithSendGrid: " . $e->getMessage(),
