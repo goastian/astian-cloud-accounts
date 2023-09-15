@@ -67,41 +67,49 @@ class UserController extends ApiController {
 	 */
 	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
-		$this->logger->error('API CALLED. UID:'.$uid);
+		$this->logger->info('API CALLED. UID: ' . $uid);
+	
 		if (!$this->checkAppCredentials($token)) {
 			$this->logger->error('checkAppCredentials Failed');
 			$response->setStatus(401);
 			return $response;
 		}
-
+	
 		if (!$this->userService->userExists($uid)) {
 			$this->logger->error('userExists Failed');
 			$response->setStatus(404);
 			return $response;
 		}
-
+	
 		$user = $this->userService->getUser($uid);
-
+	
 		if (is_null($user)) {
 			$response->setStatus(404);
-			$this->logger->error('user not found');
+			$this->logger->error('User not found');
 			return $response;
 		}
-		$this->logger->error('Setting Email address :'.$email);
+		
+		$this->logger->info('Setting Email address: ' . $email);
 		$user->setEMailAddress($email);
-		$this->logger->error('Setting quota :'.$quota);
+	
+		$this->logger->info('Setting quota: ' . $quota);
 		$user->setQuota($quota);
-		$this->logger->error('Sending email...');
+	
+		$this->logger->info('Sending welcome email...');
 		$this->userService->sendWelcomeEmail($uid, $email);
+	
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
+	
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
 			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
 		}
+	
 		$hmeAliasAdded = $this->userService->addHMEAliasInConfig($uid, $hmeAlias);
 		if (!$hmeAliasAdded) {
 			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
 		}
+	
 		return $response;
 	}
 
