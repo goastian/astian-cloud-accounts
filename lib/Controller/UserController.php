@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Controller;
 
+use \Psr\Log\LoggerInterface;
 use Exception;
 use OCA\EcloudAccounts\Db\MailUsageMapper;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
-use OCP\ILogger;
 use OCP\IRequest;
 
 class UserController extends ApiController {
@@ -23,7 +23,7 @@ class UserController extends ApiController {
 
 	private $config;
 
-	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
+	public function __construct($appName, IRequest $request, LoggerInterface $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
