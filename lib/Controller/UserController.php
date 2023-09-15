@@ -67,13 +67,15 @@ class UserController extends ApiController {
 	 */
 	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
-
+		$this->logger->error('API CALLED. UID:'.$uid);
 		if (!$this->checkAppCredentials($token)) {
+			$this->logger->error('checkAppCredentials Failed');
 			$response->setStatus(401);
 			return $response;
 		}
 
 		if (!$this->userService->userExists($uid)) {
+			$this->logger->error('userExists Failed');
 			$response->setStatus(404);
 			return $response;
 		}
@@ -82,11 +84,14 @@ class UserController extends ApiController {
 
 		if (is_null($user)) {
 			$response->setStatus(404);
+			$this->logger->error('user not found');
 			return $response;
 		}
-
+		$this->logger->error('Setting Email address :'.$email);
 		$user->setEMailAddress($email);
+		$this->logger->error('Setting quota :'.$quota);
 		$user->setQuota($quota);
+		$this->logger->error('Sending email...');
 		$this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
