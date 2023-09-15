@@ -70,13 +70,25 @@ class UserController extends ApiController {
 		$this->logger->info('API CALLED. UID: ' . $uid);
 	
 		if (!$this->checkAppCredentials($token)) {
-			$this->logger->error('checkAppCredentials Failed');
+			$this->logger->error('checkAppCredentials Failed token:'.$token);
+			$response->setData(['error' => 'checkAppCredentials Failed token:'.$token]);
 			$response->setStatus(401);
 			return $response;
 		}
-	
-		if (!$this->userService->userExists($uid)) {
+
+		$exists = false;
+		if ($this->userService->userExists($uid)) {
+			$exists = true;
+		}
+		// To check for old accounts
+		$legacyDomain = $this->config->getSystemValue('legacy_domain');
+		$legacyDomainSuffix = !empty($legacyDomain) ? '@' . $legacyDomain : '';
+		if (!$exists && stristr($uid, $legacyDomainSuffix) === false) {
+			$exists = $this->userService->userExists($uid . $legacyDomainSuffix);
+		}
+		if (!$exists) {
 			$this->logger->error('userExists Failed');
+			$response->setData(['error' => 'userExists Failed UID: '.$uid]);
 			$response->setStatus(404);
 			return $response;
 		}
@@ -85,6 +97,7 @@ class UserController extends ApiController {
 	
 		if (is_null($user)) {
 			$response->setStatus(404);
+			$response->setData(['error' => 'User not found']);
 			$this->logger->error('User not found');
 			return $response;
 		}
