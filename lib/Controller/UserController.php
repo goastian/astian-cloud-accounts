@@ -43,38 +43,23 @@ class UserController extends ApiController {
 			return $response;
 		}
 
-		$exists = $this->checkUserExists($uid);
+		$exists = false;
+
+		if ($this->userService->userExists($uid)) {
+			$exists = true;
+		}
+
+		// To check for old accounts
+		$legacyDomain = $this->config->getSystemValue('legacy_domain');
+		$legacyDomainSuffix = !empty($legacyDomain) ? '@' . $legacyDomain : '';
+		if (!$exists && stristr($uid, $legacyDomainSuffix) === false) {
+			$exists = $this->userService->userExists($uid . $legacyDomainSuffix);
+		}
+
 		$response->setData($exists);
 		return $response;
 	}
-	public function checkUserExists(string $uid) : bool {
-		$exists = $this->userService->userExists($uid);
 
-		if (!$exists) {
-			$uid = trim($uid);
-			$uid = mb_strtolower($uid, 'UTF-8');
-			$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
-			$legacyDomainSuffix = !empty($legacyDomain) ? '@' . $legacyDomain : '';
-
-			$mainDomain = $this->config->getSystemValue('main_domain');
-			$mainDomainSuffix = !empty($mainDomain) ? '@' . $mainDomain : '';
-			
-			if (str_ends_with($uid, $legacyDomainSuffix)) {
-				$uid = str_replace($legacyDomainSuffix, '', $uid);
-			}
-			if (str_ends_with($uid, $mainDomainSuffix)) {
-				$uid = str_replace($mainDomainSuffix, '', $uid);
-			}
-			$exists = $this->userService->userExists($uid);
-			if(!$exists) {
-				$exists = $this->userService->userExists($uid . $mainDomainSuffix);
-			}
-			if(!$exists) {
-				$exists = $this->userService->userExists($uid . $legacyDomainSuffix);
-			}
-		}
-		return $exists;
-	}
 	/**
 	 * @CORS
 	 * @PublicPage
@@ -88,7 +73,7 @@ class UserController extends ApiController {
 			return $response;
 		}
 
-		if (!$this->checkUserExists($uid)) {
+		if (!$this->userService->userExists($uid)) {
 			$response->setStatus(404);
 			return $response;
 		}
