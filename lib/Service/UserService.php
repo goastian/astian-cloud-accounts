@@ -197,7 +197,7 @@ class UserService {
 	}
 	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): void {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
-		$response = $sendgrid->send($email);
+		$response = $sendgrid->send($email, [ CURLOPT_TIMEOUT => 15 ]);
 
 		if ($response->statusCode() !== 200) {
 			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
