@@ -168,7 +168,7 @@ class UserService {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			$this->logger->error($e, ['app' => Application::APP_ID]);
+			$this->logger->error('Error sending email to: ' . $email . ': ' . $e->getMessage());
 		}
 	}
 	private function getSendGridAPIKey() : string {
@@ -197,7 +197,7 @@ class UserService {
 	}
 	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): void {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
-		$response = $sendgrid->send($email);
+		$response = $sendgrid->send($email, [ CURLOPT_TIMEOUT => 15 ]);
 
 		if ($response->statusCode() !== 200) {
 			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
