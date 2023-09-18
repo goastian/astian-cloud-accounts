@@ -195,17 +195,12 @@ class UserService {
 		]);
 		return $email;
 	}
-	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): bool {
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): void {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		$response = $sendgrid->send($email);
 
 		if ($response->statusCode() !== 200) {
-			$this->logger->error(
-				"SendGrid API error - Status Code: " . $response->statusCode(),
-				['app' => Application::APP_ID]
-			);
-			return false;
+			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 		}
-		return true;
 	}
 }
