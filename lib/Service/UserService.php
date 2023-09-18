@@ -168,7 +168,7 @@ class UserService {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			$this->logger->error($e, ['app' => Application::APP_ID]);
+			$this->logger->error('Error sending email to: ' . $email . ': ' . $e->getMessage());
 		}
 	}
 	private function getSendGridAPIKey() : string {
