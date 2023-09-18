@@ -200,7 +200,11 @@ class UserService {
 		$response = $sendgrid->send($email);
 
 		if ($response->statusCode() !== 200) {
-			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
+			$this->logger->error(
+				"SendGrid API error - Status Code: " . $response->statusCode(),
+				['app' => Application::APP_ID]
+			);
+			return false;
 		}
 		return true;
 	}
