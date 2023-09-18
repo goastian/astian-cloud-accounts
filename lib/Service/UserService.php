@@ -6,10 +6,10 @@ namespace OCA\EcloudAccounts\Service;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-use \Psr\Log\LoggerInterface;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Defaults;
 use OCP\IConfig;
+use OCP\ILogger;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Util;
@@ -29,9 +29,9 @@ class UserService {
 
 	private $curl;
 	private Defaults $defaults;
-	private LoggerInterface $logger;
+	private ILogger $logger;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, LoggerInterface $logger, Defaults $defaults) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -133,7 +133,7 @@ class UserService {
 			return json_decode($answer, true);
 		} catch (\Exception $e) {
 			$this->logger->error('There has been an issue while contacting the external deletion script');
-			$this->logger->error($e, ['app' => Application::APP_ID]);
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
 
 		return null;
