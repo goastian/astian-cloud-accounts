@@ -13,6 +13,7 @@ use OCP\ILogger;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Util;
+use Throwable;
 
 use UnexpectedValueException;
 
@@ -137,17 +138,17 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $uid, string $toEmail) : bool {
+	public function sendWelcomeEmail(string $uid, string $toEmail) : void {
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
-			return false;
+			return;
 		}
 		
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
-			return false;
+			return;
 		}
 			
 		$language = $this->getUserLanguage($uid);
@@ -163,13 +164,11 @@ class UserService {
 		$toName = $user->getDisplayName();
 			
 		$mainDomain = $this->getMainDomain();
-		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
-		
 		try {
-			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
-		} catch (\Exception $e) {
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
+			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
+		} catch (Throwable $e) {
 			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
 		}
 	}
 	private function getSendGridAPIKey() : string {
@@ -196,21 +195,12 @@ class UserService {
 		]);
 		return $email;
 	}
-	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): bool {
-		try {
-			$sendgrid = new \SendGrid($sendgridAPIkey);
-			$response = $sendgrid->send($email);
-	
-			if ($response->statusCode() !== 200) {
-				throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
-			}
-			return true;
-		} catch (\Exception $e) {
-			$this->logger->error(
-				"Error while sending sendEmailWithSendGrid: " . $e->getMessage(),
-				['app' => Application::APP_ID]
-			);
-			return false;
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): void {
+		$sendgrid = new \SendGrid($sendgridAPIkey);
+		$response = $sendgrid->send($email);
+
+		if ($response->statusCode() !== 200) {
+			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 		}
 	}
 }
