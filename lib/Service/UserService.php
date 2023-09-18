@@ -163,9 +163,8 @@ class UserService {
 		$toName = $user->getDisplayName();
 			
 		$mainDomain = $this->getMainDomain();
-		$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
-		
 		try {
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
 			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (\Exception $e) {
 			$this->logger->error($e, ['app' => Application::APP_ID]);
@@ -197,20 +196,12 @@ class UserService {
 		return $email;
 	}
 	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): bool {
-		try {
-			$sendgrid = new \SendGrid($sendgridAPIkey);
-			$response = $sendgrid->send($email);
-	
-			if ($response->statusCode() !== 200) {
-				throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
-			}
-			return true;
-		} catch (\Exception $e) {
-			$this->logger->error(
-				"Error while sending sendEmailWithSendGrid: " . $e->getMessage(),
-				['app' => Application::APP_ID]
-			);
-			return false;
+		$sendgrid = new \SendGrid($sendgridAPIkey);
+		$response = $sendgrid->send($email);
+
+		if ($response->statusCode() !== 200) {
+			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 		}
+		return true;
 	}
 }
