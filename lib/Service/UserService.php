@@ -170,7 +170,6 @@ class UserService {
 		} catch (Throwable $e) {
 			$this->logger->error($e, ['app' => Application::APP_ID]);
 		}
-		return;
 	}
 	private function getSendGridAPIKey() : string {
 		return $this->config->getSystemValue('sendgrid_api_key', '');
