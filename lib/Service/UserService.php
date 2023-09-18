@@ -6,13 +6,14 @@ namespace OCA\EcloudAccounts\Service;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
+use \Psr\Log\LoggerInterface;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Defaults;
 use OCP\IConfig;
-use OCP\ILogger;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Util;
+use Throwable;
 
 use UnexpectedValueException;
 
@@ -28,9 +29,9 @@ class UserService {
 
 	private $curl;
 	private Defaults $defaults;
-	private ILogger $logger;
+	private LoggerInterface $logger;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, LoggerInterface $logger, Defaults $defaults) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -132,22 +133,22 @@ class UserService {
 			return json_decode($answer, true);
 		} catch (\Exception $e) {
 			$this->logger->error('There has been an issue while contacting the external deletion script');
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$this->logger->error($e, ['app' => Application::APP_ID]);
 		}
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $uid, string $toEmail) : bool {
+	public function sendWelcomeEmail(string $uid, string $toEmail) : void {
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
-			return false;
+			return;
 		}
 		
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
-			return false;
+			return;
 		}
 			
 		$language = $this->getUserLanguage($uid);
@@ -166,9 +167,9 @@ class UserService {
 		try {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
-		} catch (\Throwable $e) {
+		} catch (Throwable $e) {
 			$this->logger->error($e, ['app' => Application::APP_ID]);
-			return false;
+			return;
 		}
 	}
 	private function getSendGridAPIKey() : string {
