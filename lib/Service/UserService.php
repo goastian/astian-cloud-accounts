@@ -165,8 +165,8 @@ class UserService {
 		$mainDomain = $this->getMainDomain();
 		try {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
-			return $this->sendEmailWithSendGrid($email, $sendgridAPIkey);
-		} catch (\Exception $e) {
+			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
+		} catch (\Throwable $e) {
 			$this->logger->error($e, ['app' => Application::APP_ID]);
 			return false;
 		}
