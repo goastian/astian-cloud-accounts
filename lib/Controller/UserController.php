@@ -89,7 +89,7 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		if ($this->l10nFactory->languageExists('core', $userLanguage)) {
+		if ($this->l10nFactory->languageExists(null, $userLanguage)) {
 			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
 		}
 		$this->userService->sendWelcomeEmail($uid, $email);
