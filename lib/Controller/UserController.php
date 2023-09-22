@@ -89,11 +89,8 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		$languagesCodes = $this->l10nFactory->findAvailableLanguages();
-		if (in_array($userLanguage, $languagesCodes, true)) {
+		if ($this->l10nFactory->languageExists('core', $userLanguage)) {
 			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
-		} else {
-			$this->logger->error('Invalid language '.$userLanguage);
 		}
 		$this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
