@@ -12,6 +12,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
+use OCP\L10N\IFactory;
 
 class UserController extends ApiController {
 	/** @var UserService */
@@ -22,13 +23,14 @@ class UserController extends ApiController {
 	private $logger;
 
 	private $config;
-
-	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
+	protected $l10nFactory;
+	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper, IFactory $l10nFactory) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
 		$this->logger = $logger;
 		$this->config = $config;
+		$this->l10nFactory = $l10nFactory;
 	}
 
 	/**
@@ -87,6 +89,13 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
+		$languagesCodes = $this->l10nFactory->findAvailableLanguages();
+		$userLanguage = 'es';
+		if (in_array($userLanguage, $languagesCodes, true)) {
+			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
+		} else {
+			$this->logger->error('Invalid language '.$userLanguage);
+		}
 		$this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
