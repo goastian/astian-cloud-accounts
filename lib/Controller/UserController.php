@@ -67,7 +67,7 @@ class UserController extends ApiController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
+	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false, string $userLanguage = 'en'): DataResponse {
 		$response = new DataResponse();
 
 		if (!$this->checkAppCredentials($token)) {
@@ -90,7 +90,6 @@ class UserController extends ApiController {
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
 		$languagesCodes = $this->l10nFactory->findAvailableLanguages();
-		$userLanguage = 'es';
 		if (in_array($userLanguage, $languagesCodes, true)) {
 			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
 		} else {
