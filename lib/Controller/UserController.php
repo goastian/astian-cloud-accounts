@@ -92,7 +92,7 @@ class UserController extends ApiController {
 		if ($this->l10nFactory->languageExists(null, $userLanguage)) {
 			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
 		}
-		$this->userService->sendWelcomeEmail($uid, $email);
+		// $this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		if (!$recoveryEmailUpdated) {
