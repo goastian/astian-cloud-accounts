@@ -12,7 +12,6 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
-use OCP\L10N\IFactory;
 
 class UserController extends ApiController {
 	/** @var UserService */
@@ -23,14 +22,13 @@ class UserController extends ApiController {
 	private $logger;
 
 	private $config;
-	protected $l10nFactory;
-	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper, IFactory $l10nFactory) {
+
+	public function __construct($appName, IRequest $request, ILogger $logger, IConfig $config, UserService $userService, MailUsageMapper $mailUsageMapper) {
 		parent::__construct($appName, $request);
 		$this->userService = $userService;
 		$this->mailUsageMapper = $mailUsageMapper;
 		$this->logger = $logger;
 		$this->config = $config;
-		$this->l10nFactory = $l10nFactory;
 	}
 
 	/**
@@ -67,7 +65,7 @@ class UserController extends ApiController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false, string $userLanguage = 'en'): DataResponse {
+	public function setAccountData(string $token, string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false): DataResponse {
 		$response = new DataResponse();
 
 		if (!$this->checkAppCredentials($token)) {
@@ -89,9 +87,6 @@ class UserController extends ApiController {
 
 		$user->setEMailAddress($email);
 		$user->setQuota($quota);
-		if ($this->l10nFactory->languageExists(null, $userLanguage)) {
-			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
-		}
 		// $this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
