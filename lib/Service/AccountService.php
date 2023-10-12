@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-use OCP\IConfig;
 use Exception;
+use OCP\IConfig;
 
 class AccountService {
 	private $config;

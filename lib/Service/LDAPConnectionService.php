@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Service;
 
 use Exception;
-use OCP\IUserManager;
 use OCA\User_LDAP\Configuration;
 use OCA\User_LDAP\Helper;
 use OCP\IConfig;
+use OCP\IUserManager;
 
 class LDAPConnectionService {
 	/** @var IUserManager */

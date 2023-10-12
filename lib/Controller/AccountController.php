@@ -6,12 +6,12 @@
 
 namespace OCA\EcloudAccounts\Controller;
 
-use OCP\AppFramework\Controller;
-use OCP\IRequest;
-use OCP\AppFramework\Http\TemplateResponse;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\AccountService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IRequest;
 
 class AccountController extends Controller {
 	protected $appName;
