@@ -11,6 +11,7 @@ use OCA\EcloudAccounts\Service\AccountService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IConfig;
 use OCP\IRequest;
 
 class AccountController extends Controller {
@@ -19,15 +20,17 @@ class AccountController extends Controller {
 	// private ISession $session;
 	private $accountService;
 
-
+	private $config;
 	public function __construct(
 		$AppName,
 		IRequest $request,
 		AccountService $accountService,
+		IConfig $config,
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->accountService = $accountService;
+		$this->config = $config;
 	}
 
 	/**
@@ -37,6 +40,7 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function index() {
+		$this->config->getSystemValue('default_language', 'en');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
