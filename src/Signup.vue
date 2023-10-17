@@ -7,7 +7,7 @@
 						{{ getLocalizedText('Create Murena Account') }}
 					</h1>
 					<div class="grid">
-						<select v-model="selectedLanguage"  @change="onLanguageChange">
+						<select v-model="selectedLanguage" @change="onLanguageChange">
 							<option v-for="(language, index) in languages" :key="index" :value="index">
 								{{ language }}
 							</option>
@@ -200,7 +200,7 @@ export default {
 			captcha: [],
 			captchatext: '',
 			selectedLanguage: 'en',
-			languages: [{'en':'English'},{'de':'German'},{'fr':'French'},{'it':'Italian'},{'es':'Spanish'}],
+			languages: [{ en: 'English' }, { de: 'German' }, { fr: 'French' }, { it: 'Italian' }, { es: 'Spanish' }],
 		}
 	},
 	created() {
