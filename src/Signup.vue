@@ -283,7 +283,7 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		onLanguageChange() {
-			this.$i18n.global.locale = this.selectedLanguage
+			this.$i18n.locale = this.selectedLanguage
 		},
 
 	},
