@@ -2,9 +2,18 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
-				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-					{{ getLocalizedText('Create Murena Account') }}
-				</h1>
+				<div class="display-flex">
+					<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+						{{ getLocalizedText('Create Murena Account') }}
+					</h1>
+					<div class="grid">
+						<select v-model="selectedLanguage"  @change="onLanguageChange">
+							<option v-for="(language, index) in languages" :key="index" :value="index">
+								{{ language }}
+							</option>
+						</select>
+					</div>
+				</div>
 				<div id="registrationForm">
 					<div id="fields">
 						<div class="field">
@@ -190,6 +199,8 @@ export default {
 			captchaLength: 5,
 			captcha: [],
 			captchatext: '',
+			selectedLanguage: 'en',
+			languages: [{'en':'English'},{'de':'German'},{'fr':'French'},{'it':'Italian'},{'es':'Spanish'}],
 		}
 	},
 	created() {
@@ -265,10 +276,22 @@ export default {
 			const rotationVariations = [5, 10, 20, 25, -5, -10, -20, -25]
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
+		onLanguageChange() {
+			this.$parent.$parent.$parent.language = {
+				value: this.selectedLanguage,
+				label: this.$parent.$parent.$parent.languages[this.selectedLanguage] + ' (' + this.selectedLanguage + ')',
+			}
+			this.$parent.$parent.$parent.body = this.body
+		},
+
 	},
 }
 </script>
 <style scoped>
+.display-flex{
+	display: flex;
+    justify-content: space-between;
+}
 section#main {
 	overflow-x: hidden;
 }
