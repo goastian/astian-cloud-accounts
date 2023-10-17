@@ -7,7 +7,7 @@
 						{{ getLocalizedText('Create Murena Account') }}
 					</h1>
 					<div class="grid">
-						<select v-model="selectedLanguage" @change="onLanguageChange">
+						<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
 							<option v-for="language in languages" :key="language.code" :value="language.code">
 								{{ language.name }}
 							</option>
@@ -283,11 +283,7 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		onLanguageChange() {
-			this.$parent.$parent.$parent.language = {
-				value: this.selectedLanguage,
-				label: this.$parent.$parent.$parent.languages[this.selectedLanguage] + ' (' + this.selectedLanguage + ')',
-			}
-			this.$parent.$parent.$parent.body = this.body
+			OC.setLanguage(this.selectedLanguage)
 		},
 
 	},
@@ -297,6 +293,9 @@ export default {
 .display-flex{
 	display: flex;
     justify-content: space-between;
+}
+.padding-0{
+	padding: 0;
 }
 section#main {
 	overflow-x: hidden;
