@@ -8,8 +8,8 @@
 					</h1>
 					<div class="grid">
 						<select v-model="selectedLanguage" @change="onLanguageChange">
-							<option v-for="(language, index) in languages" :key="index" :value="index">
-								{{ language }}
+							<option v-for="language in languages" :key="language.code" :value="language.code">
+								{{ language.name }}
 							</option>
 						</select>
 					</div>
@@ -200,7 +200,13 @@ export default {
 			captcha: [],
 			captchatext: '',
 			selectedLanguage: 'en',
-			languages: [{ en: 'English' }, { de: 'German' }, { fr: 'French' }, { it: 'Italian' }, { es: 'Spanish' }],
+			languages: [
+				{ code: 'en', name: 'English' },
+				{ code: 'de', name: 'German' },
+				{ code: 'fr', name: 'French' },
+				{ code: 'it', name: 'Italian' },
+				{ code: 'es', name: 'Spanish' },
+			],
 		}
 	},
 	created() {
