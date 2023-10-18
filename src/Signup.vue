@@ -32,7 +32,7 @@
 						</div>
 					</div>
 
-					<div id="fields">
+					<!-- <div id="fields">
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Email') }}<sup>*</sup></label>
@@ -47,7 +47,7 @@
 								</p>
 							</div>
 						</div>
-					</div>
+					</div> -->
 
 					<div id="fields">
 						<div class="field">
@@ -102,6 +102,45 @@
 									class="validation-error">
 									{{ getLocalizedText('The confirm password does not match the password.') }}
 								</p>
+							</div>
+						</div>
+					</div>
+
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<div class="accepttns-group">
+									<NcActionCheckbox v-model="accepttns" value="accepttns">
+										I have read and accept the Terms of Service.<sup>*</sup>
+									</NcActionCheckbox>
+								</div>
+								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
+									{{ getLocalizedText('You must read and accept the Terms of Service to create your account.') }}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<div class="newsletter_eos-group">
+									<NcActionCheckbox v-model="newsletter_eos" value="newsletter_eos">
+										I want to receive news about /e/OS
+									</NcActionCheckbox>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<div class="newsletter_product-group">
+									<NcActionCheckbox v-model="newsletter_product" value="newsletter_product">
+										I want to receive news about Murena products and promotions
+									</NcActionCheckbox>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -170,24 +209,24 @@ import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
 import Password from 'vue-password-strength-meter'
+import NcActionCheckbox from '@nextcloud/vue/dist/Components/ActionCheckbox.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'Signup',
-	components: { Password },
+	components: { Password, NcActionCheckbox },
 	data() {
 		return {
 			appName: APPLICATION_NAME,
 			domain: window.location.host,
 			displayname: '',
-			email: '',
 			username: '',
 			password: '',
 			repassword: '',
 			humanverification: '',
+			accepttns: '',
 			validation: {
-				isEmailEmpty: false,
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
 				isPasswordEmpty: false,
@@ -195,6 +234,7 @@ export default {
 				isRePasswordMatched: false,
 				isHumanverificationEmpty: false,
 				isHumanverificationMatched: false,
+				isAccepttnsEmpty: false,
 			},
 			captchaLength: 5,
 			captcha: [],
@@ -214,7 +254,7 @@ export default {
 	},
 	methods: {
 		validateForm() {
-			const fieldsToValidate = ['email', 'displayname', 'username', 'password', 'repassword', 'humanverification']
+			const fieldsToValidate = ['displayname', 'username', 'password', 'repassword', 'humanverification', 'accepttns']
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
 			})
@@ -231,7 +271,6 @@ export default {
 				try {
 					const response = await Axios.post(url, {
 						displayname: this.displayname,
-						email: this.email,
 						username: this.username,
 						password: this.password,
 					})
