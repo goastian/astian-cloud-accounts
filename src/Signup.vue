@@ -110,9 +110,10 @@
 						<div class="field">
 							<div class="control">
 								<div class="accepttns-group">
-									<NcActionCheckbox v-model="accepttns" value="accepttns">
-										I have read and accept the <a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup>
-									</NcActionCheckbox>
+									<input id="tns"
+										v-model="accepttns"
+										type="checkbox">
+									<label for="tns">I have read and accept the <a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</div>
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
 									{{ getLocalizedText('You must read and accept the Terms of Service to create your account.') }}
