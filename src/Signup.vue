@@ -109,12 +109,12 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<span data-v-1d3de86d="" class="action-checkbox">
+								<span class="action-checkbox">
 									<input id="action-tns"
 										v-model="accepttns"
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
-									<label data-v-1d3de86d="" for="action-tns" class="action-checkbox__label">
+									<label for="action-tns" class="action-checkbox__label">
 										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</span>
 
@@ -128,11 +128,15 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<div class="newsletter_eos-group">
-									<NcActionCheckbox v-model="newsletter_eos" value="newsletter_eos">
+								<span class="action-checkbox">
+									<input id="action-newsletter_eos"
+										v-model="newsletter_eos"
+										type="checkbox"
+										class="checkbox action-checkbox__checkbox focusable">
+									<label for="action-newsletter_eos" class="action-checkbox__label">
 										I want to receive news about /e/OS
-									</NcActionCheckbox>
-								</div>
+									</label>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -140,11 +144,15 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<div class="newsletter_product-group">
-									<NcActionCheckbox v-model="newsletter_product" value="newsletter_product">
+								<span class="action-checkbox">
+									<input id="action-newsletter_product"
+										v-model="newsletter_product"
+										type="checkbox"
+										class="checkbox action-checkbox__checkbox focusable">
+									<label for="action-newsletter_product" class="action-checkbox__label">
 										I want to receive news about Murena products and promotions
-									</NcActionCheckbox>
-								</div>
+									</label>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -213,13 +221,12 @@ import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
 import Password from 'vue-password-strength-meter'
-import NcActionCheckbox from '@nextcloud/vue/dist/Components/ActionCheckbox.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'Signup',
-	components: { Password, NcActionCheckbox },
+	components: { Password },
 	data() {
 		return {
 			appName: APPLICATION_NAME,
@@ -261,12 +268,13 @@ export default {
 	},
 	methods: {
 		validateForm() {
-			const fieldsToValidate = ['displayname', 'username', 'password', 'repassword', 'humanverification', 'accepttns']
+			const fieldsToValidate = ['displayname', 'username', 'password', 'repassword', 'humanverification']
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
 			})
 			this.validation.isRePasswordMatched = this.repassword !== this.password
 			this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
+			this.validation.isAccepttnsEmpty = !this.accepttns
 		},
 		async submitSignupForm() {
 			this.validateForm()
