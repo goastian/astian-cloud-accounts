@@ -351,7 +351,10 @@ section#main {
 #fields li.action {
 	display: block;
 }
-
+#fields input[type='checkbox'].checkbox + label:before{
+	height: 15px;
+    width: 15px;
+}
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	#fields .field .control input {
