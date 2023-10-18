@@ -24,8 +24,7 @@
 									name="displayname"
 									type="text"
 									class="form-input"
-									:placeholder="getLocalizedText('Your name as shown to others')"
-									@input="validateForm">
+									:placeholder="getLocalizedText('Your name as shown to others')">
 								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
@@ -114,7 +113,8 @@
 									<input id="action-tns"
 										v-model="accepttns"
 										type="checkbox"
-										class="checkbox action-checkbox__checkbox focusable">
+										class="checkbox action-checkbox__checkbox focusable"
+										@input="validateTnS">
 									<label for="action-tns" class="action-checkbox__label">
 										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</span>
@@ -276,6 +276,9 @@ export default {
 			this.validation.isRePasswordMatched = this.repassword !== this.password
 			this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
 			this.validation.isAccepttnsEmpty = !this.accepttns
+		},
+		validateTnS() {
+			this.validation.isAccepttnsEmpty = false
 		},
 		async submitSignupForm() {
 			this.validateForm()
