@@ -339,7 +339,9 @@ export default {
 section#main {
 	overflow-x: hidden;
 }
-
+li.action {
+    display: block;
+}
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	#fields .field .control input {
