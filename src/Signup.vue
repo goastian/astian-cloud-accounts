@@ -116,7 +116,7 @@
 										class="checkbox action-checkbox__checkbox focusable"
 										value="">
 									<label data-v-1d3de86d="" for="action-tns" class="action-checkbox__label">
-										I have read and accept the <a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
+										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</span>
 
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
