@@ -24,7 +24,8 @@
 									name="displayname"
 									type="text"
 									class="form-input"
-									:placeholder="getLocalizedText('Your name as shown to others')">
+									:placeholder="getLocalizedText('Your name as shown to others')"
+									@input="validateForm">
 								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
