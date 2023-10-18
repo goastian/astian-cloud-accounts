@@ -113,8 +113,7 @@
 									<input id="action-tns"
 										v-model="accepttns"
 										type="checkbox"
-										class="checkbox action-checkbox__checkbox focusable"
-										value="">
+										class="checkbox action-checkbox__checkbox focusable">
 									<label data-v-1d3de86d="" for="action-tns" class="action-checkbox__label">
 										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</span>
@@ -230,7 +229,9 @@ export default {
 			password: '',
 			repassword: '',
 			humanverification: '',
-			accepttns: '',
+			accepttns: false,
+			newsletter_eos: false,
+			newsletter_product: false,
 			termsURL: 'http://murena.io/apps/terms_of_service/en/termsandconditions',
 			validation: {
 				isDisplaynameEmpty: false,
