@@ -109,12 +109,16 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<div class="accepttns-group">
-									<input id="tns"
+								<span data-v-1d3de86d="" class="action-checkbox">
+									<input id="action-tns"
 										v-model="accepttns"
-										type="checkbox">
-									<label for="tns">I have read and accept the <a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
-								</div>
+										type="checkbox"
+										class="checkbox action-checkbox__checkbox focusable"
+										value="">
+									<label data-v-1d3de86d="" for="action-tns" class="action-checkbox__label">
+										I have read and accept the <a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
+								</span>
+
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
 									{{ getLocalizedText('You must read and accept the Terms of Service to create your account.') }}
 								</p>
@@ -331,19 +335,23 @@ export default {
 }
 </script>
 <style scoped>
-.display-flex{
+.display-flex {
 	display: flex;
-    justify-content: space-between;
+	justify-content: space-between;
 }
-.padding-0{
+
+.padding-0 {
 	padding: 0;
 }
+
 section#main {
 	overflow-x: hidden;
 }
+
 #fields li.action {
-    display: block;
+	display: block;
 }
+
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	#fields .field .control input {
