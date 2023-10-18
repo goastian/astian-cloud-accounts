@@ -517,7 +517,14 @@ sup {
 }
 
 .validation-error {
-	color: #ff0000;
+	background: #ff0000;
+    color: wheat;
+    padding: 10px;
+    font-weight: 500;
+    margin: 5px 0;
+    border-radius: 5px;
+    min-width: 70%;
+    width: fit-content;
 }
 
 .btn-primary {
