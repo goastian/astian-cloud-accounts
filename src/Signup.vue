@@ -111,7 +111,7 @@
 							<div class="control">
 								<div class="accepttns-group">
 									<NcActionCheckbox v-model="accepttns" value="accepttns">
-										I have read and accept the Terms of Service.<sup>*</sup>
+										I have read and accept the <a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup>
 									</NcActionCheckbox>
 								</div>
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
@@ -226,6 +226,7 @@ export default {
 			repassword: '',
 			humanverification: '',
 			accepttns: '',
+			termsURL: 'http://murena.io/apps/terms_of_service/en/termsandconditions',
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
@@ -339,7 +340,7 @@ export default {
 section#main {
 	overflow-x: hidden;
 }
-li.action {
+#fields li.action {
     display: block;
 }
 /** mobile font sizes **/
