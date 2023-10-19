@@ -225,15 +225,15 @@
 						</div>
 					</div>
 
-					<div id="groups" class="aliases-info">
+					<div id="groups" class="aliases-info display-flex">
 						<button :wide="true"
-							class="btn-default"
+							class="btn-default w-50"
 							type="primary"
 							@click="submitSignupForm">
 							{{ getLocalizedText('Later') }}
 						</button>
 						<button :wide="true"
-							class="btn-primary"
+							class="btn-primary w-50"
 							type="primary"
 							@click="submitSignupForm">
 							{{ getLocalizedText('Set my recovery email address') }}
@@ -569,9 +569,9 @@ sup {
 
 .btn-default{
 	width: 95%;
-	background-color: var(--color-primary);
+	background-color: var(--color-warning);
 	color: white;
-	border-color: var(--color-primary);
+	border-color: var(--color-warning);
 	font-size: large;
 }
 
