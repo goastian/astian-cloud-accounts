@@ -414,7 +414,6 @@ export default {
 					this.isUsernameNotValid = true
 					this.usernameValidationMessage = 'Username is already taken.'
 				}
-				this.setAllFieldsBlank()
 			} catch (error) {
 				if (error.response && error.response.status === 409) {
 					this.isUsernameNotValid = true
