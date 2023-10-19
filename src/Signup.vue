@@ -249,13 +249,13 @@
 						<button :wide="true"
 							class="btn-default w-50"
 							type="primary"
-							@click="submitLaterForm">
+							@click="submitRecoveryEmailForm(false)">
 							{{ getLocalizedText('Later') }}
 						</button>
 						<button :wide="true"
 							class="btn-primary w-50"
 							type="primary"
-							@click="submitRecoveryEmailForm">
+							@click="submitRecoveryEmailForm(true)">
 							{{ getLocalizedText('Set my recovery email address') }}
 						</button>
 					</div>
@@ -355,18 +355,14 @@ export default {
 				this.showRecoverEmailForm = true
 			}
 		},
-		submitLaterForm() {
-			const data = {
-				displayname: this.displayname,
-				username: this.username,
-				password: this.password,
-				email: '',
+		submitRecoveryEmailForm(setrecoveryemail) {
+			let isFormValid = true
+			if (setrecoveryemail) {
+				this.validateForm(['email'])
+				isFormValid = Object.values(this.validation).every(value => !value)
+			} else {
+				this.email = ''
 			}
-			this.submitForm(data)
-		},
-		submitRecoveryEmailForm() {
-			this.validateForm(['email'])
-			const isFormValid = Object.values(this.validation).every(value => !value)
 			if (isFormValid) {
 				const data = {
 					displayname: this.displayname,
