@@ -40,7 +40,6 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function index() {
-		$this->config->getSystemValue('default_language', 'en');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
