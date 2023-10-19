@@ -400,30 +400,28 @@ export default {
 			}
 		},
 		async checkUsername() {
-			this.validateForm(['username'])
-			const isFormValid = Object.values(this.validation).every(value => !value)
-			if (isFormValid) {
-				const data = {
-					username: this.username,
+
+			const data = {
+				username: this.username,
+			}
+			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
+			try {
+				const response = await Axios.post(url, data)
+				if (response.status === 200) {
+					this.isUsernameNotValid = false
+					this.usernameValidationMessage = ''
+				} else {
+					this.isUsernameNotValid = true
+					this.usernameValidationMessage = 'Username is already taken.'
 				}
-				const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
-				try {
-					const response = await Axios.post(url, data)
-					if (response.status === 200) {
-						this.isUsernameNotValid = false
-						this.usernameValidationMessage = ''
-					} else {
-						this.isUsernameNotValid = true
-						this.usernameValidationMessage = 'Username is already taken.'
-					}
-					this.setAllFieldsBlank()
-				} catch (error) {
-					if (error.response && error.response.status === 409) {
-						this.isUsernameNotValid = true
-						this.usernameValidationMessage = 'Username is already taken.'
-					}
+				this.setAllFieldsBlank()
+			} catch (error) {
+				if (error.response && error.response.status === 409) {
+					this.isUsernameNotValid = true
+					this.usernameValidationMessage = 'Username is already taken.'
 				}
 			}
+
 		},
 		async submitForm(data) {
 			const url = generateUrl(`/apps/${this.appName}/account/create`)
