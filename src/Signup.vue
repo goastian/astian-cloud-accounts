@@ -302,6 +302,7 @@ export default {
 				isHumanverificationEmpty: false,
 				isHumanverificationMatched: false,
 				isAccepttnsEmpty: false,
+				isEmailEmpty: false,
 			},
 			captchaLength: 5,
 			captcha: [],
@@ -348,9 +349,7 @@ export default {
 		},
 		submitCaptchaForm() {
 			this.validateForm(['humanverification'])
-
 			const isFormValid = Object.values(this.validation).every(value => !value)
-
 			if (isFormValid) {
 				this.showRegistrationForm = false
 				this.showCaptchaForm = false
@@ -368,9 +367,7 @@ export default {
 		},
 		submitRecoveryEmailForm() {
 			this.validateForm(['email'])
-
 			const isFormValid = Object.values(this.validation).every(value => !value)
-
 			if (isFormValid) {
 				const data = {
 					displayname: this.displayname,
@@ -385,7 +382,6 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/account/create`)
 			try {
 				const response = await Axios.post(url, data)
-
 				if (response.status === 200) {
 					this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
 				} else {
