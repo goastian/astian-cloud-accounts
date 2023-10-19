@@ -24,7 +24,8 @@
 									name="displayname"
 									type="text"
 									class="form-input"
-									:placeholder="getLocalizedText('Your name as shown to others')">
+									:placeholder="getLocalizedText('Your name as shown to others')"
+									@input="validateForm(['displayname'])">
 								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
 									{{ getLocalizedText('Display name is required.') }}
 								</p>
@@ -42,7 +43,8 @@
 										name="username"
 										class="form-input"
 										:placeholder="getLocalizedText('Username')"
-										type="text">
+										type="text"
+										@input="validateForm(['username'])">
 									<div id="username-domain-div" class="pad-left-5">
 										@{{ domain }}
 									</div>
@@ -66,14 +68,16 @@
 										type="password"
 										name="password"
 										:default-class="form - input"
-										:placeholder="getLocalizedText('Password')" />
+										:placeholder="getLocalizedText('Password')"
+										@input="validateForm(['password'])" />
 									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
 										v-model="repassword"
 										type="password"
 										name="repassword"
 										class="form-input"
-										:placeholder="getLocalizedText('Confirm')">
+										:placeholder="getLocalizedText('Confirm')"
+										@input="validateForm(['repassword'])">
 								</div>
 								<p v-if="validation.isPasswordEmpty" class="validation-error">
 									{{ getLocalizedText('Password is required.') }}
@@ -97,7 +101,7 @@
 										v-model="accepttns"
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable"
-										@input="validateTnS">
+										@input="validateForm(['termsandservices'])">
 									<label for="action-tns" class="action-checkbox__label">
 										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</span>
@@ -168,7 +172,8 @@
 										name="humanverification"
 										class="form-input"
 										:placeholder="getLocalizedText('Human verification')"
-										type="text">
+										type="text"
+										@input="validateForm(['humanverification'])">
 								</div>
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
 									{{ getLocalizedText('Human Verification is required.') }}
@@ -232,10 +237,11 @@
 									name="email"
 									type="email"
 									class="form-input"
-									:placeholder="getLocalizedText('Enter recovery email address')">
-								<!-- <p v-if="validation.isEmailEmpty" class="validation-error">
+									:placeholder="getLocalizedText('Enter recovery email address')"
+									@input="validateForm(['email'])">
+								<p v-if="validation.isEmailEmpty" class="validation-error">
 									{{ getLocalizedText('Recovery Email is required.') }}
-								</p> -->
+								</p>
 							</div>
 						</div>
 					</div>
@@ -328,9 +334,6 @@ export default {
 			if (fieldsToValidate.includes('termsandservices')) {
 				this.validation.isAccepttnsEmpty = !this.accepttns
 			}
-		},
-		validateTnS() {
-			this.validateForm(['termsandservices'])
 		},
 		submitSignupForm() {
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
