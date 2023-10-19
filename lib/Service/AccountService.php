@@ -79,7 +79,7 @@ class AccountService {
 	
 		$entries = ldap_get_entries($connection, $searchResult);
 		if ($entries['count'] == 0) {
-			return true; 
+			return true;
 		}
 		return false;
 	}
