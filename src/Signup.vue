@@ -325,7 +325,7 @@ export default {
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
 			})
-			if (fieldsToValidate.includes('password')) {
+			if (fieldsToValidate.includes('repassword')) {
 				this.validation.isRePasswordMatched = this.repassword !== this.password
 			}
 			if (fieldsToValidate.includes('humanverification')) {
