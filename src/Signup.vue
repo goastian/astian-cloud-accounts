@@ -384,10 +384,8 @@ export default {
 		validateUsername() {
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
-
+			this.isUsernameNotValid = false
 			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
-
-				this.usernameValidation.valid = false
 				if (!usernamePattern.test(this.username)) {
 					this.usernameValidationMessage = 'Username must consist of letters, numbers, hyphens, and underscores only.'
 				} else {
@@ -395,7 +393,6 @@ export default {
 				}
 				this.isUsernameNotValid = true
 			} else {
-				this.isUsernameNotValid = false
 				this.checkUsername()
 			}
 		},
@@ -407,10 +404,7 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status === 200) {
-					this.isUsernameNotValid = false
-					this.usernameValidationMessage = ''
-				} else {
+				if (response.status !== 200) {
 					this.isUsernameNotValid = true
 					this.usernameValidationMessage = 'Username is already taken.'
 				}
