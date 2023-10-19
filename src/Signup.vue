@@ -153,6 +153,12 @@
 
 				<div id="captchaForm">
 					<div id="fields">
+						<div class="display-flex">
+							<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+								{{ getLocalizedText('Captcha Verification') }}
+							</h1>
+						</div>
+
 						<div class="field">
 							<div class="control">
 								<label>{{ getLocalizedText('Human verification') }}<sup>*</sup></label>
@@ -208,6 +214,12 @@
 				</div>
 
 				<div id="recoveryEmailForm">
+					<div class="display-flex">
+						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+							{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account. As long as you don\'t, you\'ll have limited access to your account.') }}
+						</h1>
+					</div>
+
 					<div id="fields">
 						<div class="field">
 							<div class="control">
