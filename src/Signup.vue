@@ -362,6 +362,7 @@ export default {
 				displayname: this.displayname,
 				username: this.username,
 				password: this.password,
+				email: '',
 			}
 			this.submitForm(data)
 		},
