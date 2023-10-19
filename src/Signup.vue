@@ -333,7 +333,7 @@ export default {
 				this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
 			}
 			if (fieldsToValidate.includes('termsandservices')) {
-				this.validation.isAccepttnsEmpty = !this.accepttns
+				this.validation.isAccepttnsEmpty = this.accepttns
 			}
 		},
 		submitSignupForm() {
