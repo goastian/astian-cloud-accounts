@@ -2,19 +2,19 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
-				<div class="display-flex">
-					<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-						{{ getLocalizedText('Create Murena Account') }}
-					</h1>
-					<div class="grid">
-						<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
-							<option v-for="language in languages" :key="language.code" :value="language.code">
-								{{ language.name }}
-							</option>
-						</select>
+				<div v-if="showRegistrationForm" id="registrationForm">
+					<div class="display-flex">
+						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+							{{ getLocalizedText('Create Murena Account') }}
+						</h1>
+						<div class="grid">
+							<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
+								<option v-for="language in languages" :key="language.code" :value="language.code">
+									{{ language.name }}
+								</option>
+							</select>
+						</div>
 					</div>
-				</div>
-				<div id="registrationForm">
 					<div id="fields">
 						<div class="field">
 							<div class="control">
@@ -151,7 +151,7 @@
 					</div>
 				</div>
 
-				<div id="captchaForm">
+				<div v-if="showCaptchaForm" id="captchaForm">
 					<div id="fields">
 						<div class="display-flex">
 							<h1 id="registerHeading" class="has-text-centered subtitle is-3">
@@ -207,23 +207,26 @@
 						<button :wide="true"
 							class="btn-primary"
 							type="primary"
-							@click="submitSignupForm">
+							@click="submitCaptchaForm">
 							{{ getLocalizedText('Verify') }}
 						</button>
 					</div>
 				</div>
 
-				<div id="recoveryEmailForm">
-					<div class="display-flex">
-						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-							{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account. As long as you don\'t, you\'ll have limited access to your account.') }}
+				<div v-if="showRecoverEmailForm" id="recoveryEmailForm">
+					<div class="">
+						<h1 class="has-text-centered subtitle is-3">
+							{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account.') }}
+						</h1>
+						<h1 class="has-text-centered subtitle is-3">
+							{{ getLocalizedText('As long as you don\'t, you\'ll have limited access to your account.') }}
 						</h1>
 					</div>
 
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Recovery Email') }}<sup>*</sup></label>
+								<label>{{ getLocalizedText('Recovery Email') }}</label>
 								<input id="email"
 									v-model="email"
 									name="email"
@@ -241,13 +244,13 @@
 						<button :wide="true"
 							class="btn-default w-50"
 							type="primary"
-							@click="submitSignupForm">
+							@click="submitLaterForm">
 							{{ getLocalizedText('Later') }}
 						</button>
 						<button :wide="true"
 							class="btn-primary w-50"
 							type="primary"
-							@click="submitSignupForm">
+							@click="submitRecoveryEmailForm">
 							{{ getLocalizedText('Set my recovery email address') }}
 						</button>
 					</div>
@@ -272,6 +275,9 @@ export default {
 		return {
 			appName: APPLICATION_NAME,
 			domain: window.location.host,
+			showRegistrationForm: true,
+			showCaptchaForm: false,
+			showRecoverEmailForm: false,
 			displayname: '',
 			username: '',
 			password: '',
@@ -308,44 +314,85 @@ export default {
 		this.createCaptcha()
 	},
 	methods: {
-		validateForm() {
-			const fieldsToValidate = ['displayname', 'username', 'password', 'repassword', 'humanverification']
+		validateForm(fieldsToValidate) {
+
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
 			})
-			this.validation.isRePasswordMatched = this.repassword !== this.password
-			this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
-			this.validation.isAccepttnsEmpty = !this.accepttns
+			if (fieldsToValidate.includes('password')) {
+				this.validation.isRePasswordMatched = this.repassword !== this.password
+			}
+			if (fieldsToValidate.includes('humanverification')) {
+				this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
+			}
+			if (fieldsToValidate.includes('termsandservices')) {
+				this.validation.isAccepttnsEmpty = !this.accepttns
+			}
 		},
 		validateTnS() {
-			this.validation.isAccepttnsEmpty = false
+			this.validateForm(['termsandservices'])
 		},
-		async submitSignupForm() {
-			this.validateForm()
+		submitSignupForm() {
+			this.validateForm(['displayname', 'username', 'password', 'repassword'])
 
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
 			if (isFormValid) {
-				const url = generateUrl(`/apps/${this.appName}/account/create`)
-				try {
-					const response = await Axios.post(url, {
-						displayname: this.displayname,
-						username: this.username,
-						password: this.password,
-					})
+				this.showRegistrationForm = false
+				this.showCaptchaForm = true
+				this.showRecoverEmailForm = false
+			}
+		},
+		submitCaptchaForm() {
+			this.validateForm(['humanverification'])
 
-					if (response.status === 200) {
-						this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
-					} else {
-						this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
-					}
-					this.setAllFieldsBlank()
-				} catch (error) {
-					if (error.response && error.response.status === 409) {
-						this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
-					} else {
-						this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
-					}
+			const isFormValid = Object.values(this.validation).every(value => !value)
+
+			if (isFormValid) {
+				this.showRegistrationForm = false
+				this.showCaptchaForm = false
+				this.showRecoverEmailForm = true
+			}
+		},
+		submitLaterForm() {
+			const data = {
+				displayname: this.displayname,
+				username: this.username,
+				password: this.password,
+			}
+			this.submitForm(data)
+		},
+		submitRecoveryEmailForm() {
+			this.validateForm(['email'])
+
+			const isFormValid = Object.values(this.validation).every(value => !value)
+
+			if (isFormValid) {
+				const data = {
+					displayname: this.displayname,
+					username: this.username,
+					password: this.password,
+					email: this.email,
+				}
+				this.submitForm(data)
+			}
+		},
+		async submitForm(data) {
+			const url = generateUrl(`/apps/${this.appName}/account/create`)
+			try {
+				const response = await Axios.post(url, data)
+
+				if (response.status === 200) {
+					this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
+				} else {
+					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+				}
+				this.setAllFieldsBlank()
+			} catch (error) {
+				if (error.response && error.response.status === 409) {
+					this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
+				} else {
+					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
 				}
 			}
 		},
