@@ -333,7 +333,7 @@ export default {
 			this.validateForm(['termsandservices'])
 		},
 		submitSignupForm() {
-			this.validateForm(['displayname', 'username', 'password', 'repassword'])
+			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
 
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
