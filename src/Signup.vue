@@ -100,8 +100,7 @@
 									<input id="action-tns"
 										v-model="accepttns"
 										type="checkbox"
-										class="checkbox action-checkbox__checkbox focusable"
-										@input="validateForm(['termsandservices'])">
+										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-tns" class="action-checkbox__label">
 										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
 								</span>
@@ -333,7 +332,7 @@ export default {
 				this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
 			}
 			if (fieldsToValidate.includes('termsandservices')) {
-				this.validation.isAccepttnsEmpty = this.accepttns
+				this.validation.isAccepttnsEmpty = !this.accepttns
 			}
 		},
 		submitSignupForm() {
