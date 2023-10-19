@@ -44,7 +44,7 @@
 										class="form-input"
 										:placeholder="getLocalizedText('Username')"
 										type="text"
-										@input="checkUsername">
+										@input="validateUsername">
 									<div id="username-domain-div" class="pad-left-5">
 										@{{ domain }}
 									</div>
