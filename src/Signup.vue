@@ -32,23 +32,6 @@
 						</div>
 					</div>
 
-					<!-- <div id="fields">
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText('Email') }}<sup>*</sup></label>
-								<input id="email"
-									v-model="email"
-									name="email"
-									type="email"
-									class="form-input"
-									:placeholder="getLocalizedText('Enter recovery email address')">
-								<p v-if="validation.isEmailEmpty" class="validation-error">
-									{{ getLocalizedText('Email is required.') }}
-								</p>
-							</div>
-						</div>
-					</div> -->
-
 					<div id="fields">
 						<div class="field">
 							<div class="control">
@@ -158,6 +141,17 @@
 						</div>
 					</div>
 
+					<div id="groups" class="aliases-info">
+						<button :wide="true"
+							class="btn-primary"
+							type="primary"
+							@click="submitSignupForm">
+							{{ getLocalizedText('Create My Account') }}
+						</button>
+					</div>
+				</div>
+
+				<div id="captchaForm">
 					<div id="fields">
 						<div class="field">
 							<div class="control">
@@ -208,7 +202,41 @@
 							class="btn-primary"
 							type="primary"
 							@click="submitSignupForm">
-							{{ getLocalizedText('Signup') }}
+							{{ getLocalizedText('Verify') }}
+						</button>
+					</div>
+				</div>
+
+				<div id="recoveryEmailForm">
+					<div id="fields">
+						<div class="field">
+							<div class="control">
+								<label>{{ getLocalizedText('Recovery Email') }}<sup>*</sup></label>
+								<input id="email"
+									v-model="email"
+									name="email"
+									type="email"
+									class="form-input"
+									:placeholder="getLocalizedText('Enter recovery email address')">
+								<!-- <p v-if="validation.isEmailEmpty" class="validation-error">
+									{{ getLocalizedText('Recovery Email is required.') }}
+								</p> -->
+							</div>
+						</div>
+					</div>
+
+					<div id="groups" class="aliases-info">
+						<button :wide="true"
+							class="btn-default"
+							type="primary"
+							@click="submitSignupForm">
+							{{ getLocalizedText('Later') }}
+						</button>
+						<button :wide="true"
+							class="btn-primary"
+							type="primary"
+							@click="submitSignupForm">
+							{{ getLocalizedText('Set my recovery email address') }}
 						</button>
 					</div>
 				</div>
@@ -532,6 +560,14 @@ sup {
 }
 
 .btn-primary {
+	width: 95%;
+	background-color: var(--color-primary);
+	color: white;
+	border-color: var(--color-primary);
+	font-size: large;
+}
+
+.btn-default{
 	width: 95%;
 	background-color: var(--color-primary);
 	color: white;
