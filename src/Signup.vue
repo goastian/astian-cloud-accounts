@@ -44,13 +44,16 @@
 										class="form-input"
 										:placeholder="getLocalizedText('Username')"
 										type="text"
-										@input="validateForm(['username'])">
+										@input="checkUsername">
 									<div id="username-domain-div" class="pad-left-5">
 										@{{ domain }}
 									</div>
 								</div>
 								<p v-if="validation.isUsernameEmpty" class="validation-error">
 									{{ getLocalizedText('Username is required.') }}
+								</p>
+								<p v-if="validation.isUsernameNotValid" class="validation-error">
+									{{ usernameValidationMessage }}
 								</p>
 							</div>
 						</div>
@@ -295,6 +298,7 @@ export default {
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
+				isUsernameNotValid: false,
 				isPasswordEmpty: false,
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
@@ -303,6 +307,7 @@ export default {
 				isAccepttnsEmpty: false,
 				isEmailEmpty: false,
 			},
+			usernameValidationMessage: '',
 			captchaLength: 5,
 			captcha: [],
 			captchatext: '',
@@ -333,6 +338,9 @@ export default {
 			}
 			if (fieldsToValidate.includes('termsandservices')) {
 				this.validation.isAccepttnsEmpty = !this.accepttns
+			}
+			if (fieldsToValidate.includes('username')) {
+				this.validateUsername()
 			}
 		},
 		submitSignupForm() {
@@ -371,6 +379,50 @@ export default {
 					email: this.email,
 				}
 				this.submitForm(data)
+			}
+		},
+		validateUsername() {
+			const usernamePattern = /^[a-zA-Z0-9_-]+$/
+			const minCharacterCount = 3
+
+			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
+
+				this.usernameValidation.valid = false
+				if (!usernamePattern.test(this.username)) {
+					this.usernameValidationMessage = 'Username must consist of letters, numbers, hyphens, and underscores only.'
+				} else {
+					this.usernameValidationMessage = `Username must be at least ${minCharacterCount} characters long.`
+				}
+				this.isUsernameNotValid = true
+			} else {
+				this.isUsernameNotValid = false
+				this.checkUsername()
+			}
+		},
+		async checkUsername() {
+			this.validateForm(['username'])
+			const isFormValid = Object.values(this.validation).every(value => !value)
+			if (isFormValid) {
+				const data = {
+					username: this.username,
+				}
+				const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
+				try {
+					const response = await Axios.post(url, data)
+					if (response.status === 200) {
+						this.isUsernameNotValid = false
+						this.usernameValidationMessage = ''
+					} else {
+						this.isUsernameNotValid = true
+						this.usernameValidationMessage = 'Username is already taken.'
+					}
+					this.setAllFieldsBlank()
+				} catch (error) {
+					if (error.response && error.response.status === 409) {
+						this.isUsernameNotValid = true
+						this.usernameValidationMessage = 'Username is already taken.'
+					}
+				}
 			}
 		},
 		async submitForm(data) {

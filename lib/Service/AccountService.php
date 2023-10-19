@@ -64,4 +64,23 @@ class AccountService {
 		$this->userService->sendWelcomeEmail($username, $email);
 		return true;
 	}
+
+	public function checkUsernameAvailable(string $username) {
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+	
+		// Check if the username already exists
+		$filter = "(usernameWithoutDomain=$username)";
+		$searchResult = ldap_search($connection, $base, $filter);
+	
+		if (!$searchResult) {
+			throw new Exception("Error while searching Murena username.");
+		}
+	
+		$entries = ldap_get_entries($connection, $searchResult);
+		if ($entries['count'] == 0) {
+			return true; 
+		}
+		return false;
+	}
 }

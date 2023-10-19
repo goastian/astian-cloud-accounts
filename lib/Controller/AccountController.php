@@ -64,4 +64,20 @@ class AccountController extends Controller {
 		}
 		return $response;
 	}
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 */
+	public function checkUsernameAvailable(string $username) {
+		$response = new DataResponse();
+		try {
+			$result = $this->accountService->checkUsernameAvailable($username);
+			$response->setStatus($result ? 200 : 409);
+		} catch (Exception $e) {
+			$response->setStatus(500);
+		}
+		return $response;
+	}
 }

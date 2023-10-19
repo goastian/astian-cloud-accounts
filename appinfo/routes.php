@@ -26,5 +26,7 @@ return ['routes' => [
 	],
 	['name' => 'account#index', 'url' => '/account/signup', 'verb' => 'GET'],
 	['name' => 'account#create', 'url' => '/account/create', 'verb' => 'POST'],
+	['name' => 'account#check_username_available', 'url' => '/account/check_username_available', 'verb' => 'POST'],
+	
 	// ['name' => 'account#recaptcha', 'url' => '/account/recaptcha', 'verb' => 'GET'],
 ]];
