@@ -52,8 +52,11 @@
 								<p v-if="validation.isUsernameEmpty" class="validation-error">
 									{{ getLocalizedText('Username is required.') }}
 								</p>
-								<p v-if="validation.isUsernameNotValid" class="validation-error">
-									{{ usernameValidationMessage }}
+								<p v-if="validation.isUsernameInvalid" class="validation-error">
+									{{ getLocalizedText('Username: 3+ characters, letters, numbers, hyphens, underscores only.') }}
+								</p>
+								<p v-if="validation.isUsernameTaken" class="validation-error">
+									{{ getLocalizedText('Username already taken.') }}
 								</p>
 							</div>
 						</div>
@@ -298,7 +301,8 @@ export default {
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
-				isUsernameNotValid: false,
+				isUsernameInvalid: false,
+				isUsernameTaken: false,
 				isPasswordEmpty: false,
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
@@ -384,14 +388,10 @@ export default {
 		validateUsername() {
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
-			this.isUsernameNotValid = false
+			this.isUsernameInvalid = false
+			this.isUsernameTaken = false
 			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
-				if (!usernamePattern.test(this.username)) {
-					this.usernameValidationMessage = 'Username must consist of letters, numbers, hyphens, and underscores only.'
-				} else {
-					this.usernameValidationMessage = `Username must be at least ${minCharacterCount} characters long.`
-				}
-				this.isUsernameNotValid = true
+				this.isUsernameInvalid = true
 			} else {
 				this.checkUsername()
 			}
@@ -405,14 +405,10 @@ export default {
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status !== 200) {
-					this.isUsernameNotValid = true
-					this.usernameValidationMessage = 'Username is already taken.'
+					this.isUsernameTaken = true
 				}
 			} catch (error) {
-				if (error.response && error.response.status === 409) {
-					this.isUsernameNotValid = true
-					this.usernameValidationMessage = 'Username is already taken.'
-				}
+				this.isUsernameTaken = true
 			}
 
 		},
