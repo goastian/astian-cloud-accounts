@@ -269,14 +269,16 @@
 							<h3 class="success__title">
 								Success!
 							</h3>
-							<p id="accountCreatedMsg" /><p>Your <b>{{ username }}@{{ domain }}</b> account was successfully created.</p>
+							<p id="accountCreatedMsg" class="font-16">
+								Your <b>{{ username }}@{{ domain }}</b> account was successfully created.
+							</p>
 							<button :wide="true"
 								class="btn-primary w-50"
 								type="primary"
 								@click="useMyAccount">
 								{{ getLocalizedText('Use My Account Now') }}
 							</button>
-							<p id="moreDetailMsg">
+							<p id="moreDetailMsg" class="font-16">
 								If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a :href="supportURL">this page</a>.
 							</p>
 						</div>
@@ -495,7 +497,7 @@ export default {
 			this.$i18n.locale = this.selectedLanguage
 		},
 		useMyAccount() {
-			window.location.href = this.domain
+			window.location.href = window.location.origin
 		},
 	},
 }
@@ -757,5 +759,8 @@ sup {
     line-height: 150%;
     margin: 1em 0 0.5em 0;
     text-align: center;
+}
+.font-16{
+	font-size: 16px;
 }
 </style>
