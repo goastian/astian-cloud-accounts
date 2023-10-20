@@ -404,10 +404,14 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status !== 200) {
+				if (response.status === 200) {
+					this.showMessage(this.getLocalizedText('Username is available!'), 'success')
+				} else {
+					this.showMessage(this.getLocalizedText('Username is taken!'), 'error')
 					this.isUsernameTaken = true
 				}
 			} catch (error) {
+				this.showMessage(this.getLocalizedText('Username is taken.'), 'error')
 				this.isUsernameTaken = true
 			}
 
