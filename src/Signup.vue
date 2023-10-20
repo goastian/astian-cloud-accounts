@@ -263,6 +263,25 @@
 						</button>
 					</div>
 				</div>
+				<div v-if="showSuccessSection" id="successSection">
+					<section id="success" style="">
+						<div id="successMessages" class="notification isa_success has-text-centered">
+							<h3 class="success__title">
+								Success!
+							</h3>
+							<p id="accountCreatedMsg" /><p>Your <b>{{ username }}@{{ domain }}</b> account was successfully created.</p>
+							<button :wide="true"
+								class="btn-primary w-50"
+								type="primary"
+								@click="useMyAccount">
+								{{ getLocalizedText('Use My Account Now') }}
+							</button>
+							<p id="moreDetailMsg">
+								If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a :href="supportURL">this page</a>.
+							</p>
+						</div>
+					</section>
+				</div>
 			</div>
 		</section>
 	</div>
@@ -286,6 +305,7 @@ export default {
 			showRegistrationForm: true,
 			showCaptchaForm: false,
 			showRecoverEmailForm: false,
+			showSuccessSection: false,
 			displayname: '',
 			username: '',
 			password: '',
@@ -295,6 +315,7 @@ export default {
 			newsletter_eos: false,
 			newsletter_product: false,
 			termsURL: 'http://murena.io/apps/terms_of_service/en/termsandconditions',
+			supportURL: 'https://doc.e.foundation/support-topics/configure-email',
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
@@ -423,7 +444,10 @@ export default {
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status === 200) {
-					this.showMessage(this.getLocalizedText("Congratulations! You've successfully created a Murena account."), 'success')
+					this.showRegistrationForm = false
+					this.showCaptchaForm = false
+					this.showRecoverEmailForm = false
+					this.showSuccessSection = true
 				} else {
 					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
 				}
@@ -470,7 +494,9 @@ export default {
 		onLanguageChange() {
 			this.$i18n.locale = this.selectedLanguage
 		},
-
+		useMyAccount() {
+			window.location.href = this.domain
+		},
 	},
 }
 </script>
@@ -722,5 +748,14 @@ sup {
 .np-captcha-character {
 	display: inline-block;
 	letter-spacing: 14px;
+}
+.success__title {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 150%;
+    margin: 1em 0 0.5em 0;
+    text-align: center;
 }
 </style>
