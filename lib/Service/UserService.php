@@ -160,8 +160,13 @@ class UserService {
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 		
-		$user = $this->userManager->get($uid);
-		$toName = $user->getDisplayName();
+		$toName = 'User';
+		try {
+			$user = $this->userManager->get($uid);
+			$toName = $user->getDisplayName();
+		} catch (Throwable $e) {
+			$this->logger->error('Error while fetching toName');
+		}
 			
 		$mainDomain = $this->getMainDomain();
 		try {
