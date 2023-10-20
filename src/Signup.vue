@@ -204,9 +204,9 @@
 									</div>
 								</div>
 							</div>
-							<!-- <button class="np-button" @click="createCaptcha">
+							<button class="np-button" @click="createCaptcha">
 								&#x21bb;
-							</button> -->
+							</button>
 						</div>
 					</div>
 
@@ -404,14 +404,16 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status !== 200) {
+				if (response.status === 409) {
 					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = 'Username is already taken.'
+					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
 				}
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 409) {
-					this.usernameValidationMessage = 'Username is already taken.'
+					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
+				} else {
+					this.usernameValidationMessage = this.getLocalizedText('Something went wrong.')
 				}
 			}
 
