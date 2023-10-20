@@ -52,11 +52,8 @@
 								<p v-if="validation.isUsernameEmpty" class="validation-error">
 									{{ getLocalizedText('Username is required.') }}
 								</p>
-								<p v-if="validation.isUsernameInvalid" class="validation-error">
-									{{ getLocalizedText('Username: 3+ characters, letters, numbers, hyphens, underscores only.') }}
-								</p>
-								<p v-if="validation.isUsernameTaken" class="validation-error">
-									{{ getLocalizedText('Username already taken.') }}
+								<p v-if="validation.isUsernameNotValid" class="validation-error">
+									{{ usernameValidationMessage }}
 								</p>
 							</div>
 						</div>
@@ -301,8 +298,7 @@ export default {
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
-				isUsernameInvalid: false,
-				isUsernameTaken: false,
+				isUsernameNotValid: false,
 				isPasswordEmpty: false,
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
@@ -388,10 +384,14 @@ export default {
 		validateUsername() {
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
-			this.isUsernameInvalid = false
-			this.isUsernameTaken = false
+			this.validation.isUsernameNotValid = false
 			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
-				this.isUsernameInvalid = true
+				if (!usernamePattern.test(this.username)) {
+					this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
+				} else {
+					this.usernameValidationMessage = this.getLocalizedText('Username must be at least 3 characters long.')
+				}
+				this.validation.isUsernameNotValid = true
 			} else {
 				this.checkUsername()
 			}
@@ -404,15 +404,15 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status === 200) {
-					this.showMessage(this.getLocalizedText('Username is available!'), 'success')
-				} else {
-					this.showMessage(this.getLocalizedText('Username is taken!'), 'error')
-					this.isUsernameTaken = true
+				if (response.status !== 200) {
+					this.validation.isUsernameNotValid = true
+					this.usernameValidationMessage = 'Username is already taken.'
 				}
 			} catch (error) {
-				this.showMessage(this.getLocalizedText('Username is taken.'), 'error')
-				this.isUsernameTaken = true
+				this.validation.isUsernameNotValid = true
+				if (error.response && error.response.status === 409) {
+					this.usernameValidationMessage = 'Username is already taken.'
+				}
 			}
 
 		},
