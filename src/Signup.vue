@@ -5,7 +5,7 @@
 				<div v-if="showRegistrationForm" id="registrationForm">
 					<div class="display-flex">
 						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-							{{ getLocalizedText('Create Murena Account') }}
+							{{ labels.createMurenaAccount }}
 						</h1>
 						<div class="grid">
 							<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
@@ -18,7 +18,7 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Display name') }}<sup>*</sup></label>
+								<label>{{ labels.displayName }}<sup>*</sup></label>
 								<input id="displayname"
 									v-model="displayname"
 									name="displayname"
@@ -36,7 +36,7 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Username') }}<sup>*</sup></label>
+								<label>{{ labels.userName }}<sup>*</sup></label>
 								<div class="username-group">
 									<input id="username"
 										v-model="username"
@@ -62,7 +62,7 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
+								<label>{{ labels.enterPassword }}<sup>*</sup></label>
 								<div class="username-group">
 									<Password v-model="password"
 										:secure-length="7"
@@ -167,7 +167,7 @@
 
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Human verification') }}<sup>*</sup></label>
+								<label>{{ labels.humanVefication }}<sup>*</sup></label>
 								<div class="humanverification-group">
 									<input id="humanverification"
 										v-model="humanverification"
@@ -233,7 +233,7 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ getLocalizedText('Recovery Email') }}</label>
+								<label>{{ labels.recoveryEmail }}</label>
 								<input id="email"
 									v-model="email"
 									name="email"
@@ -342,6 +342,14 @@ export default {
 				{ code: 'it', name: 'Italian' },
 				{ code: 'es', name: 'Spanish' },
 			],
+			labels: {
+				createMurenaAccount: 'Create Murena Account',
+				displayName: 'Display name',
+				userName: 'User name',
+				enterPassword: 'Enter Password',
+				humanVefication: 'Human Verification',
+				recoveryEmail: 'Recovery Email',
+			},
 		}
 	},
 	created() {
@@ -420,7 +428,6 @@ export default {
 			}
 		},
 		async checkUsername() {
-
 			const data = {
 				username: this.username,
 			}
@@ -439,7 +446,6 @@ export default {
 					this.usernameValidationMessage = this.getLocalizedText('Something went wrong.')
 				}
 			}
-
 		},
 		async submitForm(data) {
 			const url = generateUrl(`/apps/${this.appName}/account/create`)
@@ -493,8 +499,21 @@ export default {
 			const rotationVariations = [5, 10, 20, 25, -5, -10, -20, -25]
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
-		onLanguageChange() {
-			this.$i18n.locale = this.selectedLanguage
+		async onLanguageChange() {
+			const data = {
+				language: this.selectedLanguage,
+			}
+			const url = generateUrl(`/apps/${this.appName}/account/get_label`)
+			try {
+				const response = await Axios.post(url, data)
+				if (response.status === 200) {
+					this.labels = response.data
+				} else {
+					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+				}
+			} catch (error) {
+				this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+			}
 		},
 		useMyAccount() {
 			window.location.href = window.location.origin

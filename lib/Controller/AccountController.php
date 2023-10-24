@@ -44,13 +44,10 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function index() {
-		$language = 'de';
-		$l = $this->l10nFactory->get(Application::APP_ID, $language);
-		$title = $l->t('Create Murena Account');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
-			['appName' => Application::APP_ID, 'title' => $title],
+			['appName' => Application::APP_ID],
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
@@ -85,6 +82,29 @@ class AccountController extends Controller {
 		} catch (Exception $e) {
 			$response->setStatus(500);
 		}
+		return $response;
+	}
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 */
+	public function getLabels(string $language) {
+		if (is_null($language)) {
+			$language = 'en';
+		}
+		$l = $this->l10nFactory->get(Application::APP_ID, $language);
+		$response = new DataResponse();
+		$response->setStatus(200);
+		$response->setData([
+			'createMurenaAccount' => $l->t('Create Murena Account'),
+			'displayName' => $l->t('Display name'),
+			'userName' => $l->t('User name'),
+			'enterPassword' => $l->t('Enter Password'),
+			'humanVefication' => $l->t('Human Verification'),
+			'recoveryEmail' => $l->t('Recovery Email')
+		]);
 		return $response;
 	}
 }
