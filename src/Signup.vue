@@ -5,7 +5,7 @@
 				<div v-if="showRegistrationForm" id="registrationForm">
 					<div class="display-flex">
 						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-							{{ labels.createMurenaAccount }}
+							{{ titles.createMurenaAccount }}
 						</h1>
 						<div class="grid">
 							<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
@@ -24,10 +24,10 @@
 									name="displayname"
 									type="text"
 									class="form-input"
-									:placeholder="getLocalizedText('Your name as shown to others')"
+									:placeholder="placeholders.displayName"
 									@input="validateForm(['displayname'])">
 								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
-									{{ getLocalizedText('Display name is required.') }}
+									{{ errors.displayName }}
 								</p>
 							</div>
 						</div>
@@ -42,7 +42,7 @@
 										v-model="username"
 										name="username"
 										class="form-input"
-										:placeholder="getLocalizedText('Username')"
+										:placeholder="placeholders.userName"
 										type="text"
 										@input="validateForm(['username'])">
 									<div id="username-domain-div" class="pad-left-5">
@@ -50,7 +50,7 @@
 									</div>
 								</div>
 								<p v-if="validation.isUsernameEmpty" class="validation-error">
-									{{ getLocalizedText('Username is required.') }}
+									{{ errors.userName }}
 								</p>
 								<p v-if="validation.isUsernameNotValid" class="validation-error">
 									{{ usernameValidationMessage }}
@@ -71,7 +71,7 @@
 										type="password"
 										name="password"
 										:default-class="form - input"
-										:placeholder="getLocalizedText('Password')"
+										:placeholder="placeholders.enterPassword"
 										@input="validateForm(['password'])" />
 									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
@@ -79,18 +79,18 @@
 										type="password"
 										name="repassword"
 										class="form-input"
-										:placeholder="getLocalizedText('Confirm')"
+										:placeholder="placeholders.confirmPassword"
 										@input="validateForm(['repassword'])">
 								</div>
 								<p v-if="validation.isPasswordEmpty" class="validation-error">
-									{{ getLocalizedText('Password is required.') }}
+									{{ errors.password }}
 								</p>
 								<p v-if="validation.isRepasswordEmpty" class="validation-error">
-									{{ getLocalizedText('Confirm password is required.') }}
+									{{ errors.confirmPassword }}
 								</p>
 								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 									class="validation-error">
-									{{ getLocalizedText('The confirm password does not match the password.') }}
+									{{ errors.passwordNotMatched }}
 								</p>
 							</div>
 						</div>
@@ -109,7 +109,7 @@
 								</span>
 
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
-									{{ getLocalizedText('You must read and accept the Terms of Service to create your account.') }}
+									{{ errors.acceptTOS }}
 								</p>
 							</div>
 						</div>
@@ -124,7 +124,7 @@
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-newsletter_eos" class="action-checkbox__label">
-										I want to receive news about /e/OS
+										{{ labels.newsletter_eos }}
 									</label>
 								</span>
 							</div>
@@ -140,7 +140,7 @@
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-newsletter_product" class="action-checkbox__label">
-										I want to receive news about Murena products and promotions
+										{{ labels.newsletter_product }}
 									</label>
 								</span>
 							</div>
@@ -152,7 +152,7 @@
 							class="btn-primary"
 							type="primary"
 							@click="submitSignupForm">
-							{{ getLocalizedText('Create My Account') }}
+							{{ buttons.createMyAccount }}
 						</button>
 					</div>
 				</div>
@@ -161,7 +161,7 @@
 					<div id="fields">
 						<div class="display-flex">
 							<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-								{{ getLocalizedText('Captcha Verification') }}
+								{{ titles.captchaVerification }}
 							</h1>
 						</div>
 
@@ -173,16 +173,16 @@
 										v-model="humanverification"
 										name="humanverification"
 										class="form-input"
-										:placeholder="getLocalizedText('Human verification')"
+										:placeholder="placeholders.humanVefication"
 										type="text"
 										@input="validateForm(['humanverification'])">
 								</div>
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
-									{{ getLocalizedText('Human Verification is required.') }}
+									{{ errors.humanVefication }}
 								</p>
 								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationMatched"
 									class="validation-error">
-									{{ getLocalizedText('Human Verification code is not correct.') }}
+									{{ errors.humanVeficationNotCorrect }}
 								</p>
 							</div>
 						</div>
@@ -215,7 +215,7 @@
 							class="btn-primary"
 							type="primary"
 							@click="submitCaptchaForm">
-							{{ getLocalizedText('Verify') }}
+							{{ buttons.verify }}
 						</button>
 					</div>
 				</div>
@@ -223,10 +223,10 @@
 				<div v-if="showRecoverEmailForm" id="recoveryEmailForm">
 					<div class="">
 						<h1 class="has-text-centered subtitle is-3">
-							{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account.') }}
+							{{ titles.recoveryEmailForm1 }}
 						</h1>
 						<h1 class="has-text-centered subtitle is-3">
-							{{ getLocalizedText('As long as you don\'t, you\'ll have limited access to your account.') }}
+							{{ titles.recoveryEmailForm2 }}
 						</h1>
 					</div>
 
@@ -239,10 +239,10 @@
 									name="email"
 									type="email"
 									class="form-input"
-									:placeholder="getLocalizedText('Enter recovery email address')"
+									:placeholder="placeholders.recoveryEmail"
 									@input="validateForm(['email'])">
 								<p v-if="validation.isEmailEmpty" class="validation-error">
-									{{ getLocalizedText('Recovery Email is required.') }}
+									{{ errors.recoveryEmail }}
 								</p>
 							</div>
 						</div>
@@ -253,13 +253,13 @@
 							class="btn-default w-50"
 							type="primary"
 							@click="submitRecoveryEmailForm(false)">
-							{{ getLocalizedText('Later') }}
+							{{ buttons.later }}
 						</button>
 						<button :wide="true"
 							class="btn-primary w-50"
 							type="primary"
 							@click="submitRecoveryEmailForm(true)">
-							{{ getLocalizedText('Set my recovery email address') }}
+							{{ buttons.setRecoverEmail }}
 						</button>
 					</div>
 				</div>
@@ -342,13 +342,51 @@ export default {
 				{ code: 'it', name: 'Italian' },
 				{ code: 'es', name: 'Spanish' },
 			],
-			labels: {
+			titles: {
 				createMurenaAccount: 'Create Murena Account',
+				captchaVerification: 'Captcha Verification',
+				recoveryEmailForm1: 'For security reasons you need to set a recovery address for your Murena Cloud account.',
+				recoveryEmailForm2: 'As long as you don\'t, you\'ll have limited access to your account.',
+			},
+			buttons: {
+				createMyAccount: 'Create My Account',
+				verify: 'Verify',
+				later: 'Later',
+				setRecoverEmail: 'Set my recovery email address',
+			},
+			labels: {
 				displayName: 'Display name',
-				userName: 'User name',
+				userName: 'Username',
 				enterPassword: 'Enter Password',
 				humanVefication: 'Human Verification',
 				recoveryEmail: 'Recovery Email',
+				newsletter_product: 'I want to receive news about Murena products and promotions',
+				newsletter_eos: 'I want to receive news about /e/OS',
+			},
+			placeholders: {
+				displayName: 'Your name as shown to others',
+				userName: 'Username',
+				enterPassword: 'Password',
+				confirmPassword: 'Confirm',
+				humanVefication: 'Human Verification',
+				recoveryEmail: 'Recovery Email',
+			},
+			errors: {
+				displayName: 'Display name is required.',
+				userName: 'Username is required.',
+				userNameInvalid: 'Username must consist of letters, numbers, hyphens, and underscores only.',
+				userNameLength: 'Username must be at least 3 characters long.',
+				userNameTaken: 'Username is already taken.',
+				password: 'Password is required.',
+				confirmPassword: 'Confirm password is required.',
+				passwordNotMatched: 'The confirm password does not match the password.',
+				humanVefication: 'Human Verification is required.',
+				humanVeficationNotCorrect: 'Human Verification code is not correct.',
+				recoveryEmail: 'Recovery Email is required.',
+				acceptTOS: 'You must read and accept the Terms of Service to create your account.',
+			},
+			others: {
+				somethingWentWrong: 'Something went wrong.',
 			},
 		}
 	},
@@ -418,9 +456,9 @@ export default {
 			this.validation.isUsernameNotValid = false
 			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
 				if (!usernamePattern.test(this.username)) {
-					this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
+					this.usernameValidationMessage = this.errors.userNameInvalid
 				} else {
-					this.usernameValidationMessage = this.getLocalizedText('Username must be at least 3 characters long.')
+					this.usernameValidationMessage = this.errors.userNameLength
 				}
 				this.validation.isUsernameNotValid = true
 			} else {
@@ -436,14 +474,14 @@ export default {
 				const response = await Axios.post(url, data)
 				if (response.status === 409) {
 					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
+					this.usernameValidationMessage = this.errors.userNameTaken
 				}
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 409) {
-					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
+					this.usernameValidationMessage = this.errors.userNameTaken
 				} else {
-					this.usernameValidationMessage = this.getLocalizedText('Something went wrong.')
+					this.usernameValidationMessage = this.others.somethingWentWrong
 				}
 			}
 		},
@@ -457,14 +495,14 @@ export default {
 					this.showRecoverEmailForm = false
 					this.showSuccessSection = true
 				} else {
-					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+					this.showMessage(this.others.somethingWentWrong, 'error')
 				}
 				this.setAllFieldsBlank()
 			} catch (error) {
 				if (error.response && error.response.status === 409) {
-					this.showMessage(this.getLocalizedText('Username already exists.'), 'error')
+					this.showMessage(this.errors.userNameTaken, 'error')
 				} else {
-					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+					this.showMessage(this.others.somethingWentWrong, 'error')
 				}
 			}
 		},
@@ -507,12 +545,17 @@ export default {
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status === 200) {
-					this.labels = response.data
+					this.titles = response.data.titles
+					this.buttons = response.data.buttons
+					this.labels = response.data.labels
+					this.placeholders = response.data.placeholders
+					this.errors = response.data.errors
+					this.others = response.data.others
 				} else {
-					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+					this.showMessage(this.others.somethingWentWrong, 'error')
 				}
 			} catch (error) {
-				this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+				this.showMessage(this.others.somethingWentWrong, 'error')
 			}
 		},
 		useMyAccount() {
