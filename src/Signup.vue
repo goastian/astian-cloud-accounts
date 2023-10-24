@@ -503,7 +503,7 @@ export default {
 			const data = {
 				language: this.selectedLanguage,
 			}
-			const url = generateUrl(`/apps/${this.appName}/account/get_label`)
+			const url = generateUrl(`/apps/${this.appName}/account/get_labels`)
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status === 200) {
