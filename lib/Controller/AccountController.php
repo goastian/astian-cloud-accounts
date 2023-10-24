@@ -13,12 +13,14 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\L10N\IFactory;
 
 class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	// private ISession $session;
 	private $accountService;
+	protected $l10nFactory;
 
 	private $config;
 	public function __construct(
@@ -26,11 +28,13 @@ class AccountController extends Controller {
 		IRequest $request,
 		AccountService $accountService,
 		IConfig $config,
+		IFactory $l10nFactory
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->accountService = $accountService;
 		$this->config = $config;
+		$this->l10nFactory = $l10nFactory;
 	}
 
 	/**
@@ -40,10 +44,13 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function index() {
+		$language = 'de';
+		$l = $this->l10nFactory->get(Application::APP_ID, $language);
+		$title = $l->t('Create Murena Account');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
-			['appName' => Application::APP_ID],
+			['appName' => Application::APP_ID, 'title' => $title],
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
