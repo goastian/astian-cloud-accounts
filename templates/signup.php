@@ -1,7 +1,5 @@
 <?php
 script("ecloud-accounts", $appName . '-signup');
-use OCP\Util;
-
-Util::addTranslations($appName, 'de');
+\OCP\Util::addscript($appName, 'l10n/de.js');
 ?>
 <div id="ecloud-accounts-signup"></div>
