@@ -14,7 +14,6 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\L10N\IFactory;
-use OCP\Util;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -46,8 +45,6 @@ class AccountController extends Controller {
 	 */
 	public function index() {
 		
-		Util::addTranslations(Application::APP_ID, 'de');
-		Util::addScript(Application::APP_ID, 'l10n/de.js');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
