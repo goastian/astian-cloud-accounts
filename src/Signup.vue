@@ -5,6 +5,7 @@
 				<div v-if="showRegistrationForm" id="registrationForm">
 					<div class="display-flex">
 						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+							{{ getLocalizedText('Create Murena Account') }}
 							{{ titles.createMurenaAccount }}
 						</h1>
 						<div class="grid">
