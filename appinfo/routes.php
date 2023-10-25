@@ -24,7 +24,8 @@ return ['routes' => [
 		'name' => 'beta_user#submit_issue',
 		'url' => '/issue/submit', 'verb' => 'POST'
 	],
-	['name' => 'account#index', 'url' => '/account/signup', 'verb' => 'GET'],
+	
+	['name' => 'account#index', 'url' => '/account/{lang}/signup', 'verb' => 'GET'],
 	['name' => 'account#create', 'url' => '/account/create', 'verb' => 'POST'],
 	['name' => 'account#check_username_available', 'url' => '/account/check_username_available', 'verb' => 'POST'],
 	['name' => 'account#get_labels', 'url' => '/account/get_labels', 'verb' => 'POST'],

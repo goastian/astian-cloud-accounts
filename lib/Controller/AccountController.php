@@ -43,12 +43,14 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function index() {
-		
+	public function index(string $lang = 'en') {
+		if(!$lang) {
+			$lang = 'en';
+		}
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
-			['appName' => Application::APP_ID],
+			['appName' => Application::APP_ID, 'lang' => $lang],
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
