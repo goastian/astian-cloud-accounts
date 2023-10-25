@@ -70,9 +70,9 @@ OC.L10N.register(
 		"Recovery Email is required.": "Eine Wiederherstellungs-E-Mail ist erforderlich.",
 		"You must read and accept the Terms of Service to create your account.": "Sie müssen die Allgemeinen Geschäftsbedingungen lesen und akzeptieren, um Ihr Konto zu erstellen.",
 		"Use My Account Now": "Mein Konto jetzt verwenden",
-		"I have read and accept the <a href='%termsURL' target='_blank'>Terms of Service</a>.": "Ich habe die <a href='%termsURL' target='_blank'>Nutzungsbedingungen</a> gelesen und akzeptiere diese.",
+		"I have read and accept the <a href='__termsURL__' target='_blank'>Terms of Service</a>.": "Ich habe die <a href='__termsURL__' target='_blank'>Nutzungsbedingungen</a> gelesen und akzeptiere diese.",
 		"Success!": "Erfolgreich!",
-		"Your <b>%username@%domain</b> account was successfully created.": "Ihr <b>%Benutzername@%Domain</b>-Konto wurde erfolgreich erstellt.",
-		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='%supportURL'>this page</a>.": "Wenn Sie Ihre murena.io-E-Mail in einer Mail-Anwendung wie Thunderbird, Outlook oder einer anderen nutzen möchten, besuchen Sie bitte <a href='%supportURL'>diese Seite</a>."
+		"Your <b>__username__@__domain__</b> account was successfully created.": "Ihr <b>%Benutzername@__domain__</b>-Konto wurde erfolgreich erstellt.",
+		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "Wenn Sie Ihre murena.io-E-Mail in einer Mail-Anwendung wie Thunderbird, Outlook oder einer anderen nutzen möchten, besuchen Sie bitte <a href='__supportURL__'>diese Seite</a>."
 	},
 	"nplurals=2; plural=(n != 1);");

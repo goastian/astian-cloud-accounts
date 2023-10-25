@@ -347,7 +347,7 @@ export default {
 				captchaVerification: 'Captcha Verification',
 				recoveryEmailForm1: 'For security reasons you need to set a recovery address for your Murena Cloud account.',
 				recoveryEmailForm2: 'As long as you don\'t, you\'ll have limited access to your account.',
-				readAndAcceptTOS: 'I have read and accept the <a href=\'%termsURL\' target=\'_blank\'>Terms of Service</a>.',
+				readAndAcceptTOS: 'I have read and accept the <a href=\'__termsURL__\' target=\'_blank\'>Terms of Service</a>.',
 			},
 			buttons: {
 				createMyAccount: 'Create My Account',
@@ -389,8 +389,8 @@ export default {
 			},
 			success: {
 				successMessage: 'Success!',
-				accountCreated: 'Your <b>%username@%domain</b> account was successfully created.',
-				supportMessage: 'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'%supportURL\'>this page</a>.',
+				accountCreated: 'Your <b>__username__@__domain__</b> account was successfully created.',
+				supportMessage: 'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'__supportURL__\'>this page</a>.',
 			},
 			others: {
 				somethingWentWrong: 'Something went wrong.',
@@ -560,10 +560,10 @@ export default {
 					this.others = response.data.others
 					this.success = response.data.success
 
-					this.titles.readAndAcceptTOS = this.titles.readAndAcceptTOS.replace('%termsURL', this.termsURL)
-					this.success.accountCreated = this.success.accountCreated.replace('%username', this.username)
-					this.success.accountCreated = this.success.accountCreated.replace('%domain', this.domain)
-					this.success.supportMessage = this.success.supportMessage.replace('%supportURL', this.supportURL)
+					this.titles.readAndAcceptTOS = this.titles.readAndAcceptTOS.replace('__termsURL__', this.termsURL)
+					this.success.accountCreated = this.success.accountCreated.replace('__username__', this.username)
+					this.success.accountCreated = this.success.accountCreated.replace('__domain__', this.domain)
+					this.success.supportMessage = this.success.supportMessage.replace('__supportURL__', this.supportURL)
 
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
