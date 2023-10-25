@@ -100,8 +100,8 @@ class AccountController extends Controller {
 			'createMurenaAccount' => $l->t('Create Murena Account'),
 			'captchaVerification' => $l->t('Captcha Verification'),
 			'recoveryEmailForm1' => $l->t('For security reasons you need to set a recovery address for your Murena Cloud account.'),
-			'recoveryEmailForm2' => $l->t('As long as you don\'t, you\'ll have limited access to your account.'),
-			'readAndAcceptTOS' => $l->t('I have read and accept the <a href=\'%termsURL\' target=\'_blank\'>Terms of Service</a>.')
+			'recoveryEmailForm2' => $l->t("As long as you don't, you'll have limited access to your account."),
+			'readAndAcceptTOS' => $l->t("I have read and accept the <a href='%termsURL' target='_blank'>Terms of Service</a>.")
 		];
 		$buttons = [
 			'createMyAccount' => $l->t('Create My Account'),
@@ -147,7 +147,7 @@ class AccountController extends Controller {
 		$success = [
 			'successMessage' => $l->t('Success!'),
 			'accountCreated' => $l->t('Your <b>%username@%domain</b> account was successfully created.'),
-			'supportMessage' => $l->t('If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'%supportURL\'>this page</a>.')
+			'supportMessage' => $l->t("If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='%supportURL'>this page</a>.")
 		];
 		$data = [
 			'titles' => $titles,
