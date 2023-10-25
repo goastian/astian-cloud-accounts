@@ -97,56 +97,56 @@ class AccountController extends Controller {
 		$l = $this->l10nFactory->get(Application::APP_ID, $language);
 		
 		$titles = [
-			'createMurenaAccount' => $l->t('Create Murena Account'),
-			'captchaVerification' => $l->t('Captcha Verification'),
-			'recoveryEmailForm1' => $l->t('For security reasons you need to set a recovery address for your Murena Cloud account.'),
+			'createMurenaAccount' => $l->t("Create Murena Account"),
+			'captchaVerification' => $l->t("Captcha Verification"),
+			'recoveryEmailForm1' => $l->t("For security reasons you need to set a recovery address for your Murena Cloud account."),
 			'recoveryEmailForm2' => $l->t("As long as you don't, you'll have limited access to your account."),
 			'readAndAcceptTOS' => $l->t("I have read and accept the <a href='__termsURL__' target='_blank'>Terms of Service</a>.")
 		];
 		$buttons = [
-			'createMyAccount' => $l->t('Create My Account'),
-			'verify' => $l->t('Verify'),
-			'later' => $l->t('Later'),
-			'setRecoverEmail' => $l->t('Set my recovery email address'),
-			'useMyAccountNow' => $l->t('Use My Account Now')
+			'createMyAccount' => $l->t("Create My Account"),
+			'verify' => $l->t("Verify"),
+			'later' => $l->t("Later"),
+			'setRecoverEmail' => $l->t("Set my recovery email address"),
+			'useMyAccountNow' => $l->t("Use My Account Now")
 		];
 		$labels = [
-			'displayName' => $l->t('Display name'),
-			'userName' => $l->t('Username'),
-			'enterPassword' => $l->t('Enter Password'),
-			'humanVefication' => $l->t('Human Verification'),
-			'recoveryEmail' => $l->t('Recovery Email'),
-			'newsletter_product' => $l->t('I want to receive news about Murena products and promotions'),
-			'newsletter_eos' => $l->t('I want to receive news about /e/OS')
+			'displayName' => $l->t("Display name"),
+			'userName' => $l->t("Username"),
+			'enterPassword' => $l->t("Enter Password"),
+			'humanVefication' => $l->t("Human Verification"),
+			'recoveryEmail' => $l->t("Recovery Email"),
+			'newsletter_product' => $l->t("I want to receive news about Murena products and promotions"),
+			'newsletter_eos' => $l->t("I want to receive news about /e/OS")
 		];
 		$placeholders = [
-			'displayName' => $l->t('Your name as shown to others'),
-			'userName' => $l->t('Username'),
-			'enterPassword' => $l->t('Password'),
-			'confirmPassword' => $l->t('Confirm'),
-			'humanVefication' => $l->t('Human Verification'),
-			'recoveryEmail' => $l->t('Recovery Email')
+			'displayName' => $l->t("Your name as shown to others"),
+			'userName' => $l->t("Username"),
+			'enterPassword' => $l->t("Password"),
+			'confirmPassword' => $l->t("Confirm"),
+			'humanVefication' => $l->t("Human Verification"),
+			'recoveryEmail' => $l->t("Recovery Email")
 		];
 		$errors = [
-			'displayName' => $l->t('Display name is required.'),
-			'userName' => $l->t('Username is required.'),
-			'userNameInvalid' => $l->t('Username must consist of letters, numbers, hyphens, and underscores only.'),
-			'userNameLength' => $l->t('Username must be at least 3 characters long.'),
-			'userNameTaken' => $l->t('Username is already taken.'),
-			'password' => $l->t('Password is required.'),
-			'confirmPassword' => $l->t('Confirm password is required.'),
-			'passwordNotMatched' => $l->t('The confirm password does not match the password.'),
-			'humanVefication' => $l->t('Human Verification is required.'),
-			'humanVeficationNotCorrect' => $l->t('Human Verification code is not correct.'),
-			'recoveryEmail' => $l->t('Recovery Email is required.'),
-			'acceptTOS' => $l->t('You must read and accept the Terms of Service to create your account.')
+			'displayName' => $l->t("Display name is required."),
+			'userName' => $l->t("Username is required."),
+			'userNameInvalid' => $l->t("Username must consist of letters, numbers, hyphens, and underscores only."),
+			'userNameLength' => $l->t("Username must be at least 3 characters long."),
+			'userNameTaken' => $l->t("Username is already taken."),
+			'password' => $l->t("Password is required."),
+			'confirmPassword' => $l->t("Confirm password is required."),
+			'passwordNotMatched' => $l->t("The confirm password does not match the password."),
+			'humanVefication' => $l->t("Human Verification is required."),
+			'humanVeficationNotCorrect' => $l->t("Human Verification code is not correct."),
+			'recoveryEmail' => $l->t("Recovery Email is required."),
+			'acceptTOS' => $l->t("You must read and accept the Terms of Service to create your account.")
 		];
 		$others = [
-			'somethingWentWrong' => $l->t('Something went wrong.'),
+			'somethingWentWrong' => $l->t("Something went wrong."),
 		];
 		$success = [
-			'successMessage' => $l->t('Success!'),
-			'accountCreated' => $l->t('Your <b>__username__@__domain__</b> account was successfully created.'),
+			'successMessage' => $l->t("Success!"),
+			'accountCreated' => $l->t("Your <b>__username__@__domain__</b> account was successfully created."),
 			'supportMessage' => $l->t("If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.")
 		];
 		$data = [
