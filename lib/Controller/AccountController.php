@@ -101,7 +101,7 @@ class AccountController extends Controller {
 			'captchaVerification' => $l->t('Captcha Verification'),
 			'recoveryEmailForm1' => $l->t('For security reasons you need to set a recovery address for your Murena Cloud account.'),
 			'recoveryEmailForm2' => $l->t('As long as you don\'t, you\'ll have limited access to your account.'),
-			'readAndAcceptTOS' => $l->t('I have read and accept the <a href=\'%termsURL\' target=\'_blank\'>Terms of Service</a>.'),
+			'readAndAcceptTOS' => $l->t('I have read and accept the <a href=\'%termsURL\' target=\'_blank\'>Terms of Service</a>.')
 		];
 		$buttons = [
 			'createMyAccount' => $l->t('Create My Account'),
@@ -117,7 +117,7 @@ class AccountController extends Controller {
 			'humanVefication' => $l->t('Human Verification'),
 			'recoveryEmail' => $l->t('Recovery Email'),
 			'newsletter_product' => $l->t('I want to receive news about Murena products and promotions'),
-			'newsletter_eos' => $l->t('I want to receive news about /e/OS'),
+			'newsletter_eos' => $l->t('I want to receive news about /e/OS')
 		];
 		$placeholders = [
 			'displayName' => $l->t('Your name as shown to others'),
@@ -125,7 +125,7 @@ class AccountController extends Controller {
 			'enterPassword' => $l->t('Password'),
 			'confirmPassword' => $l->t('Confirm'),
 			'humanVefication' => $l->t('Human Verification'),
-			'recoveryEmail' => $l->t('Recovery Email'),
+			'recoveryEmail' => $l->t('Recovery Email')
 		];
 		$errors = [
 			'displayName' => $l->t('Display name is required.'),
@@ -139,7 +139,7 @@ class AccountController extends Controller {
 			'humanVefication' => $l->t('Human Verification is required.'),
 			'humanVeficationNotCorrect' => $l->t('Human Verification code is not correct.'),
 			'recoveryEmail' => $l->t('Recovery Email is required.'),
-			'acceptTOS' => $l->t('You must read and accept the Terms of Service to create your account.'),
+			'acceptTOS' => $l->t('You must read and accept the Terms of Service to create your account.')
 		];
 		$others = [
 			'somethingWentWrong' => $l->t('Something went wrong.'),
@@ -147,7 +147,7 @@ class AccountController extends Controller {
 		$success = [
 			'successMessage' => $l->t('Success!'),
 			'accountCreated' => $l->t('Your <b>%username@%domain</b> account was successfully created.'),
-			'supportMessage' => $l->t('If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'%supportURL\'>this page</a>.'),
+			'supportMessage' => $l->t('If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'%supportURL\'>this page</a>.')
 		];
 		$data = [
 			'titles' => $titles,
