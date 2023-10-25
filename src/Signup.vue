@@ -5,13 +5,12 @@
 				<div v-if="showRegistrationForm" id="registrationForm">
 					<div class="display-flex">
 						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-							{{ getLocalizedText('Create Murena Account') }}
-							{{ titles.createMurenaAccount }}
+							{{ getLocalizedText(titles.createMurenaAccount) }}
 						</h1>
 						<div class="grid">
 							<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
 								<option v-for="language in languages" :key="language.code" :value="language.code">
-									{{ language.name }}
+									{{ getLocalizedText(language.name) }}
 								</option>
 							</select>
 						</div>
@@ -19,16 +18,16 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ labels.displayName }}<sup>*</sup></label>
+								<label>{{ getLocalizedText(labels.displayName) }}<sup>*</sup></label>
 								<input id="displayname"
 									v-model="displayname"
 									name="displayname"
 									type="text"
 									class="form-input"
-									:placeholder="placeholders.displayName"
+									:placeholder="getLocalizedText(placeholders.displayName)"
 									@input="validateForm(['displayname'])">
 								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
-									{{ errors.displayName }}
+									{{ getLocalizedText(errors.displayName) }}
 								</p>
 							</div>
 						</div>
@@ -37,13 +36,13 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ labels.userName }}<sup>*</sup></label>
+								<label>{{ getLocalizedText(labels.userName) }}<sup>*</sup></label>
 								<div class="username-group">
 									<input id="username"
 										v-model="username"
 										name="username"
 										class="form-input"
-										:placeholder="placeholders.userName"
+										:placeholder="getLocalizedText(placeholders.userName)"
 										type="text"
 										@input="validateForm(['username'])">
 									<div id="username-domain-div" class="pad-left-5">
@@ -51,10 +50,10 @@
 									</div>
 								</div>
 								<p v-if="validation.isUsernameEmpty" class="validation-error">
-									{{ errors.userName }}
+									{{ getLocalizedText(errors.userName) }}
 								</p>
 								<p v-if="validation.isUsernameNotValid" class="validation-error">
-									{{ usernameValidationMessage }}
+									{{ getLocalizedText(usernameValidationMessage) }}
 								</p>
 							</div>
 						</div>
@@ -63,7 +62,7 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ labels.enterPassword }}<sup>*</sup></label>
+								<label>{{ getLocalizedText(labels.enterPassword) }}<sup>*</sup></label>
 								<div class="username-group">
 									<Password v-model="password"
 										:secure-length="7"
@@ -72,7 +71,7 @@
 										type="password"
 										name="password"
 										:default-class="form - input"
-										:placeholder="placeholders.enterPassword"
+										:placeholder="getLocalizedText(placeholders.enterPassword)"
 										@input="validateForm(['password'])" />
 									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
@@ -80,18 +79,18 @@
 										type="password"
 										name="repassword"
 										class="form-input"
-										:placeholder="placeholders.confirmPassword"
+										:placeholder="getLocalizedText(placeholders.confirmPassword)"
 										@input="validateForm(['repassword'])">
 								</div>
 								<p v-if="validation.isPasswordEmpty" class="validation-error">
-									{{ errors.password }}
+									{{ getLocalizedText(errors.password) }}
 								</p>
 								<p v-if="validation.isRepasswordEmpty" class="validation-error">
-									{{ errors.confirmPassword }}
+									{{ getLocalizedText(errors.confirmPassword) }}
 								</p>
 								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 									class="validation-error">
-									{{ errors.passwordNotMatched }}
+									{{ getLocalizedText(errors.passwordNotMatched) }}
 								</p>
 							</div>
 						</div>
@@ -106,11 +105,11 @@
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-tns" class="action-checkbox__label">
-										{{ titles.readAndAcceptTOS }}<sup>*</sup></label>
+										{{ getLocalizedText(titles.readAndAcceptTOS) }}<sup>*</sup></label>
 								</span>
 
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
-									{{ errors.acceptTOS }}
+									{{ getLocalizedText(errors.acceptTOS) }}
 								</p>
 							</div>
 						</div>
@@ -125,7 +124,7 @@
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-newsletter_eos" class="action-checkbox__label">
-										{{ labels.newsletter_eos }}
+										{{ getLocalizedText(labels.newsletter_eos) }}
 									</label>
 								</span>
 							</div>
@@ -141,7 +140,7 @@
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-newsletter_product" class="action-checkbox__label">
-										{{ labels.newsletter_product }}
+										{{ getLocalizedText(labels.newsletter_product) }}
 									</label>
 								</span>
 							</div>
@@ -153,7 +152,7 @@
 							class="btn-primary"
 							type="primary"
 							@click="submitSignupForm">
-							{{ buttons.createMyAccount }}
+							{{ getLocalizedText(buttons.createMyAccount) }}
 						</button>
 					</div>
 				</div>
@@ -162,27 +161,27 @@
 					<div id="fields">
 						<div class="display-flex">
 							<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-								{{ titles.captchaVerification }}
+								{{ getLocalizedText(titles.captchaVerification) }}
 							</h1>
 						</div>
 
 						<div class="field">
 							<div class="control">
-								<label>{{ labels.humanVefication }}<sup>*</sup></label>
+								<label>{{ getLocalizedText(labels.humanVefication) }}<sup>*</sup></label>
 								<div class="humanverification-group">
 									<input id="humanverification"
 										v-model="humanverification"
 										name="humanverification"
 										class="form-input"
-										:placeholder="placeholders.humanVefication"
+										:placeholder="getLocalizedText(placeholders.humanVefication)"
 										type="text">
 								</div>
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
-									{{ errors.humanVefication }}
+									{{ getLocalizedText(errors.humanVefication) }}
 								</p>
 								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationMatched"
 									class="validation-error">
-									{{ errors.humanVeficationNotCorrect }}
+									{{ getLocalizedText(errors.humanVeficationNotCorrect) }}
 								</p>
 							</div>
 						</div>
@@ -215,7 +214,7 @@
 							class="btn-primary"
 							type="primary"
 							@click="submitCaptchaForm">
-							{{ buttons.verify }}
+							{{ getLocalizedText(buttons.verify) }}
 						</button>
 					</div>
 				</div>
@@ -233,16 +232,16 @@
 					<div id="fields">
 						<div class="field">
 							<div class="control">
-								<label>{{ labels.recoveryEmail }}</label>
+								<label>{{ getLocalizedText(labels.recoveryEmail) }}</label>
 								<input id="email"
 									v-model="email"
 									name="email"
 									type="email"
 									class="form-input"
-									:placeholder="placeholders.recoveryEmail"
+									:placeholder="getLocalizedText(placeholders.recoveryEmail)"
 									@input="validateForm(['email'])">
 								<p v-if="validation.isEmailEmpty" class="validation-error">
-									{{ errors.recoveryEmail }}
+									{{ getLocalizedText(errors.recoveryEmail) }}
 								</p>
 							</div>
 						</div>
@@ -253,13 +252,13 @@
 							class="btn-default w-50"
 							type="primary"
 							@click="submitRecoveryEmailForm(false)">
-							{{ buttons.later }}
+							{{ getLocalizedText(buttons.later) }}
 						</button>
 						<button :wide="true"
 							class="btn-primary w-50"
 							type="primary"
 							@click="submitRecoveryEmailForm(true)">
-							{{ buttons.setRecoverEmail }}
+							{{ getLocalizedText(buttons.setRecoverEmail) }}
 						</button>
 					</div>
 				</div>
@@ -276,7 +275,7 @@
 								class="btn-primary w-50"
 								type="primary"
 								@click="useMyAccount">
-								{{ buttons.useMyAccountNow }}
+								{{ getLocalizedText(buttons.useMyAccountNow) }}
 							</button>
 							<p id="moreDetailMsg" class="font-16">
 								{{ success.supportMessage }}
@@ -500,6 +499,17 @@ export default {
 					this.showRegistrationForm = false
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false
+
+					const readAndAcceptTOS = this.getLocalizedText(this.titles.readAndAcceptTOS)
+					this.titles.readAndAcceptTOS = readAndAcceptTOS.replace('__termsURL__', this.termsURL)
+
+					let accountCreated = this.getLocalizedText(this.titles.accountCreated)
+					accountCreated = accountCreated.replace('__username__', this.username)
+					this.success.accountCreated = accountCreated.replace('__domain__', this.domain)
+
+					const supportMessage = this.getLocalizedText(this.titles.supportMessage)
+					this.success.supportMessage = supportMessage.replace('__supportURL__', this.supportURL)
+
 					this.showSuccessSection = true
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
@@ -545,32 +555,7 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		async onLanguageChange() {
-			const data = {
-				language: this.selectedLanguage,
-			}
-			const url = generateUrl(`/apps/${this.appName}/account/get_labels`)
-			try {
-				const response = await Axios.post(url, data)
-				if (response.status === 200) {
-					this.titles = response.data.titles
-					this.buttons = response.data.buttons
-					this.labels = response.data.labels
-					this.placeholders = response.data.placeholders
-					this.errors = response.data.errors
-					this.others = response.data.others
-					this.success = response.data.success
-
-					this.titles.readAndAcceptTOS = this.titles.readAndAcceptTOS.replace('__termsURL__', this.termsURL)
-					this.success.accountCreated = this.success.accountCreated.replace('__username__', this.username)
-					this.success.accountCreated = this.success.accountCreated.replace('__domain__', this.domain)
-					this.success.supportMessage = this.success.supportMessage.replace('__supportURL__', this.supportURL)
-
-				} else {
-					this.showMessage(this.others.somethingWentWrong, 'error')
-				}
-			} catch (error) {
-				this.showMessage(this.others.somethingWentWrong, 'error')
-			}
+			window.location.href = window.location.origin + 'apps/ecloud-accounts/account/' + this.selectedLanguage + '/signup'
 		},
 		useMyAccount() {
 			window.location.href = window.location.origin
