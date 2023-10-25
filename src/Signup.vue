@@ -105,7 +105,7 @@
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
 									<label for="action-tns" class="action-checkbox__label">
-										I have read and accept the&nbsp;<a :href="termsURL" target="_blank">Terms of Service</a>.<sup>*</sup></label>
+										{{ titles.readAndAcceptTOS }}<sup>*</sup></label>
 								</span>
 
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
@@ -204,9 +204,9 @@
 									</div>
 								</div>
 							</div>
-							<button class="np-button" @click="createCaptcha">
+							<!-- <button class="np-button" @click="createCaptcha">
 								&#x21bb;
-							</button>
+							</button> -->
 						</div>
 					</div>
 
@@ -267,19 +267,19 @@
 					<section id="success" style="">
 						<div id="successMessages" class="notification isa_success has-text-centered">
 							<h3 class="success__title">
-								Success!
+								{{ success.successMessage }}
 							</h3>
 							<p id="accountCreatedMsg" class="font-16">
-								Your <b>{{ username }}@{{ domain }}</b> account was successfully created.
+								{{ success.accountCreated }}
 							</p>
 							<button :wide="true"
 								class="btn-primary w-50"
 								type="primary"
 								@click="useMyAccount">
-								{{ getLocalizedText('Use My Account Now') }}
+								{{ buttons.useMyAccountNow }}
 							</button>
 							<p id="moreDetailMsg" class="font-16">
-								If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a :href="supportURL">this page</a>.
+								{{ success.supportMessage }}
 							</p>
 						</div>
 					</section>
@@ -347,12 +347,14 @@ export default {
 				captchaVerification: 'Captcha Verification',
 				recoveryEmailForm1: 'For security reasons you need to set a recovery address for your Murena Cloud account.',
 				recoveryEmailForm2: 'As long as you don\'t, you\'ll have limited access to your account.',
+				readAndAcceptTOS: 'I have read and accept the <a href=\'%termsURL\' target=\'_blank\'>Terms of Service</a>.',
 			},
 			buttons: {
 				createMyAccount: 'Create My Account',
 				verify: 'Verify',
 				later: 'Later',
 				setRecoverEmail: 'Set my recovery email address',
+				useMyAccountNow: 'Use My Account Now',
 			},
 			labels: {
 				displayName: 'Display name',
@@ -384,6 +386,11 @@ export default {
 				humanVeficationNotCorrect: 'Human Verification code is not correct.',
 				recoveryEmail: 'Recovery Email is required.',
 				acceptTOS: 'You must read and accept the Terms of Service to create your account.',
+			},
+			success: {
+				successMessage: 'Success!',
+				accountCreated: 'Your <b>%username@%domain</b> account was successfully created.',
+				supportMessage: 'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'%supportURL\'>this page</a>.',
 			},
 			others: {
 				somethingWentWrong: 'Something went wrong.',
@@ -551,6 +558,13 @@ export default {
 					this.placeholders = response.data.placeholders
 					this.errors = response.data.errors
 					this.others = response.data.others
+					this.success = response.data.success
+
+					this.titles.readAndAcceptTOS = this.titles.readAndAcceptTOS.replace('%termsURL', this.termsURL)
+					this.success.accountCreated = this.success.accountCreated.replace('%username', this.username)
+					this.success.accountCreated = this.success.accountCreated.replace('%domain', this.domain)
+					this.success.supportMessage = this.success.supportMessage.replace('%supportURL', this.supportURL)
+
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
 				}

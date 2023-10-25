@@ -101,12 +101,14 @@ class AccountController extends Controller {
 			'captchaVerification' => $l->t('Captcha Verification'),
 			'recoveryEmailForm1' => $l->t('For security reasons you need to set a recovery address for your Murena Cloud account.'),
 			'recoveryEmailForm2' => $l->t('As long as you don\'t, you\'ll have limited access to your account.'),
+			'readAndAcceptTOS' => $l->t('I have read and accept the <a href=\'%termsURL\' target=\'_blank\'>Terms of Service</a>.'),
 		];
 		$buttons = [
 			'createMyAccount' => $l->t('Create My Account'),
 			'verify' => $l->t('Verify'),
 			'later' => $l->t('Later'),
 			'setRecoverEmail' => $l->t('Set my recovery email address'),
+			'useMyAccountNow' => $l->t('Use My Account Now')
 		];
 		$labels = [
 			'displayName' => $l->t('Display name'),
@@ -142,13 +144,19 @@ class AccountController extends Controller {
 		$others = [
 			'somethingWentWrong' => $l->t('Something went wrong.'),
 		];
+		$success = [
+			'successMessage' => $l->t('Success!'),
+			'accountCreated' => $l->t('Your <b>%username@%domain</b> account was successfully created.'),
+			'supportMessage' => $l->t('If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'%supportURL\'>this page</a>.'),
+		];
 		$data = [
 			'titles' => $titles,
 			'buttons' => $buttons,
 			'labels' => $labels,
 			'placeholders' => $placeholders,
 			'errors' => $errors,
-			'others' => $others
+			'others' => $others,
+			'success' => $success
 		];
 		$response = new DataResponse();
 		$response->setStatus(200);

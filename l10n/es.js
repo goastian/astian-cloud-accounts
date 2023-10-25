@@ -71,5 +71,10 @@ OC.L10N.register(
 		"Human Verification code is not correct.": "El código de verificación humana no es correcto.",
 		"Recovery Email is required.": "Se requiere correo electrónico de recuperación.",
 		"You must read and accept the Terms of Service to create your account.": "Debe leer y aceptar las Condiciones del servicio para crear su cuenta.",
+		"Use My Account Now": "Utilizar mi cuenta ahora",
+		"I have read and accept the <a href='%termsURL' target='_blank'>Terms of Service</a>.": "He leído y acepto las <a href='%termsURL' target='_blank'>Condiciones del servicio</a>.",
+		"Success!": "¡Éxito!",
+		"Your <b>%username@%domain</b> account was successfully created.": "Su cuenta <b>%nombredeusuario@%dominio</b> se ha creado correctamente.",
+		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='%supportURL'>this page</a>.": "Si desea utilizar su correo electrónico de murena.io en una aplicación de correo como Thunderbird, Outlook u otra, visite <a href='%supportURL'>esta página</a>.",
 	},
 	"nplurals=2; plural=(n != 1);");
