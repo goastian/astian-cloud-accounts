@@ -555,7 +555,7 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		async onLanguageChange() {
-			window.location.href = window.location.origin + 'apps/ecloud-accounts/account/' + this.selectedLanguage + '/signup'
+			window.location.href = window.location.origin + '/apps/ecloud-accounts/account/' + this.selectedLanguage + '/signup'
 		},
 		useMyAccount() {
 			window.location.href = window.location.origin
