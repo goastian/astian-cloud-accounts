@@ -174,8 +174,7 @@
 										name="humanverification"
 										class="form-input"
 										:placeholder="placeholders.humanVefication"
-										type="text"
-										@input="validateForm(['humanverification'])">
+										type="text">
 								</div>
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
 									{{ errors.humanVefication }}
