@@ -146,7 +146,7 @@ class AccountController extends Controller {
 		];
 		$success = [
 			'successMessage' => $l->t("Success!"),
-			'accountCreated' => $l->t("Your <b>__username__@__domain__</b> account was successfully created."),
+			'accountCreated' => $l->t("Your __username__@__domain__ account was successfully created."),
 			'supportMessage' => $l->t("If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.")
 		];
 		$data = [
