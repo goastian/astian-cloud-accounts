@@ -391,6 +391,8 @@ export default {
 	},
 	created() {
 		this.createCaptcha()
+		const readAndAcceptTOS = this.getLocalizedText(this.titles.readAndAcceptTOS)
+		this.titles.readAndAcceptTOS = readAndAcceptTOS.replace('__termsURL__', this.termsURL)
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
@@ -492,9 +494,6 @@ export default {
 					this.showRegistrationForm = false
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false
-
-					const readAndAcceptTOS = this.getLocalizedText(this.titles.readAndAcceptTOS)
-					this.titles.readAndAcceptTOS = readAndAcceptTOS.replace('__termsURL__', this.termsURL)
 
 					let accountCreated = this.getLocalizedText(this.titles.accountCreated)
 					accountCreated = accountCreated.replace('__username__', this.username)
