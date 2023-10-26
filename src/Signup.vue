@@ -175,8 +175,6 @@
 										:placeholder="getLocalizedText(placeholders.humanVefication)"
 										type="text">
 								</div>
-								{{ humanverification }}
-								{{ captchaResult }}
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
 									{{ getLocalizedText(errors.humanVefication) }}
 								</p>
@@ -433,9 +431,9 @@ export default {
 			this.validateForm(['humanverification'])
 			const isFormValid = Object.values(this.validation).every(value => !value)
 			if (isFormValid) {
-				// this.showRegistrationForm = false
-				// this.showCaptchaForm = false
-				// this.showRecoverEmailForm = true
+				this.showRegistrationForm = false
+				this.showCaptchaForm = false
+				this.showRecoverEmailForm = true
 			}
 		},
 		submitRecoveryEmailForm(setrecoveryemail) {
@@ -564,7 +562,7 @@ export default {
 		checkAnswer() {
 			const result = this.calculateResult()
 			this.captchaResult = parseInt(result, 10)
-			if (parseInt(this.humanverification, 10) === this.captchaResult) {
+			if (parseInt(this.humanverification, 10) !== this.captchaResult) {
 				this.validation.isHumanverificationNotMatched = true
 			} else {
 				this.validation.isHumanverificationNotMatched = false
