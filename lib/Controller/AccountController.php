@@ -57,11 +57,11 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email = '', string $username, string $password, string $userlanguage): DataResponse {
+	public function create(string $displayname, string $email = '', string $username, string $password, string $language): DataResponse {
 		$response = new DataResponse();
 
 		try {
-			$result = $this->accountService->registerUser($displayname, $email, $username, $password, $userlanguage);
+			$result = $this->accountService->registerUser($displayname, $email, $username, $password, $language);
 			$response->setStatus($result ? 200 : 409);
 		} catch (Exception $e) {
 			$response->setStatus(500);

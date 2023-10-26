@@ -397,6 +397,9 @@ export default {
 		this.createCaptcha()
 		const readAndAcceptTOS = this.getLocalizedText(this.titles.readAndAcceptTOS)
 		this.titles.readAndAcceptTOS = readAndAcceptTOS.replace('__termsURL__', this.termsURL)
+		const currentURL = window.location.href
+		const urlSegments = currentURL.split('/')
+		this.selectedLanguage = urlSegments[urlSegments.length - 2]
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
@@ -451,7 +454,7 @@ export default {
 					username: this.username,
 					password: this.password,
 					email: this.email,
-					userlanguage: this.selectedLanguage,
+					language: this.selectedLanguage,
 				}
 				this.submitForm(data)
 			}
