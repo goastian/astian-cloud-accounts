@@ -138,7 +138,7 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $uid, string $toEmail, string $language = 'en') : void {
+	public function sendWelcomeEmail(string $displayname = '', string $uid, string $toEmail, string $language = 'en') : void {
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -164,17 +164,9 @@ class UserService {
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 		
-		$toName = 'User';
-		try {
-			$user = $this->userManager->get($uid);
-			$toName = $user->getDisplayName();
-		} catch (Throwable $e) {
-			$this->logger->error('Error while fetching toName');
-		}
-			
 		$mainDomain = $this->getMainDomain();
 		try {
-			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $toName, $templateID, $uid, $mainDomain);
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $displayname, $templateID, $uid, $mainDomain);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
 			$this->logger->error('Error sending email to: ' . $toEmail . ': ' . $e->getMessage());
