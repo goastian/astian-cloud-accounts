@@ -498,11 +498,11 @@ export default {
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false
 
-					let accountCreated = this.getLocalizedText(this.titles.accountCreated)
+					let accountCreated = this.getLocalizedText(this.success.accountCreated)
 					accountCreated = accountCreated.replace('__username__', this.username)
 					this.success.accountCreated = accountCreated.replace('__domain__', this.domain)
 
-					const supportMessage = this.getLocalizedText(this.titles.supportMessage)
+					const supportMessage = this.getLocalizedText(this.success.supportMessage)
 					this.success.supportMessage = supportMessage.replace('__supportURL__', this.supportURL)
 
 					this.showSuccessSection = true
