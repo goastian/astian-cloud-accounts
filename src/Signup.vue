@@ -450,6 +450,7 @@ export default {
 					username: this.username,
 					password: this.password,
 					email: this.email,
+					userlanguage: this.selectedLanguage,
 				}
 				this.submitForm(data)
 			}
