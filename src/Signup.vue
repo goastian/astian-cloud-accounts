@@ -564,6 +564,9 @@ export default {
 }
 </script>
 <style scoped>
+html{
+	background-color: white !important;
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
