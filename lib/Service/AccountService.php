@@ -21,7 +21,7 @@ class AccountService {
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$this->userService = $userService;
 	}
-	public function registerUser(string $displayname, string $email, string $username, string $password) {
+	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en') {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
@@ -60,7 +60,7 @@ class AccountService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-		$this->userService->sendWelcomeEmail($username, $username.'@'.$domain);
+		$this->userService->sendWelcomeEmail($username, $username.'@'.$domain, $userlanguage);
 		
 		return true;
 	}

@@ -138,7 +138,7 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $uid, string $toEmail) : void {
+	public function sendWelcomeEmail(string $uid, string $toEmail, string $language = 'en') : void {
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -150,8 +150,10 @@ class UserService {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
-			
-		$language = $this->getUserLanguage($uid);
+		if($language != 'en') {
+			$language = $this->getUserLanguage($uid);
+		}
+		
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
 			$templateID = $templateIDs[$language];
