@@ -44,9 +44,6 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function index(string $lang = 'en') {
-		if(!$lang) {
-			$lang = 'en';
-		}
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
