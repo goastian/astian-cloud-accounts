@@ -178,7 +178,7 @@
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
 									{{ getLocalizedText(errors.humanVefication) }}
 								</p>
-								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationMatched"
+								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
 									class="validation-error">
 									{{ getLocalizedText(errors.humanVeficationNotCorrect) }}
 								</p>
@@ -318,12 +318,15 @@ export default {
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
 				isHumanverificationEmpty: false,
-				isHumanverificationMatched: false,
+				isHumanverificationNotMatched: false,
 				isAccepttnsEmpty: false,
 				isEmailEmpty: false,
 			},
 			usernameValidationMessage: '',
 			captcha: [],
+			num1: '',
+			num2: '',
+			operator: '',
 			captchatext: '',
 			operators: ['+', '-'],
 			selectedLanguage: 'en',
@@ -530,16 +533,16 @@ export default {
 			this.humanverification = ''
 		},
 		createCaptcha() {
-			const num1 = this.getRandomCharacter()
-			const num2 = this.getRandomCharacter()
+			this.num1 = this.getRandomCharacter()
+			this.num2 = this.getRandomCharacter()
 			const operators = this.operators
-			const operator = operators[Math.floor(Math.random() * operators.length)]
-			this.captcha.push(num1)
-			this.captcha.push(operator)
-			this.captcha.push(num2)
+			this.operator = operators[Math.floor(Math.random() * operators.length)]
+			this.captcha.push(this.num1)
+			this.captcha.push(this.operator)
+			this.captcha.push(this.num2)
 		},
 		getRandomCharacter() {
-			const numbers = '1234567890'
+			const numbers = '123456789'
 			const randomNumber = Math.floor(Math.random() * numbers.length)
 			return numbers.charAt(randomNumber)
 		},
@@ -556,9 +559,9 @@ export default {
 		checkAnswer() {
 			const result = this.calculateResult()
 			if (parseInt(this.humanverification, 10) === result) {
-				this.validation.isHumanverificationMatched = true
+				this.validation.isHumanverificationNotMatched = true
 			} else {
-				this.validation.isHumanverificationMatched = false
+				this.validation.isHumanverificationNotMatched = false
 			}
 		},
 		getFontSize() {
