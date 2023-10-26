@@ -152,6 +152,8 @@ class UserService {
 		}
 		if($language != 'en') {
 			$language = $this->getUserLanguage($uid);
+		} else {
+			$this->setUserLanguage($uid, $language);
 		}
 		
 		$templateID = $templateIDs['en'];
@@ -189,6 +191,9 @@ class UserService {
 	}
 	private function getUserLanguage(string $username) : string {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
+	}
+	private function setUserLanguage(string $username, string $language = 'en') {
+		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
 	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
 		$email = new \SendGrid\Mail\Mail();
