@@ -27,8 +27,5 @@ return ['routes' => [
 	
 	['name' => 'account#index', 'url' => '/account/{lang}/signup', 'verb' => 'GET'],
 	['name' => 'account#create', 'url' => '/account/create', 'verb' => 'POST'],
-	['name' => 'account#check_username_available', 'url' => '/account/check_username_available', 'verb' => 'POST'],
-	['name' => 'account#get_labels', 'url' => '/account/get_labels', 'verb' => 'POST'],
-	
-	// ['name' => 'account#recaptcha', 'url' => '/account/recaptcha', 'verb' => 'GET'],
+	['name' => 'account#check_username_available', 'url' => '/account/check_username_available', 'verb' => 'POST'],	
 ]];
