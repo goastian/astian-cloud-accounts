@@ -60,9 +60,8 @@ class AccountService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-		if($email != '') {
-			$this->userService->sendWelcomeEmail($username, $email);
-		}
+		$this->userService->sendWelcomeEmail($username, $username.'@'.$domain);
+		
 		return true;
 	}
 
