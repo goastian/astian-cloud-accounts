@@ -554,8 +554,8 @@ export default {
 			const rotationVariations = [5, 10, 20, 25, -5, -10, -20, -25]
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
-		async onLanguageChange() {
-			window.location.href = window.location.origin + '/apps/ecloud-accounts/account/' + this.selectedLanguage + '/signup'
+		onLanguageChange() {
+			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/account/' + this.selectedLanguage + '/signup'
 		},
 		useMyAccount() {
 			window.location.href = window.location.origin
