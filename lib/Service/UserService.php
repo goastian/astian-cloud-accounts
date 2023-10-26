@@ -192,7 +192,7 @@ class UserService {
 	private function getUserLanguage(string $username) : string {
 		return $this->config->getUserValue($username, 'core', 'lang', 'en');
 	}
-	private function setUserLanguage(string $username, string $language = 'en') {
+	private function setUserLanguage(string $username, string $language) {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
 	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
