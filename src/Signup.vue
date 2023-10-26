@@ -104,8 +104,7 @@
 										v-model="accepttns"
 										type="checkbox"
 										class="checkbox action-checkbox__checkbox focusable">
-									<label for="action-tns" class="action-checkbox__label">
-										{{ getLocalizedText(titles.readAndAcceptTOS) }}<sup>*</sup></label>
+									<label for="action-tns" class="action-checkbox__label" :inner-h-t-m-l="getLocalizedText(titles.readAndAcceptTOS)" />
 								</span>
 
 								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
@@ -265,21 +264,15 @@
 				<div v-if="showSuccessSection" id="successSection">
 					<section id="success" style="">
 						<div id="successMessages" class="notification isa_success has-text-centered">
-							<h3 class="success__title">
-								{{ success.successMessage }}
-							</h3>
-							<p id="accountCreatedMsg" class="font-16">
-								{{ success.accountCreated }}
-							</p>
+							<h3 class="success__title" :inner-h-t-m-l="success.successMessage" />
+							<p id="accountCreatedMsg" class="font-16" :inner-h-t-m-l="success.accountCreated" />
 							<button :wide="true"
 								class="btn-primary w-50"
 								type="primary"
 								@click="useMyAccount">
 								{{ getLocalizedText(buttons.useMyAccountNow) }}
 							</button>
-							<p id="moreDetailMsg" class="font-16">
-								{{ success.supportMessage }}
-							</p>
+							<p id="moreDetailMsg" class="font-16" :inner-h-t-m-l="success.supportMessage" />
 						</div>
 					</section>
 				</div>
