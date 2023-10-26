@@ -323,9 +323,9 @@ export default {
 				isEmailEmpty: false,
 			},
 			usernameValidationMessage: '',
-			captchaLength: 5,
 			captcha: [],
 			captchatext: '',
+			operators: ['+', '-'],
 			selectedLanguage: 'en',
 			languages: [
 				{ code: 'en', name: 'English' },
@@ -404,7 +404,7 @@ export default {
 				this.validation.isRePasswordMatched = this.repassword !== this.password
 			}
 			if (fieldsToValidate.includes('humanverification')) {
-				this.validation.isHumanverificationMatched = this.humanverification !== this.captchatext
+				this.checkAnswer()
 			}
 			if (fieldsToValidate.includes('termsandservices')) {
 				this.validation.isAccepttnsEmpty = !this.accepttns
@@ -530,20 +530,43 @@ export default {
 			this.humanverification = ''
 		},
 		createCaptcha() {
-			this.captchatext = Array.from({ length: this.captchaLength }, () => this.getRandomCharacter()).join('')
-			this.captcha = this.captchatext.split('')
+			const num1 = this.getRandomCharacter()
+			const num2 = this.getRandomCharacter()
+			const operators = this.operators
+			const operator = operators[Math.floor(Math.random() * operators.length)]
+			this.captcha.push(num1)
+			this.captcha.push(operator)
+			this.captcha.push(num2)
 		},
 		getRandomCharacter() {
-			const symbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-			const randomNumber = Math.floor(Math.random() * symbols.length)
-			return symbols.charAt(randomNumber)
+			const numbers = '1234567890'
+			const randomNumber = Math.floor(Math.random() * numbers.length)
+			return numbers.charAt(randomNumber)
+		},
+		calculateResult() {
+			switch (this.operator) {
+			case '+':
+				return this.num1 + this.num2
+			case '-':
+				return this.num1 - this.num2
+			default:
+				return NaN
+			}
+		},
+		checkAnswer() {
+			const result = this.calculateResult()
+			if (parseInt(this.humanverification, 10) === result) {
+				this.validation.isHumanverificationMatched = true
+			} else {
+				this.validation.isHumanverificationMatched = false
+			}
 		},
 		getFontSize() {
-			const fontVariations = [14, 20, 30, 36, 40]
+			const fontVariations = [14, 16, 18, 20]
 			return fontVariations[Math.floor(Math.random() * fontVariations.length)]
 		},
 		getRotationAngle() {
-			const rotationVariations = [5, 10, 20, 25, -5, -10, -20, -25]
+			const rotationVariations = [10, 5, -5, -10]
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		onLanguageChange() {
