@@ -150,7 +150,7 @@ class UserService {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
-		if($language != 'en') {
+		if($language == 'en') {
 			$language = $this->getUserLanguage($uid);
 		} else {
 			$this->setUserLanguage($uid, $language);
