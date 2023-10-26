@@ -305,6 +305,7 @@ export default {
 			password: '',
 			repassword: '',
 			humanverification: '',
+			email: '',
 			accepttns: false,
 			newsletter_eos: false,
 			newsletter_product: false,
