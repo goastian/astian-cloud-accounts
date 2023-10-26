@@ -175,6 +175,7 @@
 										:placeholder="getLocalizedText(placeholders.humanVefication)"
 										type="text">
 								</div>
+								{{ humanverification }}
 								{{ captchaResult }}
 								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
 									{{ getLocalizedText(errors.humanVefication) }}
@@ -548,11 +549,14 @@ export default {
 			return numbers.charAt(randomNumber)
 		},
 		calculateResult() {
+			const num1 = parseFloat(this.num1)
+			const num2 = parseFloat(this.num2)
+
 			switch (this.operator) {
 			case '+':
-				return this.num1 + this.num2
+				return num1 + num2
 			case '-':
-				return this.num1 - this.num2
+				return num1 - num2
 			default:
 				return NaN
 			}
