@@ -57,7 +57,7 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 */
-	public function create(string $displayname, string $email, string $username, string $password, string $userlanguage) {
+	public function create(string $displayname, string $email = '', string $username, string $password, string $userlanguage): DataResponse {
 		$response = new DataResponse();
 
 		try {
