@@ -49,8 +49,6 @@
 										@{{ domain }}
 									</div>
 								</div>
-								<!-- --icon-close-808080 -->
-								<!-- --icon-checkmark-808080 -->
 								<p v-if="validation.isUsernameEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.userName) }}
 								</p>
@@ -75,7 +73,6 @@
 										:default-class="form - input"
 										:placeholder="getLocalizedText(placeholders.enterPassword)"
 										@input="validateForm(['password'])" />
-									<!-- <input id="new-password" v-model="password" type="password" name="password" class="form-input" :placeholder="getLocalizedText('Password')"> -->
 									<input id="repassword"
 										v-model="repassword"
 										type="password"
@@ -89,6 +86,9 @@
 								</p>
 								<p v-if="validation.isRepasswordEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.confirmPassword) }}
+								</p>
+								<p v-for="(error, index) in passworderrors" :key="index" class="validation-warning">
+									{{ error }}
 								</p>
 								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 									class="validation-warning">
@@ -325,6 +325,13 @@ export default {
 				isAccepttnsEmpty: false,
 				isEmailEmpty: false,
 			},
+			passworderrors: [],
+			passwordrules: [
+				{ message: 'One lowercase letter required.', regex: /[a-z]+/ },
+				{ message: 'One uppercase letter required.', regex: /[A-Z]+/ },
+				{ message: '8 characters minimum.', regex: /.{8,}/ },
+				{ message: 'One number required.', regex: /[0-9]+/ },
+			],
 			usernameValidationMessage: '',
 			captcha: [],
 			num1: '',
@@ -409,6 +416,9 @@ export default {
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
 			})
+			if (fieldsToValidate.includes('password')) {
+				this.passwordValidation()
+			}
 			if (fieldsToValidate.includes('repassword')) {
 				this.validation.isRePasswordMatched = this.repassword !== this.password
 			}
@@ -420,6 +430,14 @@ export default {
 			}
 			if (fieldsToValidate.includes('username')) {
 				this.validateUsername()
+			}
+		},
+		passwordValidation() {
+			this.passworderrors = []
+			for (const condition of this.passwordrules) {
+				if (!condition.regex.test(this.password)) {
+					this.passworderrors.push(condition.message)
+				}
 			}
 		},
 		submitSignupForm() {
