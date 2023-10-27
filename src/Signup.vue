@@ -52,8 +52,11 @@
 								<p v-if="validation.isUsernameEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.userName) }}
 								</p>
-								<p v-if="validation.isUsernameNotValid" class="validation-warning">
+								<p v-else-if="validation.isUsernameNotValid" class="validation-warning">
 									{{ getLocalizedText(usernameValidationMessage) }}
+								</p>
+								<p v-if="isUsernameAvailable" class="validation-success">
+									{{ getLocalizedText(success.usernameAvailable) }}
 								</p>
 							</div>
 						</div>
@@ -180,7 +183,7 @@
 								<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.humanVefication) }}
 								</p>
-								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
+								<p v-else-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
 									class="validation-warning">
 									{{ getLocalizedText(errors.humanVeficationNotCorrect) }}
 								</p>
@@ -318,6 +321,7 @@ export default {
 				isUsernameEmpty: false,
 				isUsernameNotValid: false,
 				isPasswordEmpty: false,
+				isPasswordNotValid: false,
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
 				isHumanverificationEmpty: false,
@@ -327,11 +331,12 @@ export default {
 			},
 			passworderrors: [],
 			passwordrules: [
-				{ message: 'One lowercase letter required.', regex: /[a-z]+/ },
-				{ message: 'One uppercase letter required.', regex: /[A-Z]+/ },
-				{ message: '8 characters minimum.', regex: /.{8,}/ },
+				{ message: 'At least 6 characters.', regex: /.{6,}/ },
+				{ message: 'Lowercase letters: a-z.', regex: /[a-z]+/ },
+				{ message: 'Uppercase letters: a-z.', regex: /[A-Z]+/ },
 				{ message: 'One number required.', regex: /[0-9]+/ },
 			],
+			isUsernameAvailable: false,
 			usernameValidationMessage: '',
 			captcha: [],
 			num1: '',
@@ -393,6 +398,7 @@ export default {
 				acceptTOS: 'You must read and accept the Terms of Service to create your account.',
 			},
 			success: {
+				usernameAvailable: 'Available!',
 				successMessage: 'Success!',
 				accountCreated: 'Your <b>__username__@__domain__</b> account was successfully created.',
 				supportMessage: 'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'__supportURL__\'>this page</a>.',
@@ -434,10 +440,12 @@ export default {
 		},
 		passwordValidation() {
 			this.passworderrors = []
+			this.validation.isPasswordNotValid = false
 			if (!this.password) {
 				for (const condition of this.passwordrules) {
 					if (!condition.regex.test(this.password)) {
 						this.passworderrors.push(condition.message)
+						this.validation.isPasswordNotValid = true
 					}
 				}
 			}
@@ -500,12 +508,16 @@ export default {
 			const data = {
 				username: this.username,
 			}
+			this.isUsernameAvailable = false
 			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status === 409) {
 					this.validation.isUsernameNotValid = true
 					this.usernameValidationMessage = this.errors.userNameTaken
+				}
+				if (response.status === 200) {
+					this.isUsernameAvailable = true
 				}
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
@@ -813,6 +825,21 @@ p.validation-error:before {
 }
 p.validation-warning:before {
     content: "\00d7";
+    display: inline-block;
+    font-size: 30px;
+    margin: 0;
+    padding-right: 5px;
+}
+
+.validation-success{
+	color: green;
+    padding-left: 5px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+}
+p.validation-success:before {
+    content: '\2713';
     display: inline-block;
     font-size: 30px;
     margin: 0;
