@@ -55,7 +55,7 @@
 								<p v-else-if="validation.isUsernameNotValid" class="validation-warning">
 									{{ getLocalizedText(usernameValidationMessage) }}
 								</p>
-								<p v-if="isUsernameAvailable" class="validation-success">
+								<p v-else-if="isUsernameAvailable" class="validation-success">
 									{{ getLocalizedText(success.usernameAvailable) }}
 								</p>
 							</div>
