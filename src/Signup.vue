@@ -26,7 +26,7 @@
 									class="form-input"
 									:placeholder="getLocalizedText(placeholders.displayName)"
 									@input="validateForm(['displayname'])">
-								<p v-if="validation.isDisplaynameEmpty" class="validation-error">
+								<p v-if="validation.isDisplaynameEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.displayName) }}
 								</p>
 							</div>
@@ -49,7 +49,7 @@
 										@{{ domain }}
 									</div>
 								</div>
-								<p v-if="validation.isUsernameEmpty" class="validation-error">
+								<p v-if="validation.isUsernameEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.userName) }}
 								</p>
 								<p v-if="validation.isUsernameNotValid" class="validation-error">
@@ -82,14 +82,14 @@
 										:placeholder="getLocalizedText(placeholders.confirmPassword)"
 										@input="validateForm(['repassword'])">
 								</div>
-								<p v-if="validation.isPasswordEmpty" class="validation-error">
+								<p v-if="validation.isPasswordEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.password) }}
 								</p>
-								<p v-if="validation.isRepasswordEmpty" class="validation-error">
+								<p v-if="validation.isRepasswordEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.confirmPassword) }}
 								</p>
 								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
-									class="validation-error">
+									class="validation-warning">
 									{{ getLocalizedText(errors.passwordNotMatched) }}
 								</p>
 							</div>
@@ -175,11 +175,11 @@
 										:placeholder="getLocalizedText(placeholders.humanVefication)"
 										type="text">
 								</div>
-								<p v-if="validation.isHumanverificationEmpty" class="validation-error">
+								<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.humanVefication) }}
 								</p>
 								<p v-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
-									class="validation-error">
+									class="validation-warning">
 									{{ getLocalizedText(errors.humanVeficationNotCorrect) }}
 								</p>
 							</div>
@@ -239,7 +239,7 @@
 									class="form-input"
 									:placeholder="getLocalizedText(placeholders.recoveryEmail)"
 									@input="validateForm(['email'])">
-								<p v-if="validation.isEmailEmpty" class="validation-error">
+								<p v-if="validation.isEmailEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.recoveryEmail) }}
 								</p>
 							</div>
@@ -765,12 +765,19 @@ sup {
 
 .validation-error {
 	background: #ff0000;
-    color: wheat;
+    color: white;
     padding: 10px;
     font-weight: 500;
     margin: 5px 0;
     border-radius: 5px;
     min-width: 70%;
+    width: fit-content;
+}
+.validation-warning{
+    color: #ff0000;
+    padding: 2px;
+    font-weight: 500;
+    margin: 5px 0;
     width: fit-content;
 }
 
