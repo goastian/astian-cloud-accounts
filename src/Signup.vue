@@ -88,7 +88,7 @@
 									{{ getLocalizedText(errors.confirmPassword) }}
 								</p>
 								<p v-for="(error, index) in passworderrors" :key="index" class="validation-warning">
-									Error: {{ error }}
+									{{ error }}
 								</p>
 								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 									class="validation-warning">
@@ -434,9 +434,11 @@ export default {
 		},
 		passwordValidation() {
 			this.passworderrors = []
-			for (const condition of this.passwordrules) {
-				if (!condition.regex.test(this.password)) {
-					this.passworderrors.push(condition.message)
+			if (!this.password) {
+				for (const condition of this.passwordrules) {
+					if (!condition.regex.test(this.password)) {
+						this.passworderrors.push(condition.message)
+					}
 				}
 			}
 		},
