@@ -88,7 +88,7 @@
 									{{ getLocalizedText(errors.confirmPassword) }}
 								</p>
 								<p v-for="(error, index) in passworderrors" :key="index" class="validation-warning">
-									{{ error }}
+									Error: {{ error }}
 								</p>
 								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 									class="validation-warning">
