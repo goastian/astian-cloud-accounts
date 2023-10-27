@@ -841,7 +841,7 @@ p.validation-warning:before {
 p.validation-success:before {
     content: '\2713';
     display: inline-block;
-    font-size: 30px;
+    font-size: 20px;
     margin: 0;
     padding-right: 5px;
 }
