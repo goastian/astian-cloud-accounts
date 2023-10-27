@@ -49,10 +49,12 @@
 										@{{ domain }}
 									</div>
 								</div>
+								<!-- --icon-close-808080 -->
+								<!-- --icon-checkmark-808080 -->
 								<p v-if="validation.isUsernameEmpty" class="validation-warning">
 									{{ getLocalizedText(errors.userName) }}
 								</p>
-								<p v-if="validation.isUsernameNotValid" class="validation-error">
+								<p v-if="validation.isUsernameNotValid" class="validation-warning">
 									{{ getLocalizedText(usernameValidationMessage) }}
 								</p>
 							</div>
@@ -766,19 +768,35 @@ sup {
 .validation-error {
 	background: #ff0000;
     color: white;
-    padding: 10px;
+    padding: 5px 10px;
     font-weight: 500;
     margin: 5px 0;
     border-radius: 5px;
     min-width: 70%;
     width: fit-content;
+    display: flex;
+    flex-direction: row;
+}
+p.validation-error:before {
+    content: "\00d7";
+    display: inline-block;
+    font-size: 30px;
+    margin: 0;
+    padding-right: 5px;
 }
 .validation-warning{
-    color: #ff0000;
-    padding: 2px;
+	color: #ff0000;
+    padding-left: 5px;
     font-weight: 500;
-    margin: 5px 0;
-    width: fit-content;
+    display: flex;
+    flex-direction: row;
+}
+p.validation-warning:before {
+    content: "\00d7";
+    display: inline-block;
+    font-size: 30px;
+    margin: 0;
+    padding-right: 5px;
 }
 
 .btn-primary {
