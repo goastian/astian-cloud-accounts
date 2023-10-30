@@ -217,7 +217,7 @@ class UserService {
 					'first_name' => $displayName
 				]
 			]
-		]);	
+		]);
 		
 		try {
 			$response = $sg->client->marketing()->contacts()->put($requestBody);
