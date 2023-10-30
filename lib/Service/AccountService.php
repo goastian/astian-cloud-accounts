@@ -21,7 +21,7 @@ class AccountService {
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$this->userService = $userService;
 	}
-	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en') {
+	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletter_eos, bool $newsletter_product) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
@@ -61,7 +61,10 @@ class AccountService {
 			throw new Exception("Error while creating Murena account.");
 		}
 		$this->userService->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
-		
+		$this->userService->createContactInSendGrid($username.'@'.$domain, $displayname);
+		if($newsletter_eos || $newsletter_product) {
+			// $this->userService->addContactinSendGridList($username.'@'.$domain, $newsletter_eos, $newsletter_product);
+		}
 		return true;
 	}
 

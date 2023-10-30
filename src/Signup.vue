@@ -485,6 +485,8 @@ export default {
 					password: this.password,
 					email: this.email,
 					language: this.selectedLanguage,
+					newsletter_eos: this.newsletter_eos,
+					newsletter_product: this.newsletter_product,
 				}
 				this.submitForm(data)
 			}
