@@ -25,17 +25,19 @@ class AccountService {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
-		// Check if the recovery Email Address already exists
-		$filter = "(recoveryMailAddress=$username)";
-		$searchResult = ldap_search($connection, $base, $filter);
-	
-		if (!$searchResult) {
-			throw new Exception("Error while searching Murena recovery Email address.");
-		}
-	
-		$entries = ldap_get_entries($connection, $searchResult);
-		if ($entries['count'] > 0) {
-			return false;
+		if($email != '') {
+			// Check if the recovery Email Address already exists
+			$filter = "(recoveryMailAddress=$email)";
+			$searchResult = ldap_search($connection, $base, $filter);
+		
+			if (!$searchResult) {
+				throw new Exception("Error while searching Murena recovery Email address.");
+			}
+
+			$entries = ldap_get_entries($connection, $searchResult);
+			if ($entries['count'] > 0) {
+				return false;
+			}
 		}
 		
 		$domain = $this->config->getSystemValue('main_domain', '');
