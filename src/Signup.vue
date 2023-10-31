@@ -395,6 +395,7 @@ export default {
 				humanVefication: 'Human Verification is required.',
 				humanVeficationNotCorrect: 'Human Verification code is not correct.',
 				recoveryEmail: 'Recovery Email is required.',
+				recoveryEmailTaken: 'An account with the recovery address already exists.',
 				acceptTOS: 'You must read and accept the Terms of Service to create your account.',
 			},
 			success: {
@@ -547,13 +548,15 @@ export default {
 					this.success.supportMessage = supportMessage.replace('__supportURL__', this.supportURL)
 
 					this.showSuccessSection = true
+				} else if (response.status === 409) {
+					this.showMessage(this.errors.recoveryEmailTaken, 'error')
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
 				}
 				this.setAllFieldsBlank()
 			} catch (error) {
 				if (error.response && error.response.status === 409) {
-					this.showMessage(this.errors.userNameTaken, 'error')
+					this.showMessage(this.errors.recoveryEmailTaken, 'error')
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
 				}

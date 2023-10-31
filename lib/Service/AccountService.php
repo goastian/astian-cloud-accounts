@@ -25,12 +25,12 @@ class AccountService {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
-		// Check if the username already exists
-		$filter = "(usernameWithoutDomain=$username)";
+		// Check if the recovery Email Address already exists
+		$filter = "(recoveryMailAddress=$username)";
 		$searchResult = ldap_search($connection, $base, $filter);
 	
 		if (!$searchResult) {
-			throw new Exception("Error while searching Murena username.");
+			throw new Exception("Error while searching Murena recovery Email address.");
 		}
 	
 		$entries = ldap_get_entries($connection, $searchResult);
