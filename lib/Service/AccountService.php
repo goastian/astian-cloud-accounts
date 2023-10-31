@@ -81,22 +81,21 @@ class AccountService {
 		return true;
 	}
 	protected function postCreationActions(array $userData, string $commonApiVersion = ''):void {
+		$hmeAlias = '';
+		$commonApiUrl = $this->commonApiUrl;
+		$aliasDomain = $this->config->getSystemValue('alias_domain', '');
 		try {
-			$hmeAlias = '';
-			$commonApiUrl = $this->commonApiUrl;
-			$aliasDomain = $this->config->getSystemValue('alias_domain', '');
-			
 			// Create HME Alias
 			$hmeAlias = $this->createHMEAlias($userData['mailAddress'], $commonApiUrl, $commonApiVersion, $aliasDomain);
 
 			// Create alias with same name as email pointing to email to block this alias
 			$domain = $this->config->getSystemValue('main_domain', '');
 			$this->createNewDomainAlias($userData['username'], $userData['mailAddress'], $commonApiUrl, $commonApiVersion, $domain);
-			
-			$userData['hmeAlias'] = $hmeAlias;
 		} catch (Exception $e) {
 			$this->logger->error('Error during alias creation for user: ' . $userData['username'] . ' with email: ' . $userData['mailAddress'] . ' : ' . $e->getMessage());
 		}
+		
+		$userData['hmeAlias'] = $hmeAlias;
 		sleep(2);
 		$userData['quota'] = strval($userData['quota']) . ' MB';
 		$this->setAccountDataAtNextcloud($userData);
