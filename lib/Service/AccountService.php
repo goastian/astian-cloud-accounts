@@ -173,6 +173,12 @@ class AccountService {
 
 		$response = curl_exec($ch);
 		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	
+		if ($response === false) {
+			$error = curl_error($ch);
+			curl_close($ch);
+			throw new Exception("CURL error: $error");
+		}
 
 		curl_close($ch);
 
@@ -203,7 +209,18 @@ class AccountService {
 
 		curl_setopt($ch, CURLOPT_URL, $this->ecloudAccountsApiUrl . 'set_account_data');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		
 		$output = curl_exec($ch);
+		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	
+		if ($output === false) {
+			$error = curl_error($ch);
+			curl_close($ch);
+			throw new Exception("CURL error: $error");
+		}
+	
+		curl_close($ch);
+		
 		$output = json_decode($output, false);
 		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
