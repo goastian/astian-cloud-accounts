@@ -29,10 +29,7 @@ class AccountService {
 		$domain = $this->config->getSystemValue('main_domain', '');
 		$this->ecloudAccountsApiUrl = $domain . '/apps/ecloud-accounts/api/';
 
-		// $this->commonApiUrl = getenv('COMMON_SERVICES_URL');
-		$this->commonApiUrl = $this->config->getSystemValue('common_services_url', ''); // set this
-		$this->commonApiUrl = 'http://common_microservices';
-		
+		$this->commonApiUrl = $this->config->getSystemValue('common_services_url', '');
 		$this->commonApiUrl = substr($this->commonApiUrl, -1) === '/' ? $this->commonApiUrl : $this->commonApiUrl . '/';
 	}
 	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletter_eos, bool $newsletter_product) {
@@ -87,9 +84,7 @@ class AccountService {
 		try {
 			$hmeAlias = '';
 			$commonApiUrl = $this->commonApiUrl;
-			// $aliasDomain = $this->config->getSystemValue('alias_domain', '');
-			$aliasDomain = $this->config->getSystemValue('main_domain', '');// set this
-			// $aliasDomain =  getenv('ALIAS_DOMAIN');
+			$aliasDomain = $this->config->getSystemValue('alias_domain', '');
 			
 			// Create HME Alias
 			$hmeAlias = $this->createHMEAlias($userData['mailAddress'], $commonApiUrl, $commonApiVersion, $aliasDomain);
@@ -109,8 +104,8 @@ class AccountService {
 	}
 
 	private function createHMEAlias(string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): string {
-		$token = $this->config->getSystemValue('common_service_token', ''); // set this
-		// $token = getenv('COMMON_SERVICES_TOKEN');
+		$token = $this->config->getSystemValue('common_service_token', '');
+		
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
 		$data = json_encode(["domain" => $domain]);
@@ -144,9 +139,8 @@ class AccountService {
 	}
 
 	private function createNewDomainAlias(string $alias, string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): void {
-		$token = $this->config->getSystemValue('common_service_token', ''); // set this
-		// $token = getenv('COMMON_SERVICES_TOKEN');
-
+		$token = $this->config->getSystemValue('common_service_token', '');
+		
 		$endpoint = $commonApiVersion . '/aliases/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
 
@@ -182,11 +176,8 @@ class AccountService {
 
 
 	private function setAccountDataAtNextcloud(array $userData): void {
-		$token = $this->config->getSystemValue('ecloud_accounts_secret', ''); // set this
-		$token = 'BJNhQ3Rwg8cW';
+		$token = $this->config->getSystemValue('ecloud_accounts_secret', '');
 		
-		// $token = getenv('ECLOUD_ACCOUNTS_SECRET');
-
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
