@@ -125,12 +125,22 @@ class AccountService {
 		$response = curl_exec($ch);
 		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	
+		if ($response === false) {
+			$error = curl_error($ch);
+			curl_close($ch);
+			throw new Exception("CURL error: $error");
+		}
+	
 		curl_close($ch);
 	
 		if ($statusCode != 200) {
-			$output = json_decode($response);
-			$err = isset($output->message) ? $output->message : "Unknown error occurred";
-			throw new Exception($err);
+			try {
+				$output = json_decode($response);
+				$err = isset($output->message) ? $output->message : "Unknown error occurred";
+				throw new Exception($err);
+			} catch (Exception $e) {
+				$this->logger->error('Error at 142 line : ' . $e->getMessage());
+			}
 		}
 	
 		$output = json_decode($response);
