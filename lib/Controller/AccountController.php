@@ -18,10 +18,8 @@ use OCP\L10N\IFactory;
 class AccountController extends Controller {
 	protected $appName;
 	protected $request;
-	// private ISession $session;
 	private $accountService;
 	protected $l10nFactory;
-
 	private $config;
 	public function __construct(
 		$AppName,
