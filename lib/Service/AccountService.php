@@ -107,6 +107,10 @@ class AccountService {
 		
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
+
+		$this->logger->error('### createHMEAlias: URL: '.$url);
+		$this->logger->error('### createHMEAlias: domain: '.$domain);
+
 		$data = json_encode(["domain" => $domain]);
 		$headers = [
 			"Authorization: Bearer $token",
@@ -152,6 +156,10 @@ class AccountService {
 		
 		$endpoint = $commonApiVersion . '/aliases/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
+
+		$this->logger->error('### createNewDomainAlias: URL: '.$url);
+		$this->logger->error('### createNewDomainAlias: alias: '.$alias);
+		$this->logger->error('### createNewDomainAlias: domain: '.$domain);
 
 		$data = json_encode([
 			"alias" => $alias,
@@ -206,6 +214,8 @@ class AccountService {
 			"tosAccepted" => true,
 			"uid" => $userData['mailAddress'] // Adjusted this assignment
 		];
+		$this->logger->error('### setAccountDataAtNextcloud: URL: '.$this->ecloudAccountsApiUrl . 'set_account_data');
+		$this->logger->error('### setAccountDataAtNextcloud: data: '. json_encode($data));
 
 		curl_setopt($ch, CURLOPT_URL, $this->ecloudAccountsApiUrl . 'set_account_data');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
