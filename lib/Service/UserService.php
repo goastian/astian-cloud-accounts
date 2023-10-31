@@ -203,7 +203,7 @@ class UserService {
 			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 		}
 	}
-	public function createContactInSendGrid(string $email, string $displayName):void {
+	public function createContactInSendGrid(string $email, string $displayName, bool $newsletter_eos, bool $newsletter_product):void {
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -223,18 +223,27 @@ class UserService {
 			$response = $sg->client->marketing()->contacts()->put($requestBody);
 			$this->logger->warning('statusCode:: '.json_encode($response->statusCode()), ['app' => Application::APP_ID]);
 			$this->logger->warning('body: '. json_encode($response->body()), ['app' => Application::APP_ID]);
+			$body = $response->body();
+			$recipient_id = $body['persisted_recipients'][0];
+			$this->addContactinSendGridList($recipient_id, $newsletter_eos, $newsletter_product);
 		} catch (\Exception $ex) {
 			$this->logger->warning("createContactInSendGrid caught exception: ".  $ex->getMessage(), ['app' => Application::APP_ID]);
 		}
 	}
-	public function addContactinSendGridList(string $email, bool $newsletter_eos, bool $newsletter_product):void {
+	private function addContactinSendGridList(string $recipient_id, bool $newsletter_eos, bool $newsletter_product):void {
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
 		$sg = new \SendGrid($sendgridAPIkey);
-		$list_id = 4900;
+		if($newsletter_eos) {
+			$list_id = 4900;
+		}
+		if($newsletter_product) {
+			$list_id = 4900;
+		}
+		
 		$recipient_id = "ZGkrHSypTsudrGkmdpJJ";
 
 		try {
