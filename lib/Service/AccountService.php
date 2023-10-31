@@ -138,7 +138,7 @@ class AccountService {
 				$err = isset($output->message) ? $output->message : "Unknown error occurred";
 				throw new Exception($err);
 			} catch (Exception $e) {
-				$this->logger->error('Error at 142 line : ' . $e->getMessage());
+				$this->logger->error('Error creating createHMEAlias : ' . $e->getMessage());
 			}
 		}
 	
