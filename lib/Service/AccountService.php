@@ -123,7 +123,7 @@ class AccountService {
 			$err = $output->message;
 			// throw new Exception("createHMEAlias: CURL error: $err");
 		}
-		$alias = isset($output['emailAlias']) ? $output['emailAlias'] : '';
+		$alias = isset($output->emailAlias) ? $output->emailAlias : '';
 		return $alias;
 	}
 
@@ -144,7 +144,7 @@ class AccountService {
 		$result = $this->curlRequest('POST', $url, $headers, $data);
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
-			$err = $output['message'];
+			$err = $output->message;
 			// throw new Exception("createNewDomainAlias: CURL error: $err");
 		}
 	}
