@@ -103,101 +103,49 @@ class AccountService {
 		sleep(2);
 		$userData['quota'] = strval($userData['quota']) . ' MB';
 		$this->setAccountDataAtNextcloud($userData);
-		return;
 	}
 
 	private function createHMEAlias(string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): string {
-		$token = $this->config->getSystemValue('common_service_token', '');
 		
+		$token = $this->config->getSystemValue('common_service_token', '');
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
-
-		$this->logger->error('### createHMEAlias: URL: '.$url);
-		$this->logger->error('### createHMEAlias: domain: '.$domain);
-
-		$data = json_encode(["domain" => $domain]);
+		$data = array(
+			"domain" => $domain
+		);
 		$headers = [
-			"Authorization: Bearer $token",
-			"Content-Type: application/json"
+			"Authorization: Bearer $token"
 		];
-	
-		$ch = curl_init();
-	
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	
-		$response = curl_exec($ch);
-		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	
-		if ($response === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			throw new Exception("CURL error: $error");
+
+		$result = $this->curlRequest('POST', $url, $headers, $data);
+		$output = $result['output'];
+		if ($result['statusCode'] != 200) {
+			$err = $output->message;
+			throw new Exception("createHMEAlias: CURL error: $err");
 		}
-	
-		curl_close($ch);
-	
-		if ($statusCode != 200) {
-			try {
-				$output = json_decode($response);
-				$err = isset($output->message) ? $output->message : "Unknown error occurred";
-				throw new Exception($err);
-			} catch (Exception $e) {
-				$this->logger->error('Error creating createHMEAlias : ' . $e->getMessage());
-			}
-		}
-	
-		$output = json_decode($response);
-		$alias = isset($output->emailAlias) ? $output->emailAlias : '';
+		$alias = isset($output['emailAlias']) ? $output['emailAlias'] : '';
 		return $alias;
 	}
 
 	private function createNewDomainAlias(string $alias, string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): void {
 		$token = $this->config->getSystemValue('common_service_token', '');
-		
+
 		$endpoint = $commonApiVersion . '/aliases/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
 
-		$this->logger->error('### createNewDomainAlias: URL: '.$url);
-		$this->logger->error('### createNewDomainAlias: alias: '.$alias);
-		$this->logger->error('### createNewDomainAlias: domain: '.$domain);
-
-		$data = json_encode([
+		$data = array(
 			"alias" => $alias,
 			"domain" => $domain
-		]);
-
+		);
 		$headers = [
-			"Authorization: Bearer $token",
-			"Content-Type: application/json"
+			"Authorization: Bearer $token"
 		];
 
-		$ch = curl_init();
-
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-		$response = curl_exec($ch);
-		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	
-		if ($response === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			throw new Exception("CURL error: $error");
-		}
-
-		curl_close($ch);
-
-		if ($statusCode != 200) {
-			$output = json_decode($response);
-			$err = isset($output->message) ? $output->message : "Unknown error occurred";
-			throw new Exception($err);
+		$result = $this->curlRequest('POST', $url, $headers, $data);
+		$output = $result['output'];
+		if ($result['statusCode'] != 200) {
+			$err = $output['message'];
+			throw new Exception("createNewDomainAlias: CURL error: $err");
 		}
 	}
 
@@ -230,5 +178,36 @@ class AccountService {
 			return true;
 		}
 		return false;
+	}
+
+	public function curlRequest(string $method, string $url, array $headers = [], array $data = []) : array {
+
+		$this->logger->error('### curlRequest: URL: '.$url);
+		$this->logger->error('### curlRequest: METHOD: '.$method);
+		$this->logger->error('### curlRequest: ALIAS: '.json_encode($headers));
+		$this->logger->error('### curlRequest: DOMAIN: '.json_encode($data));
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+
+		curl_setopt($ch, CURLOPT_URL, $url);
+		if (!empty($headers)) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		}
+
+		if ('POST' === $method && !empty($data)) {
+			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		}
+		
+		$output = curl_exec($ch);
+		$output = json_decode($output, false);
+		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		$result = array(
+			'statusCode' => $statusCode,
+			'output' => $output
+		);
+		return $result;
 	}
 }
