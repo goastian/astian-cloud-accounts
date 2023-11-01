@@ -38,7 +38,6 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 */
 	public function index(string $lang = 'en') {
@@ -52,7 +51,6 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 */
 	public function create(string $displayname, string $email = '', string $username, string $password, string $language, bool $newsletter_eos, bool $newsletter_product): DataResponse {
@@ -69,7 +67,6 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 */
 	public function checkUsernameAvailable(string $username) {
