@@ -74,6 +74,10 @@ class AccountService {
 			throw new Exception("Error while creating Murena account.");
 		}
 		$this->userService->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
+		
+		$newUserEntry['userlanguage'] = $userlanguage;
+		$newUserEntry['tosAccepted'] = true;
+		
 		$this->postCreationActions($newUserEntry, 'v2');
 		if($newsletter_eos || $newsletter_product) {
 			// $this->userService->createContactInSendGrid($username.'@'.$domain, $displayname, $newsletter_eos, $newsletter_product);
@@ -199,58 +203,15 @@ class AccountService {
 
 
 	private function setAccountDataAtNextcloud(array $userData): void {
-		$token = $this->config->getSystemValue('ecloud_accounts_secret', '');
 		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-
-		$data = [
-			"token" => $token,
-			"email" => $userData['mailAddress'],
-			"quota" => $userData['quota'],
-			"recoveryEmail" => $userData['recoveryMailAddress'],
-			"hmeAlias" => $userData['hmeAlias'],
-			"tosAccepted" => true,
-			"uid" => $userData['mailAddress'] // Adjusted this assignment
-		];
-		$this->logger->error('### setAccountDataAtNextcloud: URL: '.$this->ecloudAccountsApiUrl . 'set_account_data');
-		$this->logger->error('### setAccountDataAtNextcloud: data: '. json_encode($data));
-
-		curl_setopt($ch, CURLOPT_URL, $this->ecloudAccountsApiUrl . 'set_account_data');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		$data = $this->userService->setAccountData($userData['mailAddress'], $userData['mailAddress'], $userData['recoveryMailAddress'], $userData['hmeAlias'], $userData['quota'], $userData['tosAccepted'], $userData['userlanguage']);
 		
-		$output = curl_exec($ch);
-		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	
-		if ($output === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			throw new Exception("CURL error: $error");
+		if ($data['status'] != 200) {
+			$this->logger->error('## setAccountDataAtNextcloud: Error creating account with status code '.$data['status'].' : ' . $data['error']);
 		}
-	
-		curl_close($ch);
-		
-		$output = json_decode($output, false);
-		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-		if ($statusCode !== 200) {
-			$error = !empty($output->error) ? $output->error : 'Unknown error';
-		
-			if ($error === 'error_setting_recovery') {
-				$this->handleError($statusCode, 'recovery', $userData['mailAddress'], $userData['recoveryMailAddress']);
-			} elseif ($error === 'error_adding_hme_alias') {
-				$this->handleError($statusCode, 'HME alias', $userData['mailAddress'], $userData['hmeAlias']);
-			} else {
-				$this->logger->error('Error creating account: ' . $error);
-			}
-		}
 	}
 
-	private function handleError(int $statusCode, string $errorType, string $email, string $value): void {
-		$message = "Setting {$errorType} of user {$email} failed with status code: {$statusCode} ({$errorType}: {$value})" . PHP_EOL;
-		$this->logger->error($message);
-	}
 
 	public function checkUsernameAvailable(string $username) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();

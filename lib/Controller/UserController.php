@@ -75,33 +75,12 @@ class UserController extends ApiController {
 			return $response;
 		}
 
-		if (!$this->userService->userExists($uid)) {
-			$response->setStatus(404);
-			return $response;
+		$data = $this->userService->setAccountData($uid, $email, $recoveryEmail, $hmeAlias, $quota, $tosAccepted, $userLanguage);
+		
+		if ($data['status'] != 200) {
+			return $this->getErrorResponse($response, $data['error'], $data['status']);
 		}
 
-		$user = $this->userService->getUser($uid);
-
-		if (is_null($user)) {
-			$response->setStatus(404);
-			return $response;
-		}
-
-		$user->setEMailAddress($email);
-		$user->setQuota($quota);
-		if ($this->l10nFactory->languageExists(null, $userLanguage)) {
-			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
-		}
-		// $this->userService->sendWelcomeEmail($uid, $email);
-		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
-		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
-		if (!$recoveryEmailUpdated) {
-			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
-		}
-		$hmeAliasAdded = $this->userService->addHMEAliasInConfig($uid, $hmeAlias);
-		if (!$hmeAliasAdded) {
-			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);
-		}
 		return $response;
 	}
 
