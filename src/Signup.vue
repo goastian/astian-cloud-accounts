@@ -512,7 +512,7 @@ export default {
 				username: this.username,
 			}
 			this.isUsernameAvailable = false
-			const url = generateUrl(`/apps/${this.appName}/account/check_username_available`)
+			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status === 409) {
@@ -532,7 +532,7 @@ export default {
 			}
 		},
 		async submitForm(data) {
-			const url = generateUrl(`/apps/${this.appName}/account/create`)
+			const url = generateUrl(`/apps/${this.appName}/accounts/create`)
 			try {
 				const response = await Axios.post(url, data)
 				if (response.status === 200) {
@@ -621,7 +621,7 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		onLanguageChange() {
-			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/account/' + this.selectedLanguage + '/signup'
+			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/accounts/' + this.selectedLanguage + '/signup'
 		},
 		useMyAccount() {
 			window.location.href = window.location.origin

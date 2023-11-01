@@ -25,7 +25,7 @@ return ['routes' => [
 		'url' => '/issue/submit', 'verb' => 'POST'
 	],
 	
-	['name' => 'account#index', 'url' => '/account/{lang}/signup', 'verb' => 'GET'],
-	['name' => 'account#create', 'url' => '/account/create', 'verb' => 'POST'],
-	['name' => 'account#check_username_available', 'url' => '/account/check_username_available', 'verb' => 'POST'],
+	['name' => 'account#index', 'url' => '/accounts/{lang}/signup', 'verb' => 'GET'],
+	['name' => 'account#create', 'url' => '/accounts/create', 'verb' => 'POST'],
+	['name' => 'account#check_username_available', 'url' => '/accounts/check_username_available', 'verb' => 'POST'],
 ]];
