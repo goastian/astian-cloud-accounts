@@ -30,9 +30,9 @@ class AccountService {
 		$this->ecloudAccountsApiUrl = $domain . '/apps/ecloud-accounts/api/';
 
 		$this->commonApiUrl = $this->config->getSystemValue('common_services_url', '');
-		$this->commonApiUrl = substr($this->commonApiUrl, -1) === '/' ? $this->commonApiUrl : $this->commonApiUrl . '/';
+		$this->commonApiUrl = rtrim($this->commonApiUrl, '/') . '/';
 	}
-	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletter_eos, bool $newsletter_product) {
+	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletterEOS, bool $newsletterProduct): bool {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
@@ -79,8 +79,8 @@ class AccountService {
 		$newUserEntry['tosAccepted'] = true;
 		
 		$this->postCreationActions($newUserEntry, 'v2');
-		if($newsletter_eos || $newsletter_product) {
-			// $this->userService->createContactInSendGrid($username.'@'.$domain, $displayname, $newsletter_eos, $newsletter_product);
+		if($newsletterEOS || $newsletterProduct) {
+			// $this->userService->createContactInSendGrid($username.'@'.$domain, $displayname, $newsletterEOS, $newsletterProduct);
 		}
 		return true;
 	}

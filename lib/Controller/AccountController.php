@@ -53,11 +53,11 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 *
 	 */
-	public function create(string $displayname, string $email = '', string $username, string $password, string $language, bool $newsletter_eos, bool $newsletter_product): DataResponse {
+	public function create(string $displayname, string $email = '', string $username, string $password, string $language, bool $newsletterEOS, bool $newsletterProduct): DataResponse {
 		$response = new DataResponse();
 
 		try {
-			$result = $this->accountService->registerUser($displayname, $email, $username, $password, $language, $newsletter_eos, $newsletter_product);
+			$result = $this->accountService->registerUser($displayname, $email, $username, $password, $language, $newsletterEOS, $newsletterProduct);
 			$response->setStatus($result ? 200 : 409);
 		} catch (Exception $e) {
 			$response->setStatus(500);
