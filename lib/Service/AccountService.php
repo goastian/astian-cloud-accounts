@@ -116,7 +116,7 @@ class AccountService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-
+		$this->logger->error('### createHMEAlias called.');
 		$result = $this->curlRequest('POST', $url, $headers, $data);
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
@@ -140,7 +140,7 @@ class AccountService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-
+		$this->logger->error('### createNewDomainAlias called.');
 		$result = $this->curlRequest('POST', $url, $headers, $data);
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
@@ -208,6 +208,7 @@ class AccountService {
 			'statusCode' => $statusCode,
 			'output' => $output
 		);
+		$this->logger->error('### curlRequest: OUTPUT: '.json_encode($result));
 		return $result;
 	}
 }
