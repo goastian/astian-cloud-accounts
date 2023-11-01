@@ -121,7 +121,7 @@ class AccountService {
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
 			$err = $output->message;
-			throw new Exception("createHMEAlias: CURL error: $err");
+			// throw new Exception("createHMEAlias: CURL error: $err");
 		}
 		$alias = isset($output['emailAlias']) ? $output['emailAlias'] : '';
 		return $alias;
@@ -145,7 +145,7 @@ class AccountService {
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
 			$err = $output['message'];
-			throw new Exception("createNewDomainAlias: CURL error: $err");
+			// throw new Exception("createNewDomainAlias: CURL error: $err");
 		}
 	}
 
