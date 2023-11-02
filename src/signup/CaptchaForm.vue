@@ -85,3 +85,230 @@ export default {
 	},
 }
 </script>
+<style scoped>
+.display-flex {
+	display: flex;
+	justify-content: space-between;
+}
+
+section#main {
+	overflow-x: hidden;
+}
+
+/** mobile font sizes **/
+@media screen and (max-width: 650px) {
+	#fields .field .control input {
+		padding-left: 2%;
+		padding-right: 2%;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	#successMessages {
+		margin-left: 5%;
+		margin-right: 5%;
+	}
+
+	#success h1 {
+		font-size: 1.5em;
+	}
+
+	#inviteHeader,
+	#registerHeading {
+		font-size: 1.5em;
+	}
+
+	#fields {
+		background-color: white;
+	}
+
+	#fields .field {
+		font-size: 1.0em;
+	}
+
+	#fields .field .control {
+		text-align: left;
+	}
+
+	#fields .field .control input {
+		font-size: 1.0em;
+		line-height: 1.0em;
+	}
+
+	#fields p {
+		font-size: 1.0em;
+	}
+
+	input {
+		font-size: 1.0em;
+		line-height: 1.0em;
+	}
+}
+
+#fields {
+	margin: 10px;
+}
+
+#fields .control {
+	text-align: left;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#fields input#username,
+#fields input#new-password,
+#fields input#repassword {
+	width: 50%;
+}
+
+#fields input,
+#fields input[type="password"] {
+	background-color: var(--color-secondary-element);
+	margin-bottom: 0;
+	color: rgba(0, 0, 0, 0.8);
+	display: block;
+	width: 100%;
+	font-size: 16px;
+	line-height: 1.3em;
+	transition: all 0.5s linear;
+	border: 1px solid #E6E8E9;
+	border-radius: 8px;
+	padding: 10px 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#username-domain-div {
+	display: flex;
+	align-items: center;
+}
+
+#fields {
+	background-color: white;
+}
+
+#fields .field {
+	font-size: 1.3em;
+}
+
+#fields p {
+	font-size: 15px;
+}
+
+#captcha_img {
+	font-size: 12px;
+	width: 100%;
+}
+
+#inviteHeader,
+#registerHeading {
+	margin-bottom: 10%;
+	font-size: 24px;
+	text-align: left !important;
+	font-weight: 500;
+}
+
+#currentLangImg {
+	border-radius: 50%;
+	margin: 0 auto;
+	border: 0.1em transparent black;
+	height: 24px;
+	width: 24px;
+	max-width: none;
+}
+
+#submitButton:hover {
+	opacity: 0.9;
+}
+
+#fields label {
+	color: #333333;
+	font-size: 16px;
+	font-weight: 900;
+}
+
+sup {
+	color: #ff0000;
+	font-weight: 500;
+	font-size: 14px;
+	padding-left: 3px;
+}
+
+#tos_div label {
+	line-height: 1.5rem;
+}
+
+.validation-warning{
+	color: #ff0000;
+    padding-left: 5px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+}
+p.validation-warning:before {
+    content: "\00d7";
+    display: inline-block;
+    font-size: 30px;
+    margin: 0;
+    padding-right: 5px;
+}
+
+.btn-primary {
+	width: 95%;
+	background-color: var(--color-primary);
+	color: white;
+	border-color: var(--color-primary);
+	font-size: large;
+}
+
+@media screen and (max-width: 500px) {
+	#main {
+		padding: 0 1.5rem;
+	}
+
+	#inviteHeader,
+	#registerHeading {
+		font-size: 18px;
+	}
+
+	footer p {
+		font-size: 10px;
+	}
+}
+
+.np-captcha-section {
+	display: flex;
+	width: fit-content;
+}
+
+.np-captcha-container {
+	background: #ffdada;
+	width: max-content;
+	height: 30px;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	padding: 10px;
+}
+
+.np-captcha {
+	font-size: 24px;
+	width: 200px;
+	text-align: center;
+}
+
+.np-button {
+	padding: 5px;
+	background: #fff;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	font-size: 16px;
+	margin: auto;
+	min-width: 30px;
+}
+
+.np-captcha-character {
+	display: inline-block;
+	letter-spacing: 14px;
+}
+
+</style>
