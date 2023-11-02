@@ -107,7 +107,9 @@
 								v-model="formData.accepttns"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-tns" class="action-checkbox__label" v-html="getLocalizedText(titles.readAndAcceptTOS)" />
+							<label for="action-tns" class="action-checkbox__label">
+								I have read and accept the <a href="__termsURL__" target="_blank">Terms of Service</a>.
+							</label>
 						</span>
 
 						<p v-if="validation.isAccepttnsEmpty" class="validation-error">
