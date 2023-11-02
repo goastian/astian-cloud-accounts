@@ -316,6 +316,7 @@ section#main {
 #fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
     width: 15px;
+	margin-right: 10px;
 }
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
