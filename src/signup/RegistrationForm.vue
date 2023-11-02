@@ -107,9 +107,7 @@
 								v-model="formData.accepttns"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-tns" class="action-checkbox__label">
-								I have read and accept the <a href="__termsURL__" target="_blank">Terms of Service</a>.
-							</label>
+							<label for="action-tns" class="action-checkbox__label" v-html="getLocalizedText('I have read and accept the <a href=\'http://murena.io/apps/terms_of_service/en/termsandconditions\' target=\'_blank\'>Terms of Service</a>.')" />
 						</span>
 
 						<p v-if="validation.isAccepttnsEmpty" class="validation-error">
