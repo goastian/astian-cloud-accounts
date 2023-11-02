@@ -2,285 +2,11 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
-				<div v-if="showRegistrationForm" id="registrationForm">
-					<div class="display-flex">
-						<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-							{{ getLocalizedText(titles.createMurenaAccount) }}
-						</h1>
-						<div class="grid">
-							<select v-model="selectedLanguage" class="padding-0" @change="onLanguageChange">
-								<option v-for="language in languages" :key="language.code" :value="language.code">
-									{{ getLocalizedText(language.name) }}
-								</option>
-							</select>
-						</div>
-					</div>
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText(labels.displayName) }}<sup>*</sup></label>
-								<input id="displayname"
-									v-model="displayname"
-									name="displayname"
-									type="text"
-									class="form-input"
-									:placeholder="getLocalizedText(placeholders.displayName)"
-									@input="validateForm(['displayname'])">
-								<p v-if="validation.isDisplaynameEmpty" class="validation-warning">
-									{{ getLocalizedText(errors.displayName) }}
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText(labels.userName) }}<sup>*</sup></label>
-								<div class="username-group">
-									<input id="username"
-										v-model="username"
-										name="username"
-										class="form-input"
-										:placeholder="getLocalizedText(placeholders.userName)"
-										type="text"
-										@input="validateForm(['username'])">
-									<div id="username-domain-div" class="pad-left-5">
-										@{{ domain }}
-									</div>
-								</div>
-								<p v-if="validation.isUsernameEmpty" class="validation-warning">
-									{{ getLocalizedText(errors.userName) }}
-								</p>
-								<p v-else-if="validation.isUsernameNotValid" class="validation-warning">
-									{{ getLocalizedText(usernameValidationMessage) }}
-								</p>
-								<p v-else-if="isUsernameAvailable" class="validation-success">
-									{{ getLocalizedText(success.usernameAvailable) }}
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText(labels.enterPassword) }}<sup>*</sup></label>
-								<div class="username-group">
-									<Password v-model="password"
-										:secure-length="7"
-										:toggle="false"
-										:badge="false"
-										type="password"
-										name="password"
-										:default-class="form - input"
-										:placeholder="getLocalizedText(placeholders.enterPassword)"
-										@input="validateForm(['password'])" />
-									<input id="repassword"
-										v-model="repassword"
-										type="password"
-										name="repassword"
-										class="form-input"
-										:placeholder="getLocalizedText(placeholders.confirmPassword)"
-										@input="validateForm(['repassword'])">
-								</div>
-								<p v-if="validation.isPasswordEmpty" class="validation-warning">
-									{{ getLocalizedText(errors.password) }}
-								</p>
-								<p v-if="validation.isRepasswordEmpty" class="validation-warning">
-									{{ getLocalizedText(errors.confirmPassword) }}
-								</p>
-								<p v-for="(error, index) in passworderrors" :key="index" class="validation-warning">
-									{{ error }}
-								</p>
-								<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
-									class="validation-warning">
-									{{ getLocalizedText(errors.passwordNotMatched) }}
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<span class="action-checkbox">
-									<input id="action-tns"
-										v-model="accepttns"
-										type="checkbox"
-										class="checkbox action-checkbox__checkbox focusable">
-									<label for="action-tns" class="action-checkbox__label" v-html="getLocalizedText(titles.readAndAcceptTOS)" />
-								</span>
-
-								<p v-if="validation.isAccepttnsEmpty" class="validation-error">
-									{{ getLocalizedText(errors.acceptTOS) }}
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<span class="action-checkbox">
-									<input id="action-newsletter_eos"
-										v-model="newsletter_eos"
-										type="checkbox"
-										class="checkbox action-checkbox__checkbox focusable">
-									<label for="action-newsletter_eos" class="action-checkbox__label">
-										{{ getLocalizedText(labels.newsletter_eos) }}
-									</label>
-								</span>
-							</div>
-						</div>
-					</div>
-
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<span class="action-checkbox">
-									<input id="action-newsletter_product"
-										v-model="newsletter_product"
-										type="checkbox"
-										class="checkbox action-checkbox__checkbox focusable">
-									<label for="action-newsletter_product" class="action-checkbox__label">
-										{{ getLocalizedText(labels.newsletter_product) }}
-									</label>
-								</span>
-							</div>
-						</div>
-					</div>
-
-					<div id="groups" class="aliases-info">
-						<button :wide="true"
-							class="btn-primary"
-							type="primary"
-							@click="submitSignupForm">
-							{{ getLocalizedText(buttons.createMyAccount) }}
-						</button>
-					</div>
-				</div>
-
-				<div v-if="showCaptchaForm" id="captchaForm">
-					<div id="fields">
-						<div class="display-flex">
-							<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-								{{ getLocalizedText(titles.captchaVerification) }}
-							</h1>
-						</div>
-
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText(labels.humanVefication) }}<sup>*</sup></label>
-								<div class="humanverification-group">
-									<input id="humanverification"
-										v-model="humanverification"
-										name="humanverification"
-										class="form-input"
-										:placeholder="getLocalizedText(placeholders.humanVefication)"
-										type="text">
-								</div>
-								<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
-									{{ getLocalizedText(errors.humanVefication) }}
-								</p>
-								<p v-else-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
-									class="validation-warning">
-									{{ getLocalizedText(errors.humanVeficationNotCorrect) }}
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div id="fields">
-						<div class="field np-captcha-section">
-							<div class="control np-captcha-container">
-								<div v-if="captcha && captcha.length" v-once class="np-captcha">
-									<div v-for="(c, i) in captcha"
-										:key="i"
-										:style="{
-											fontSize: getFontSize() + 'px',
-											fontWeight: 800,
-											transform: 'rotate(' + getRotationAngle() + 'deg)',
-										}"
-										class="np-captcha-character">
-										{{ c }}
-									</div>
-								</div>
-							</div>
-							<!-- <button class="np-button" @click="createCaptcha">
-								&#x21bb;
-							</button> -->
-						</div>
-					</div>
-
-					<div id="groups" class="aliases-info">
-						<button :wide="true"
-							class="btn-primary"
-							type="primary"
-							@click="submitCaptchaForm">
-							{{ getLocalizedText(buttons.verify) }}
-						</button>
-					</div>
-				</div>
-
-				<div v-if="showRecoverEmailForm" id="recoveryEmailForm">
-					<div class="">
-						<h1 class="has-text-centered subtitle is-3">
-							{{ titles.recoveryEmailForm1 }}
-						</h1>
-						<h1 class="has-text-centered subtitle is-3">
-							{{ titles.recoveryEmailForm2 }}
-						</h1>
-					</div>
-
-					<div id="fields">
-						<div class="field">
-							<div class="control">
-								<label>{{ getLocalizedText(labels.recoveryEmail) }}</label>
-								<input id="email"
-									v-model="email"
-									name="email"
-									type="email"
-									class="form-input"
-									:placeholder="getLocalizedText(placeholders.recoveryEmail)"
-									@input="validateForm(['email'])">
-								<p v-if="validation.isEmailEmpty" class="validation-warning">
-									{{ getLocalizedText(errors.recoveryEmail) }}
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div id="groups" class="aliases-info display-flex">
-						<button :wide="true"
-							class="btn-default w-50"
-							type="primary"
-							@click="submitRecoveryEmailForm(false)">
-							{{ getLocalizedText(buttons.later) }}
-						</button>
-						<button :wide="true"
-							class="btn-primary w-50"
-							type="primary"
-							@click="submitRecoveryEmailForm(true)">
-							{{ getLocalizedText(buttons.setRecoverEmail) }}
-						</button>
-					</div>
-				</div>
-				<div v-if="showSuccessSection" id="successSection">
-					<section id="success" style="">
-						<div id="successMessages" class="notification isa_success has-text-centered">
-							<h3 class="success__title" v-html="success.successMessage" />
-							<p id="accountCreatedMsg" class="font-16" v-html="success.accountCreated" />
-							<button :wide="true"
-								class="btn-primary w-50"
-								type="primary"
-								@click="useMyAccount">
-								{{ getLocalizedText(buttons.useMyAccountNow) }}
-							</button>
-							<p id="moreDetailMsg" class="font-16" v-html="success.supportMessage" />
-						</div>
-					</section>
-				</div>
+				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitSignupForm" />
+				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
+				<RecoveryEmailForm v-if="showRecoverEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
+				<SuccessSection v-if="showSuccessSection" />
+				<pre>{{ formData }}</pre>
 			</div>
 		</section>
 	</div>
@@ -290,30 +16,41 @@
 import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
-import Password from 'vue-password-strength-meter'
+import RegistrationForm from './signup/RegistrationForm.vue'
+import CaptchaForm from './signup/CaptchaForm.vue'
+import RecoveryEmailForm from './signup/RecoveryEmailForm.vue'
+import SuccessSection from './signup/SuccessSection.vue'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
 	name: 'Signup',
-	components: { Password },
+	components: {
+		RegistrationForm,
+		CaptchaForm,
+		RecoveryEmailForm,
+		SuccessSection,
+	},
 	data() {
 		return {
+			formData: {
+				displayname: '',
+				username: '',
+				password: '',
+				repassword: '',
+				humanverification: '',
+				email: '',
+				accepttns: false,
+				newsletter_eos: false,
+				newsletter_product: false,
+				selectedLanguage: 'en',
+			},
 			appName: APPLICATION_NAME,
 			domain: window.location.host,
 			showRegistrationForm: true,
 			showCaptchaForm: false,
 			showRecoverEmailForm: false,
 			showSuccessSection: false,
-			displayname: '',
-			username: '',
-			password: '',
-			repassword: '',
-			humanverification: '',
-			email: '',
-			accepttns: false,
-			newsletter_eos: false,
-			newsletter_product: false,
 			termsURL: 'http://murena.io/apps/terms_of_service/en/termsandconditions',
 			supportURL: 'https://doc.e.foundation/support-topics/configure-email',
 			validation: {
@@ -344,7 +81,6 @@ export default {
 			operator: '',
 			captchaResult: '',
 			operators: ['+', '-'],
-			selectedLanguage: 'en',
 			languages: [
 				{ code: 'en', name: 'English' },
 				{ code: 'de', name: 'German' },
@@ -421,19 +157,19 @@ export default {
 		validateForm(fieldsToValidate) {
 
 			fieldsToValidate.forEach(field => {
-				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
+				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
 			})
 			if (fieldsToValidate.includes('password')) {
 				this.passwordValidation()
 			}
 			if (fieldsToValidate.includes('repassword')) {
-				this.validation.isRePasswordMatched = this.repassword !== this.password
+				this.validation.isRePasswordMatched = this.formData.repassword !== this.formData.password
 			}
 			if (fieldsToValidate.includes('humanverification')) {
 				this.checkAnswer()
 			}
 			if (fieldsToValidate.includes('termsandservices')) {
-				this.validation.isAccepttnsEmpty = !this.accepttns
+				this.validation.isAccepttnsEmpty = !this.formData.accepttns
 			}
 			if (fieldsToValidate.includes('username')) {
 				this.validateUsername()
@@ -444,12 +180,18 @@ export default {
 			this.validation.isPasswordNotValid = false
 			if (!this.password) {
 				for (const condition of this.passwordrules) {
-					if (!condition.regex.test(this.password)) {
+					if (!condition.regex.test(this.formData.password)) {
 						this.passworderrors.push(condition.message)
 						this.validation.isPasswordNotValid = true
 					}
 				}
 			}
+		},
+		submitFormTemp() {
+			// Access the updated formData here from the parent component
+			// console.log('Form data submitted:', this.formData)
+			// Here you can perform any additional operations with the form data
+			// For example, sending it to an API or performing client-side validations.
 		},
 		submitSignupForm() {
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
@@ -481,13 +223,13 @@ export default {
 			}
 			if (isFormValid) {
 				const data = {
-					displayname: this.displayname,
-					username: this.username,
-					password: this.password,
-					email: this.email,
-					language: this.selectedLanguage,
-					newsletterEOS: this.newsletter_eos,
-					newsletterProduct: this.newsletter_product,
+					displayname: this.formData.displayname,
+					username: this.formData.username,
+					password: this.formData.password,
+					email: this.formData.email,
+					language: this.formData.selectedLanguage,
+					newsletterEOS: this.formData.newsletter_eos,
+					newsletterProduct: this.formData.newsletter_product,
 				}
 				this.submitForm(data)
 			}
@@ -496,8 +238,8 @@ export default {
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
 			this.validation.isUsernameNotValid = false
-			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
-				if (!usernamePattern.test(this.username)) {
+			if (!usernamePattern.test(this.formData.username) || this.formData.username.length < minCharacterCount) {
+				if (!usernamePattern.test(this.formData.username)) {
 					this.usernameValidationMessage = this.errors.userNameInvalid
 				} else {
 					this.usernameValidationMessage = this.errors.userNameLength
@@ -509,7 +251,7 @@ export default {
 		},
 		async checkUsername() {
 			const data = {
-				username: this.username,
+				username: this.formData.username,
 			}
 			this.isUsernameAvailable = false
 			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
@@ -541,7 +283,7 @@ export default {
 					this.showRecoverEmailForm = false
 
 					let accountCreated = this.getLocalizedText(this.success.accountCreated)
-					accountCreated = accountCreated.replace('__username__', this.username)
+					accountCreated = accountCreated.replace('__username__', this.formData.username)
 					this.success.accountCreated = accountCreated.replace('__domain__', this.domain)
 
 					const supportMessage = this.getLocalizedText(this.success.supportMessage)
@@ -569,12 +311,12 @@ export default {
 			return t(this.appName, text)
 		},
 		setAllFieldsBlank() {
-			this.displayname = ''
-			this.email = ''
-			this.username = ''
-			this.password = ''
-			this.repassword = ''
-			this.humanverification = ''
+			this.formData.displayname = ''
+			this.formData.email = ''
+			this.formData.username = ''
+			this.formData.password = ''
+			this.formData.repassword = ''
+			this.formData.humanverification = ''
 		},
 		createCaptcha() {
 			this.num1 = this.getRandomCharacter()
@@ -606,7 +348,7 @@ export default {
 		checkAnswer() {
 			const result = this.calculateResult()
 			this.captchaResult = parseInt(result, 10)
-			if (parseInt(this.humanverification, 10) !== this.captchaResult) {
+			if (parseInt(this.formData.humanverification, 10) !== this.captchaResult) {
 				this.validation.isHumanverificationNotMatched = true
 			} else {
 				this.validation.isHumanverificationNotMatched = false
