@@ -63,7 +63,7 @@ export default {
 		margin-left: 5%;
 		margin-right: 5%;
 	}
- 
+
 	#success h1 {
 		font-size: 1.5em;
 	}
