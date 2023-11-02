@@ -6,7 +6,6 @@
 				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoverEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" />
-				<pre>{{ formData }}</pre>
 			</div>
 		</section>
 	</div>
@@ -53,7 +52,6 @@ export default {
 		}
 	},
 	created() {
-		this.createCaptcha()
 		const currentURL = window.location.href
 		const urlSegments = currentURL.split('/')
 		this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
