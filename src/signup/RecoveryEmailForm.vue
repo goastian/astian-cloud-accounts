@@ -1,53 +1,70 @@
 <template>
 	<div id="recoveryEmailForm">
-		<div class="">
-			<h1 class="has-text-centered subtitle is-3">
-				{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account.') }}
-			</h1>
-			<h1 class="has-text-centered subtitle is-3">
-				{{ getLocalizedText('As long as you don\'t, you\'ll have limited access to your account.') }}
-			</h1>
-		</div>
+		<form @submit.prevent="submitRecoveryEmailForm">
+			<div class="">
+				<h1 class="has-text-centered subtitle is-3">
+					{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account.') }}
+				</h1>
+				<h1 class="has-text-centered subtitle is-3">
+					{{ getLocalizedText('As long as you don\'t, you\'ll have limited access to your account.') }}
+				</h1>
+			</div>
 
-		<div id="fields">
-			<div class="field">
-				<div class="control">
-					<label>{{ getLocalizedText('Recovery Email') }}</label>
-					<input id="email"
-						v-model="email"
-						name="email"
-						type="email"
-						class="form-input"
-						:placeholder="getLocalizedText('Recovery Email')"
-						@input="validateForm(['email'])">
-					<p v-if="validation.isEmailEmpty" class="validation-warning">
-						{{ getLocalizedText('Recovery Email is required.') }}
-					</p>
+			<div id="fields">
+				<div class="field">
+					<div class="control">
+						<label>{{ getLocalizedText('Recovery Email') }}</label>
+						<input id="email"
+							v-model="formData.email"
+							name="email"
+							type="email"
+							class="form-input"
+							:placeholder="getLocalizedText('Recovery Email')"
+							@input="validateForm(['email'])">
+						<p v-if="validation.isEmailEmpty" class="validation-warning">
+							{{ getLocalizedText('Recovery Email is required.') }}
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div id="groups" class="aliases-info display-flex">
-			<button :wide="true"
-				class="btn-default w-50"
-				type="primary"
-				@click="submitRecoveryEmailForm(false)">
-				{{ getLocalizedText('Later') }}
-			</button>
-			<button :wide="true"
-				class="btn-primary w-50"
-				type="primary"
-				@click="submitRecoveryEmailForm(true)">
-				{{ getLocalizedText('Set my recovery email address') }}
-			</button>
-		</div>
+			<div id="groups" class="aliases-info display-flex">
+				<button :wide="true"
+					class="btn-default w-50"
+					type="primary">
+					<!-- @click="submitRecoveryEmailForm(false)" -->
+					{{ getLocalizedText('Later') }}
+				</button>
+				<button :wide="true"
+					class="btn-primary w-50"
+					type="primary">
+					<!-- @click="submitRecoveryEmailForm(true)" -->
+					{{ getLocalizedText('Set my recovery email address') }}
+				</button>
+			</div>
+		</form>
 	</div>
 </template>
 
 <script>
+const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
 		value: Object,
+	},
+	data() {
+		return {
+			appName: APPLICATION_NAME,
+			validation: {
+				isEmailEmpty: false,
+			},
+			captcha: [],
+			num1: '',
+			num2: '',
+			operator: '',
+			captchaResult: '',
+			operators: ['+', '-'],
+		}
 	},
 	computed: {
 		formData: {
@@ -64,6 +81,13 @@ export default {
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
 			})
+		},
+		submitRecoveryEmailForm() {
+			this.validateForm(['email'])
+			const isFormValid = Object.values(this.validation).every(value => !value)
+			if (isFormValid) {
+				this.$emit('form-submitted', { isFormValid })
+			}
 		},
 		getLocalizedText(text) {
 			return t('ecloud-accounts', text)

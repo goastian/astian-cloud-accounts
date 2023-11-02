@@ -155,7 +155,7 @@ export default {
 			this.validateForm(['humanverification'])
 			const isFormValid = Object.values(this.validation).every(value => !value)
 			if (isFormValid) {
-				this.$emit('form-submitted')
+				this.$emit('form-submitted', { isFormValid })
 			}
 		},
 		getLocalizedText(text) {

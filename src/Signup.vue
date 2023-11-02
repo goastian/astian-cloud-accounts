@@ -2,7 +2,7 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
-				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitSignupForm" />
+				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
 				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoverEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" />
@@ -153,27 +153,15 @@ export default {
 				}
 			}
 		},
-		submitFormTemp() {
-			// Access the updated formData here from the parent component
-			// console.log('Form data submitted:', this.formData)
-			// Here you can perform any additional operations with the form data
-			// For example, sending it to an API or performing client-side validations.
-		},
-		submitSignupForm() {
-			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
-
-			const isFormValid = Object.values(this.validation).every(value => !value)
-
-			if (isFormValid) {
+		submitRegistrationForm(data) {
+			if (data.isFormValid) {
 				this.showRegistrationForm = false
 				this.showCaptchaForm = true
 				this.showRecoverEmailForm = false
 			}
 		},
-		submitCaptchaForm() {
-			this.validateForm(['humanverification'])
-			const isFormValid = Object.values(this.validation).every(value => !value)
-			if (isFormValid) {
+		submitCaptchaForm(data) {
+			if (data.isFormValid) {
 				this.showRegistrationForm = false
 				this.showCaptchaForm = false
 				this.showRecoverEmailForm = true
