@@ -51,11 +51,6 @@ export default {
 			showSuccessSection: false,
 		}
 	},
-	created() {
-		const currentURL = window.location.href
-		const urlSegments = currentURL.split('/')
-		this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
-	},
 	methods: {
 		submitRegistrationForm(data) {
 			if (data.isFormValid) {

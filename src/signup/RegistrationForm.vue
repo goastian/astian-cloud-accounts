@@ -211,6 +211,11 @@ export default {
 			},
 		},
 	},
+	created() {
+		const currentURL = window.location.href
+		const urlSegments = currentURL.split('/')
+		this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
+	},
 	methods: {
 		validateForm(fieldsToValidate) {
 			fieldsToValidate.forEach(field => {
