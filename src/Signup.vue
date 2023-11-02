@@ -114,7 +114,7 @@ export default {
 		this.titles.readAndAcceptTOS = readAndAcceptTOS.replace('__termsURL__', this.termsURL)
 		const currentURL = window.location.href
 		const urlSegments = currentURL.split('/')
-		this.selectedLanguage = urlSegments[urlSegments.length - 2]
+		this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
 	},
 	methods: {
 
