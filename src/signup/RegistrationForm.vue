@@ -228,9 +228,6 @@ export default {
 			if (fieldsToValidate.includes('repassword')) {
 				this.validation.isRePasswordMatched = this.formData.repassword !== this.formData.password
 			}
-			if (fieldsToValidate.includes('humanverification')) {
-				this.checkAnswer()
-			}
 			if (fieldsToValidate.includes('termsandservices')) {
 				this.validation.isAccepttnsEmpty = !this.formData.accepttns
 			}
@@ -275,7 +272,7 @@ export default {
 				const response = await Axios.post(url, data)
 				if (response.status === 409) {
 					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = this.errors.userNameTaken
+					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
 				}
 				if (response.status === 200) {
 					this.isUsernameAvailable = true
@@ -283,9 +280,9 @@ export default {
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 409) {
-					this.usernameValidationMessage = this.errors.userNameTaken
+					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
 				} else {
-					this.usernameValidationMessage = this.others.somethingWentWrong
+					this.usernameValidationMessage = this.getLocalizedText('Something went wrong.')
 				}
 			}
 		},
@@ -296,9 +293,6 @@ export default {
 
 			if (isFormValid) {
 				this.$emit('form-submitted')
-				// this.showRegistrationForm = false
-				// this.showCaptchaForm = true
-				// this.showRecoverEmailForm = false
 			}
 		},
 		getLocalizedText(text) {

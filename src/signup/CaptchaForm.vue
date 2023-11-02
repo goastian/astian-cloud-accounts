@@ -1,71 +1,89 @@
 <template>
 	<div id="captchaForm">
-		<div id="fields">
-			<div class="display-flex">
-				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-					{{ getLocalizedText('Captcha Verification') }}
-				</h1>
-			</div>
+		<form @submit.prevent="submitCaptchaForm">
+			<div id="fields">
+				<div class="display-flex">
+					<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+						{{ getLocalizedText('Captcha Verification') }}
+					</h1>
+				</div>
 
-			<div class="field">
-				<div class="control">
-					<label>{{ getLocalizedText('Human Verification') }}<sup>*</sup></label>
-					<div class="humanverification-group">
-						<input id="humanverification"
-							v-model="humanverification"
-							name="humanverification"
-							class="form-input"
-							:placeholder="getLocalizedText('Human Verification')"
-							type="text">
+				<div class="field">
+					<div class="control">
+						<label>{{ getLocalizedText('Human Verification') }}<sup>*</sup></label>
+						<div class="humanverification-group">
+							<input id="humanverification"
+								v-model="formData.humanverification"
+								name="humanverification"
+								class="form-input"
+								:placeholder="getLocalizedText('Human Verification')"
+								type="text">
+						</div>
+						<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
+							{{ getLocalizedText('Human Verification is required.') }}
+						</p>
+						<p v-else-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
+							class="validation-warning">
+							{{ getLocalizedText('Human Verification code is not correct.') }}
+						</p>
 					</div>
-					<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
-						{{ getLocalizedText('Human Verification is required.') }}
-					</p>
-					<p v-else-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
-						class="validation-warning">
-						{{ getLocalizedText('Human Verification code is not correct.') }}
-					</p>
 				</div>
 			</div>
-		</div>
 
-		<div id="fields">
-			<div class="field np-captcha-section">
-				<div class="control np-captcha-container">
-					<div v-if="captcha && captcha.length" v-once class="np-captcha">
-						<div v-for="(c, i) in captcha"
-							:key="i"
-							:style="{
-								fontSize: getFontSize() + 'px',
-								fontWeight: 800,
-								transform: 'rotate(' + getRotationAngle() + 'deg)',
-							}"
-							class="np-captcha-character">
-							{{ c }}
+			<div id="fields">
+				<div class="field np-captcha-section">
+					<div class="control np-captcha-container">
+						<div v-if="captcha && captcha.length" v-once class="np-captcha">
+							<div v-for="(c, i) in captcha"
+								:key="i"
+								:style="{
+									fontSize: getFontSize() + 'px',
+									fontWeight: 800,
+									transform: 'rotate(' + getRotationAngle() + 'deg)',
+								}"
+								class="np-captcha-character">
+								{{ c }}
+							</div>
 						</div>
 					</div>
-				</div>
 				<!-- <button class="np-button" @click="createCaptcha">
                     &#x21bb;
                 </button> -->
+				</div>
 			</div>
-		</div>
 
-		<div id="groups" class="aliases-info">
-			<button :wide="true"
-				class="btn-primary"
-				type="primary"
-				@click="submitCaptchaForm">
-				{{ getLocalizedText('Verify') }}
-			</button>
-		</div>
+			<div id="groups" class="aliases-info">
+				<button :wide="true"
+					class="btn-primary"
+					type="primary">
+					<!-- @click="submitCaptchaForm" -->
+					{{ getLocalizedText('Verify') }}
+				</button>
+			</div>
+		</form>
 	</div>
 </template>
 
 <script>
+const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
 		value: Object,
+	},
+	data() {
+		return {
+			appName: APPLICATION_NAME,
+			validation: {
+				isHumanverificationEmpty: false,
+				isHumanverificationNotMatched: false,
+			},
+			captcha: [],
+			num1: '',
+			num2: '',
+			operator: '',
+			captchaResult: '',
+			operators: ['+', '-'],
+		}
 	},
 	computed: {
 		formData: {
@@ -77,25 +95,67 @@ export default {
 			},
 		},
 	},
+	created() {
+		this.createCaptcha()
+	},
 	methods: {
 		validateForm(fieldsToValidate) {
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
 			})
-			if (fieldsToValidate.includes('password')) {
-				this.passwordValidation()
-			}
-			if (fieldsToValidate.includes('repassword')) {
-				this.validation.isRePasswordMatched = this.formData.repassword !== this.formData.password
-			}
 			if (fieldsToValidate.includes('humanverification')) {
 				this.checkAnswer()
 			}
-			if (fieldsToValidate.includes('termsandservices')) {
-				this.validation.isAccepttnsEmpty = !this.formData.accepttns
+		},
+		createCaptcha() {
+			this.num1 = this.getRandomCharacter()
+			this.num2 = this.getRandomCharacter()
+			const operators = this.operators
+			this.operator = operators[Math.floor(Math.random() * operators.length)]
+			this.captcha.push(this.num1)
+			this.captcha.push(this.operator)
+			this.captcha.push(this.num2)
+		},
+		getRandomCharacter() {
+			const numbers = '123456789'
+			const randomNumber = Math.floor(Math.random() * numbers.length)
+			return numbers.charAt(randomNumber)
+		},
+		calculateResult() {
+			const num1 = parseFloat(this.num1)
+			const num2 = parseFloat(this.num2)
+
+			switch (this.operator) {
+			case '+':
+				return num1 + num2
+			case '-':
+				return num1 - num2
+			default:
+				return NaN
 			}
-			if (fieldsToValidate.includes('username')) {
-				this.validateUsername()
+		},
+		checkAnswer() {
+			const result = this.calculateResult()
+			this.captchaResult = parseInt(result, 10)
+			if (parseInt(this.formData.humanverification, 10) !== this.captchaResult) {
+				this.validation.isHumanverificationNotMatched = true
+			} else {
+				this.validation.isHumanverificationNotMatched = false
+			}
+		},
+		getFontSize() {
+			const fontVariations = [14, 16, 18, 20]
+			return fontVariations[Math.floor(Math.random() * fontVariations.length)]
+		},
+		getRotationAngle() {
+			const rotationVariations = [10, 5, -5, -10]
+			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
+		},
+		submitCaptchaForm() {
+			this.validateForm(['humanverification'])
+			const isFormValid = Object.values(this.validation).every(value => !value)
+			if (isFormValid) {
+				this.$emit('form-submitted')
 			}
 		},
 		getLocalizedText(text) {
