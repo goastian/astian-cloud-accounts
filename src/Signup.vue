@@ -89,35 +89,7 @@ export default {
 				{ code: 'es', name: 'Spanish' },
 			],
 			titles: {
-				createMurenaAccount: 'Create Murena Account',
-				captchaVerification: 'Captcha Verification',
-				recoveryEmailForm1: 'For security reasons you need to set a recovery address for your Murena Cloud account.',
-				recoveryEmailForm2: 'As long as you don\'t, you\'ll have limited access to your account.',
 				readAndAcceptTOS: 'I have read and accept the <a href=\'__termsURL__\' target=\'_blank\'>Terms of Service</a>.',
-			},
-			buttons: {
-				createMyAccount: 'Create My Account',
-				verify: 'Verify',
-				later: 'Later',
-				setRecoverEmail: 'Set my recovery email address',
-				useMyAccountNow: 'Use My Account Now',
-			},
-			labels: {
-				displayName: 'Display name',
-				userName: 'Username',
-				enterPassword: 'Enter Password',
-				humanVefication: 'Human Verification',
-				recoveryEmail: 'Recovery Email',
-				newsletter_product: 'I want to receive news about Murena products and promotions',
-				newsletter_eos: 'I want to receive news about /e/OS',
-			},
-			placeholders: {
-				displayName: 'Your name as shown to others',
-				userName: 'Username',
-				enterPassword: 'Password',
-				confirmPassword: 'Confirm',
-				humanVefication: 'Human Verification',
-				recoveryEmail: 'Recovery Email',
 			},
 			errors: {
 				displayName: 'Display name is required.',
@@ -133,12 +105,6 @@ export default {
 				recoveryEmail: 'Recovery Email is required.',
 				recoveryEmailTaken: 'An account with the recovery address already exists.',
 				acceptTOS: 'You must read and accept the Terms of Service to create your account.',
-			},
-			success: {
-				usernameAvailable: 'Available!',
-				successMessage: 'Success!',
-				accountCreated: 'Your <b>__username__@__domain__</b> account was successfully created.',
-				supportMessage: 'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'__supportURL__\'>this page</a>.',
 			},
 			others: {
 				somethingWentWrong: 'Something went wrong.',

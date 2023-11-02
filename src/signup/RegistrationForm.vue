@@ -178,6 +178,7 @@ export default {
 			email: '',
 			password: '',
 			usernameValidationMessage: '',
+			domain: window.location.host,
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
@@ -250,9 +251,9 @@ export default {
 			this.validation.isUsernameNotValid = false
 			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
 				if (!usernamePattern.test(this.username)) {
-					this.usernameValidationMessage = this.errors.userNameInvalid
+					this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
 				} else {
-					this.usernameValidationMessage = this.errors.userNameLength
+					this.usernameValidationMessage = this.getLocalizedText('Username must be at least 3 characters long.')
 				}
 				this.validation.isUsernameNotValid = true
 			} else {
