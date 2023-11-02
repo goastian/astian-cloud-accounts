@@ -159,7 +159,7 @@ export default {
 			}
 		},
 		getLocalizedText(text) {
-			return t('ecloud-accounts', text)
+			return t(this.appName, text)
 		},
 	},
 }

@@ -46,13 +46,10 @@ export default {
 				selectedLanguage: 'en',
 			},
 			appName: APPLICATION_NAME,
-			domain: window.location.host,
 			showRegistrationForm: true,
 			showCaptchaForm: false,
 			showRecoverEmailForm: false,
 			showSuccessSection: false,
-			termsURL: 'http://murena.io/apps/terms_of_service/en/termsandconditions',
-			supportURL: 'https://doc.e.foundation/support-topics/configure-email',
 			validation: {
 				isDisplaynameEmpty: false,
 				isUsernameEmpty: false,
@@ -120,39 +117,7 @@ export default {
 		this.selectedLanguage = urlSegments[urlSegments.length - 2]
 	},
 	methods: {
-		validateForm(fieldsToValidate) {
 
-			fieldsToValidate.forEach(field => {
-				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
-			})
-			if (fieldsToValidate.includes('password')) {
-				this.passwordValidation()
-			}
-			if (fieldsToValidate.includes('repassword')) {
-				this.validation.isRePasswordMatched = this.formData.repassword !== this.formData.password
-			}
-			if (fieldsToValidate.includes('humanverification')) {
-				this.checkAnswer()
-			}
-			if (fieldsToValidate.includes('termsandservices')) {
-				this.validation.isAccepttnsEmpty = !this.formData.accepttns
-			}
-			if (fieldsToValidate.includes('username')) {
-				this.validateUsername()
-			}
-		},
-		passwordValidation() {
-			this.passworderrors = []
-			this.validation.isPasswordNotValid = false
-			if (!this.password) {
-				for (const condition of this.passwordrules) {
-					if (!condition.regex.test(this.formData.password)) {
-						this.passworderrors.push(condition.message)
-						this.validation.isPasswordNotValid = true
-					}
-				}
-			}
-		},
 		submitRegistrationForm(data) {
 			if (data.isFormValid) {
 				this.showRegistrationForm = false
@@ -167,15 +132,8 @@ export default {
 				this.showRecoverEmailForm = true
 			}
 		},
-		submitRecoveryEmailForm(setrecoveryemail) {
-			let isFormValid = true
-			if (setrecoveryemail) {
-				this.validateForm(['email'])
-				isFormValid = Object.values(this.validation).every(value => !value)
-			} else {
-				this.email = ''
-			}
-			if (isFormValid) {
+		submitRecoveryEmailForm(data) {
+			if (data.isFormValid) {
 				const data = {
 					displayname: this.formData.displayname,
 					username: this.formData.username,
@@ -188,45 +146,6 @@ export default {
 				this.submitForm(data)
 			}
 		},
-		validateUsername() {
-			const usernamePattern = /^[a-zA-Z0-9_-]+$/
-			const minCharacterCount = 3
-			this.validation.isUsernameNotValid = false
-			if (!usernamePattern.test(this.formData.username) || this.formData.username.length < minCharacterCount) {
-				if (!usernamePattern.test(this.formData.username)) {
-					this.usernameValidationMessage = this.errors.userNameInvalid
-				} else {
-					this.usernameValidationMessage = this.errors.userNameLength
-				}
-				this.validation.isUsernameNotValid = true
-			} else {
-				this.checkUsername()
-			}
-		},
-		async checkUsername() {
-			const data = {
-				username: this.formData.username,
-			}
-			this.isUsernameAvailable = false
-			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
-			try {
-				const response = await Axios.post(url, data)
-				if (response.status === 409) {
-					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = this.errors.userNameTaken
-				}
-				if (response.status === 200) {
-					this.isUsernameAvailable = true
-				}
-			} catch (error) {
-				this.validation.isUsernameNotValid = true
-				if (error.response && error.response.status === 409) {
-					this.usernameValidationMessage = this.errors.userNameTaken
-				} else {
-					this.usernameValidationMessage = this.others.somethingWentWrong
-				}
-			}
-		},
 		async submitForm(data) {
 			const url = generateUrl(`/apps/${this.appName}/accounts/create`)
 			try {
@@ -235,14 +154,6 @@ export default {
 					this.showRegistrationForm = false
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false
-
-					let accountCreated = this.getLocalizedText(this.success.accountCreated)
-					accountCreated = accountCreated.replace('__username__', this.formData.username)
-					this.success.accountCreated = accountCreated.replace('__domain__', this.domain)
-
-					const supportMessage = this.getLocalizedText(this.success.supportMessage)
-					this.success.supportMessage = supportMessage.replace('__supportURL__', this.supportURL)
-
 					this.showSuccessSection = true
 				} else if (response.status === 409) {
 					this.showMessage(response.data.message, 'error')
@@ -263,64 +174,6 @@ export default {
 		},
 		getLocalizedText(text) {
 			return t(this.appName, text)
-		},
-		setAllFieldsBlank() {
-			this.formData.displayname = ''
-			this.formData.email = ''
-			this.formData.username = ''
-			this.formData.password = ''
-			this.formData.repassword = ''
-			this.formData.humanverification = ''
-		},
-		createCaptcha() {
-			this.num1 = this.getRandomCharacter()
-			this.num2 = this.getRandomCharacter()
-			const operators = this.operators
-			this.operator = operators[Math.floor(Math.random() * operators.length)]
-			this.captcha.push(this.num1)
-			this.captcha.push(this.operator)
-			this.captcha.push(this.num2)
-		},
-		getRandomCharacter() {
-			const numbers = '123456789'
-			const randomNumber = Math.floor(Math.random() * numbers.length)
-			return numbers.charAt(randomNumber)
-		},
-		calculateResult() {
-			const num1 = parseFloat(this.num1)
-			const num2 = parseFloat(this.num2)
-
-			switch (this.operator) {
-			case '+':
-				return num1 + num2
-			case '-':
-				return num1 - num2
-			default:
-				return NaN
-			}
-		},
-		checkAnswer() {
-			const result = this.calculateResult()
-			this.captchaResult = parseInt(result, 10)
-			if (parseInt(this.formData.humanverification, 10) !== this.captchaResult) {
-				this.validation.isHumanverificationNotMatched = true
-			} else {
-				this.validation.isHumanverificationNotMatched = false
-			}
-		},
-		getFontSize() {
-			const fontVariations = [14, 16, 18, 20]
-			return fontVariations[Math.floor(Math.random() * fontVariations.length)]
-		},
-		getRotationAngle() {
-			const rotationVariations = [10, 5, -5, -10]
-			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
-		},
-		onLanguageChange() {
-			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/accounts/' + this.selectedLanguage + '/signup'
-		},
-		useMyAccount() {
-			window.location.href = window.location.origin
 		},
 	},
 }

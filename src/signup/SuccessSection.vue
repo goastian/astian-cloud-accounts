@@ -3,22 +3,20 @@
 		<section id="success" style="">
 			<div id="successMessages" class="notification isa_success has-text-centered">
 				<h3 class="success__title">
-					Success!
+					{{ getLocalizedText('Success!') }}
 				</h3>
 
 				<p id="accountCreatedMsg" class="font-16">
-					Your <b>__username__@__domain__</b> account was successfully created.
+					Your <b>{{ formData.username }}@{{ domain }}</b> account was successfully created.
 				</p>
 
 				<button :wide="true"
 					class="btn-primary w-50"
-					type="primary">
+					type="primary"
+					@click="useMyAccount">
 					{{ getLocalizedText('Use My Account Now') }}
 				</button>
-				<!-- @click="useMyAccount"> -->
-				<p id="moreDetailMsg" class="font-16">
-					If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href="__supportURL__">this page</a>.
-				</p>
+				<p id="moreDetailMsg" class="font-16" v-html="getLocalizedText('If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'https://doc.e.foundation/support-topics/configure-email\'>this page</a>.')" />
 			</div>
 		</section>
 	</div>
@@ -27,6 +25,11 @@
 export default {
 	props: {
 		value: Object,
+	},
+	data() {
+		return {
+			domain: window.location.host,
+		}
 	},
 	computed: {
 		formData: {
@@ -40,8 +43,12 @@ export default {
 	},
 	methods: {
 		getLocalizedText(text) {
-			return t('ecloud-accounts', text)
+			return t(this.appName, text)
 		},
+		useMyAccount() {
+			window.location.href = window.location.origin
+		},
+
 	},
 }
 </script>

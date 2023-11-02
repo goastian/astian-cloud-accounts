@@ -148,12 +148,10 @@
 					</div>
 				</div>
 			</div>
-			{{ validation }}
 			<div id="groups" class="aliases-info">
 				<button :wide="true"
 					class="btn-primary"
 					type="primary">
-					<!-- @click="submitSignupForm" -->
 					{{ getLocalizedText('Create My Account') }}
 				</button>
 			</div>
@@ -296,7 +294,10 @@ export default {
 			}
 		},
 		getLocalizedText(text) {
-			return t('ecloud-accounts', text)
+			return t(this.appName, text)
+		},
+		onLanguageChange() {
+			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/accounts/' + this.formData.selectedLanguage + '/signup'
 		},
 	},
 }
