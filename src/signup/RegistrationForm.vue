@@ -125,9 +125,7 @@
 								v-model="formData.newsletter_eos"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-newsletter_eos" class="action-checkbox__label">
-								{{ getLocalizedText('I want to receive news about /e/OS') }}
-							</label>
+							<label for="action-newsletter_eos" class="action-checkbox__label">{{ getLocalizedText('I want to receive news about /e/OS') }}</label>
 						</span>
 					</div>
 				</div>
@@ -141,9 +139,7 @@
 								v-model="formData.newsletter_product"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-newsletter_product" class="action-checkbox__label">
-								{{ getLocalizedText('I want to receive news about Murena products and promotions') }}
-							</label>
+							<label for="action-newsletter_product" class="action-checkbox__label">{{ getLocalizedText('I want to receive news about Murena products and promotions') }}</label>
 						</span>
 					</div>
 				</div>
