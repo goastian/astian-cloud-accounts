@@ -269,6 +269,9 @@ export default {
 				// this.showRecoverEmailForm = false
 			}
 		},
+		getLocalizedText(text) {
+			return t('ecloud-accounts', text)
+		},
 	},
 }
 </script>
