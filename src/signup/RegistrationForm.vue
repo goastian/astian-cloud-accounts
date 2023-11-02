@@ -126,7 +126,7 @@
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
 							<label for="action-newsletter_eos" class="action-checkbox__label">
-								{{ getLocalizedText('labels.I want to receive news about /e/OS') }}
+								{{ getLocalizedText('I want to receive news about /e/OS') }}
 							</label>
 						</span>
 					</div>
