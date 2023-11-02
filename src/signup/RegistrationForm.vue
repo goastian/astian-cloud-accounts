@@ -162,7 +162,12 @@
 </template>
 
 <script>
+import Axios from '@nextcloud/axios'
 import Password from 'vue-password-strength-meter'
+import { generateUrl } from '@nextcloud/router'
+
+const APPLICATION_NAME = 'ecloud-accounts'
+
 export default {
 	components: {
 		Password,
@@ -172,6 +177,7 @@ export default {
 	},
 	data() {
 		return {
+			appName: APPLICATION_NAME,
 			username: '',
 			email: '',
 			password: '',
@@ -201,6 +207,7 @@ export default {
 				{ message: 'Uppercase letters: a-z.', regex: /[A-Z]+/ },
 				{ message: 'One number required.', regex: /[0-9]+/ },
 			],
+			isUsernameAvailable: false,
 		}
 	},
 	computed: {
@@ -259,6 +266,30 @@ export default {
 				this.validation.isUsernameNotValid = true
 			} else {
 				this.checkUsername()
+			}
+		},
+		async checkUsername() {
+			const data = {
+				username: this.formData.username,
+			}
+			this.isUsernameAvailable = false
+			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
+			try {
+				const response = await Axios.post(url, data)
+				if (response.status === 409) {
+					this.validation.isUsernameNotValid = true
+					this.usernameValidationMessage = this.errors.userNameTaken
+				}
+				if (response.status === 200) {
+					this.isUsernameAvailable = true
+				}
+			} catch (error) {
+				this.validation.isUsernameNotValid = true
+				if (error.response && error.response.status === 409) {
+					this.usernameValidationMessage = this.errors.userNameTaken
+				} else {
+					this.usernameValidationMessage = this.others.somethingWentWrong
+				}
 			}
 		},
 		submitRegistrationForm() {
