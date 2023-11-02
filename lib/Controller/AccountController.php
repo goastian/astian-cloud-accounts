@@ -38,7 +38,7 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
-	 *
+	 *@NoCSRFRequired
 	 */
 	public function index(string $lang = 'en') {
 		return new TemplateResponse(
@@ -51,7 +51,7 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
-	 *
+	 *@NoCSRFRequired
 	 */
 	public function create(string $displayname, string $email = '', string $username, string $password, string $language, bool $newsletterEOS, bool $newsletterProduct): DataResponse {
 		$response = new DataResponse();
@@ -68,7 +68,7 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
-	 *
+	 * @NoCSRFRequired
 	 */
 	public function checkUsernameAvailable(string $username) {
 		$response = new DataResponse();
