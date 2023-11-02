@@ -32,10 +32,28 @@ class AccountService {
 		$this->commonApiUrl = $this->config->getSystemValue('common_services_url', '');
 		$this->commonApiUrl = rtrim($this->commonApiUrl, '/') . '/';
 	}
-	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletterEOS, bool $newsletterProduct): bool {
+	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletterEOS, bool $newsletterProduct): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
+		if($username != '') {
+			// Check if the recovery username already exists
+			$filter = "(username=$username)";
+			$searchResult = ldap_search($connection, $base, $filter);
+		
+			if (!$searchResult) {
+				throw new Exception("Error while searching Murena recovery username.");
+			}
+
+			$entries = ldap_get_entries($connection, $searchResult);
+			if ($entries['count'] > 0) {
+				return [
+					'success' => false,
+					'statusCode' => 409,
+					'message' => 'Username is already taken.',
+				];
+			}
+		}
 		if($email != '') {
 			// Check if the recovery Email Address already exists
 			$filter = "(recoveryMailAddress=$email)";
@@ -47,7 +65,11 @@ class AccountService {
 
 			$entries = ldap_get_entries($connection, $searchResult);
 			if ($entries['count'] > 0) {
-				return false;
+				return [
+					'success' => false,
+					'statusCode' => 409,
+					'message' => 'Recovery email address is already taken.',
+				];
 			}
 		}
 		
@@ -82,7 +104,11 @@ class AccountService {
 		if($newsletterEOS || $newsletterProduct) {
 			// $this->userService->createContactInSendGrid($username.'@'.$domain, $displayname, $newsletterEOS, $newsletterProduct);
 		}
-		return true;
+		return [
+			'success' => true,
+			'statusCode' => 200,
+			'message' => 'User registered successfully',
+		];
 	}
 	protected function postCreationActions(array $userData, string $commonApiVersion = ''):void {
 		$hmeAlias = '';

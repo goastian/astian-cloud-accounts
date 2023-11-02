@@ -549,14 +549,14 @@ export default {
 
 					this.showSuccessSection = true
 				} else if (response.status === 409) {
-					this.showMessage(this.errors.recoveryEmailTaken, 'error')
+					this.showMessage(response.data.message, 'error')
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
 				}
 				this.setAllFieldsBlank()
 			} catch (error) {
 				if (error.response && error.response.status === 409) {
-					this.showMessage(this.errors.recoveryEmailTaken, 'error')
+					this.showMessage(error.response.data.message, 'error')
 				} else {
 					this.showMessage(this.others.somethingWentWrong, 'error')
 				}

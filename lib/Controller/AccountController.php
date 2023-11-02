@@ -58,7 +58,8 @@ class AccountController extends Controller {
 
 		try {
 			$result = $this->accountService->registerUser($displayname, $email, $username, $password, $language, $newsletterEOS, $newsletterProduct);
-			$response->setStatus($result ? 200 : 409);
+			$response->setStatus($result['statusCode']);
+			$response->setData(['message' => $result['message']]);
 		} catch (Exception $e) {
 			$response->setStatus(500);
 		}
