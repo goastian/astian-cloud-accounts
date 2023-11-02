@@ -60,7 +60,11 @@ export default {
 		},
 	},
 	methods: {
-
+		validateForm(fieldsToValidate) {
+			fieldsToValidate.forEach(field => {
+				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
+			})
+		},
 		getLocalizedText(text) {
 			return t('ecloud-accounts', text)
 		},

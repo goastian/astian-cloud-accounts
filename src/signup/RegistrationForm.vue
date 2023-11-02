@@ -148,7 +148,7 @@
 					</div>
 				</div>
 			</div>
-
+			{{ validation }}
 			<div id="groups" class="aliases-info">
 				<button :wide="true"
 					class="btn-primary"
@@ -216,16 +216,19 @@ export default {
 	methods: {
 		validateForm(fieldsToValidate) {
 			fieldsToValidate.forEach(field => {
-				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this[field] === ''
+				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
 			})
 			if (fieldsToValidate.includes('password')) {
 				this.passwordValidation()
 			}
 			if (fieldsToValidate.includes('repassword')) {
-				this.validation.isRePasswordMatched = this.repassword !== this.password
+				this.validation.isRePasswordMatched = this.formData.repassword !== this.formData.password
+			}
+			if (fieldsToValidate.includes('humanverification')) {
+				this.checkAnswer()
 			}
 			if (fieldsToValidate.includes('termsandservices')) {
-				this.validation.isAccepttnsEmpty = !this.accepttns
+				this.validation.isAccepttnsEmpty = !this.formData.accepttns
 			}
 			if (fieldsToValidate.includes('username')) {
 				this.validateUsername()
@@ -234,9 +237,9 @@ export default {
 		passwordValidation() {
 			this.passworderrors = []
 			this.validation.isPasswordNotValid = false
-			if (!this.password) {
+			if (!this.formData.password) {
 				for (const condition of this.passwordrules) {
-					if (!condition.regex.test(this.password)) {
+					if (!condition.regex.test(this.formData.password)) {
 						this.passworderrors.push(condition.message)
 						this.validation.isPasswordNotValid = true
 					}
@@ -247,7 +250,7 @@ export default {
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
 			this.validation.isUsernameNotValid = false
-			if (!usernamePattern.test(this.username) || this.username.length < minCharacterCount) {
+			if (!usernamePattern.test(this.formData.username) || this.formData.username.length < minCharacterCount) {
 				if (!usernamePattern.test(this.username)) {
 					this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
 				} else {

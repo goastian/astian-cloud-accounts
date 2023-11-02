@@ -78,7 +78,26 @@ export default {
 		},
 	},
 	methods: {
-
+		validateForm(fieldsToValidate) {
+			fieldsToValidate.forEach(field => {
+				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
+			})
+			if (fieldsToValidate.includes('password')) {
+				this.passwordValidation()
+			}
+			if (fieldsToValidate.includes('repassword')) {
+				this.validation.isRePasswordMatched = this.formData.repassword !== this.formData.password
+			}
+			if (fieldsToValidate.includes('humanverification')) {
+				this.checkAnswer()
+			}
+			if (fieldsToValidate.includes('termsandservices')) {
+				this.validation.isAccepttnsEmpty = !this.formData.accepttns
+			}
+			if (fieldsToValidate.includes('username')) {
+				this.validateUsername()
+			}
+		},
 		getLocalizedText(text) {
 			return t('ecloud-accounts', text)
 		},
