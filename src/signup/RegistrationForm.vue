@@ -314,10 +314,6 @@ export default {
 	padding: 0;
 }
 
-section#main {
-	overflow-x: hidden;
-}
-
 #fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
     width: 15px;
@@ -527,14 +523,9 @@ p.validation-success:before {
 	#main {
 		padding: 0 1.5rem;
 	}
-
 	#inviteHeader,
 	#registerHeading {
 		font-size: 18px;
-	}
-
-	footer p {
-		font-size: 10px;
 	}
 }
 

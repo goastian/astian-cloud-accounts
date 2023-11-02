@@ -104,10 +104,6 @@ export default {
 	justify-content: space-between;
 }
 
-section#main {
-	overflow-x: hidden;
-}
-
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	#fields .field .control input {
@@ -189,15 +185,6 @@ section#main {
 	padding: 10px 20px;
 	margin-top: 10px;
 	margin-bottom: 10px;
-}
-
-.username-group {
-	display: flex;
-}
-
-#username-domain-div {
-	display: flex;
-	align-items: center;
 }
 
 #fields {
@@ -293,10 +280,6 @@ p.validation-warning:before {
 	#inviteHeader,
 	#registerHeading {
 		font-size: 18px;
-	}
-
-	footer p {
-		font-size: 10px;
 	}
 }
 </style>

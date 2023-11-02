@@ -64,110 +64,13 @@ export default {
 	#success h1 {
 		font-size: 1.5em;
 	}
-
-	#inviteHeader,
-	#registerHeading {
-		font-size: 1.5em;
-	}
-
-	#fields {
-		background-color: white;
-	}
-
-	#fields .field {
-		font-size: 1.0em;
-	}
-
-	#fields .field .control {
-		text-align: left;
-	}
-
-	#fields .field .control input {
-		font-size: 1.0em;
-		line-height: 1.0em;
-	}
-
-	#fields p {
-		font-size: 1.0em;
-	}
-
-	input {
-		font-size: 1.0em;
-		line-height: 1.0em;
-	}
 }
-
-#fields {
-	margin: 10px;
-}
-
-#fields {
-	background-color: white;
-}
-
-#fields p {
-	font-size: 15px;
-}
-
-#inviteHeader,
-#registerHeading {
-	margin-bottom: 10%;
-	font-size: 24px;
-	text-align: left !important;
-	font-weight: 500;
-}
-
-#currentLangImg {
-	border-radius: 50%;
-	margin: 0 auto;
-	border: 0.1em transparent black;
-	height: 24px;
-	width: 24px;
-	max-width: none;
-}
-
-#submitButton:hover {
-	opacity: 0.9;
-}
-
-#fields label {
-	color: #333333;
-	font-size: 16px;
-	font-weight: 900;
-}
-
-sup {
-	color: #ff0000;
-	font-weight: 500;
-	font-size: 14px;
-	padding-left: 3px;
-}
-
-#tos_div label {
-	line-height: 1.5rem;
-}
-
 .btn-primary {
 	width: 95%;
 	background-color: var(--color-primary);
 	color: white;
 	border-color: var(--color-primary);
 	font-size: large;
-}
-
-@media screen and (max-width: 500px) {
-	#main {
-		padding: 0 1.5rem;
-	}
-
-	#inviteHeader,
-	#registerHeading {
-		font-size: 18px;
-	}
-
-	footer p {
-		font-size: 10px;
-	}
 }
 
 .success__title {
