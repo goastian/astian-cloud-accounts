@@ -73,7 +73,7 @@ OC.L10N.register(
 		"Recovery Email is required.": "Recovery Email is required.",
 		"You must read and accept the Terms of Service to create your account.": "You must read and accept the Terms of Service to create your account.",
 		"Use My Account Now": "Use My Account Now",
-		"I have read and accept the <a href='__termsURL__' target='_blank'>Terms of Service</a>.": "I have read and accept the <a href='__termsURL__' target='_blank'>Terms of Service</a>.",
+		"I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.": "I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.",
 		"Success!": "Success!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Your <b>__username__@__domain__</b> account was successfully created.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.",
