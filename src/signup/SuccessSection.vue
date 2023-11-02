@@ -1,14 +1,12 @@
 <template>
 	<div id="successSection">
-		<section id="success" style="">
+		<section id="success">
 			<div id="successMessages" class="notification isa_success has-text-centered">
 				<h3 class="success__title">
 					{{ getLocalizedText('Success!') }}
 				</h3>
 
-				<p id="accountCreatedMsg" class="font-16">
-					Your <b>{{ formData.username }}@{{ domain }}</b> account was successfully created.
-				</p>
+				<p id="accountCreatedMsg" class="font-16" v-html="accountCreatedMsg" />
 
 				<button :wide="true"
 					class="btn-primary w-50"
@@ -28,7 +26,7 @@ export default {
 	},
 	data() {
 		return {
-			domain: window.location.host,
+			accountCreatedMsg: '',
 		}
 	},
 	computed: {
@@ -40,6 +38,11 @@ export default {
 				this.$emit('input', formData)
 			},
 		},
+	},
+	created() {
+		const domain = window.location.host
+		const accountCreatedMsg = this.getLocalizedText('Your <b>__username__@__domain__</b> account was successfully created.')
+		this.accountCreatedMsg = accountCreatedMsg.replace('__username__', this.formData.username).replace('__domain__', domain)
 	},
 	methods: {
 		getLocalizedText(text) {

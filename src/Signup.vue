@@ -5,7 +5,7 @@
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
 				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoverEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
-				<SuccessSection v-if="showSuccessSection" />
+				<SuccessSection v-if="showSuccessSection" v-model="formData" />
 			</div>
 		</section>
 	</div>
