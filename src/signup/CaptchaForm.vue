@@ -3,27 +3,27 @@
 		<div id="fields">
 			<div class="display-flex">
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-					{{ getLocalizedText(titles.captchaVerification) }}
+					{{ getLocalizedText('Captcha Verification') }}
 				</h1>
 			</div>
 
 			<div class="field">
 				<div class="control">
-					<label>{{ getLocalizedText(labels.humanVefication) }}<sup>*</sup></label>
+					<label>{{ getLocalizedText('Human Verification') }}<sup>*</sup></label>
 					<div class="humanverification-group">
 						<input id="humanverification"
 							v-model="humanverification"
 							name="humanverification"
 							class="form-input"
-							:placeholder="getLocalizedText(placeholders.humanVefication)"
+							:placeholder="getLocalizedText('Human Verification')"
 							type="text">
 					</div>
 					<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
-						{{ getLocalizedText(errors.humanVefication) }}
+						{{ getLocalizedText('Human Verification is required.') }}
 					</p>
 					<p v-else-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
 						class="validation-warning">
-						{{ getLocalizedText(errors.humanVeficationNotCorrect) }}
+						{{ getLocalizedText('Human Verification code is not correct.') }}
 					</p>
 				</div>
 			</div>
@@ -56,8 +56,32 @@
 				class="btn-primary"
 				type="primary"
 				@click="submitCaptchaForm">
-				{{ getLocalizedText(buttons.verify) }}
+				{{ getLocalizedText('Verify') }}
 			</button>
 		</div>
 	</div>
 </template>
+
+<script>
+export default {
+	props: {
+		value: Object,
+	},
+	computed: {
+		formData: {
+			get() {
+				return this.value
+			},
+			set(formData) {
+				this.$emit('input', formData)
+			},
+		},
+	},
+	methods: {
+
+		getLocalizedText(text) {
+			return t('ecloud-accounts', text)
+		},
+	},
+}
+</script>
