@@ -162,7 +162,6 @@ class UserService {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
-		$this->setUserLanguage($uid, $language);
 		
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
@@ -281,6 +280,8 @@ class UserService {
 		$newUserEntry['tosAccepted'] = true;
 		
 		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
+		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
+		
 		return [
 			'success' => true,
 			'statusCode' => 200,
