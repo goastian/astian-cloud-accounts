@@ -440,6 +440,10 @@ export default {
 .password-group .Password{
 	flex-grow: 1;
     flex-basis: 0;
+	max-width: unset;
+	margin-top: 10px;
+    margin-bottom: 10px;
+	margin-right: 10px;
 }
 .password-group > input
 {
