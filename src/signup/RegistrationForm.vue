@@ -253,7 +253,7 @@ export default {
 				this.validation.isPasswordNotValid = !isValid
 			}
 		},
-		validateUsername() {
+		async validateUsername() {
 			this.validation.isUsernameNotValid = false
 			this.usernameValidationMessage = ''
 			this.isUsernameAvailable = false
