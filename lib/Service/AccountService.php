@@ -95,7 +95,6 @@ class AccountService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-		$this->userService->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
 		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
@@ -104,6 +103,7 @@ class AccountService {
 		if($newsletterEOS || $newsletterProduct) {
 			// $this->userService->createContactInSendGrid($username.'@'.$domain, $displayname, $newsletterEOS, $newsletterProduct);
 		}
+		$this->userService->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
 		return [
 			'success' => true,
 			'statusCode' => 200,
