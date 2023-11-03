@@ -458,7 +458,10 @@ export default {
 	text-align: left !important;
 	font-weight: 500;
 }
-
+input#password {
+    height: 60px !important;
+    margin-top: 0 !important;
+}
 #currentLangImg {
 	border-radius: 50%;
 	margin: 0 auto;
