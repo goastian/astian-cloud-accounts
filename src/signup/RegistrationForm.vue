@@ -433,9 +433,9 @@ export default {
 }
 .password-group .Password{
 	width: 50%;
-	padding: 5px 8px;
+	padding: 10px 25px 0 0;
 }
-#password
+.password-group > input
 {
     width: 90%;
     border: 1px solid #E6E8E9;
