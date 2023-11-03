@@ -89,7 +89,9 @@
 						<p v-if="validation.isRepasswordEmpty" class="validation-warning">
 							{{ getLocalizedText('Confirm password is required.') }}
 						</p>
-						<p v-for="(error, index) in passworderrors" :key="index" class="validation-warning">
+						<p v-for="(error, index) in passworderrors"
+							:key="index"
+							class="validation-warning">
 							{{ error }}
 						</p>
 						<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
@@ -235,11 +237,11 @@ export default {
 				this.validateUsername()
 			}
 		},
-		passwordValidation() {
+		async passwordValidation() {
 			this.passworderrors = []
 			this.validation.isPasswordNotValid = false
 
-			if (!this.formData.password) {
+			if (this.formData.password) {
 				let isValid = true
 				for (const condition of this.passwordrules) {
 					if (!condition.regex.test(this.formData.password)) {
