@@ -217,16 +217,8 @@ class UserService {
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
 		if($username != '') {
-			// Check if the recovery username already exists
-			$filter = "(username=$username)";
-			$searchResult = ldap_search($connection, $base, $filter);
-		
-			if (!$searchResult) {
-				throw new Exception("Error while searching Murena recovery username.");
-			}
-
-			$entries = ldap_get_entries($connection, $searchResult);
-			if ($entries['count'] > 0) {
+			$isUsernameTaken = $this->checkUsernameAvailable($username);
+			if ($isUsernameTaken) {
 				return [
 					'success' => false,
 					'statusCode' => 409,
@@ -235,16 +227,8 @@ class UserService {
 			}
 		}
 		if($email != '') {
-			// Check if the recovery Email Address already exists
-			$filter = "(recoveryMailAddress=$email)";
-			$searchResult = ldap_search($connection, $base, $filter);
-		
-			if (!$searchResult) {
-				throw new Exception("Error while searching Murena recovery Email address.");
-			}
-
-			$entries = ldap_get_entries($connection, $searchResult);
-			if ($entries['count'] > 0) {
+			$isRecoveryEmailTaken = $this->checkRecoveryEmailAvailable($email);
+			if ($isRecoveryEmailTaken) {
 				return [
 					'success' => false,
 					'statusCode' => 409,
@@ -281,7 +265,7 @@ class UserService {
 		
 		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
 		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
-		
+
 		return [
 			'success' => true,
 			'statusCode' => 200,
@@ -299,6 +283,25 @@ class UserService {
 	
 		if (!$searchResult) {
 			throw new Exception("Error while searching Murena username.");
+		}
+	
+		$entries = ldap_get_entries($connection, $searchResult);
+		if ($entries['count'] == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public function checkRecoveryEmailAvailable(string $email) {
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+	
+		// Check if the username already exists
+		$filter = "(recoveryMailAddress=$email)";
+		$searchResult = ldap_search($connection, $base, $filter);
+	
+		if (!$searchResult) {
+			throw new Exception("Error while searching Murena recovery email.");
 		}
 	
 		$entries = ldap_get_entries($connection, $searchResult);
