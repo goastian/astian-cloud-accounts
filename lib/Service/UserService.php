@@ -61,6 +61,7 @@ class UserService {
 		return $default;
 	}
 
+	
 	public function userExists(string $uid): bool {
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
