@@ -252,6 +252,9 @@ export default {
 			}
 		},
 		validateUsername() {
+			this.validation.isUsernameNotValid = false
+			this.usernameValidationMessage = ''
+			this.isUsernameAvailable = false
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
 			const isValidUsername = usernamePattern.test(this.formData.username)
@@ -272,7 +275,6 @@ export default {
 			const data = {
 				username: this.formData.username,
 			}
-			this.isUsernameAvailable = false
 			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
