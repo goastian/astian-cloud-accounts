@@ -254,18 +254,20 @@ export default {
 		validateUsername() {
 			const usernamePattern = /^[a-zA-Z0-9_-]+$/
 			const minCharacterCount = 3
-			this.validation.isUsernameNotValid = false
-			if (!usernamePattern.test(this.formData.username) || this.formData.username.length < minCharacterCount) {
-				if (!usernamePattern.test(this.formData.username)) {
-					this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
-				} else {
-					this.usernameValidationMessage = this.getLocalizedText('Username must be at least 3 characters long.')
-				}
+			const isValidUsername = usernamePattern.test(this.formData.username)
+			const isEnoughCharacters = this.formData.username.length >= minCharacterCount
+
+			if (!isValidUsername) {
+				this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
+				this.validation.isUsernameNotValid = true
+			} else if (!isEnoughCharacters) {
+				this.usernameValidationMessage = this.getLocalizedText('Username must be at least 3 characters long.')
 				this.validation.isUsernameNotValid = true
 			} else {
 				this.checkUsername()
 			}
 		},
+
 		async checkUsername() {
 			const data = {
 				username: this.formData.username,
@@ -436,7 +438,8 @@ export default {
     display: flex;
 }
 .password-group .Password{
-	height: 56px !important;
+	flex-grow: 1;
+    flex-basis: 0;
 }
 .password-group > input
 {
