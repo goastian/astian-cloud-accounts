@@ -432,8 +432,7 @@ export default {
     display: flex;
 }
 .password-group .Password{
-	width: 50%;
-	padding: 10px 25px 0 0;
+	height: 56px !important;
 }
 .password-group > input
 {
