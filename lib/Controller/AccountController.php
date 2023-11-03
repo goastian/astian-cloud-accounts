@@ -11,7 +11,6 @@ use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\IConfig;
 use OCP\IRequest;
 use OCP\L10N\IFactory;
 
@@ -20,18 +19,15 @@ class AccountController extends Controller {
 	protected $request;
 	private $userService;
 	protected $l10nFactory;
-	private $config;
 	public function __construct(
 		$AppName,
 		IRequest $request,
 		UserService $userService,
-		IConfig $config,
 		IFactory $l10nFactory
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->userService = $userService;
-		$this->config = $config;
 		$this->l10nFactory = $l10nFactory;
 	}
 
