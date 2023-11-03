@@ -6,6 +6,7 @@ namespace OCA\EcloudAccounts\Service;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
+use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Defaults;
 use OCP\IConfig;
@@ -32,8 +33,10 @@ class UserService {
 	private Defaults $defaults;
 	private ILogger $logger;
 	protected $l10nFactory;
+	private $apiConfig;
+	private $LDAPConnectionService;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -41,6 +44,13 @@ class UserService {
 		$this->logger = $logger;
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
+		$this->LDAPConnectionService = $LDAPConnectionService;
+		$this->apiConfig = [
+			'main_domain' => $this->config->getSystemValue('main_domain', ''),
+			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
+			'alias_domain' => $this->config->getSystemValue('alias_domain', ''),
+			'common_service_token' => $this->config->getSystemValue('common_service_token', ''),
+		];
 	}
 
 
@@ -208,9 +218,6 @@ class UserService {
 	private function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
-	private function getUserLanguage(string $username) : string {
-		return $this->config->getUserValue($username, 'core', 'lang', 'en');
-	}
 	private function setUserLanguage(string $username, string $language) {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
@@ -234,56 +241,98 @@ class UserService {
 			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 		}
 	}
-	public function createContactInSendGrid(string $email, string $displayName, bool $newsletter_eos, bool $newsletter_product):void {
-		$sendgridAPIkey = $this->getSendGridAPIKey();
-		if (empty($sendgridAPIkey)) {
-			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
-			return;
-		}
-		$sg = new \SendGrid($sendgridAPIkey);
-		$requestBody = json_encode([
-			'contacts' => [
-				[
-					'email' => $email,
-					'first_name' => $displayName
-				]
-			]
-		]);
+	
+	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletterEOS, bool $newsletterProduct): array {
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+	
+		if($username != '') {
+			// Check if the recovery username already exists
+			$filter = "(username=$username)";
+			$searchResult = ldap_search($connection, $base, $filter);
 		
-		try {
-			$response = $sg->client->marketing()->contacts()->put($requestBody);
-			$this->logger->warning('statusCode:: '.json_encode($response->statusCode()), ['app' => Application::APP_ID]);
-			$this->logger->warning('body: '. json_encode($response->body()), ['app' => Application::APP_ID]);
-			$body = $response->body();
-			$recipient_id = $body['persisted_recipients'][0];
-			$this->addContactinSendGridList($recipient_id, $newsletter_eos, $newsletter_product);
-		} catch (\Exception $ex) {
-			$this->logger->warning("createContactInSendGrid caught exception: ".  $ex->getMessage(), ['app' => Application::APP_ID]);
-		}
-	}
-	private function addContactinSendGridList(string $recipient_id, bool $newsletter_eos, bool $newsletter_product):void {
-		$sendgridAPIkey = $this->getSendGridAPIKey();
-		if (empty($sendgridAPIkey)) {
-			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
-			return;
-		}
-		$sg = new \SendGrid($sendgridAPIkey);
-		if($newsletter_eos) {
-			$list_id = 4900;
-		}
-		if($newsletter_product) {
-			$list_id = 4900;
-		}
-		
-		$recipient_id = "ZGkrHSypTsudrGkmdpJJ";
+			if (!$searchResult) {
+				throw new Exception("Error while searching Murena recovery username.");
+			}
 
-		try {
-			$response = $sg->client->contactdb()->lists()->_($list_id)->recipients()->_($recipient_id)->post();
-			$this->logger->warning('statusCode:: '.json_encode($response->statusCode()), ['app' => Application::APP_ID]);
-			$this->logger->warning('body: '. json_encode($response->body()), ['app' => Application::APP_ID]);
-		} catch (\Exception $ex) {
-			$this->logger->warning("addContactinSendGridList caught exception: ".  $ex->getMessage(), ['app' => Application::APP_ID]);
+			$entries = ldap_get_entries($connection, $searchResult);
+			if ($entries['count'] > 0) {
+				return [
+					'success' => false,
+					'statusCode' => 409,
+					'message' => 'Username is already taken.',
+				];
+			}
 		}
-		return ;
+		if($email != '') {
+			// Check if the recovery Email Address already exists
+			$filter = "(recoveryMailAddress=$email)";
+			$searchResult = ldap_search($connection, $base, $filter);
+		
+			if (!$searchResult) {
+				throw new Exception("Error while searching Murena recovery Email address.");
+			}
+
+			$entries = ldap_get_entries($connection, $searchResult);
+			if ($entries['count'] > 0) {
+				return [
+					'success' => false,
+					'statusCode' => 409,
+					'message' => 'Recovery email address is already taken.',
+				];
+			}
+		}
+		
+		$domain = $this->apiConfig['main_domain'];
+		$newUserDN = "username=$username@$domain," . $base;
+		$userClusterID = 'HEL01';
+		$newUserEntry = [
+			'mailAddress' => "$username@$domain",
+			'username' => "$username@$domain",
+			'usernameWithoutDomain' => $username,
+			'userPassword' => $password,
+			'displayName' => $displayname,
+			'quota' => $this->LDAPConnectionService->getLdapQuota(),
+			'recoveryMailAddress' => $email,
+			'active' => 'TRUE',
+			'mailActive' => 'TRUE',
+			'userClusterID' => $userClusterID,
+			'objectClass' => ['murenaUser', 'simpleSecurityObject']
+		];
+	
+		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+	
+		if (!$ret) {
+			throw new Exception("Error while creating Murena account.");
+		}
+		
+		$newUserEntry['userlanguage'] = $userlanguage;
+		$newUserEntry['tosAccepted'] = true;
+		
+		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
+		return [
+			'success' => true,
+			'statusCode' => 200,
+			'message' => 'User registered successfully',
+		];
+	}
+
+	public function checkUsernameAvailable(string $username) {
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+	
+		// Check if the username already exists
+		$filter = "(usernameWithoutDomain=$username)";
+		$searchResult = ldap_search($connection, $base, $filter);
+	
+		if (!$searchResult) {
+			throw new Exception("Error while searching Murena username.");
+		}
+	
+		$entries = ldap_get_entries($connection, $searchResult);
+		if ($entries['count'] == 0) {
+			return true;
+		}
+		return false;
 	}
 }
