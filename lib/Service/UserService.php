@@ -218,7 +218,7 @@ class UserService {
 	
 		if($username != '') {
 			$isUsernameTaken = $this->checkUsernameAvailable($username);
-			if ($isUsernameTaken) {
+			if (!$isUsernameTaken) {
 				return [
 					'success' => false,
 					'statusCode' => 409,
@@ -228,7 +228,7 @@ class UserService {
 		}
 		if($email != '') {
 			$isRecoveryEmailTaken = $this->checkRecoveryEmailAvailable($email);
-			if ($isRecoveryEmailTaken) {
+			if (!$isRecoveryEmailTaken) {
 				return [
 					'success' => false,
 					'statusCode' => 409,
