@@ -99,7 +99,7 @@ class AccountService {
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
 		
-		$this->postCreationActions($newUserEntry, 'v2');
+		$this->postCreationActions($newUserEntry);
 		if($newsletterEOS || $newsletterProduct) {
 			// $this->userService->createContactInSendGrid($username.'@'.$domain, $displayname, $newsletterEOS, $newsletterProduct);
 		}
@@ -110,17 +110,15 @@ class AccountService {
 			'message' => 'User registered successfully',
 		];
 	}
-	protected function postCreationActions(array $userData, string $commonApiVersion = ''):void {
+	protected function postCreationActions(array $userData):void {
+		$commonApiVersion = 'v2';
 		$hmeAlias = '';
-		$commonApiUrl = $this->commonApiUrl;
-		$aliasDomain = $this->config->getSystemValue('alias_domain', '');
 		try {
 			// Create HME Alias
-			$hmeAlias = $this->createHMEAlias($userData['mailAddress'], $commonApiUrl, $commonApiVersion, $aliasDomain);
-
+			$hmeAlias = $this->createHMEAlias($userData['mailAddress'], $commonApiVersion);
 			// Create alias with same name as email pointing to email to block this alias
 			$domain = $this->config->getSystemValue('main_domain', '');
-			$this->createNewDomainAlias($userData['username'], $userData['mailAddress'], $commonApiUrl, $commonApiVersion, $domain);
+			$this->createNewDomainAlias($userData['username'], $userData['mailAddress'], $commonApiVersion, $domain);
 		} catch (Exception $e) {
 			$this->logger->error('Error during alias creation for user: ' . $userData['username'] . ' with email: ' . $userData['mailAddress'] . ' : ' . $e->getMessage());
 		}
@@ -131,13 +129,13 @@ class AccountService {
 		$this->setAccountDataAtNextcloud($userData);
 	}
 
-	private function createHMEAlias(string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): string {
-		
+	private function createHMEAlias(string $resultmail, string $commonApiVersion): string {
+		$aliasDomain = $this->config->getSystemValue('alias_domain', '');
 		$token = $this->config->getSystemValue('common_service_token', '');
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
-		$url = $commonApiUrl . $endpoint . $resultmail;
+		$url = $this->commonApiUrl . $endpoint . $resultmail;
 		$data = array(
-			"domain" => $domain
+			"domain" => $aliasDomain
 		);
 		$headers = [
 			"Authorization: Bearer $token"
@@ -147,17 +145,17 @@ class AccountService {
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
 			$err = $output->message;
-			// throw new Exception("createHMEAlias: CURL error: $err");
+			throw new Exception("createHMEAlias: CURL error: $err");
 		}
 		$alias = isset($output->emailAlias) ? $output->emailAlias : '';
 		return $alias;
 	}
 
-	private function createNewDomainAlias(string $alias, string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): void {
+	private function createNewDomainAlias(string $alias, string $resultmail, string $commonApiVersion, string $domain): void {
 		$token = $this->config->getSystemValue('common_service_token', '');
-
+		
 		$endpoint = $commonApiVersion . '/aliases/';
-		$url = $commonApiUrl . $endpoint . $resultmail;
+		$url = $this->commonApiUrl . $endpoint . $resultmail;
 
 		$data = array(
 			"alias" => $alias,
@@ -171,7 +169,7 @@ class AccountService {
 		$output = $result['output'];
 		if ($result['statusCode'] != 200) {
 			$err = $output->message;
-			// throw new Exception("createNewDomainAlias: CURL error: $err");
+			throw new Exception("createNewDomainAlias: CURL error: $err");
 		}
 	}
 
