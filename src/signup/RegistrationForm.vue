@@ -238,13 +238,17 @@ export default {
 		passwordValidation() {
 			this.passworderrors = []
 			this.validation.isPasswordNotValid = false
+
 			if (!this.formData.password) {
+				let isValid = true
 				for (const condition of this.passwordrules) {
 					if (!condition.regex.test(this.formData.password)) {
 						this.passworderrors.push(condition.message)
-						this.validation.isPasswordNotValid = true
+						isValid = false // Set flag to false if the password fails any condition
 					}
 				}
+
+				this.validation.isPasswordNotValid = !isValid
 			}
 		},
 		validateUsername() {
