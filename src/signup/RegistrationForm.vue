@@ -64,8 +64,9 @@
 				<div class="field">
 					<div class="control">
 						<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
-						<div class="username-group">
-							<Password v-model="formData.password"
+						<div class="password-group">
+							<Password id="password"
+								v-model="formData.password"
 								:secure-length="7"
 								:toggle="false"
 								:badge="false"
@@ -382,7 +383,7 @@ export default {
 #fields input#username,
 #fields input#new-password,
 #fields input#repassword {
-	width: 50%;
+	width: 45%;
 }
 
 #fields input,
@@ -427,7 +428,19 @@ export default {
 	font-size: 12px;
 	width: 100%;
 }
-
+.password-group {
+    display: flex;
+}
+.password-group .Password{
+	width: 50%;
+	padding: 5px 8px;
+}
+#password
+{
+    width: 90%;
+    border: 1px solid #E6E8E9;
+	padding: 10px 20px;
+}
 #inviteHeader,
 #registerHeading {
 	margin-bottom: 10%;
