@@ -13,8 +13,7 @@ class AccountService {
 	private $LDAPConnectionService;
 	private $userService;
 	private $logger;
-	private $ecloudAccountsApiUrl;
-	private $commonApiUrl;
+	private $apiConfig;
 	public function __construct(
 		IConfig $config,
 		LDAPConnectionService $LDAPConnectionService,
@@ -26,11 +25,12 @@ class AccountService {
 		$this->userService = $userService;
 		$this->logger = $logger;
 
-		$domain = $this->config->getSystemValue('main_domain', '');
-		$this->ecloudAccountsApiUrl = $domain . '/apps/ecloud-accounts/api/';
-
-		$this->commonApiUrl = $this->config->getSystemValue('common_services_url', '');
-		$this->commonApiUrl = rtrim($this->commonApiUrl, '/') . '/';
+		$this->apiConfig = [
+			'main_domain' => $this->config->getSystemValue('main_domain', ''),
+			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
+			'alias_domain' => $this->config->getSystemValue('alias_domain', ''),
+			'common_service_token' => $this->config->getSystemValue('common_service_token', ''),
+		];
 	}
 	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletterEOS, bool $newsletterProduct): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
@@ -73,7 +73,7 @@ class AccountService {
 			}
 		}
 		
-		$domain = $this->config->getSystemValue('main_domain', '');
+		$domain = $this->apiConfig['main_domain'];
 		$newUserDN = "username=$username@$domain," . $base;
 		$userClusterID = 'HEL01';
 		$newUserEntry = [
@@ -117,7 +117,7 @@ class AccountService {
 			// Create HME Alias
 			$hmeAlias = $this->createHMEAlias($userData['mailAddress'], $commonApiVersion);
 			// Create alias with same name as email pointing to email to block this alias
-			$domain = $this->config->getSystemValue('main_domain', '');
+			$domain = $this->apiConfig['main_domain'];
 			$this->createNewDomainAlias($userData['username'], $userData['mailAddress'], $commonApiVersion, $domain);
 		} catch (Exception $e) {
 			$this->logger->error('Error during alias creation for user: ' . $userData['username'] . ' with email: ' . $userData['mailAddress'] . ' : ' . $e->getMessage());
@@ -130,10 +130,10 @@ class AccountService {
 	}
 
 	private function createHMEAlias(string $resultmail, string $commonApiVersion): string {
-		$aliasDomain = $this->config->getSystemValue('alias_domain', '');
-		$token = $this->config->getSystemValue('common_service_token', '');
+		$aliasDomain = $this->apiConfig['alias_domain'];
+		$token = $this->apiConfig['common_service_token'];
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
-		$url = $this->commonApiUrl . $endpoint . $resultmail;
+		$url = $this->apiConfig['commonApiUrl'] . $endpoint . $resultmail;
 		$data = array(
 			"domain" => $aliasDomain
 		);
@@ -152,10 +152,10 @@ class AccountService {
 	}
 
 	private function createNewDomainAlias(string $alias, string $resultmail, string $commonApiVersion, string $domain): void {
-		$token = $this->config->getSystemValue('common_service_token', '');
+		$token = $this->apiConfig['common_service_token'];
 		
 		$endpoint = $commonApiVersion . '/aliases/';
-		$url = $this->commonApiUrl . $endpoint . $resultmail;
+		$url = $this->apiConfig['commonApiUrl'] . $endpoint . $resultmail;
 
 		$data = array(
 			"alias" => $alias,
