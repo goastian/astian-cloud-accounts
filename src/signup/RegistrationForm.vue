@@ -335,6 +335,9 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
+	.password-group {
+		display: block;
+	}
 	#successMessages {
 		margin-left: 5%;
 		margin-right: 5%;
