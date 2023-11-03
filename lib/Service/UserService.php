@@ -61,35 +61,6 @@ class UserService {
 		return $default;
 	}
 
-	public function setAccountData(string $uid, string $email, string $recoveryEmail, string $hmeAlias, string $quota = '1024 MB', bool $tosAccepted = false, string $userLanguage = 'en') : array {
-		
-		if (!$this->userExists($uid)) {
-			return ['error' => 'user_already_exists', 'status' => 404];
-		}
-
-		$user = $this->getUser($uid);
-
-		if (is_null($user)) {
-			return ['error' => 'user_already_exists', 'status' => 404];
-		}
-
-		$user->setEMailAddress($email);
-		$user->setQuota($quota);
-		if ($this->l10nFactory->languageExists(null, $userLanguage)) {
-			$this->config->setUserValue($uid, 'core', 'lang', $userLanguage);
-		}
-		// $this->sendWelcomeEmail($uid, $email);
-		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
-		$recoveryEmailUpdated = $this->setRecoveryEmail($uid, $recoveryEmail);
-		if (!$recoveryEmailUpdated) {
-			return ['error' => 'error_setting_recovery', 'status' => 400];
-		}
-		$hmeAliasAdded = $this->addHMEAliasInConfig($uid, $hmeAlias);
-		if (!$hmeAliasAdded) {
-			return ['error' => 'error_adding_hme_alias', 'status' => 400];
-		}
-		return ['status' => 200];
-	}
 	public function userExists(string $uid): bool {
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
