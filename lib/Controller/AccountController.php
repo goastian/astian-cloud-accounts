@@ -12,6 +12,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
 
 class AccountController extends Controller {
@@ -19,16 +20,19 @@ class AccountController extends Controller {
 	protected $request;
 	private $userService;
 	protected $l10nFactory;
+	private $url;
 	public function __construct(
 		$AppName,
 		IRequest $request,
 		UserService $userService,
-		IFactory $l10nFactory
+		IFactory $l10nFactory,
+		IURLGenerator $url
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->userService = $userService;
 		$this->l10nFactory = $l10nFactory;
+		$this->url = $url;
 	}
 
 	/**
@@ -37,10 +41,11 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function index(string $lang = 'en') {
+		$successIcon = $this->url->imagePath('bookmarks', 'success.svg');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
-			['appName' => Application::APP_ID, 'lang' => $lang],
+			['appName' => Application::APP_ID, 'successIcon' => $successIcon],
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}

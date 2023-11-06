@@ -1,5 +1,5 @@
 <?php
 script("ecloud-accounts", $appName . '-signup');
-// \OCP\Util::addTranslations($appName, $lang);
+echo $successIcon;
 ?>
 <div id="ecloud-accounts-signup"></div>
