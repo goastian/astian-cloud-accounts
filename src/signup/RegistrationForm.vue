@@ -202,6 +202,7 @@ export default {
 				{ message: 'One number required.', regex: /[0-9]+/ },
 			],
 			isUsernameAvailable: false,
+			SuccessIcon: OC.generateUrl('/apps/' + APPLICATION_NAME + '/img/sucess.svg'),
 		}
 	},
 	computed: {
