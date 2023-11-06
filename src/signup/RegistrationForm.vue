@@ -5,7 +5,6 @@
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
 					{{ getLocalizedText('Create Murena Account') }}
 				</h1>
-				<img :src="SuccessIcon">
 				<div class="grid">
 					<select v-model="formData.selectedLanguage" class="padding-0" @change="onLanguageChange">
 						<option v-for="language in languages" :key="language.code" :value="language.code">
@@ -203,7 +202,6 @@ export default {
 				{ message: 'One number required.', regex: /[0-9]+/ },
 			],
 			isUsernameAvailable: false,
-			SuccessIcon: OC.generateUrl('/apps/' + APPLICATION_NAME + '/img/sucess.svg'),
 		}
 	},
 	computed: {

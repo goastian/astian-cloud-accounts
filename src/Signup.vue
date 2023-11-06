@@ -45,10 +45,10 @@ export default {
 				selectedLanguage: 'en',
 			},
 			appName: APPLICATION_NAME,
-			showRegistrationForm: true,
+			showRegistrationForm: false,
 			showCaptchaForm: false,
 			showRecoverEmailForm: false,
-			showSuccessSection: false,
+			showSuccessSection: true,
 		}
 	},
 	methods: {

@@ -5,7 +5,7 @@
 				<h3 class="success__title">
 					{{ getLocalizedText('Success!') }}
 				</h3>
-
+				<img :src="SuccessIcon">
 				<p id="accountCreatedMsg" class="font-16" v-html="accountCreatedMsg" />
 
 				<button :wide="true"
@@ -20,6 +20,7 @@
 	</div>
 </template>
 <script>
+const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
 		value: Object,
@@ -27,6 +28,7 @@ export default {
 	data() {
 		return {
 			accountCreatedMsg: '',
+			SuccessIcon: OC.generateUrl('/custom_apps/' + APPLICATION_NAME + '/img/success.svg'),
 		}
 	},
 	computed: {
