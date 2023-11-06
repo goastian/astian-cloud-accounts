@@ -69,7 +69,7 @@ class AccountController extends Controller {
 	public function checkUsernameAvailable(string $username) {
 		$response = new DataResponse();
 		try {
-			if (!$this->userService->userExists($username)) {
+			if ($this->userService->userExists($username)) {
 				$response->setStatus(409);
 				return $response;
 			}
