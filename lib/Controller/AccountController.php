@@ -49,11 +49,11 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function create(string $displayname, string $email = '', string $username, string $password, string $language, bool $newsletterEOS, bool $newsletterProduct): DataResponse {
+	public function create(string $displayname, string $email = '', string $username, string $password, string $language): DataResponse {
 		$response = new DataResponse();
 
 		try {
-			$result = $this->userService->registerUser($displayname, $email, $username, $password, $language, $newsletterEOS, $newsletterProduct);
+			$result = $this->userService->registerUser($displayname, $email, $username, $password, $language);
 			$response->setStatus($result['statusCode']);
 			$response->setData(['message' => $result['message']]);
 		} catch (Exception $e) {
@@ -69,7 +69,7 @@ class AccountController extends Controller {
 	public function checkUsernameAvailable(string $username) {
 		$response = new DataResponse();
 		try {
-			$result = $this->userService->checkUsernameAvailable($username);
+			$result = $this->userService->userExists($username);
 			$response->setStatus($result ? 200 : 409);
 		} catch (Exception $e) {
 			$response->setStatus(500);

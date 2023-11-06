@@ -35,6 +35,7 @@ class UserService {
 	protected $l10nFactory;
 	private $apiConfig;
 	private $LDAPConnectionService;
+	public const USER_CLUSER_ID = 'HEL01';
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
@@ -212,13 +213,13 @@ class UserService {
 		}
 	}
 	
-	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en', bool $newsletterEOS, bool $newsletterProduct): array {
+	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en'): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
 		if($username != '') {
-			$isUsernameTaken = $this->checkUsernameAvailable($username);
-			if (!$isUsernameTaken) {
+			$userExists = $this->userExists($username);
+			if ($userExists) {
 				return [
 					'success' => false,
 					'statusCode' => 409,
@@ -227,8 +228,8 @@ class UserService {
 			}
 		}
 		if($email != '') {
-			$isRecoveryEmailTaken = $this->checkRecoveryEmailAvailable($email);
-			if (!$isRecoveryEmailTaken) {
+			$emailExits = $this->checkRecoveryEmailAvailable($email);
+			if ($emailExits) {
 				return [
 					'success' => false,
 					'statusCode' => 409,
@@ -239,7 +240,7 @@ class UserService {
 		
 		$domain = $this->apiConfig['main_domain'];
 		$newUserDN = "username=$username@$domain," . $base;
-		$userClusterID = 'HEL01';
+		
 		$newUserEntry = [
 			'mailAddress' => "$username@$domain",
 			'username' => "$username@$domain",
@@ -250,7 +251,7 @@ class UserService {
 			'recoveryMailAddress' => $email,
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
-			'userClusterID' => $userClusterID,
+			'userClusterID' => self::USER_CLUSER_ID,
 			'objectClass' => ['murenaUser', 'simpleSecurityObject']
 		];
 	
@@ -273,39 +274,9 @@ class UserService {
 		];
 	}
 
-	public function checkUsernameAvailable(string $username) {
-		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
-	
-		// Check if the username already exists
-		$filter = "(usernameWithoutDomain=$username)";
-		$searchResult = ldap_search($connection, $base, $filter);
-	
-		if (!$searchResult) {
-			throw new Exception("Error while searching Murena username.");
-		}
-	
-		$entries = ldap_get_entries($connection, $searchResult);
-		if ($entries['count'] == 0) {
-			return true;
-		}
-		return false;
-	}
-
 	public function checkRecoveryEmailAvailable(string $email) {
-		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
-	
-		// Check if the username already exists
-		$filter = "(recoveryMailAddress=$email)";
-		$searchResult = ldap_search($connection, $base, $filter);
-	
-		if (!$searchResult) {
-			throw new Exception("Error while searching Murena recovery email.");
-		}
-	
-		$entries = ldap_get_entries($connection, $searchResult);
-		if ($entries['count'] == 0) {
+		$users = $this->userManager->getByEmail($email);
+		if (count($users) >= 1) {
 			return true;
 		}
 		return false;
