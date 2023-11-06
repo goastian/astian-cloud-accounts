@@ -280,7 +280,7 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status === 404) {
+				if (response.status === 409) {
 					this.validation.isUsernameNotValid = true
 					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
 				}
@@ -289,7 +289,7 @@ export default {
 				}
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
-				if (error.response && error.response.status === 404) {
+				if (error.response && error.response.status === 409) {
 					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
 				} else {
 					this.usernameValidationMessage = this.getLocalizedText('Something went wrong.')
