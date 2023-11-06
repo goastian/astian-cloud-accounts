@@ -67,6 +67,12 @@ class UserService {
 		if ($exists) {
 			return $exists;
 		}
+		$domain = $this->apiConfig['main_domain'];
+		$exists = $this->userManager->userExists($uid.'@'.$domain);
+		if ($exists) {
+			return $exists;
+		}
+		
 
 		$backends = $this->userManager->getBackends();
 		foreach ($backends as $backend) {
