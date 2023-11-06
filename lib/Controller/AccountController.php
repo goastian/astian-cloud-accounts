@@ -69,8 +69,11 @@ class AccountController extends Controller {
 	public function checkUsernameAvailable(string $username) {
 		$response = new DataResponse();
 		try {
-			$result = $this->userService->userExists($username);
-			$response->setStatus($result ? 200 : 409);
+			if (!$this->userService->userExists($username)) {
+				$response->setStatus(404);
+				return $response;
+			}
+			$response->setStatus(200);
 		} catch (Exception $e) {
 			$response->setStatus(500);
 		}
