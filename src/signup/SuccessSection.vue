@@ -2,12 +2,11 @@
 	<div id="successSection">
 		<section id="success">
 			<div id="successMessages" class="notification isa_success has-text-centered">
+				<img :src="SuccessIcon">
 				<h3 class="success__title">
 					{{ getLocalizedText('Success!') }}
 				</h3>
-				<img :src="SuccessIcon">
 				<p id="accountCreatedMsg" class="font-16" v-html="accountCreatedMsg" />
-
 				<button :wide="true"
 					class="btn-primary w-50"
 					type="primary"
