@@ -41,7 +41,7 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function index(string $lang = 'en') {
-		$successIcon = $this->url->imagePath('bookmarks', 'success.svg');
+		$successIcon = $this->url->imagePath(Application::APP_ID, 'success.svg');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
