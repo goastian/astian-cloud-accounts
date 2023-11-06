@@ -74,8 +74,6 @@ export default {
 					password: this.formData.password,
 					email: this.formData.email,
 					language: this.formData.selectedLanguage,
-					newsletterEOS: this.formData.newsletter_eos,
-					newsletterProduct: this.formData.newsletter_product,
 				}
 				this.submitForm(data)
 			}
