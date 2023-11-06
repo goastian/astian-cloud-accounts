@@ -151,7 +151,8 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $displayname = '', string $uid, string $toEmail, string $language = 'en') : void {
+	public function sendWelcomeEmail(string $displayname = '', string $uid, string $language = 'en') : void {
+		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
@@ -173,8 +174,9 @@ class UserService {
 		$fromName = $this->defaults->getName();
 		
 		$mainDomain = $this->getMainDomain();
+		$toEmail = $uid;
 		try {
-			$email = $this->createSendGridEmail($fromEmail, $fromName, $toEmail, $displayname, $templateID, $uid, $mainDomain);
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $uid, $displayname, $templateID, $uid, $mainDomain);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
 			$this->logger->error('Error sending email to: ' . $toEmail . ': ' . $e->getMessage());
@@ -214,8 +216,6 @@ class UserService {
 	}
 	
 	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en'): array {
-		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
 		if($username != '') {
 			$userExists = $this->userExists($username);
@@ -237,10 +237,25 @@ class UserService {
 				];
 			}
 		}
+		$this->addNewUserToLDAP($displayname, $email, $username, $password);
 		
 		$domain = $this->apiConfig['main_domain'];
+		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $userlanguage);
+		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
+
+		return [
+			'success' => true,
+			'statusCode' => 200,
+			'message' => 'User registered successfully',
+		];
+	}
+	private function addNewUserToLDAP(string $displayname, string  $email, string  $username, string  $password): void {
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+	
+		$domain = $this->apiConfig['main_domain'];
 		$newUserDN = "username=$username@$domain," . $base;
-		
+	
 		$newUserEntry = [
 			'mailAddress' => "$username@$domain",
 			'username' => "$username@$domain",
@@ -260,20 +275,9 @@ class UserService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-		
-		$newUserEntry['userlanguage'] = $userlanguage;
-		$newUserEntry['tosAccepted'] = true;
-		
-		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $username.'@'.$domain, $userlanguage);
-		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
 
-		return [
-			'success' => true,
-			'statusCode' => 200,
-			'message' => 'User registered successfully',
-		];
 	}
-
+	
 	public function checkRecoveryEmailAvailable(string $email) {
 		$users = $this->userManager->getByEmail($email);
 		if (count($users) >= 1) {
