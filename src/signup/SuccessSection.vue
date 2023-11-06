@@ -75,6 +75,7 @@ export default {
 	color: white;
 	border-color: var(--color-primary);
 	font-size: large;
+	margin: 10px 0;
 }
 
 .success__title {
@@ -82,11 +83,13 @@ export default {
     font-style: normal;
     font-weight: 700;
     font-size: 24px;
-    line-height: 150%;
-    margin: 1em 0 0.5em 0;
+    padding: 10px 0;
     text-align: center;
 }
 .font-16{
 	font-size: 16px;
+}
+#moreDetailMsg, #accountCreatedMsg{
+	padding: 10px 0;
 }
 </style>
