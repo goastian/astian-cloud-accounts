@@ -373,8 +373,12 @@ class UserService {
 		$hmeAlias = $userData['hmeAlias'];
 		$quota = $userData['quota'];
 		$tosAccepted = $userData['tosAccepted'];
-
+		
 		$user = $this->getUser($uid);
+		if (is_null($user)) {
+			$this->logger->error('## setAccountDataAtNextcloud: User not found');
+			return;
+		}
 		$mailAddress = $uid;
 		$user->setEMailAddress($mailAddress);
 		$user->setQuota($quota);
