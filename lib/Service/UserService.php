@@ -260,10 +260,11 @@ class UserService {
 		}
 		$domain = $this->apiConfig['mainDomain'];
 		$newEmailAddress = $username.'@'.$domain;
+		
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
+		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-
 		$this->createUserAtNextCloud($newEmailAddress, $password);
 		$this->addUserToMailbox($newUserEntry);
 		$this->postCreationActions($newUserEntry);
@@ -424,6 +425,7 @@ class UserService {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error('## setAccountDataAtNextcloud: User not found');
+			return;
 		}
 		$mailAddress = $uid;
 		$user->setEMailAddress($mailAddress);
