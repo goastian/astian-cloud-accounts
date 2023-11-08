@@ -76,7 +76,6 @@ class UserService {
 		if ($exists) {
 			return $exists;
 		}
-		
 
 		$backends = $this->userManager->getBackends();
 		foreach ($backends as $backend) {
@@ -306,11 +305,23 @@ class UserService {
 	}
 	
 	public function checkRecoveryEmailAvailable(string $email) {
-		$users = $this->userManager->getByEmail($email);
-		if (count($users) >= 1) {
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+	
+		// Check if the recoveryMailAddress already exists
+		$filter = "(recoveryMailAddress=$email)";
+		$searchResult = ldap_search($connection, $base, $filter);
+	
+		if (!$searchResult) {
+			throw new Exception("Error while searching Murena recovery email address.");
+		}
+	
+		$entries = ldap_get_entries($connection, $searchResult);
+		if ($entries['count'] > 0) {
 			return true;
 		}
 		return false;
+
 	}
 
 	protected function postCreationActions(array $userData):array {
