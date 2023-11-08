@@ -263,7 +263,7 @@ class UserService {
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		
+
 		$this->createUserAtNextCloud($newEmailAddress, $password);
 		$this->addUserToMailbox($newUserEntry);
 		$this->postCreationActions($newUserEntry);
@@ -302,6 +302,7 @@ class UserService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
+		$this->logger->error('## addNewUserToLDAP: New User added to LDAP successfully.');
 		return $newUserEntry;
 	}
 	
