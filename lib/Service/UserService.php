@@ -368,13 +368,14 @@ class UserService {
 		return $result;
 	}
 	private function setAccountDataAtNextcloud(array $userData): void {
-		$uid = $mailAddress = $userData['mailAddress'];
+		$uid = $userData['mailAddress'];
 		$recoveryEmail = $userData['recoveryMailAddress'];
 		$hmeAlias = $userData['hmeAlias'];
 		$quota = $userData['quota'];
 		$tosAccepted = $userData['tosAccepted'];
 
 		$user = $this->getUser($uid);
+		$mailAddress = $uid;
 		$user->setEMailAddress($mailAddress);
 		$user->setQuota($quota);
 		
