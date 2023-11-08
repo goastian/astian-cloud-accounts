@@ -15,6 +15,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Util;
+use phpseclib\Net\SSH2;
 use Throwable;
 
 use UnexpectedValueException;
@@ -47,12 +48,14 @@ class UserService {
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$this->apiConfig = [
-			'main_domain' => $this->config->getSystemValue('main_domain', ''),
+			'mainDomain' => $this->config->getSystemValue('main_domain', ''),
 			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
-			'alias_domain' => $this->config->getSystemValue('alias_domain', ''),
 			'common_service_token' => $this->config->getSystemValue('common_service_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
-			'commonApiVersion' => 'v2'
+			'commonApiVersion' => 'v2',
+			'postfixHostname' => "postfixadmin",
+			'postfixUser' => "pfexec",
+			'postfixadminSSHPassword' => 'wpzfLPEPV5xWDmEijI0b'
 		];
 	}
 
@@ -69,7 +72,7 @@ class UserService {
 		if ($exists) {
 			return $exists;
 		}
-		$domain = $this->apiConfig['main_domain'];
+		$domain = $this->apiConfig['mainDomain'];
 		$exists = $this->userManager->userExists($uid.'@'.$domain);
 		if ($exists) {
 			return $exists;
@@ -258,9 +261,10 @@ class UserService {
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
+		$this->createUserAtNextCloud($newUserEntry);
 		$this->postCreationActions($newUserEntry);
 
-		$domain = $this->apiConfig['main_domain'];
+		$domain = $this->apiConfig['mainDomain'];
 		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $userlanguage);
 		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
 		
@@ -274,7 +278,7 @@ class UserService {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
-		$domain = $this->apiConfig['main_domain'];
+		$domain = $this->apiConfig['mainDomain'];
 		$newUserDN = "username=$username@$domain," . $base;
 	
 		$newUserEntry = [
@@ -347,7 +351,7 @@ class UserService {
 	private function createNewDomainAlias(string $alias, string $resultmail): mixed {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
-		$domain = $this->apiConfig['main_domain'];
+		$domain = $this->apiConfig['mainDomain'];
 		$token = $this->apiConfig['common_service_token'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
@@ -367,13 +371,34 @@ class UserService {
 		$result = json_decode($result, true);
 		return $result;
 	}
+	private function createUserAtNextCloud(array $userData): void {
+
+		$PF_HOSTNAME = $this->apiConfig['postfixHostname'];
+		$PF_USER = $this->apiConfig['postfixUser'];
+		$PF_PWD = $this->apiConfig['postfixadminSSHPassword'];
+
+		$ssh = new SSH2($PF_HOSTNAME);
+		if (!$ssh->login($PF_USER, $PF_PWD)) {
+			$this->logger->error('### createUserAtNextCloud Error Login to SSH.');
+		}
+		$mailAddress = $userData['mailAddress'];
+		$password = $userData['userPassword'];
+		$displayName = $userData['displayName'];
+		$quota = $userData['quota'];
+		$creationFeedBack = explode("\n", $ssh->exec('/postfixadmin/scripts/postfixadmin-cli mailbox add ' . escapeshellarg($mailAddress) . ' --password ' . escapeshellarg($password) . ' --password2 ' . escapeshellarg($password) . ' --name ' . escapeshellarg($displayName) . ' --quota ' . $quota . ' --active 1 --welcome-mail 0 2>&1'));
+		$isCreated = preg_grep('/added/', $creationFeedBack);
+		
+		if (empty($isCreated)) {
+			$this->logger->error('### createUserAtNextCloud Error creating account.');
+		}
+	}
 	private function setAccountDataAtNextcloud(array $userData): void {
+
 		$uid = $userData['mailAddress'];
 		$recoveryEmail = $userData['recoveryMailAddress'];
 		$hmeAlias = $userData['hmeAlias'];
 		$quota = $userData['quota'];
 		$tosAccepted = $userData['tosAccepted'];
-		
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error('## setAccountDataAtNextcloud: User not found');
