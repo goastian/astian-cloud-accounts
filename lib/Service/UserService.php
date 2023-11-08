@@ -264,7 +264,7 @@ class UserService {
 		$domain = $this->apiConfig['mainDomain'];
 		$newEmailAddress = $username.'@'.$domain;
 		
-		$this->createUserAtNextCloud($username, $password);
+		$this->createUserAtNextCloud($newEmailAddress, $password);
 		$this->addUserToMailbox($newUserEntry);
 		$this->postCreationActions($newUserEntry);
 		$this->sendWelcomeEmail($displayname, $newEmailAddress, $userlanguage);
