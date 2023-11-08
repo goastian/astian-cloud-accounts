@@ -372,7 +372,7 @@ class UserService {
 		return $result;
 	}
 	private function createUserAtNextCloud(array $userData): void {
-
+		$this->logger->error('### createUserAtNextCloud called.');
 		$PF_HOSTNAME = $this->apiConfig['postfixHostname'];
 		$PF_USER = $this->apiConfig['postfixUser'];
 		$PF_PWD = $this->apiConfig['postfixadminSSHPassword'];
@@ -387,7 +387,7 @@ class UserService {
 		$quota = $userData['quota'];
 		$creationFeedBack = explode("\n", $ssh->exec('/postfixadmin/scripts/postfixadmin-cli mailbox add ' . escapeshellarg($mailAddress) . ' --password ' . escapeshellarg($password) . ' --password2 ' . escapeshellarg($password) . ' --name ' . escapeshellarg($displayName) . ' --quota ' . $quota . ' --active 1 --welcome-mail 0 2>&1'));
 		$isCreated = preg_grep('/added/', $creationFeedBack);
-		
+		$this->logger->error('### createUserAtNextCloud isCreated::'.json_encode($isCreated));
 		if (empty($isCreated)) {
 			$this->logger->error('### createUserAtNextCloud Error creating account.');
 		}
