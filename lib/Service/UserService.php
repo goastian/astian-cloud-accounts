@@ -169,7 +169,7 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $displayname = '', string $uid, string $language = 'en') : void {
+	public function sendWelcomeEmail(string $displayname, string $uid, string $language) : void {
 		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
