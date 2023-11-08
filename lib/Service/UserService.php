@@ -374,10 +374,26 @@ class UserService {
 		return $result;
 	}
 	private function createUserAtNextCloud(string $username, string $password): void {
+
 		$user = $this->getUser($username);
 		if (is_null($user)) {
-			$this->logger->error('## createUserAtNextCloud: User not found. Created new user. username:'.$username . ' - password: '.$password);
-			$this->userManager->createUser($username, $password);
+
+			try {
+				$this->logger->error('Creating new user');
+				$user = $this->userManager->createUser(
+					$username,
+					$password
+				);
+			} catch (\Exception $e) {
+				$this->logger->error('error: ' . $e->getMessage());
+				return;
+			}
+
+			if ($user instanceof IUser) {
+				$this->logger->error('Info: The user "' . $user->getUID() . '" was created successfully');
+			} else {
+				$this->logger->error('Error: An error occurred while creating the user.');
+			}
 		}
 	}
 	private function addUserToMailbox(array $userData): void {
