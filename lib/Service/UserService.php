@@ -258,13 +258,14 @@ class UserService {
 				];
 			}
 		}
+		$domain = $this->apiConfig['mainDomain'];
+		$newEmailAddress = $username.'@'.$domain;
+		$this->createUserAtNextCloud($newEmailAddress, $password);
+
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		$domain = $this->apiConfig['mainDomain'];
-		$newEmailAddress = $username.'@'.$domain;
 		
-		$this->createUserAtNextCloud($newEmailAddress, $password);
 		$this->addUserToMailbox($newUserEntry);
 		$this->postCreationActions($newUserEntry);
 		$this->sendWelcomeEmail($displayname, $newEmailAddress, $userlanguage);
@@ -374,10 +375,8 @@ class UserService {
 		return $result;
 	}
 	private function createUserAtNextCloud(string $username, string $password): void {
-
 		$user = $this->getUser($username);
 		if (is_null($user)) {
-
 			try {
 				$this->logger->error('Creating new user');
 				$user = $this->userManager->createUser(
