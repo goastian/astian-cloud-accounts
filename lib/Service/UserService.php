@@ -263,8 +263,11 @@ class UserService {
 		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		$userData = $this->postCreationActions($newUserEntry);
-		$this->setAccountDataAtNextcloud($userData);
+		$newUserEntry['hmeAlias'] = $this->createHMEAlias($newEmailAddress);
+		$newUserEntry['quota'] = strval($newUserEntry['quota']) . ' MB';
+
+		$this->createNewDomainAlias($newEmailAddress);
+		$this->setAccountDataAtNextcloud($newUserEntry);
 		$this->sendWelcomeEmail($displayname, $newEmailAddress, $userlanguage);
 		$this->setUserLanguage($newEmailAddress, $userlanguage);
 		
@@ -324,23 +327,6 @@ class UserService {
 
 	}
 
-	protected function postCreationActions(array $userData):array {
-		$hmeAlias = '';
-		try {
-			// Create HME Alias
-			$hmeAlias = $this->createHMEAlias($userData['mailAddress']);
-			// Create alias with same name as email pointing to email to block this alias
-			$this->createNewDomainAlias($userData['username'], $userData['mailAddress']);
-		} catch (Exception $e) {
-			$this->logger->error('Error during alias creation for user: ' . $userData['username'] . ' with email: ' . $userData['mailAddress'] . ' : ' . $e->getMessage());
-		}
-		$userData['hmeAlias'] = $hmeAlias;
-		sleep(2);
-		$userData['quota'] = strval($userData['quota']) . ' MB';
-		return $userData;
-
-	}
-
 	private function createHMEAlias(string $resultmail): string {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
@@ -362,7 +348,7 @@ class UserService {
 		return $alias;
 	}
 
-	private function createNewDomainAlias(string $alias, string $resultmail): mixed {
+	private function createNewDomainAlias(string $mailAddress): mixed {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
@@ -370,10 +356,10 @@ class UserService {
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
 		$endpoint = $commonApiVersion . '/aliases/';
-		$url = $commonApiUrl . $endpoint . $resultmail;
+		$url = $commonApiUrl . $endpoint . $mailAddress;
 
 		$data = array(
-			"alias" => $alias,
+			"alias" => $mailAddress,
 			"domain" => $domain
 		);
 		$headers = [
