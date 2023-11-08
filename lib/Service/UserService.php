@@ -51,6 +51,8 @@ class UserService {
 			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
 			'alias_domain' => $this->config->getSystemValue('alias_domain', ''),
 			'common_service_token' => $this->config->getSystemValue('common_service_token', ''),
+			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
+			'commonApiVersion' => 'v2'
 		];
 	}
 
@@ -99,6 +101,16 @@ class UserService {
 			return false;
 		}
 	}
+	public function setTOS(string $uid, bool $tosAccepted): bool {
+		try {
+			$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
+			return true;
+		} catch (UnexpectedValueException $e) {
+			return false;
+		}
+	}
+
+	
 
 	public function getHMEAliasesFromConfig($uid) : array {
 		$aliases = $this->config->getUserValue($uid, 'hide-my-email', 'email-aliases', []);
@@ -243,19 +255,22 @@ class UserService {
 				];
 			}
 		}
-		$this->addNewUserToLDAP($displayname, $email, $username, $password);
-		
+		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
+		$newUserEntry['userlanguage'] = $userlanguage;
+		$newUserEntry['tosAccepted'] = true;
+		$this->postCreationActions($newUserEntry);
+
 		$domain = $this->apiConfig['main_domain'];
 		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $userlanguage);
 		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
-
+		
 		return [
 			'success' => true,
 			'statusCode' => 200,
 			'message' => 'User registered successfully',
 		];
 	}
-	private function addNewUserToLDAP(string $displayname, string  $email, string  $username, string  $password): void {
+	private function addNewUserToLDAP(string $displayname, string  $email, string  $username, string  $password): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
@@ -281,7 +296,7 @@ class UserService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-
+		return $newUserEntry;
 	}
 	
 	public function checkRecoveryEmailAvailable(string $email) {
@@ -292,51 +307,49 @@ class UserService {
 		return false;
 	}
 
-	protected function postCreationActions(array $userData, string $commonApiVersion = ''):void {
+	protected function postCreationActions(array $userData):void {
 		$hmeAlias = '';
-		$commonApiUrl = $this->commonApiUrl;
-		$aliasDomain = $this->config->getSystemValue('alias_domain', '');
 		try {
 			// Create HME Alias
-			$hmeAlias = $this->createHMEAlias($userData['mailAddress'], $commonApiUrl, $commonApiVersion, $aliasDomain);
-
+			$hmeAlias = $this->createHMEAlias($userData['mailAddress']);
 			// Create alias with same name as email pointing to email to block this alias
-			$domain = $this->config->getSystemValue('main_domain', '');
-			$this->createNewDomainAlias($userData['username'], $userData['mailAddress'], $commonApiUrl, $commonApiVersion, $domain);
+			$this->createNewDomainAlias($userData['username'], $userData['mailAddress']);
 		} catch (Exception $e) {
 			$this->logger->error('Error during alias creation for user: ' . $userData['username'] . ' with email: ' . $userData['mailAddress'] . ' : ' . $e->getMessage());
 		}
-		
 		$userData['hmeAlias'] = $hmeAlias;
 		sleep(2);
 		$userData['quota'] = strval($userData['quota']) . ' MB';
 		$this->setAccountDataAtNextcloud($userData);
 	}
 
-	private function createHMEAlias(string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): string {
+	private function createHMEAlias(string $resultmail): string {
+		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$aliasDomain = $this->apiConfig['aliasDomain'];
+		$token = $this->apiConfig['common_service_token'];
+		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 		
-		$token = $this->config->getSystemValue('common_service_token', '');
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
 		$data = array(
-			"domain" => $domain
+			"domain" => $aliasDomain
 		);
 		$headers = [
 			"Authorization: Bearer $token"
 		];
 		$this->logger->error('### createHMEAlias called.');
-		$result = $this->curlRequest('POST', $url, $headers, $data);
-		$output = $result['output'];
-		if ($result['statusCode'] != 200) {
-			$err = $output->message;
-			// throw new Exception("createHMEAlias: CURL error: $err");
-		}
-		$alias = isset($output->emailAlias) ? $output->emailAlias : '';
+		$result = $this->curl->post($url, $data, $headers);
+		$result = json_decode($result, true);
+		$alias = isset($result->emailAlias) ? $result->emailAlias : '';
 		return $alias;
 	}
 
-	private function createNewDomainAlias(string $alias, string $resultmail, string $commonApiUrl, string $commonApiVersion, string $domain): void {
-		$token = $this->config->getSystemValue('common_service_token', '');
+	private function createNewDomainAlias(string $alias, string $resultmail): void {
+		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
+		$domain = $this->apiConfig['main_domain'];
+		$token = $this->apiConfig['common_service_token'];
+		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
 		$endpoint = $commonApiVersion . '/aliases/';
 		$url = $commonApiUrl . $endpoint . $resultmail;
@@ -349,22 +362,38 @@ class UserService {
 			"Authorization: Bearer $token"
 		];
 		$this->logger->error('### createNewDomainAlias called.');
-		$result = $this->curlRequest('POST', $url, $headers, $data);
-		$output = $result['output'];
-		if ($result['statusCode'] != 200) {
-			$err = $output->message;
-			// throw new Exception("createNewDomainAlias: CURL error: $err");
-		}
+		
+		$result = $this->curl->post($url, $data, $headers);
+		$result = json_decode($result, true);
+		return $result;
 	}
-
-
 	private function setAccountDataAtNextcloud(array $userData): void {
-		
-		$data = $this->setAccountData($userData['mailAddress'], $userData['mailAddress'], $userData['recoveryMailAddress'], $userData['hmeAlias'], $userData['quota'], $userData['tosAccepted'], $userData['userlanguage']);
-		
-		if ($data['status'] != 200) {
-			$this->logger->error('## setAccountDataAtNextcloud: Error creating account with status code '.$data['status'].' : ' . $data['error']);
-		}
+		$uid = $mailAddress = $userData['mailAddress'];
+		$recoveryEmail = $userData['recoveryMailAddress'];
+		$hmeAlias = $userData['hmeAlias'];
+		$quota = $userData['quota'];
+		$tosAccepted = $userData['tosAccepted'];
 
+		$user = $this->getUser($uid);
+		$user->setEMailAddress($mailAddress);
+		$user->setQuota($quota);
+		
+		
+		$tos = $this->setTOS($uid, $tosAccepted);
+		if (!$tos) {
+			$this->logger->error('## Error adding TOS value in config.');
+		}
+		if($recoveryEmail != '') {
+			$recoveryEmailUpdated = $this->setRecoveryEmail($uid, $recoveryEmail);
+			if (!$recoveryEmailUpdated) {
+				$this->logger->error('## Error adding recoveryEmail in config.');
+			}
+		}
+		if($hmeAlias != '') {
+			$hmeAliasAdded = $this->addHMEAliasInConfig($uid, $hmeAlias);
+			if (!$hmeAliasAdded) {
+				$this->logger->error('## Error adding HME Alias in config.');
+			}
+		}
 	}
 }
