@@ -17,7 +17,7 @@ class LDAPConnectionService {
 	private $ldapEnabled;
 	private $access;
 	private $ldapConfig;
-	private int $quotaInBytes = 1000000000;
+	private int $quotaInBytes = 1000;
 	private int $ldapQuota;
 	private IConfig $config;
 
