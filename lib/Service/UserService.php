@@ -261,7 +261,8 @@ class UserService {
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		$this->createUserAtNextCloud($newUserEntry);
+		$this->createUserAtNextCloud($username, $password);
+		$this->addUserToMailbox($newUserEntry);
 		$this->postCreationActions($newUserEntry);
 
 		$domain = $this->apiConfig['mainDomain'];
@@ -371,15 +372,21 @@ class UserService {
 		$result = json_decode($result, true);
 		return $result;
 	}
-	private function createUserAtNextCloud(array $userData): void {
-		$this->logger->error('### createUserAtNextCloud called.');
+	private function createUserAtNextCloud(string $username, string $password): void {
+		$user = $this->getUser($username);
+		if (is_null($user)) {
+			$this->logger->error('## createUserAtNextCloud: User not found. Created new user. username:'.$username . ' - password: '.$password);
+			$this->userManager->createUser($username, $password);
+		}
+	}
+	private function addUserToMailbox(array $userData): void {
 		$PF_HOSTNAME = $this->apiConfig['postfixHostname'];
 		$PF_USER = $this->apiConfig['postfixUser'];
 		$PF_PWD = $this->apiConfig['postfixadminSSHPassword'];
 
 		$ssh = new SSH2($PF_HOSTNAME);
 		if (!$ssh->login($PF_USER, $PF_PWD)) {
-			$this->logger->error('### createUserAtNextCloud Error Login to SSH.');
+			$this->logger->error('### addUserToMailbox Error Login to SSH.');
 		}
 		$mailAddress = $userData['mailAddress'];
 		$password = $userData['userPassword'];
@@ -387,13 +394,12 @@ class UserService {
 		$quota = $userData['quota'];
 		$creationFeedBack = explode("\n", $ssh->exec('/postfixadmin/scripts/postfixadmin-cli mailbox add ' . escapeshellarg($mailAddress) . ' --password ' . escapeshellarg($password) . ' --password2 ' . escapeshellarg($password) . ' --name ' . escapeshellarg($displayName) . ' --quota ' . $quota . ' --active 1 --welcome-mail 0 2>&1'));
 		$isCreated = preg_grep('/added/', $creationFeedBack);
-		$this->logger->error('### createUserAtNextCloud isCreated::'.json_encode($isCreated));
+		$this->logger->error('### addUserToMailbox isCreated::'.json_encode($isCreated));
 		if (empty($isCreated)) {
-			$this->logger->error('### createUserAtNextCloud Error creating account.');
+			$this->logger->error('### addUserToMailbox Error creating account.');
 		}
 	}
 	private function setAccountDataAtNextcloud(array $userData): void {
-
 		$uid = $userData['mailAddress'];
 		$recoveryEmail = $userData['recoveryMailAddress'];
 		$hmeAlias = $userData['hmeAlias'];
@@ -402,7 +408,6 @@ class UserService {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error('## setAccountDataAtNextcloud: User not found');
-			return;
 		}
 		$mailAddress = $uid;
 		$user->setEMailAddress($mailAddress);
