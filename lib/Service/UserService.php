@@ -261,13 +261,14 @@ class UserService {
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
+		$domain = $this->apiConfig['mainDomain'];
+		$newEmailAddress = $username.'@'.$domain;
+		
 		$this->createUserAtNextCloud($username, $password);
 		$this->addUserToMailbox($newUserEntry);
 		$this->postCreationActions($newUserEntry);
-
-		$domain = $this->apiConfig['mainDomain'];
-		$this->sendWelcomeEmail($displayname, $username.'@'.$domain, $userlanguage);
-		$this->setUserLanguage($username.'@'.$domain, $userlanguage);
+		$this->sendWelcomeEmail($displayname, $newEmailAddress, $userlanguage);
+		$this->setUserLanguage($newEmailAddress, $userlanguage);
 		
 		return [
 			'success' => true,
