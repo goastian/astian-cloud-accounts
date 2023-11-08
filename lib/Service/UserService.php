@@ -328,6 +328,7 @@ class UserService {
 	}
 
 	private function createHMEAlias(string $resultmail): string {
+		$this->logger->error('### createHMEAlias called.');
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
 		$token = $this->apiConfig['common_service_token'];
@@ -341,14 +342,15 @@ class UserService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-		$this->logger->error('### createHMEAlias called.');
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
 		$alias = isset($result->emailAlias) ? $result->emailAlias : '';
+		$this->logger->error('### createHMEAlias result: '.json_encode($result));
 		return $alias;
 	}
 
 	private function createNewDomainAlias(string $mailAddress): mixed {
+		$this->logger->error('### createNewDomainAlias called.');
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
@@ -365,10 +367,10 @@ class UserService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-		$this->logger->error('### createNewDomainAlias called.');
 		
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
+		$this->logger->error('### createNewDomainAlias result: '.json_encode($result));
 		return $result;
 	}
 	private function setAccountDataAtNextcloud(array $userData): void {
