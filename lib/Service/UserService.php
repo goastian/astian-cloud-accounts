@@ -15,7 +15,6 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Util;
-use phpseclib\Net\SSH2;
 use Throwable;
 
 use UnexpectedValueException;
@@ -93,7 +92,9 @@ class UserService {
 	}
 
 	public function getUser(string $uid): ?IUser {
-		return $this->userManager->get($uid);
+		if($this->userExists($uid)) {
+			return $this->userManager->get($uid);
+		}
 	}
 
 	public function setRecoveryEmail(string $uid, string $recoveryEmail): bool {
@@ -112,8 +113,6 @@ class UserService {
 			return false;
 		}
 	}
-
-	
 
 	public function getHMEAliasesFromConfig($uid) : array {
 		$aliases = $this->config->getUserValue($uid, 'hide-my-email', 'email-aliases', []);
@@ -265,9 +264,8 @@ class UserService {
 		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		$this->createUserAtNextCloud($newEmailAddress, $password);
-		$this->addUserToMailbox($newUserEntry);
-		$this->postCreationActions($newUserEntry);
+		$userData = $this->postCreationActions($newUserEntry);
+		$this->setAccountDataAtNextcloud($userData);
 		$this->sendWelcomeEmail($displayname, $newEmailAddress, $userlanguage);
 		$this->setUserLanguage($newEmailAddress, $userlanguage);
 		
@@ -315,7 +313,7 @@ class UserService {
 		return false;
 	}
 
-	protected function postCreationActions(array $userData):void {
+	protected function postCreationActions(array $userData):array {
 		$hmeAlias = '';
 		try {
 			// Create HME Alias
@@ -328,7 +326,8 @@ class UserService {
 		$userData['hmeAlias'] = $hmeAlias;
 		sleep(2);
 		$userData['quota'] = strval($userData['quota']) . ' MB';
-		$this->setAccountDataAtNextcloud($userData);
+		return $userData;
+
 	}
 
 	private function createHMEAlias(string $resultmail): string {
@@ -374,47 +373,6 @@ class UserService {
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
 		return $result;
-	}
-	private function createUserAtNextCloud(string $username, string $password): void {
-		$user = $this->getUser($username);
-		if (is_null($user)) {
-			try {
-				$this->logger->error('Creating new user');
-				$user = $this->userManager->createUser(
-					$username,
-					$password
-				);
-			} catch (\Exception $e) {
-				$this->logger->error('error: ' . $e->getMessage());
-				return;
-			}
-
-			if ($user instanceof IUser) {
-				$this->logger->error('Info: The user "' . $user->getUID() . '" was created successfully');
-			} else {
-				$this->logger->error('Error: An error occurred while creating the user.');
-			}
-		}
-	}
-	private function addUserToMailbox(array $userData): void {
-		$PF_HOSTNAME = $this->apiConfig['postfixHostname'];
-		$PF_USER = $this->apiConfig['postfixUser'];
-		$PF_PWD = $this->apiConfig['postfixadminSSHPassword'];
-
-		$ssh = new SSH2($PF_HOSTNAME);
-		if (!$ssh->login($PF_USER, $PF_PWD)) {
-			$this->logger->error('### addUserToMailbox Error Login to SSH.');
-		}
-		$mailAddress = $userData['mailAddress'];
-		$password = $userData['userPassword'];
-		$displayName = $userData['displayName'];
-		$quota = $userData['quota'];
-		$creationFeedBack = explode("\n", $ssh->exec('/postfixadmin/scripts/postfixadmin-cli mailbox add ' . escapeshellarg($mailAddress) . ' --password ' . escapeshellarg($password) . ' --password2 ' . escapeshellarg($password) . ' --name ' . escapeshellarg($displayName) . ' --quota ' . $quota . ' --active 1 --welcome-mail 0 2>&1'));
-		$isCreated = preg_grep('/added/', $creationFeedBack);
-		$this->logger->error('### addUserToMailbox isCreated::'.json_encode($isCreated));
-		if (empty($isCreated)) {
-			$this->logger->error('### addUserToMailbox Error creating account.');
-		}
 	}
 	private function setAccountDataAtNextcloud(array $userData): void {
 		$uid = $userData['mailAddress'];
