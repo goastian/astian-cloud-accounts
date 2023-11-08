@@ -344,7 +344,7 @@ class UserService {
 		return $alias;
 	}
 
-	private function createNewDomainAlias(string $alias, string $resultmail): void {
+	private function createNewDomainAlias(string $alias, string $resultmail): mixed {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['main_domain'];
@@ -377,7 +377,6 @@ class UserService {
 		$user = $this->getUser($uid);
 		$user->setEMailAddress($mailAddress);
 		$user->setQuota($quota);
-		
 		
 		$tos = $this->setTOS($uid, $tosAccepted);
 		if (!$tos) {
