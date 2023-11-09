@@ -303,7 +303,6 @@ class UserService {
 		if (!$ret) {
 			throw new Exception("Error while creating Murena account.");
 		}
-		$this->logger->error('## addNewUserToLDAP: New User added to LDAP successfully.');
 		return $newUserEntry;
 	}
 	
@@ -328,7 +327,6 @@ class UserService {
 	}
 
 	private function createHMEAlias(string $resultmail): string {
-		$this->logger->error('### createHMEAlias called.');
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
 		$token = $this->apiConfig['common_service_token'];
@@ -345,13 +343,10 @@ class UserService {
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
 		$alias = isset($result['emailAlias']) ? $result['emailAlias'] : '';
-		$this->logger->error('### createHMEAlias result: '.json_encode($result));
-		$this->logger->error('### createHMEAlias emailAlias: '.$alias);
 		return $alias;
 	}
 
 	private function createNewDomainAlias(string $mailAddress): mixed {
-		$this->logger->error('### createNewDomainAlias called.');
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
@@ -371,7 +366,6 @@ class UserService {
 		
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
-		$this->logger->error('### createNewDomainAlias result: '.json_encode($result));
 		return $result;
 	}
 	private function setAccountDataAtNextcloud(array $userData): void {
@@ -382,7 +376,7 @@ class UserService {
 		$tosAccepted = $userData['tosAccepted'];
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
-			$this->logger->error('## setAccountDataAtNextcloud: User not found');
+			$this->logger->error('User not found');
 			return;
 		}
 		$mailAddress = $uid;
@@ -391,18 +385,18 @@ class UserService {
 		
 		$tos = $this->setTOS($uid, $tosAccepted);
 		if (!$tos) {
-			$this->logger->error('## Error adding TOS value in config.');
+			$this->logger->error('Error adding TOS value in config.');
 		}
 		if($recoveryEmail != '') {
 			$recoveryEmailUpdated = $this->setRecoveryEmail($uid, $recoveryEmail);
 			if (!$recoveryEmailUpdated) {
-				$this->logger->error('## Error adding recoveryEmail in config.');
+				$this->logger->error('Error adding recoveryEmail in config.');
 			}
 		}
 		if($hmeAlias != '') {
 			$hmeAliasAdded = $this->addHMEAliasInConfig($uid, $hmeAlias);
 			if (!$hmeAliasAdded) {
-				$this->logger->error('## Error adding HME Alias in config.');
+				$this->logger->error('Error adding HME Alias in config.');
 			}
 		}
 	}
