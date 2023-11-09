@@ -82,23 +82,17 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/accounts/create`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status === 200) {
+				if (response.data.success) {
 					this.showRegistrationForm = false
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false
 					this.showSuccessSection = true
-				} else if (response.status === 409) {
-					this.showMessage(this.getLocalizedText(response.data.message), 'error')
 				} else {
-					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+					this.showMessage(this.getLocalizedText(response.data.message), 'error')
 				}
 				this.setAllFieldsBlank()
 			} catch (error) {
-				if (error.response && error.response.status === 409) {
-					this.showMessage(this.getLocalizedText(error.response.data.message), 'error')
-				} else {
-					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
-				}
+				this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
 			}
 		},
 		showMessage(message, type) {
