@@ -346,6 +346,7 @@ class UserService {
 		$result = json_decode($result, true);
 		$alias = isset($result->emailAlias) ? $result->emailAlias : '';
 		$this->logger->error('### createHMEAlias result: '.json_encode($result));
+		$this->logger->error('### createHMEAlias emailAlias: '.$result->emailAlias);
 		return $alias;
 	}
 
