@@ -80,19 +80,15 @@ export default {
 		},
 		async submitForm(data) {
 			const url = generateUrl(`/apps/${this.appName}/accounts/create`)
-			try {
-				const response = await Axios.post(url, data)
-				if (response.data.success) {
-					this.showRegistrationForm = false
-					this.showCaptchaForm = false
-					this.showRecoverEmailForm = false
-					this.showSuccessSection = true
-				} else if (response.status === 409) {
-					this.showMessage(this.getLocalizedText(response.data.message), 'error')
-				}
+			const response = await Axios.post(url, data)
+			if (response.data.success) {
+				this.showRegistrationForm = false
+				this.showCaptchaForm = false
+				this.showRecoverEmailForm = false
+				this.showSuccessSection = true
 				this.setAllFieldsBlank()
-			} catch (error) {
-				this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
+			} else if (response.status === 409) {
+				this.showMessage(this.getLocalizedText(response.data.message), 'error')
 			}
 		},
 		showMessage(message, type) {
