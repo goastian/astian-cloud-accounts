@@ -92,11 +92,7 @@ export default {
 				}
 				this.setAllFieldsBlank()
 			} catch (error) {
-				if (error.response && error.response.status === 409) {
-					this.showMessage(this.getLocalizedText(error.response.data.message), 'error')
-				} else {
-					this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
-				}
+				this.showMessage(this.getLocalizedText('Something went wrong.'), 'error')
 			}
 		},
 		showMessage(message, type) {
