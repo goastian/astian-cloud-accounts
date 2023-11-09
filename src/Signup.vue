@@ -82,7 +82,7 @@ export default {
 			const url = generateUrl(`/apps/${this.appName}/accounts/create`)
 			try {
 				const response = await Axios.post(url, data)
-				if (response.status === 200) {
+				if (response.data.success) {
 					this.showRegistrationForm = false
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false

@@ -55,7 +55,7 @@ class AccountController extends Controller {
 		try {
 			$result = $this->userService->registerUser($displayname, $email, $username, $password, $language);
 			$response->setStatus($result['statusCode']);
-			$response->setData(['message' => $result['message']]);
+			$response->setData(['message' => $result['message'], 'success' => $result['success']]);
 		} catch (Exception $e) {
 			$response->setStatus(500);
 		}
