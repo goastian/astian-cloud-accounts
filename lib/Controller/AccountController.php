@@ -49,11 +49,11 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function create(string $displayname, string $email = '', string $username, string $password, string $language): DataResponse {
+	public function create(string $displayname, string $recoveryEmail = '', string $username, string $password, string $language): DataResponse {
 		$response = new DataResponse();
 
 		try {
-			$result = $this->userService->registerUser($displayname, $email, $username, $password, $language);
+			$result = $this->userService->registerUser($displayname, $recoveryEmail, $username, $password, $language);
 			$response->setStatus($result['statusCode']);
 			$response->setData(['message' => $result['message'], 'success' => $result['success']]);
 		} catch (Exception $e) {

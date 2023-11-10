@@ -92,20 +92,18 @@ class UserService {
 		}
 	}
 
-	public function setRecoveryEmail(string $uid, string $recoveryEmail): bool {
+	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
 		try {
 			$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
-			return true;
-		} catch (UnexpectedValueException $e) {
-			return false;
+		} catch (Exception $e) {
+			throw new Exception("setRecoveryEmail error: " . $e->getMessage());
 		}
 	}
-	public function setTOS(string $uid, bool $tosAccepted): bool {
+	public function setTOS(string $uid, bool $tosAccepted): void {
 		try {
 			$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
-			return true;
-		} catch (UnexpectedValueException $e) {
-			return false;
+		} catch (Exception $e) {
+			throw new Exception("setTOS error: " . $e->getMessage());
 		}
 	}
 
@@ -230,7 +228,7 @@ class UserService {
 		}
 	}
 	
-	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en'): array {
+	public function registerUser(string $displayname, string $recoveryemail, string $username, string $password, string $userlanguage = 'en'): array {
 		$domain = $this->apiConfig['mainDomain'];
 		$newEmailAddress = $username.'@'.$domain;
 
@@ -242,8 +240,8 @@ class UserService {
 				'message' => 'Username is already taken.',
 			];
 		}
-		if($email != '') {
-			$emailExits = $this->checkRecoveryEmailAvailable($email);
+		if($recoveryemail !== '') {
+			$emailExits = $this->checkRecoveryEmailAvailable($recoveryemail);
 			if ($emailExits) {
 				return [
 					'success' => false,
@@ -253,7 +251,7 @@ class UserService {
 			}
 		}
 		
-		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
+		$newUserEntry = $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $password);
 		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
@@ -377,15 +375,9 @@ class UserService {
 		$user->setEMailAddress($mailAddress);
 		$user->setQuota($quota);
 		
-		$tos = $this->setTOS($uid, $tosAccepted);
-		if (!$tos) {
-			$this->logger->error('Error adding TOS value in config.');
-		}
+		$this->setTOS($uid, $tosAccepted);
 		if($recoveryEmail != '') {
-			$recoveryEmailUpdated = $this->setRecoveryEmail($uid, $recoveryEmail);
-			if (!$recoveryEmailUpdated) {
-				$this->logger->error('Error adding recoveryEmail in config.');
-			}
+			$this->setRecoveryEmail($uid, $recoveryEmail);
 		}
 		if($hmeAlias != '') {
 			$hmeAliasAdded = $this->addHMEAliasInConfig($uid, $hmeAlias);
