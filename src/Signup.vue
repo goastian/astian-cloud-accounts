@@ -87,7 +87,7 @@ export default {
 				this.showRecoverEmailForm = false
 				this.showSuccessSection = true
 				this.setAllFieldsBlank()
-			} else if (response.status === 400) {
+			} else {
 				this.showMessage(this.getLocalizedText(response.data.message), 'error')
 			}
 		},
