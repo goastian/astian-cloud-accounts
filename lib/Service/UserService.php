@@ -256,15 +256,13 @@ class UserService {
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers();
-		$this->logger->error('BASE:');
-		$this->logger->error(json_encode($base));
 		$base = $base[0];
 	
 		$newUserDN = "username=$username," . $base;
 	
 		$newUserEntry = [
 			'mailAddress' => $userEmail,
-			'username' => $userEmail,
+			'username' => $username,
 			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
 			'displayName' => $displayname,
@@ -275,9 +273,6 @@ class UserService {
 			'userClusterID' => $this->apiConfig['userCluserId'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
-		
-		$this->logger->error(json_encode($newUserDN));
-		$this->logger->error(json_encode($newUserEntry));
 
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 	
