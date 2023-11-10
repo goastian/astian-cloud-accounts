@@ -164,7 +164,7 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $displayname, string $username, string $language) : void {
+	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language) : void {
 		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -199,7 +199,7 @@ class UserService {
 	private function getSendGridTemplateIDs() : array {
 		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
 	}
-	private function getMainDomain() : string {
+	public function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
 	private function setUserLanguage(string $username, string $language) {
@@ -207,11 +207,11 @@ class UserService {
 	}
 	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $templateID) : \SendGrid\Mail\Mail {
 		$mainDomain = $this->getMainDomain();
-		$username = $username.'@'.$mainDomain;
-		
+		$userEmail = $username.'@'.$mainDomain;
+
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
-		$email->addTo($username, $displayname);
+		$email->addTo($userEmail, $displayname);
 		$email->setTemplateId($templateID);
 		$email->addDynamicTemplateDatas([
 			"username" => $username,
@@ -229,11 +229,9 @@ class UserService {
 		}
 	}
 	
-	public function registerUser(string $displayname, string $recoveryemail, string $username, string $password, string $userlanguage = 'en'): array {
-		$domain = $this->apiConfig['mainDomain'];
-		$newEmailAddress = $username.'@'.$domain;
+	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password, string $userlanguage = 'en'): array {
 
-		$userExists = $this->userExists($username.'@'.$domain);
+		$userExists = $this->userExists($username);
 		if ($userExists) {
 			return [
 				'success' => false,
@@ -252,16 +250,16 @@ class UserService {
 			}
 		}
 		
-		$newUserEntry = $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $password);
+		$newUserEntry = $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $userEmail, $password);
 		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		$newUserEntry['hmeAlias'] = $this->createHMEAlias($newEmailAddress);
+		$newUserEntry['hmeAlias'] = $this->createHMEAlias($userEmail);
 		$newUserEntry['quota'] = strval($newUserEntry['quota']) . ' MB';
 
-		$this->createNewDomainAlias($newEmailAddress);
+		$this->createNewDomainAlias($username, $userEmail);
 		$this->setAccountDataLocally($newUserEntry);
-		$this->setUserLanguage($newEmailAddress, $userlanguage);
+		$this->setUserLanguage($username, $userlanguage);
 		
 		return [
 			'success' => true,
@@ -269,21 +267,20 @@ class UserService {
 			'message' => 'User registered successfully',
 		];
 	}
-	private function addNewUserToLDAP(string $displayname, string  $email, string  $username, string  $password): array {
+	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
-		$domain = $this->apiConfig['mainDomain'];
-		$newUserDN = "username=$username@$domain," . $base;
+		$newUserDN = "username=$username," . $base;
 	
 		$newUserEntry = [
-			'mailAddress' => "$username@$domain",
-			'username' => "$username@$domain",
+			'mailAddress' => $userEmail,
+			'username' => $userEmail,
 			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
 			'displayName' => $displayname,
 			'quota' => $this->LDAPConnectionService->getLdapQuota(),
-			'recoveryMailAddress' => $email,
+			'recoveryMailAddress' => $recoveryEmail,
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
 			'userClusterID' => $this->apiConfig['userCluserId'],
@@ -298,12 +295,12 @@ class UserService {
 		return $newUserEntry;
 	}
 	
-	public function checkRecoveryEmailAvailable(string $email) {
+	public function checkRecoveryEmailAvailable(string $recoveryEmail) {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
 		// Check if the recoveryMailAddress already exists
-		$filter = "(recoveryMailAddress=$email)";
+		$filter = "(recoveryMailAddress=$recoveryEmail)";
 		$searchResult = ldap_search($connection, $base, $filter);
 	
 		if (!$searchResult) {
@@ -338,7 +335,7 @@ class UserService {
 		return $alias;
 	}
 
-	private function createNewDomainAlias(string $mailAddress): mixed {
+	private function createNewDomainAlias(string $username, string $userEmail): mixed {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
@@ -346,10 +343,10 @@ class UserService {
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
 		$endpoint = $commonApiVersion . '/aliases/';
-		$url = $commonApiUrl . $endpoint . $mailAddress;
+		$url = $commonApiUrl . $endpoint . $userEmail;
 
 		$data = array(
-			"alias" => $mailAddress,
+			"alias" => $username,
 			"domain" => $domain
 		);
 		$headers = [
@@ -361,24 +358,28 @@ class UserService {
 		return $result;
 	}
 	private function setAccountDataLocally(array $userData): void {
-		$uid = $userData['mailAddress'];
-		$recoveryEmail = $userData['recoveryMailAddress'];
-		$hmeAlias = $userData['hmeAlias'];
-		$quota = $userData['quota'];
-		$tosAccepted = $userData['tosAccepted'];
+		$uid = $userData['username'];
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error('User not found');
 			return;
 		}
-		$mailAddress = $uid;
-		$user->setEMailAddress($mailAddress);
-		$user->setQuota($quota);
 		
-		$this->setTOS($uid, $tosAccepted);
+		$mailAddress = $userData['mailAddress'];
+		$user->setEMailAddress($mailAddress);
+		
+		$recoveryEmail = $userData['recoveryMailAddress'];
 		if($recoveryEmail != '') {
 			$this->setRecoveryEmail($uid, $recoveryEmail);
 		}
+		
+		$quota = $userData['quota'];
+		$user->setQuota($quota);
+		
+		$tosAccepted = $userData['tosAccepted'];
+		$this->setTOS($uid, $tosAccepted);
+		
+		$hmeAlias = $userData['hmeAlias'];
 		if($hmeAlias != '') {
 			$hmeAliasAdded = $this->addHMEAliasInConfig($uid, $hmeAlias);
 			if (!$hmeAliasAdded) {

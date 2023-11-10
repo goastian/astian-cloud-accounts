@@ -53,10 +53,13 @@ class AccountController extends Controller {
 		$response = new DataResponse();
 
 		try {
-			$result = $this->userService->registerUser($displayname, $recoveryEmail, $username, $password, $language);
+			$mainDomain = $this->userService->getMainDomain();
+			$userEmail = $username.'@'.$mainDomain;
+
+			$result = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
 			$response->setStatus($result['statusCode']);
 			if($result['statusCode'] === 200) {
-				$this->userService->sendWelcomeEmail($displayname, $username, $language);
+				$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			}
 			$response->setData(['message' => $result['message'], 'success' => $result['success']]);
 		} catch (Exception $e) {
