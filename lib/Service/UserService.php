@@ -55,7 +55,7 @@ class UserService {
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
 			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
 			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
-			'objectClass' => ['murenaUser', 'simpleSecurityObject'] 
+			'objectClass' => ['murenaUser', 'simpleSecurityObject']
 		];
 	}
 
