@@ -32,9 +32,10 @@ class UserService {
 	private $curl;
 	private Defaults $defaults;
 	private ILogger $logger;
-	protected $l10nFactory;
+	protected IFactory $l10nFactory;
+	/** @var array */
 	private $apiConfig;
-	private $LDAPConnectionService;
+	private LDAPConnectionService $LDAPConnectionService;
 	public const USER_CLUSER_ID = 'HEL01';
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
