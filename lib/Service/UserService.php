@@ -241,7 +241,7 @@ class UserService {
 			if ($userExists) {
 				return [
 					'success' => false,
-					'statusCode' => 409,
+					'statusCode' => 400,
 					'message' => 'Username is already taken.',
 				];
 			}
@@ -251,7 +251,7 @@ class UserService {
 			if ($emailExits) {
 				return [
 					'success' => false,
-					'statusCode' => 409,
+					'statusCode' => 400,
 					'message' => 'Recovery email address is already taken.',
 				];
 			}

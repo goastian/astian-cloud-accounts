@@ -70,7 +70,7 @@ class AccountController extends Controller {
 		$response = new DataResponse();
 		try {
 			if ($this->userService->userExists($username)) {
-				$response->setStatus(409);
+				$response->setStatus(400);
 				return $response;
 			}
 			$response->setStatus(200);
