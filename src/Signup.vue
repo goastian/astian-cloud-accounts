@@ -72,7 +72,7 @@ export default {
 					displayname: this.formData.displayname,
 					username: this.formData.username,
 					password: this.formData.password,
-					recoveryemail: this.formData.email,
+					recoveryEmail: this.formData.email,
 					language: this.formData.selectedLanguage,
 				}
 				this.submitForm(data)
