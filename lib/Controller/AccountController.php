@@ -57,11 +57,11 @@ class AccountController extends Controller {
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
 
-			$result = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
+			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
 			$response->setStatus(200);
-			$response->setData(['message' => $result['message'], 'success' => $result['success']]);
+			$response->setData(['success' => true]);
 
 		} catch (Exception $e) {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
