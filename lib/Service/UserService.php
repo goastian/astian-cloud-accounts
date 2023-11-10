@@ -244,13 +244,14 @@ class UserService {
 		
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $userEmail, $password);
 		
+		$this->createHMEAlias($username, $userEmail);
+		$this->createNewDomainAlias($username, $userEmail);
+		
 		$newUserEntry['userlanguage'] = $userlanguage;
 		$newUserEntry['tosAccepted'] = true;
-		$newUserEntry['hmeAlias'] = $this->createHMEAlias($userEmail);
 		$newUserEntry['quota'] = strval($newUserEntry['quota']) . ' MB';
-
-		$this->createNewDomainAlias($username, $userEmail);
 		$this->setAccountDataLocally($newUserEntry);
+
 		$this->setUserLanguage($username, $userlanguage);
 	}
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
@@ -301,7 +302,7 @@ class UserService {
 
 	}
 
-	private function createHMEAlias(string $resultmail): string {
+	private function createHMEAlias(string $username, string $resultmail): void {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
 		$token = $this->apiConfig['common_service_token'];
@@ -317,8 +318,14 @@ class UserService {
 		];
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
-		$alias = isset($result['emailAlias']) ? $result['emailAlias'] : '';
-		return $alias;
+
+		$hmeAlias = isset($result['emailAlias']) ? $result['emailAlias'] : '';
+		if($hmeAlias != '') {
+			$hmeAliasAdded = $this->addHMEAliasInConfig($username, $hmeAlias);
+			if (!$hmeAliasAdded) {
+				$this->logger->error('Error adding HME Alias in config.');
+			}
+		}
 	}
 
 	private function createNewDomainAlias(string $username, string $userEmail): mixed {
@@ -355,7 +362,7 @@ class UserService {
 		$user->setEMailAddress($mailAddress);
 		
 		$recoveryEmail = $userData['recoveryMailAddress'];
-		if($recoveryEmail != '') {
+		if($recoveryEmail !== '') {
 			$this->setRecoveryEmail($uid, $recoveryEmail);
 		}
 		
@@ -365,12 +372,5 @@ class UserService {
 		$tosAccepted = $userData['tosAccepted'];
 		$this->setTOS($uid, $tosAccepted);
 		
-		$hmeAlias = $userData['hmeAlias'];
-		if($hmeAlias != '') {
-			$hmeAliasAdded = $this->addHMEAliasInConfig($uid, $hmeAlias);
-			if (!$hmeAliasAdded) {
-				$this->logger->error('Error adding HME Alias in config.');
-			}
-		}
 	}
 }
