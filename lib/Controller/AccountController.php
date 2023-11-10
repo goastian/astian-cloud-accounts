@@ -6,6 +6,7 @@
 
 namespace OCA\EcloudAccounts\Controller;
 
+use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
@@ -57,12 +58,13 @@ class AccountController extends Controller {
 			$userEmail = $username.'@'.$mainDomain;
 
 			$result = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
-			$response->setStatus($result['statusCode']);
-			if($result['statusCode'] === 200) {
-				$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
-			}
+			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
+			
+			$response->setStatus(200);
 			$response->setData(['message' => $result['message'], 'success' => $result['success']]);
+
 		} catch (Exception $e) {
+			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
 		return $response;
@@ -74,14 +76,10 @@ class AccountController extends Controller {
 	 */
 	public function checkUsernameAvailable(string $username) {
 		$response = new DataResponse();
-		try {
-			if ($this->userService->userExists($username)) {
-				$response->setStatus(400);
-				return $response;
-			}
+		if (!$this->userService->userExists($username)) {
 			$response->setStatus(200);
-		} catch (Exception $e) {
-			$response->setStatus(500);
+		} else {
+			$response->setStatus(400);
 		}
 		return $response;
 	}

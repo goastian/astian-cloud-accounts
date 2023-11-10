@@ -229,24 +229,16 @@ class UserService {
 		}
 	}
 	
-	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password, string $userlanguage = 'en'): array {
+	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password, string $userlanguage = 'en'): void {
 
 		$userExists = $this->userExists($username);
 		if ($userExists) {
-			return [
-				'success' => false,
-				'statusCode' => 400,
-				'message' => 'Username is already taken.',
-			];
+			throw new Exception("Username is already taken.");
 		}
 		if($recoveryemail !== '') {
 			$emailExists = $this->checkRecoveryEmailAvailable($recoveryemail);
 			if ($emailExists) {
-				return [
-					'success' => false,
-					'statusCode' => 400,
-					'message' => 'Recovery email address is already taken.',
-				];
+				throw new Exception("Recovery email address is already taken.");
 			}
 		}
 		
@@ -260,12 +252,6 @@ class UserService {
 		$this->createNewDomainAlias($username, $userEmail);
 		$this->setAccountDataLocally($newUserEntry);
 		$this->setUserLanguage($username, $userlanguage);
-		
-		return [
-			'success' => true,
-			'statusCode' => 200,
-			'message' => 'User registered successfully',
-		];
 	}
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
