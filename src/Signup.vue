@@ -79,16 +79,23 @@ export default {
 			}
 		},
 		async submitForm(data) {
-			const url = generateUrl(`/apps/${this.appName}/accounts/create`)
-			const response = await Axios.post(url, data)
-			if (response.data.success) {
-				this.showRegistrationForm = false
-				this.showCaptchaForm = false
-				this.showRecoverEmailForm = false
-				this.showSuccessSection = true
-				this.setAllFieldsBlank()
-			} else {
-				this.showMessage(this.getLocalizedText(response.data.message), 'error')
+			try {
+				const url = generateUrl(`/apps/${this.appName}/accounts/create`)
+				const response = await Axios.post(url, data)
+				if (response.data.success) {
+					this.showRegistrationForm = false
+					this.showCaptchaForm = false
+					this.showRecoverEmailForm = false
+					this.showSuccessSection = true
+					this.setAllFieldsBlank()
+				} else {
+					this.showMessage(this.getLocalizedText(response.data.message), 'error')
+				}
+			} catch (error) {
+				// Handle the error here
+				console.error('An error occurred during form submission:', error)
+				// You can also display an error message to the user if needed
+				this.showMessage('An error occurred during form submission. Please try again.', 'error')
 			}
 		},
 		showMessage(message, type) {
