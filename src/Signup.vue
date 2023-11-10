@@ -93,9 +93,9 @@ export default {
 				}
 			} catch (error) {
 				// Handle the error here
-				console.error('An error occurred during form submission:', error)
+				console.error('An error occurred during form submission:', error.response.data.message)
 				// You can also display an error message to the user if needed
-				this.showMessage('An error occurred during form submission. Please try again.', 'error')
+				this.showMessage(error.response.data.message, 'error')
 			}
 		},
 		showMessage(message, type) {
