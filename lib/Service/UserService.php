@@ -22,21 +22,22 @@ use UnexpectedValueException;
 class UserService {
 	/** @var IUserManager */
 	private $userManager;
-
 	/** @var array */
 	private $appConfig;
-
 	/** @var IConfig */
 	private $config;
-
+	/** @var CurlService */
 	private $curl;
-	private Defaults $defaults;
-	private ILogger $logger;
-	protected IFactory $l10nFactory;
+	/** @var Defaults */
+	private $defaults;
+	/** @var ILogger */
+	private $logger;
+	/** @var IFactory */
+	protected $l10nFactory;
 	/** @var array */
 	private $apiConfig;
-	private LDAPConnectionService $LDAPConnectionService;
-	public const USER_CLUSER_ID = 'HEL01';
+	/** @var LDAPConnectionService */
+	private $LDAPConnectionService;
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
@@ -52,10 +53,9 @@ class UserService {
 			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
 			'common_service_token' => $this->config->getSystemValue('common_service_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
-			'commonApiVersion' => 'v2',
-			'postfixHostname' => "postfixadmin",
-			'postfixUser' => "pfexec",
-			'postfixadminSSHPassword' => 'wpzfLPEPV5xWDmEijI0b'
+			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
+			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
+			'objectClass' => ['murenaUser', 'simpleSecurityObject'] 
 		];
 	}
 
@@ -295,8 +295,8 @@ class UserService {
 			'recoveryMailAddress' => $email,
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
-			'userClusterID' => self::USER_CLUSER_ID,
-			'objectClass' => ['murenaUser', 'simpleSecurityObject']
+			'userClusterID' => $this->apiConfig['userCluserId'],
+			'objectClass' => $this->apiConfig['objectClass']
 		];
 	
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
