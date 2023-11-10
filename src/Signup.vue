@@ -87,7 +87,6 @@ export default {
 					this.showCaptchaForm = false
 					this.showRecoverEmailForm = false
 					this.showSuccessSection = true
-					this.setAllFieldsBlank()
 				} else {
 					this.showMessage(this.getLocalizedText(response.data.message), 'error')
 				}
