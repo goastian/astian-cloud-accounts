@@ -272,7 +272,10 @@ class UserService {
 			'userClusterID' => $this->apiConfig['userCluserId'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
-	
+		
+		$this->logger->error(json_encode($newUserDN));
+		$this->logger->error(json_encode($newUserEntry));
+
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 	
 		if (!$ret) {
