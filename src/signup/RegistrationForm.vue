@@ -275,7 +275,7 @@ export default {
 
 		async checkUsername() {
 			const data = {
-				username: this.formData.username,
+				username: this.formData.username + '@' + this.domain,
 			}
 			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
 			try {

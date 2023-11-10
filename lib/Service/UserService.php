@@ -72,11 +72,6 @@ class UserService {
 		if ($exists) {
 			return $exists;
 		}
-		$domain = $this->apiConfig['mainDomain'];
-		$exists = $this->userManager->userExists($uid.'@'.$domain);
-		if ($exists) {
-			return $exists;
-		}
 
 		$backends = $this->userManager->getBackends();
 		foreach ($backends as $backend) {
@@ -236,16 +231,16 @@ class UserService {
 	}
 	
 	public function registerUser(string $displayname, string $email, string $username, string $password, string $userlanguage = 'en'): array {
-	
-		if($username != '') {
-			$userExists = $this->userExists($username);
-			if ($userExists) {
-				return [
-					'success' => false,
-					'statusCode' => 400,
-					'message' => 'Username is already taken.',
-				];
-			}
+		$domain = $this->apiConfig['mainDomain'];
+		$newEmailAddress = $username.'@'.$domain;
+
+		$userExists = $this->userExists($username.'@'.$domain);
+		if ($userExists) {
+			return [
+				'success' => false,
+				'statusCode' => 400,
+				'message' => 'Username is already taken.',
+			];
 		}
 		if($email != '') {
 			$emailExits = $this->checkRecoveryEmailAvailable($email);
@@ -257,8 +252,6 @@ class UserService {
 				];
 			}
 		}
-		$domain = $this->apiConfig['mainDomain'];
-		$newEmailAddress = $username.'@'.$domain;
 		
 		$newUserEntry = $this->addNewUserToLDAP($displayname, $email, $username, $password);
 		
