@@ -255,8 +255,7 @@ class UserService {
 	}
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		$base = $this->LDAPConnectionService->getLDAPBaseUsers();
-		$base = $base[0];
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	
 		$newUserDN = "username=$username," . $base;
 	
