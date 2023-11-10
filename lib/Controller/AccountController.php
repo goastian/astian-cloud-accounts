@@ -55,6 +55,9 @@ class AccountController extends Controller {
 		try {
 			$result = $this->userService->registerUser($displayname, $recoveryEmail, $username, $password, $language);
 			$response->setStatus($result['statusCode']);
+			if($result['statusCode'] === 200) {
+				$this->userService->sendWelcomeEmail($displayname, $username, $language);
+			}
 			$response->setData(['message' => $result['message'], 'success' => $result['success']]);
 		} catch (Exception $e) {
 			$response->setStatus(500);

@@ -164,7 +164,7 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $displayname, string $uid, string $language) : void {
+	public function sendWelcomeEmail(string $displayname, string $username, string $language) : void {
 		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -186,13 +186,11 @@ class UserService {
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
 		
-		$mainDomain = $this->getMainDomain();
-		$toEmail = $uid;
 		try {
-			$email = $this->createSendGridEmail($fromEmail, $fromName, $uid, $displayname, $templateID, $uid, $mainDomain);
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			$this->logger->error('Error sending email to: ' . $toEmail . ': ' . $e->getMessage());
+			$this->logger->error('Error sending username: ' . $username . ': ' . $e->getMessage());
 		}
 	}
 	private function getSendGridAPIKey() : string {
@@ -207,15 +205,18 @@ class UserService {
 	private function setUserLanguage(string $username, string $language) {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
-	private function createSendGridEmail(string $fromEmail, string  $fromName, string $toEmail, string  $toName, string  $templateID, string  $username, string  $mainDomain) : \SendGrid\Mail\Mail {
+	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $templateID) : \SendGrid\Mail\Mail {
+		$mainDomain = $this->getMainDomain();
+		$username = $username.'@'.$mainDomain;
+		
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);
-		$email->addTo($toEmail, $toName);
+		$email->addTo($username, $displayname);
 		$email->setTemplateId($templateID);
 		$email->addDynamicTemplateDatas([
 			"username" => $username,
 			"mail_domain" => $mainDomain,
-			"display_name" => $toName
+			"display_name" => $displayname
 		]);
 		return $email;
 	}
@@ -241,8 +242,8 @@ class UserService {
 			];
 		}
 		if($recoveryemail !== '') {
-			$emailExits = $this->checkRecoveryEmailAvailable($recoveryemail);
-			if ($emailExits) {
+			$emailExists = $this->checkRecoveryEmailAvailable($recoveryemail);
+			if ($emailExists) {
 				return [
 					'success' => false,
 					'statusCode' => 400,
@@ -259,8 +260,7 @@ class UserService {
 		$newUserEntry['quota'] = strval($newUserEntry['quota']) . ' MB';
 
 		$this->createNewDomainAlias($newEmailAddress);
-		$this->setAccountDataAtNextcloud($newUserEntry);
-		$this->sendWelcomeEmail($displayname, $newEmailAddress, $userlanguage);
+		$this->setAccountDataLocally($newUserEntry);
 		$this->setUserLanguage($newEmailAddress, $userlanguage);
 		
 		return [
@@ -360,7 +360,7 @@ class UserService {
 		$result = json_decode($result, true);
 		return $result;
 	}
-	private function setAccountDataAtNextcloud(array $userData): void {
+	private function setAccountDataLocally(array $userData): void {
 		$uid = $userData['mailAddress'];
 		$recoveryEmail = $userData['recoveryMailAddress'];
 		$hmeAlias = $userData['hmeAlias'];
