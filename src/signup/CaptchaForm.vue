@@ -101,12 +101,6 @@ export default {
 		this.createCaptcha()
 	},
 	methods: {
-		validateForm() {
-			this.isHumanverificationEmpty = this.formData.humanverification === ''
-			if (!this.isHumanverificationEmpty) {
-				this.checkAnswer()
-			}
-		},
 		async createCaptcha() {
 			try {
 				const url = generateUrl(`/apps/${this.appName}/accounts/captcha`)
@@ -154,11 +148,13 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		submitCaptchaForm() {
-			this.validateForm()
-			const isFormValid = Object.values(this.validation).every(value => !value)
-			console.error('isFormValid while checking captcha:', isFormValid)
-			if (isFormValid && this.validation.isHumanverificationNotMatched) {
-				this.$emit('form-submitted', { isFormValid })
+			this.isHumanverificationEmpty = this.formData.humanverification === ''
+			if (!this.isHumanverificationEmpty) {
+				this.checkAnswer()
+				const isFormValid = this.validation.isHumanverificationNotMatched
+				if (isFormValid) {
+					this.$emit('form-submitted', { isFormValid })
+				}
 			}
 		},
 		getLocalizedText(text) {
