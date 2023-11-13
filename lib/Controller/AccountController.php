@@ -57,19 +57,24 @@ class AccountController extends Controller {
 	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = ''): DataResponse {
 		$response = new DataResponse();
 
-		if ($displayname === '' || $username === '' || $password === '' || $language === '') {
-			$response->setData(['message' => 'Some fields are missing.', 'success' => false]);
-			$response->setStatus(500);
-			return $response;
+		$inputData = [
+			'username' => ['value' => $username, 'maxLength' => 30],
+			'displayname' => ['value' => $displayname, 'maxLength' => 30],
+			'password' => ['value' => $password, 'maxLength' => 1024],
+		];
+		
+		foreach ($inputData as $inputName => $inputInfo) {
+			$validationError = $this->validateInput($inputName, $inputInfo['value'], $inputInfo['maxLength']);
+			if ($validationError !== null) {
+				$response->setData(['message' => $validationError, 'success' => false]);
+				$response->setStatus(400);
+				return $response;
+			}
 		}
-		if (strlen($username) > 30 || strlen($displayname) > 30 || strlen($password) > 1024) {
-			$response->setData(['message' => 'Input too large.', 'success' => false]);
-			$response->setStatus(500);
-			return $response;
-		}
+		
 		if(!$this->session->set('captcha_verified')) {
 			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
-			$response->setStatus(500);
+			$response->setStatus(400);
 			return $response;
 		}
 		
@@ -88,6 +93,18 @@ class AccountController extends Controller {
 			$response->setStatus(500);
 		}
 		return $response;
+	}
+
+	public function validateInput($inputName, $value, $maxLength = null) {
+		if ($value === '') {
+			return "$inputName is missing.";
+		}
+	
+		if ($maxLength !== null && strlen($value) > $maxLength) {
+			return "$inputName is too large.";
+		}
+	
+		return null; // Validation passed
 	}
 	/**
 	 * @NoAdminRequired
@@ -140,12 +157,11 @@ class AccountController extends Controller {
 			$response->setStatus(400);
 			return $response;
 		}
-
+		$this->session->set('captcha_verified', false);
+		$response->setStatus(400);
 		if (!$this->userService->checkAnswer($num1, $num2, $operator, $humanverification)) {
 			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
-		} else {
-			$response->setStatus(400);
 		}
 		return $response;
 	}
