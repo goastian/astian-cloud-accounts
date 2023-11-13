@@ -282,7 +282,7 @@ class UserService {
 		return $newUserEntry;
 	}
 	
-	public function checkRecoveryEmailAvailable(string $recoveryEmail) {
+	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 	

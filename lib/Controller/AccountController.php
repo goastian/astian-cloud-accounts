@@ -50,9 +50,20 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function create(string $displayname, string $recoveryEmail = '', string $username, string $password, string $language): DataResponse {
+	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = ''): DataResponse {
 		$response = new DataResponse();
 
+		if ($displayname === '' || $username === '' || $password === '' || $language === '') {
+			$response->setData(['message' => 'Some fields are missing.', 'success' => false]);
+			$response->setStatus(500);
+			return $response;
+		}
+		if (strlen($username) > 30 || strlen($displayname) > 30 || strlen($password) > 1024 ) {
+			$response->setData(['message' => 'Input too large.', 'success' => false]);
+			$response->setStatus(500);
+			return $response;
+		}
+		
 		try {
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;

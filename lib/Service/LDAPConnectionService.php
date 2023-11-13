@@ -17,7 +17,6 @@ class LDAPConnectionService {
 	private $ldapEnabled;
 	private $access;
 	private $ldapConfig;
-	private int $quotaInBytes = 1000;
 	private IConfig $config;
 
 	public function __construct(IUserManager $userManager, Helper $ldapBackendHelper, IConfig $config) {
@@ -103,12 +102,6 @@ class LDAPConnectionService {
 		return $this->ldapConfig->ldapUserDisplayName;
 	}
 	public function getLdapQuota() {
-		$quota = $this->config->getSystemValue('default_quota', '');
-		if ($quota) {
-			return intval($quota);
-		} else {
-			return $this->quotaInBytes;
-		}
-		
+		return $this->config->getSystemValue('default_quota', '1000');
 	}
 }
