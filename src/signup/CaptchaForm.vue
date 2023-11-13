@@ -137,6 +137,7 @@ export default {
 					console.error('isHumanverificationNotMatched:', this.validation.isHumanverificationNotMatched)
 				}
 			} catch (error) {
+				this.validation.isHumanverificationNotMatched = true
 				console.error('An error occurred while checking captcha:', error)
 				this.showMessage('An error occurred while checking captcha.', 'error')
 			}
