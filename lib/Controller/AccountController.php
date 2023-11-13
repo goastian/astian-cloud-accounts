@@ -72,7 +72,7 @@ class AccountController extends Controller {
 			}
 		}
 		
-		if(!$this->session->set('captcha_verified')) {
+		if(!$this->session->get('captcha_verified')) {
 			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
