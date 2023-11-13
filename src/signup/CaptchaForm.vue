@@ -138,6 +138,7 @@ export default {
 				console.error('response.status:', response.status)
 				if (response.status !== 200) {
 					this.validation.isHumanverificationNotMatched = true
+					console.error('isHumanverificationNotMatched:', this.validation.isHumanverificationNotMatched)
 				}
 			} catch (error) {
 				console.error('An error occurred while checking captcha:', error)
