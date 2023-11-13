@@ -145,7 +145,6 @@ export default {
 				console.error('An error occurred while checking captcha:', error)
 				this.showMessage('An error occurred while checking captcha.', 'error')
 			}
-
 		},
 		getFontSize() {
 			const fontVariations = [14, 16, 18, 20]
@@ -158,7 +157,7 @@ export default {
 		submitCaptchaForm() {
 			this.validateForm(['humanverification'])
 			const isFormValid = Object.values(this.validation).every(value => !value)
-			if (isFormValid) {
+			if (isFormValid && this.validation.isHumanverificationNotMatched) {
 				this.$emit('form-submitted', { isFormValid })
 			}
 		},
