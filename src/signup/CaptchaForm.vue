@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import Axios from '@nextcloud/axios'
+import { generateUrl } from '@nextcloud/router'
 const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
@@ -107,41 +109,43 @@ export default {
 				this.checkAnswer()
 			}
 		},
-		createCaptcha() {
-			this.num1 = this.getRandomCharacter()
-			this.num2 = this.getRandomCharacter()
-			const operators = this.operators
-			this.operator = operators[Math.floor(Math.random() * operators.length)]
-			this.captcha.push(this.num1)
-			this.captcha.push(this.operator)
-			this.captcha.push(this.num2)
-		},
-		getRandomCharacter() {
-			const numbers = '123456789'
-			const randomNumber = Math.floor(Math.random() * numbers.length)
-			return numbers.charAt(randomNumber)
-		},
-		calculateResult() {
-			const num1 = parseFloat(this.num1)
-			const num2 = parseFloat(this.num2)
+		async createCaptcha() {
+			try {
+				const url = generateUrl(`/apps/${this.appName}/accounts/captcha`)
+				const response = await Axios.get(url)
+				if (response.status === 200) {
+					this.num1 = response.data.num1
+					this.num2 = response.data.num2
+					this.operator = response.data.operator
+					this.captcha.push(this.num1)
+					this.captcha.push(this.operator)
+					this.captcha.push(this.num2)
+				} else {
+					this.showMessage('An error occurred while creating captcha.', 'error')
+				}
+			} catch (error) {
+				console.error('An error occurred while creating captcha:', error)
+				this.showMessage('An error occurred while creating captcha.', 'error')
+			}
 
-			switch (this.operator) {
-			case '+':
-				return num1 + num2
-			case '-':
-				return num1 - num2
-			default:
-				return NaN
-			}
 		},
-		checkAnswer() {
-			const result = this.calculateResult()
-			this.captchaResult = parseInt(result, 10)
-			if (parseInt(this.formData.humanverification, 10) !== this.captchaResult) {
-				this.validation.isHumanverificationNotMatched = true
-			} else {
-				this.validation.isHumanverificationNotMatched = false
+		async checkAnswer() {
+			try {
+				const data = {
+					humanverification: this.formData.humanverification,
+				}
+				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
+				const response = await Axios.post(url, data)
+				if (response.status === 200) {
+					this.validation.isHumanverificationNotMatched = true
+				} else {
+					this.validation.isHumanverificationNotMatched = false
+				}
+			} catch (error) {
+				console.error('An error occurred while checking captcha:', error)
+				this.showMessage('An error occurred while checking captcha.', 'error')
 			}
+
 		},
 		getFontSize() {
 			const fontVariations = [14, 16, 18, 20]

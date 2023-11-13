@@ -371,6 +371,41 @@ class UserService {
 		
 		$tosAccepted = $userData['tosAccepted'];
 		$this->setTOS($uid, $tosAccepted);
-		
+	}
+
+	public function getRandomCharacter(): string {
+		$numbers = '123456789';
+		$randomNumber = rand(0, strlen($numbers) - 1);
+		return $numbers[$randomNumber];
+	}
+	public function getOperator(): string {
+		$operator = '+-';
+		$operatorNumber = rand(0, strlen($operator) - 1);
+		return $operator[$operatorNumber];
+	}
+	
+	public function calculateResult($num1, $num2, $operator): mixed {
+		$num1 = floatval($num1);
+		$num2 = floatval($num2);
+	
+		switch ($operator) {
+			case '+':
+				return $num1 + $num2;
+			case '-':
+				return $num1 - $num2;
+			default:
+				return null;
+		}
+	}
+	
+	public function checkAnswer($num1, $num2, $operator, $humanverificationCode): bool {
+		$result = $this->calculateResult($num1, $num2, $operator);
+		$captchaResult = intval($result, 10);
+	
+		if (intval($humanverificationCode, 10) !== $captchaResult) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
