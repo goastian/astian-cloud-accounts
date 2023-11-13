@@ -187,7 +187,7 @@ class UserService {
 		$fromName = $this->defaults->getName();
 		
 		try {
-			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $templateID);
+			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
 			$this->logger->error('Error sending username: ' . $username . ': ' . $e->getMessage());
@@ -205,9 +205,8 @@ class UserService {
 	private function setUserLanguage(string $username, string $language) {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
-	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $templateID) : \SendGrid\Mail\Mail {
+	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID) : \SendGrid\Mail\Mail {
 		$mainDomain = $this->getMainDomain();
-		$userEmail = $username.'@'.$mainDomain;
 
 		$email = new \SendGrid\Mail\Mail();
 		$email->setFrom($fromEmail, $fromName);

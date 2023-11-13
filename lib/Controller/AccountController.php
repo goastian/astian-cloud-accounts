@@ -95,7 +95,7 @@ class AccountController extends Controller {
 		return $response;
 	}
 
-	public function validateInput($inputName, $value, $maxLength = null) {
+	public function validateInput($inputName, $value, $maxLength = null) : mixed {
 		if ($value === '') {
 			return "$inputName is missing.";
 		}
@@ -147,18 +147,19 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function verifyCaptcha(string $humanverification = '') : DataResponse {
-		$response = new DataResponse();
+		
+		$this->session->set('captcha_verified', false);
 		
 		$operand1 = $this->session->get('operand1');
 		$operand2 = $this->session->get('operand2');
 		$operator = $this->session->get('operator');
-
+		
+		$response = new DataResponse();
+		$response->setStatus(400);
 		if (!$humanverification || !$operand1 || !$operand2 || !$operator) {
-			$response->setStatus(400);
 			return $response;
 		}
-		$this->session->set('captcha_verified', false);
-		$response->setStatus(400);
+		
 		if (!$this->userService->checkAnswer($operand1, $operand2, $operator, $humanverification)) {
 			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
