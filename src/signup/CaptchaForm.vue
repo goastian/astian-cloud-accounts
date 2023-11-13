@@ -132,14 +132,14 @@ export default {
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				const response = await Axios.post(url, data)
 				console.error('response.status:', response.status)
-				if (response.status !== 200) {
+				if (response.status === 200) {
+					const isFormValid = true
+					this.$emit('form-submitted', { isFormValid })
+				} else {
 					this.validation.isHumanverificationNotMatched = true
-					console.error('isHumanverificationNotMatched:', this.validation.isHumanverificationNotMatched)
 				}
 			} catch (error) {
 				this.validation.isHumanverificationNotMatched = true
-				console.error('An error occurred while checking captcha:', error)
-				this.showMessage('An error occurred while checking captcha.', 'error')
 			}
 		},
 		getFontSize() {
@@ -155,12 +155,6 @@ export default {
 			if (!this.validation.isHumanverificationEmpty) {
 				console.error('isHumanverificationEmpty:', this.validation.isHumanverificationEmpty)
 				this.checkAnswer()
-				const isFormValid = this.validation.isHumanverificationNotMatched
-				console.error('out isFormValid:', isFormValid)
-				if (isFormValid) {
-					console.error('isFormValid:', isFormValid)
-					this.$emit('form-submitted', { isFormValid })
-				}
 			}
 		},
 		getLocalizedText(text) {
