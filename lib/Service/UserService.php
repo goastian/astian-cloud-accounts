@@ -384,22 +384,22 @@ class UserService {
 		return $operator[$operatorNumber];
 	}
 	
-	public function calculateResult($num1, $num2, $operator): mixed {
-		$num1 = floatval($num1);
-		$num2 = floatval($num2);
+	public function calculateResult($operand1, $operand2, $operator): mixed {
+		$operand1 = floatval($operand1);
+		$operand2 = floatval($operand2);
 	
 		switch ($operator) {
 			case '+':
-				return $num1 + $num2;
+				return $operand1 + $operand2;
 			case '-':
-				return $num1 - $num2;
+				return $operand1 - $operand2;
 			default:
 				return null;
 		}
 	}
 	
-	public function checkAnswer($num1, $num2, $operator, $humanverificationCode): bool {
-		$result = $this->calculateResult($num1, $num2, $operator);
+	public function checkAnswer($operand1, $operand2, $operator, $humanverificationCode): bool {
+		$result = $this->calculateResult($operand1, $operand2, $operator);
 		$captchaResult = intval($result, 10);
 	
 		if (intval($humanverificationCode, 10) !== $captchaResult) {

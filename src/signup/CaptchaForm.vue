@@ -82,8 +82,8 @@ export default {
 				isHumanverificationNotMatched: false,
 			},
 			captcha: [],
-			num1: '',
-			num2: '',
+			operand1: '',
+			operand2: '',
 			operator: '',
 			captchaResult: '',
 			operators: ['+', '-'],
@@ -108,12 +108,12 @@ export default {
 				const url = generateUrl(`/apps/${this.appName}/accounts/captcha`)
 				const response = await Axios.get(url)
 				if (response.status === 200) {
-					this.num1 = response.data.num1
-					this.num2 = response.data.num2
+					this.operand1 = response.data.operand1
+					this.operand2 = response.data.operand2
 					this.operator = response.data.operator
-					this.captcha.push(this.num1)
+					this.captcha.push(this.operand1)
 					this.captcha.push(this.operator)
-					this.captcha.push(this.num2)
+					this.captcha.push(this.operand2)
 				} else {
 					this.showMessage('An error occurred while creating captcha.', 'error')
 				}

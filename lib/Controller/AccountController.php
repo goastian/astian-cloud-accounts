@@ -128,16 +128,16 @@ class AccountController extends Controller {
 	 */
 	public function captcha() : DataResponse {
 		$response = new DataResponse();
-		$num1 = $this->userService->getRandomCharacter();
-		$num2 = $this->userService->getRandomCharacter();
+		$operand1 = $this->userService->getRandomCharacter();
+		$operand2 = $this->userService->getRandomCharacter();
 		$operator = $this->userService->getOperator();
 		
-		$this->session->set('num1', $num1);
-		$this->session->set('num2', $num2);
+		$this->session->set('operand1', $operand1);
+		$this->session->set('operand2', $operand2);
 		$this->session->set('operator', $operator);
 		$this->session->set('captcha_verified', false);
 
-		$response->setData(['num1' => $num1, 'num2' => $num2, 'operator' => $operator]);
+		$response->setData(['operand1' => $operand1, 'operand2' => $operand2, 'operator' => $operator]);
 		$response->setStatus(200);
 		return $response;
 	}
@@ -149,17 +149,17 @@ class AccountController extends Controller {
 	public function verifyCaptcha(string $humanverification = '') : DataResponse {
 		$response = new DataResponse();
 		
-		$num1 = $this->session->get('num1');
-		$num2 = $this->session->get('num2');
+		$operand1 = $this->session->get('operand1');
+		$operand2 = $this->session->get('operand2');
 		$operator = $this->session->get('operator');
 
-		if (!$humanverification || !$num1 || !$num2 || !$operator) {
+		if (!$humanverification || !$operand1 || !$operand2 || !$operator) {
 			$response->setStatus(400);
 			return $response;
 		}
 		$this->session->set('captcha_verified', false);
 		$response->setStatus(400);
-		if (!$this->userService->checkAnswer($num1, $num2, $operator, $humanverification)) {
+		if (!$this->userService->checkAnswer($operand1, $operand2, $operator, $humanverification)) {
 			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
 		}
