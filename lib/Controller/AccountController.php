@@ -67,6 +67,11 @@ class AccountController extends Controller {
 			$response->setStatus(500);
 			return $response;
 		}
+		if(!$this->session->set('captcha_verified')) {
+			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
+			$response->setStatus(500);
+			return $response;
+		}
 		
 		try {
 			$mainDomain = $this->userService->getMainDomain();
@@ -113,6 +118,7 @@ class AccountController extends Controller {
 		$this->session->set('num1', $num1);
 		$this->session->set('num2', $num2);
 		$this->session->set('operator', $operator);
+		$this->session->set('captcha_verified', false);
 
 		$response->setData(['num1' => $num1, 'num2' => $num2, 'operator' => $operator]);
 		$response->setStatus(200);
@@ -136,6 +142,7 @@ class AccountController extends Controller {
 		}
 
 		if (!$this->userService->checkAnswer($num1, $num2, $operator, $humanverification)) {
+			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
 		} else {
 			$response->setStatus(400);
