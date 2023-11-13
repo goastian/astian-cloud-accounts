@@ -67,6 +67,8 @@
 <script>
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import { showSuccess, showError } from '@nextcloud/dialogs'
+
 const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
@@ -162,6 +164,9 @@ export default {
 		},
 		getLocalizedText(text) {
 			return t(this.appName, text)
+		},
+		showMessage(message, type) {
+			type === 'success' ? showSuccess(message) : showError(message)
 		},
 	},
 }
