@@ -13,8 +13,8 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
-use OCP\L10N\IFactory;
 use OCP\ISession;
+use OCP\L10N\IFactory;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -89,7 +89,7 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function checkUsernameAvailable(string $username) : DataResponse{
+	public function checkUsernameAvailable(string $username) : DataResponse {
 		$response = new DataResponse();
 		if (!$this->userService->userExists($username)) {
 			$response->setStatus(200);
@@ -104,15 +104,15 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function captcha() : DataResponse{
+	public function captcha() : DataResponse {
 		$response = new DataResponse();
 		$num1 = $this->userService->getRandomCharacter();
 		$num2 = $this->userService->getRandomCharacter();
 		$operator = $this->userService->getOperator();
 		
-		$this->session->set('num1',$num1);
-		$this->session->set('num2',$num2);
-		$this->session->set('operator',$operator);
+		$this->session->set('num1', $num1);
+		$this->session->set('num2', $num2);
+		$this->session->set('operator', $operator);
 
 		$response->setData(['num1' => $num1, 'num2' => $num2, 'operator' => $operator]);
 		$response->setStatus(200);
@@ -123,7 +123,7 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function verifyCaptcha(string $humanverification = '') : DataResponse{
+	public function verifyCaptcha(string $humanverification = '') : DataResponse {
 		$response = new DataResponse();
 		
 		$num1 = $this->session->get('num1');
