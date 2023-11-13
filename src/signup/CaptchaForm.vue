@@ -118,7 +118,6 @@ export default {
 					this.showMessage('An error occurred while creating captcha.', 'error')
 				}
 			} catch (error) {
-				console.error('An error occurred while creating captcha:', error)
 				this.showMessage('An error occurred while creating captcha.', 'error')
 			}
 
@@ -131,7 +130,6 @@ export default {
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				const response = await Axios.post(url, data)
-				console.error('response.status:', response.status)
 				if (response.status === 200) {
 					const isFormValid = true
 					this.$emit('form-submitted', { isFormValid })
@@ -153,7 +151,6 @@ export default {
 		submitCaptchaForm() {
 			this.validation.isHumanverificationEmpty = this.formData.humanverification === ''
 			if (!this.validation.isHumanverificationEmpty) {
-				console.error('isHumanverificationEmpty:', this.validation.isHumanverificationEmpty)
 				this.checkAnswer()
 			}
 		},

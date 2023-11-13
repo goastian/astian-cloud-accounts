@@ -91,9 +91,6 @@ export default {
 					this.showMessage(this.getLocalizedText(response.data.message), 'error')
 				}
 			} catch (error) {
-				// Handle the error here
-				console.error('An error occurred during form submission:', error)
-				// You can also display an error message to the user if needed
 				this.showMessage(error.response.data.message, 'error')
 			}
 		},
