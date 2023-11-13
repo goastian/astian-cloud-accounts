@@ -130,16 +130,15 @@ export default {
 
 		},
 		async checkAnswer() {
+			this.validation.isHumanverificationNotMatched = false
 			try {
 				const data = {
 					humanverification: this.formData.humanverification,
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				const response = await Axios.post(url, data)
-				if (response.status === 200) {
+				if (response.status !== 200) {
 					this.validation.isHumanverificationNotMatched = true
-				} else {
-					this.validation.isHumanverificationNotMatched = false
 				}
 			} catch (error) {
 				console.error('An error occurred while checking captcha:', error)
