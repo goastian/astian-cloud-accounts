@@ -22,7 +22,7 @@
 						<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
 							{{ getLocalizedText('Human Verification is required.') }}
 						</p>
-						<p v-else-if="!validation.isHumanverificationEmpty && validation.isHumanverificationNotMatched"
+						<p v-else-if="validation.isHumanverificationNotMatched"
 							class="validation-warning">
 							{{ getLocalizedText('Human Verification code is not correct.') }}
 						</p>
@@ -101,11 +101,9 @@ export default {
 		this.createCaptcha()
 	},
 	methods: {
-		validateForm(fieldsToValidate) {
-			fieldsToValidate.forEach(field => {
-				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
-			})
-			if (fieldsToValidate.includes('humanverification')) {
+		validateForm() {
+			this.isHumanverificationEmpty = this.formData.humanverification === ''
+			if (!this.isHumanverificationEmpty) {
 				this.checkAnswer()
 			}
 		},
@@ -137,6 +135,7 @@ export default {
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				const response = await Axios.post(url, data)
+				console.error('response.status:', response.status)
 				if (response.status !== 200) {
 					this.validation.isHumanverificationNotMatched = true
 				}
@@ -154,8 +153,9 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		submitCaptchaForm() {
-			this.validateForm(['humanverification'])
+			this.validateForm()
 			const isFormValid = Object.values(this.validation).every(value => !value)
+			console.error('isFormValid while checking captcha:', isFormValid)
 			if (isFormValid && this.validation.isHumanverificationNotMatched) {
 				this.$emit('form-submitted', { isFormValid })
 			}
