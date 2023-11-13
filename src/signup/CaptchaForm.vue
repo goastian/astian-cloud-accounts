@@ -148,11 +148,14 @@ export default {
 			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		submitCaptchaForm() {
-			this.isHumanverificationEmpty = this.formData.humanverification === ''
-			if (!this.isHumanverificationEmpty) {
+			this.validation.isHumanverificationEmpty = this.formData.humanverification === ''
+			if (!this.validation.isHumanverificationEmpty) {
+				console.error('isHumanverificationEmpty:', this.validation.isHumanverificationEmpty)
 				this.checkAnswer()
 				const isFormValid = this.validation.isHumanverificationNotMatched
+				console.error('out isFormValid:', isFormValid)
 				if (isFormValid) {
+					console.error('isFormValid:', isFormValid)
 					this.$emit('form-submitted', { isFormValid })
 				}
 			}
