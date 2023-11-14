@@ -244,31 +244,36 @@ class UserService {
 		
 	}
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
-		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
-	
-		$newUserDN = "username=$username," . $base;
-	
-		$newUserEntry = [
-			'mailAddress' => $userEmail,
-			'username' => $username,
-			'usernameWithoutDomain' => $username,
-			'userPassword' => $password,
-			'displayName' => $displayname,
-			'quota' => $this->LDAPConnectionService->getLdapQuota(),
-			'recoveryMailAddress' => $recoveryEmail,
-			'active' => 'TRUE',
-			'mailActive' => 'TRUE',
-			'userClusterID' => $this->apiConfig['userCluserId'],
-			'objectClass' => $this->apiConfig['objectClass']
-		];
+		try {
+			$connection = $this->LDAPConnectionService->getLDAPConnection();
+			$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+		
+			$newUserDN = "username=$username," . $base;
+		
+			$newUserEntry = [
+				'mailAddress' => $userEmail,
+				'username' => $username,
+				'usernameWithoutDomain' => $username,
+				'userPassword' => $password,
+				'displayName' => $displayname,
+				'quota' => $this->LDAPConnectionService->getLdapQuota(),
+				'recoveryMailAddress' => $recoveryEmail,
+				'active' => 'TRUE',
+				'mailActive' => 'TRUE',
+				'userClusterID' => $this->apiConfig['userCluserId'],
+				'objectClass' => $this->apiConfig['objectClass']
+			];
 
-		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
-	
-		if (!$ret) {
-			throw new Exception("Error while creating Murena account.");
+			$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+		
+			if (!$ret) {
+				throw new Exception("Error while creating Murena account.");
+			}
+			return $newUserEntry;
+		} catch (Exception $e) {
+			$this->logger->error('Error adding adding new user to LDAP: ' . $username . ': ' . $e->getMessage());
+			return ['error' => 'Error while creating Murena account.'];
 		}
-		return $newUserEntry;
 	}
 	
 	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
