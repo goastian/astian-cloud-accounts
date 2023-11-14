@@ -202,7 +202,7 @@ class UserService {
 	public function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
-	private function setUserLanguage(string $username, string $language) {
+	public function setUserLanguage(string $username, string $language) {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
 	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID) : \SendGrid\Mail\Mail {
@@ -228,7 +228,7 @@ class UserService {
 		}
 	}
 	
-	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password, string $userlanguage = 'en'): void {
+	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password): array {
 
 		$userExists = $this->userExists($username);
 		if ($userExists) {
@@ -240,18 +240,8 @@ class UserService {
 				throw new Exception("Recovery email address is already taken.");
 			}
 		}
+		return $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $userEmail, $password);
 		
-		$newUserEntry = $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $userEmail, $password);
-		
-		$this->createHMEAlias($username, $userEmail);
-		$this->createNewDomainAlias($username, $userEmail);
-		
-		$newUserEntry['userlanguage'] = $userlanguage;
-		$newUserEntry['tosAccepted'] = true;
-		$newUserEntry['quota'] = strval($newUserEntry['quota']) . ' MB';
-		$this->setAccountDataLocally($newUserEntry);
-
-		$this->setUserLanguage($username, $userlanguage);
 	}
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
@@ -301,7 +291,7 @@ class UserService {
 
 	}
 
-	private function createHMEAlias(string $username, string $resultmail): void {
+	public function createHMEAlias(string $username, string $resultmail): void {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
 		$token = $this->apiConfig['common_service_token'];
@@ -327,7 +317,7 @@ class UserService {
 		}
 	}
 
-	private function createNewDomainAlias(string $username, string $userEmail): mixed {
+	public function createNewDomainAlias(string $username, string $userEmail): mixed {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
@@ -349,27 +339,18 @@ class UserService {
 		$result = json_decode($result, true);
 		return $result;
 	}
-	private function setAccountDataLocally(array $userData): void {
-		$uid = $userData['username'];
+	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
+		
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error('User not found');
 			return;
 		}
 		
-		$mailAddress = $userData['mailAddress'];
 		$user->setEMailAddress($mailAddress);
 		
-		$recoveryEmail = $userData['recoveryMailAddress'];
-		if($recoveryEmail !== '') {
-			$this->setRecoveryEmail($uid, $recoveryEmail);
-		}
-		
-		$quota = $userData['quota'];
+		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
-		
-		$tosAccepted = $userData['tosAccepted'];
-		$this->setTOS($uid, $tosAccepted);
 	}
 
 	public function getRandomCharacter(): string {
