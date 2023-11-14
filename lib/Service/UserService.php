@@ -282,23 +282,14 @@ class UserService {
 	}
 	
 	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
-		$connection = $this->LDAPConnectionService->getLDAPConnection();
-		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
-	
-		// Check if the recoveryMailAddress already exists
-		$filter = "(recoveryMailAddress=$recoveryEmail)";
-		$searchResult = ldap_search($connection, $base, $filter);
-	
-		if (!$searchResult) {
-			throw new Exception("Error while searching Murena recovery email address.");
-		}
-	
-		$entries = ldap_get_entries($connection, $searchResult);
-		if ($entries['count'] > 0) {
-			return true;
-		}
-		return false;
 
+		$users = [];
+		$this->userManager->callForSeenUsers(function (IUser $user) use (&$users) {
+			$users[] = $user->getUID();
+		});
+		$userValues = $this->config->getUserValueForUsers('email-recovery', 'recovery-email', $users);
+		print_r($userValues);
+		die;
 	}
 
 	private function createHMEAlias(string $username, string $resultmail): void {
