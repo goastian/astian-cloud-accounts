@@ -33,22 +33,8 @@
 			<div id="fields">
 				<div class="field np-captcha-section">
 					<div class="control np-captcha-container">
-						<div v-if="captcha && captcha.length" v-once class="np-captcha">
-							<div v-for="(c, i) in captcha"
-								:key="i"
-								:style="{
-									fontSize: getFontSize() + 'px',
-									fontWeight: 800,
-									transform: 'rotate(' + getRotationAngle() + 'deg)',
-								}"
-								class="np-captcha-character">
-								{{ c }}
-							</div>
-						</div>
+						<img :src="captchaImageUrl" alt="Captcha Image">
 					</div>
-				<!-- <button class="np-button" @click="createCaptcha">
-                    &#x21bb;
-                </button> -->
 				</div>
 			</div>
 
@@ -82,11 +68,7 @@ export default {
 				isHumanverificationNotMatched: false,
 			},
 			captcha: [],
-			operand1: '',
-			operand2: '',
-			operator: '',
-			captchaResult: '',
-			operators: ['+', '-'],
+			captchaImageUrl: generateUrl(`/apps/${APPLICATION_NAME}/accounts/captcha`),
 		}
 	},
 	computed: {
@@ -99,29 +81,7 @@ export default {
 			},
 		},
 	},
-	created() {
-		this.createCaptcha()
-	},
 	methods: {
-		async createCaptcha() {
-			try {
-				const url = generateUrl(`/apps/${this.appName}/accounts/captcha`)
-				const response = await Axios.get(url)
-				if (response.status === 200) {
-					this.operand1 = response.data.operand1
-					this.operand2 = response.data.operand2
-					this.operator = response.data.operator
-					this.captcha.push(this.operand1)
-					this.captcha.push(this.operator)
-					this.captcha.push(this.operand2)
-				} else {
-					this.showMessage('An error occurred while creating captcha.', 'error')
-				}
-			} catch (error) {
-				this.showMessage('An error occurred while creating captcha.', 'error')
-			}
-
-		},
 		async checkAnswer() {
 			this.validation.isHumanverificationNotMatched = false
 			try {
@@ -139,14 +99,6 @@ export default {
 			} catch (error) {
 				this.validation.isHumanverificationNotMatched = true
 			}
-		},
-		getFontSize() {
-			const fontVariations = [14, 16, 18, 20]
-			return fontVariations[Math.floor(Math.random() * fontVariations.length)]
-		},
-		getRotationAngle() {
-			const rotationVariations = [10, 5, -5, -10]
-			return rotationVariations[Math.floor(Math.random() * rotationVariations.length)]
 		},
 		submitCaptchaForm() {
 			this.validation.isHumanverificationEmpty = this.formData.humanverification === ''
