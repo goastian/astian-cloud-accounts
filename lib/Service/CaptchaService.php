@@ -97,7 +97,7 @@ class CaptchaService {
 		return $imageData;
 	}
 	
-	public function updateImage(&$image, $x, $num) {
+	public function updateImage(&$image, int $x, string $num) : void {
 		imagechar(
 			$image,
 			mt_rand(4, 5),
