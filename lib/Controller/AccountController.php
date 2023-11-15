@@ -188,7 +188,6 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function captchaGenerate() {
-		$imageData = $this->captchaService->generateCaptcha();
-		return new DataResponse($imageData, 200, ['Content-Type' => 'image/png']);
+		echo $this->captchaService->generateCaptcha();
 	}
 }

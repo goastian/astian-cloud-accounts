@@ -29,8 +29,6 @@ class CaptchaService {
 		
 		$im = imagecreatetruecolor($width, $height);
 		$ns = imagecolorallocate($im, 200, 200, 200); // noise color
-		// amount of background noise to add in captcha image
-		
 	
 		$image = imagecreate($width, $height) or die('Unable to initialize GD');
 	
