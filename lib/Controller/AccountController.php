@@ -142,20 +142,8 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function captcha() : DataResponse {
-		$response = new DataResponse();
-		$operand1 = $this->userService->getRandomCharacter();
-		$operand2 = $this->userService->getRandomCharacter();
-		$operator = $this->userService->getOperator();
-		
-		$this->session->set('operand1', $operand1);
-		$this->session->set('operand2', $operand2);
-		$this->session->set('operator', $operator);
-		$this->session->set('captcha_verified', false);
-
-		$response->setData(['operand1' => $operand1, 'operand2' => $operand2, 'operator' => $operator]);
-		$response->setStatus(200);
-		return $response;
+	public function captcha():void {
+		echo $this->captchaService->generateCaptcha();
 	}
 	/**
 	 * @NoAdminRequired
@@ -182,12 +170,5 @@ class AccountController extends Controller {
 		}
 		return $response;
 	}
-	/**
-	 * @NoAdminRequired
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 */
-	public function captchaGenerate() {
-		echo $this->captchaService->generateCaptcha();
-	}
+
 }

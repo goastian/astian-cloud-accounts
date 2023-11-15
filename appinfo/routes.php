@@ -30,6 +30,5 @@ return ['routes' => [
 	['name' => 'account#captcha', 'url' => '/accounts/captcha', 'verb' => 'GET'],
 	['name' => 'account#verify_captcha', 'url' => '/accounts/verify_captcha', 'verb' => 'POST'],
 	['name' => 'account#check_username_available', 'url' => '/accounts/check_username_available', 'verb' => 'POST'],
-	['name' => 'account#captcha_generate', 'url' => '/accounts/captcha_generate', 'verb' => 'GET'],
 
 ]];
