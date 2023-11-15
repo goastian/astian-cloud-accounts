@@ -85,6 +85,7 @@ class CaptchaService {
 		}
 	
 		ob_start();
+		header('Content-Type: image/png');
 		imagepng($image);
 		$imageData = ob_get_clean();
 	
