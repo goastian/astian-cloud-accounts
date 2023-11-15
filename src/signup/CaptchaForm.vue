@@ -67,7 +67,6 @@ export default {
 				isHumanverificationEmpty: false,
 				isHumanverificationNotMatched: false,
 			},
-			captcha: [],
 			captchaImageUrl: generateUrl(`/apps/${APPLICATION_NAME}/accounts/captcha`),
 		}
 	},

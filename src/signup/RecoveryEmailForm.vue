@@ -56,12 +56,6 @@ export default {
 			validation: {
 				isEmailEmpty: false,
 			},
-			captcha: [],
-			operand1: '',
-			operand2: '',
-			operator: '',
-			captchaResult: '',
-			operators: ['+', '-'],
 		}
 	},
 	computed: {
@@ -197,11 +191,6 @@ export default {
 
 #fields p {
 	font-size: 15px;
-}
-
-#captcha_img {
-	font-size: 12px;
-	width: 100%;
 }
 
 #inviteHeader,
