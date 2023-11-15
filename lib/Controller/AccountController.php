@@ -8,6 +8,7 @@ namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
@@ -20,18 +21,21 @@ class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	private $userService;
+	private $captchaService;
 	protected $l10nFactory;
 	private $session;
 	public function __construct(
 		$AppName,
 		IRequest $request,
 		UserService $userService,
+		CaptchaService $captchaService,
 		IFactory $l10nFactory,
 		ISession $session
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->userService = $userService;
+		$this->captchaService = $captchaService;
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
 	}
@@ -178,5 +182,13 @@ class AccountController extends Controller {
 		}
 		return $response;
 	}
-
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function captchaGenerate() {
+		$imageData = $this->captchaService->generateCaptcha();
+		return new DataResponse($imageData, 200, ['Content-Type' => 'image/png']);
+	}
 }
