@@ -249,34 +249,4 @@ p.validation-warning:before {
 	width: fit-content;
 }
 
-.np-captcha-container {
-	background: #ffdada;
-	width: max-content;
-	height: 30px;
-	margin: 0 auto;
-	margin-bottom: 20px;
-	padding: 10px;
-}
-
-.np-captcha {
-	font-size: 24px;
-	width: 200px;
-	text-align: center;
-}
-
-.np-button {
-	padding: 5px;
-	background: #fff;
-	border: 1px solid #eee;
-	border-radius: 6px;
-	font-size: 16px;
-	margin: auto;
-	min-width: 30px;
-}
-
-.np-captcha-character {
-	display: inline-block;
-	letter-spacing: 14px;
-}
-
 </style>
