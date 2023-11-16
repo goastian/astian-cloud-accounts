@@ -38,15 +38,15 @@ class CaptchaService {
 		// Draw random lines on the image
 		$this->drawRandomLines($image, 10);
 
-		// Draw the first random character
 		$x = 10 + mt_rand(0, 10);
 		$num1 = $this->getRandomCharacter($numbers);
 		$this->updateImage($image, $x, $num1);
-
-		// Draw a random space and the operator symbol
-		$x = $this->drawCharacterWithRandomSpace($image, $x, $symbols);
-
-		// Draw the second random character
+	
+		$x += 10 + mt_rand(0, 10);
+		$sym = $this->getRandomCharacter($symbols);
+		$this->updateImage($image, $x, $sym);
+	
+		$x += 10 + mt_rand(0, 10);
 		$num2 = $this->getRandomCharacter($numbers);
 		$this->updateImage($image, $x, $num2);
 
@@ -57,7 +57,7 @@ class CaptchaService {
 		$x = $this->drawCharacterWithRandomSpace($image, $x, "=");
 
 		// Combine the generated code
-		$code = $num1 . $symbols . $num2;
+		$code = $num1 . $sym . $num2;
 
 		// Evaluate the mathematical expression
 		eval("\$code = $code;");
@@ -75,7 +75,7 @@ class CaptchaService {
 		imagedestroy($image);
 
 		// Update session with the operands and operator
-		$this->updateSession($num1, $num2, $symbols);
+		$this->updateSession($num1, $num2, $sym);
 
 		// Return the binary representation of the generated image
 		return $imageData;
@@ -164,14 +164,14 @@ class CaptchaService {
 	 *
 	 * @param string $num1 The first numeric operand.
 	 * @param string $num2 The second numeric operand.
-	 * @param string $symbols The operator symbols.
+	 * @param string $symbol The operator symbol.
 	 *
 	 * @return void
 	 */
-	private function updateSession(string $num1, string $num2, string $symbols): void {
+	private function updateSession(string $num1, string $num2, string $symbol): void {
 		$this->session->set('operand1', $num1);
 		$this->session->set('operand2', $num2);
-		$this->session->set('operator', $symbols);
+		$this->session->set('operator', $symbol);
 		$this->session->set('captcha_verified', false);
 	}
 
