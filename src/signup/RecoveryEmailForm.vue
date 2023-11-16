@@ -1,6 +1,6 @@
 <template>
 	<div id="recoveryEmailForm">
-		<div class="">
+		<div>
 			<h1 class="has-text-centered subtitle is-3">
 				{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account.') }}
 			</h1>

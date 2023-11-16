@@ -13,7 +13,7 @@
 					</select>
 				</div>
 			</div>
-			<div id="fields">
+			<div id="fields-displayname" class="fields">
 				<div class="field">
 					<div class="control">
 						<label>{{ getLocalizedText('Display name') }}<sup>*</sup></label>
@@ -31,7 +31,7 @@
 				</div>
 			</div>
 
-			<div id="fields">
+			<div id="fields-username" class="fields">
 				<div class="field">
 					<div class="control">
 						<label>{{ getLocalizedText('Username') }}<sup>*</sup></label>
@@ -60,7 +60,7 @@
 				</div>
 			</div>
 
-			<div id="fields">
+			<div id="fields-password" class="fields">
 				<div class="field">
 					<div class="control">
 						<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
@@ -102,7 +102,7 @@
 				</div>
 			</div>
 
-			<div id="fields">
+			<div id="fields-accepttns" class="fields">
 				<div class="field">
 					<div class="control">
 						<span class="action-checkbox">
@@ -120,7 +120,7 @@
 				</div>
 			</div>
 
-			<div id="fields">
+			<div id="fields-newsletter_eos" class="fields">
 				<div class="field">
 					<div class="control">
 						<span class="action-checkbox">
@@ -134,7 +134,7 @@
 				</div>
 			</div>
 
-			<div id="fields">
+			<div id="fields-newsletter_product" class="fields">
 				<div class="field">
 					<div class="control">
 						<span class="action-checkbox">
@@ -323,26 +323,26 @@ export default {
 .padding-0 {
 	padding: 0;
 }
-#fields input[type='checkbox'].checkbox + label:before{
+.fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
     width: 15px;
 	margin-right: 10px;
 }
-#fields {
+.fields {
 	margin: 10px;
 }
-#fields .control {
+.fields .control {
 	text-align: left;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-#fields input#username,
-#fields input#new-password,
-#fields input#repassword {
+.fields input#username,
+.fields input#new-password,
+.fields input#repassword {
 	width: 45%;
 }
-#fields input,
-#fields input[type="password"] {
+.fields input,
+.fields input[type="password"] {
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
@@ -364,13 +364,13 @@ export default {
 	display: flex;
 	align-items: center;
 }
-#fields {
+.fields {
 	background-color: white;
 }
-#fields .field {
+.fields .field {
 	font-size: 1.3em;
 }
-#fields p {
+.fields p {
 	font-size: 15px;
 }
 #captcha_img {
@@ -416,7 +416,7 @@ input#password {
 #submitButton:hover {
 	opacity: 0.9;
 }
-#fields label {
+.fields label {
 	color: #333333;
 	font-size: 16px;
 	font-weight: 900;
@@ -483,7 +483,7 @@ p.validation-success:before {
 }
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
-	#fields .field .control input {
+	.fields .field .control input {
 		padding-left: 2%;
 		padding-right: 2%;
 	}
@@ -503,20 +503,20 @@ p.validation-success:before {
 	#registerHeading {
 		font-size: 1.5em;
 	}
-	#fields {
+	.fields {
 		background-color: white;
 	}
-	#fields .field {
+	.fields .field {
 		font-size: 1.0em;
 	}
-	#fields .field .control {
+	.fields .field .control {
 		text-align: left;
 	}
-	#fields .field .control input {
+	.fields .field .control input {
 		font-size: 1.0em;
 		line-height: 1.0em;
 	}
-	#fields p {
+	.fields p {
 		font-size: 1.0em;
 	}
 	input {
