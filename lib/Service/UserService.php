@@ -227,7 +227,18 @@ class UserService {
 			throw new \Exception("SendGrid API error - Status Code: " . $response->statusCode());
 		}
 	}
-	
+	/**
+	 * Register a new user.
+	 *
+	 * @param string $displayname The display name of the user.
+	 * @param string $recoveryemail The recovery email address for the user.
+	 * @param string $username The chosen username for the user.
+	 * @param string $userEmail The email address of the user.
+	 * @param string $password The password chosen by the user.
+	 *
+	 * @return array An array containing information about the registered user.
+	 * @throws Exception If the username or recovery email is already taken.
+	 */
 	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password): array {
 
 		$userExists = $this->userExists($username);
@@ -243,6 +254,18 @@ class UserService {
 		return $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $userEmail, $password);
 		
 	}
+	/**
+	 * Add a new user to the LDAP directory.
+	 *
+	 * @param string $displayname The display name of the new user.
+	 * @param string $recoveryEmail The recovery email address of the new user.
+	 * @param string $username The username of the new user.
+	 * @param string $userEmail The email address of the new user.
+	 * @param string $password The password of the new user.
+	 *
+	 * @return array Information about the added user.
+	 * @throws Exception If there is an error while creating the Murena account.
+	 */
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		try {
 			$connection = $this->LDAPConnectionService->getLDAPConnection();
@@ -275,7 +298,13 @@ class UserService {
 			return ['error' => 'Error while creating Murena account.'];
 		}
 	}
-	
+	/**
+	 * Check if a recovery email address is available (not already taken by another user).
+	 *
+	 * @param string $recoveryEmail The recovery email address to check.
+	 *
+	 * @return bool True if the recovery email address is available, false otherwise.
+	 */
 	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
 		$users = $this->config->getUsersForUserValue('email-recovery', 'recovery-email', $recoveryEmail);
 		if(count($users)) {
@@ -284,6 +313,14 @@ class UserService {
 		return false;
 	}
 
+	/**
+	 * Create a Hide My Email (HME) alias for a user.
+	 *
+	 * @param string $username The username for which to create the HME alias.
+	 * @param string $resultmail The email address associated with the HME alias.
+	 *
+	 * @return void
+	 */
 	public function createHMEAlias(string $username, string $resultmail): void {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
@@ -309,7 +346,14 @@ class UserService {
 			}
 		}
 	}
-
+	/**
+	 * Create a new domain alias for a user.
+	 *
+	 * @param string $username The username for which to create the domain alias.
+	 * @param string $userEmail The email address associated with the domain alias.
+	 *
+	 * @return mixed The result of the domain alias creation request, decoded from JSON.
+	 */
 	public function createNewDomainAlias(string $username, string $userEmail): mixed {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
@@ -332,6 +376,15 @@ class UserService {
 		$result = json_decode($result, true);
 		return $result;
 	}
+	/**
+	 * Set account data locally for a user.
+	 *
+	 * @param string $uid The unique identifier of the user.
+	 * @param string $mailAddress The email address to set for the user.
+	 * @param string $quota The quota to set for the user (in megabytes).
+	 *
+	 * @return void
+	 */
 	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
 		
 		$user = $this->getUser($uid);
@@ -340,23 +393,22 @@ class UserService {
 			return;
 		}
 		
+		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
 		
+		// Format and set the quota for the user (in megabytes)
 		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
 	}
-
-	public function getRandomCharacter(): string {
-		$numbers = '123456789';
-		$randomNumber = rand(0, strlen($numbers) - 1);
-		return $numbers[$randomNumber];
-	}
-	public function getOperator(): string {
-		$operator = '+-';
-		$operatorNumber = rand(0, strlen($operator) - 1);
-		return $operator[$operatorNumber];
-	}
-	
+	/**
+	 * Calculate the result of a mathematical operation.
+	 *
+	 * @param mixed $operand1 The first operand.
+	 * @param mixed $operand2 The second operand.
+	 * @param string $operator The mathematical operator ('+' or '-').
+	 *
+	 * @return mixed|null The result of the calculation, or null if the operator is invalid.
+	 */
 	public function calculateResult($operand1, $operand2, $operator): mixed {
 		$operand1 = floatval($operand1);
 		$operand2 = floatval($operand2);
@@ -370,15 +422,24 @@ class UserService {
 				return null;
 		}
 	}
-	
-	public function checkAnswer($operand1, $operand2, $operator, $humanverificationCode): bool {
+	/**
+	 * Check if the provided human verification code matches the calculated result of a mathematical operation.
+	 *
+	 * @param mixed $operand1 The first operand.
+	 * @param mixed $operand2 The second operand.
+	 * @param string $operator The mathematical operator ('+' or '-').
+	 * @param mixed $humanverificationCode The human verification code provided by the user.
+	 *
+	 * @return bool True if the provided code does not match the calculated result, false otherwise.
+	 */
+	public function checkAnswer($operand1, $operand2, string $operator, $humanverificationCode): bool {
+		// Calculate the result of the mathematical operation
 		$result = $this->calculateResult($operand1, $operand2, $operator);
+
 		$captchaResult = intval($result, 10);
-	
-		if (intval($humanverificationCode, 10) !== $captchaResult) {
-			return true;
-		} else {
-			return false;
-		}
+		$humanVerificationCode = intval($humanverificationCode, 10);
+
+		// Check if the provided code matches the calculated result
+		return $humanVerificationCode !== $captchaResult;
 	}
 }
