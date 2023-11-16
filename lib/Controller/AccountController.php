@@ -44,6 +44,10 @@ class AccountController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param string $lang Language code (default: 'en')
+	 *
+	 * @return \OCP\AppFramework\Http\TemplateResponse
 	 */
 	public function index(string $lang = 'en') {
 		return new TemplateResponse(
@@ -57,6 +61,14 @@ class AccountController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param string $displayname      User's display name
+	 * @param string $recoveryEmail    User's recovery email
+	 * @param string $username         User's username
+	 * @param string $password         User's password
+	 * @param string $language         User's language preference
+	 *
+	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = ''): DataResponse {
 		$response = new DataResponse();
@@ -110,8 +122,16 @@ class AccountController extends Controller {
 		}
 		return $response;
 	}
-
-	public function validateInput($inputName, $value, $maxLength = null) : mixed {
+	/**
+	 * Validate input for a given input name, value, and optional maximum length.
+	 *
+	 * @param string $inputName The name of the input.
+	 * @param string  $value     The value of the input.
+	 * @param int|null $maxLength The optional maximum length allowed.
+	 *
+	 * @return string|null If validation fails, a string describing the error; otherwise, null.
+	 */
+	public function validateInput(string $inputName, string $value, int $maxLength = null) : mixed {
 		if ($value === '') {
 			return "$inputName is missing.";
 		}
@@ -123,9 +143,15 @@ class AccountController extends Controller {
 		return null; // Validation passed
 	}
 	/**
+	 * Check if a username is available.
+	 *
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param string $username The username to check.
+	 *
+	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function checkUsernameAvailable(string $username) : DataResponse {
 		$response = new DataResponse();
@@ -146,9 +172,15 @@ class AccountController extends Controller {
 		echo $this->captchaService->generateCaptcha();
 	}
 	/**
+	 * Verify a human verification input against captcha session values.
+	 *
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param string $humanverification The user-provided human verification input.
+	 *
+	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function verifyCaptcha(string $humanverification = '') : DataResponse {
 		

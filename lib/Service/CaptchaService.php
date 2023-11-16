@@ -18,7 +18,11 @@ class CaptchaService {
 		$this->session = $session;
 	}
 	
-
+	/**
+	 * Generate Captcha
+	 *
+	 * @return string
+	 */
 	public function generateCaptcha(): string {
 		$width = self::WIDTH;
 		$height = self::HEIGHT;
@@ -96,7 +100,15 @@ class CaptchaService {
 	
 		return $imageData;
 	}
-	
+	/**
+	 * Update an image by adding a character at a specific position with random properties.
+	 *
+	 * @param resource $image The image resource to be updated (passed by reference).
+	 * @param int      $x     The x-coordinate of the character on the image.
+	 * @param string   $num   The character to be added to the image.
+	 *
+	 * @return void
+	 */
 	public function updateImage(&$image, int $x, string $num) : void {
 		imagechar(
 			$image,
