@@ -29,15 +29,15 @@ class CaptchaService {
 		$numbers = self::NUMBERS;
 		$symbols = self::SYMBOLS;
 		$noiseLevel = self::NOISE_LEVEL;
-
+	
 		// Create the initial image resource
 		$im = imagecreatetruecolor($width, $height);
 		$ns = imagecolorallocate($im, 200, 200, 200); // Noise color
 		$image = imagecreate($width, $height) or die('Unable to initialize GD');
-
+	
 		// Draw random lines on the image
 		$this->drawRandomLines($image, 10);
-
+	
 		$x = 10 + mt_rand(0, 10);
 		$num1 = $this->getRandomCharacter($numbers);
 		$this->updateImage($image, $x, $num1);
@@ -49,37 +49,36 @@ class CaptchaService {
 		$x += 10 + mt_rand(0, 10);
 		$num2 = $this->getRandomCharacter($numbers);
 		$this->updateImage($image, $x, $num2);
-
+	
 		// Rotate the image by a random angle
 		$image = imagerotate($image, mt_rand(-15, 15), 0);
-
+	
 		// Draw a random space and the equal sign
 		$x = $this->drawCharacterWithRandomSpace($image, $x, "=");
-
+	
 		// Combine the generated code
 		$code = $num1 . $sym . $num2;
-
+	
 		// Evaluate the mathematical expression
 		eval("\$code = $code;");
-
+	
 		// Add random noise to the image
 		$this->addNoise($image, $noiseLevel);
-
-		// Output the image as PNG
+	
+		// Output the image as PNG into a variable
 		ob_start();
-		header('Content-Type: image/png');
 		imagepng($image);
 		$imageData = ob_get_clean();
-
+	
 		// Destroy the image resource
 		imagedestroy($image);
-
+	
 		// Calculate result
 		$result = $this->calculateResult($num1, $num2, $sym);
-
+	
 		// Update session with the result
 		$this->updateSession($result);
-
+	
 		// Return the binary representation of the generated image
 		return $imageData;
 	}

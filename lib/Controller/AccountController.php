@@ -173,7 +173,6 @@ class AccountController extends Controller {
 		$captchaValue = $this->captchaService->generateCaptcha();
 
 		$response = new Http\DataDisplayResponse($captchaValue, Http::STATUS_OK, ['Content-Type' => 'image/png']);
-		$response->cacheFor(3600 * 24, false, false);
 
 		return $response;
 	}
