@@ -81,17 +81,17 @@ export default {
 		async submitForm(data) {
 			try {
 				const url = generateUrl(`/apps/${this.appName}/accounts/create`)
-				const response = await Axios.post(url, data)
-				if (response.data.success) {
-					this.showRegistrationForm = false
-					this.showCaptchaForm = false
-					this.showRecoveryEmailForm = false
-					this.showSuccessSection = true
-				} else {
-					this.showMessage(this.getLocalizedText(response.data.message), 'error')
-				}
+				await Axios.post(url, data)
+
+				// If the execution reaches here, the response status is in the 2xx range
+				this.showRegistrationForm = false
+				this.showCaptchaForm = false
+				this.showRecoveryEmailForm = false
+				this.showSuccessSection = true
 			} catch (error) {
-				this.showMessage(error.response.data.message, 'error')
+				// Handle network errors and unexpected response structures here
+				const errorMessage = error.response ? error.response.data.message : error.message
+				this.showMessage(errorMessage, 'error')
 			}
 		},
 		showMessage(message, type) {
