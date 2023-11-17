@@ -51,7 +51,7 @@ class UserService {
 		$this->apiConfig = [
 			'mainDomain' => $this->config->getSystemValue('main_domain', ''),
 			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
-			'common_service_token' => $this->config->getSystemValue('common_service_token', ''),
+			'commonServiceToken' => $this->config->getSystemValue('common_service_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
 			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
 			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
@@ -324,7 +324,7 @@ class UserService {
 	public function createHMEAlias(string $username, string $resultmail): void {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
-		$token = $this->apiConfig['common_service_token'];
+		$token = $this->apiConfig['commonServiceToken'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 		
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
@@ -358,7 +358,7 @@ class UserService {
 		$commonApiUrl = $this->apiConfig['commonApiUrl'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
-		$token = $this->apiConfig['common_service_token'];
+		$token = $this->apiConfig['commonServiceToken'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
 		$endpoint = $commonApiVersion . '/aliases/';
