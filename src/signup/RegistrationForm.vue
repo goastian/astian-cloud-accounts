@@ -282,7 +282,7 @@ export default {
 				const response = await Axios.post(url, data)
 				if (response.status === 400) {
 					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = t(this.appName, 'Username is already taken.')
+					this.usernameValidationMessage = t(this.appName, 'You chose username is already taken.')
 				}
 				if (response.status === 200) {
 					this.isUsernameAvailable = true
