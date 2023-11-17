@@ -4,27 +4,27 @@
 			<div id="fields">
 				<div class="display-flex">
 					<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-						{{ getLocalizedText('Captcha Verification') }}
+						{{ t(appName,'Captcha Verification') }}
 					</h1>
 				</div>
 
 				<div class="field">
 					<div class="control">
-						<label>{{ getLocalizedText('Human Verification') }}<sup>*</sup></label>
+						<label>{{ t(appName,'Human Verification') }}<sup>*</sup></label>
 						<div class="humanverification-group">
 							<input id="humanverification"
 								v-model="formData.humanverification"
 								name="humanverification"
 								class="form-input"
-								:placeholder="getLocalizedText('Human Verification')"
+								:placeholder="t(appName,'Human Verification')"
 								type="text">
 						</div>
 						<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
-							{{ getLocalizedText('Human Verification is required.') }}
+							{{ t(appName,'Human Verification is required.') }}
 						</p>
 						<p v-else-if="validation.isHumanverificationNotMatched"
 							class="validation-warning">
-							{{ getLocalizedText('Human Verification code is not correct.') }}
+							{{ t(appName,'Human Verification code is not correct.') }}
 						</p>
 					</div>
 				</div>
@@ -43,7 +43,7 @@
 					class="btn-primary"
 					type="primary">
 					<!-- @click="submitCaptchaForm" -->
-					{{ getLocalizedText('Verify') }}
+					{{ t(appName,'Verify') }}
 				</button>
 			</div>
 		</form>
@@ -104,9 +104,6 @@ export default {
 			if (!this.validation.isHumanverificationEmpty) {
 				this.checkAnswer()
 			}
-		},
-		getLocalizedText(text) {
-			return t(this.appName, text)
 		},
 		showMessage(message, type) {
 			type === 'success' ? showSuccess(message) : showError(message)

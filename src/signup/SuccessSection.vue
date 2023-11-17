@@ -4,16 +4,16 @@
 			<div id="successMessages" class="notification isa_success has-text-centered">
 				<img :src="SuccessIcon">
 				<h3 class="success__title">
-					{{ getLocalizedText('Success!') }}
+					{{ t(appName,'Success!') }}
 				</h3>
 				<p id="accountCreatedMsg" class="font-16" v-html="accountCreatedMsg" />
 				<button :wide="true"
 					class="btn-primary w-50"
 					type="primary"
 					@click="useMyAccount">
-					{{ getLocalizedText('Use My Account Now') }}
+					{{ t(appName,'Use My Account Now') }}
 				</button>
-				<p id="moreDetailMsg" class="font-16" v-html="getLocalizedText('If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'https://doc.e.foundation/support-topics/configure-email\'>this page</a>.')" />
+				<p id="moreDetailMsg" class="font-16" v-html="t(appName,'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'https://doc.e.foundation/support-topics/configure-email\'>this page</a>.')" />
 			</div>
 		</section>
 	</div>
@@ -26,6 +26,7 @@ export default {
 	},
 	data() {
 		return {
+			appName: APPLICATION_NAME,
 			accountCreatedMsg: '',
 			SuccessIcon: OC.generateUrl('/custom_apps/' + APPLICATION_NAME + '/img/success.svg'),
 		}
@@ -42,13 +43,10 @@ export default {
 	},
 	created() {
 		const domain = window.location.host
-		const accountCreatedMsg = this.getLocalizedText('Your <b>__username__@__domain__</b> account was successfully created.')
+		const accountCreatedMsg = t(this.appName, 'Your <b>__username__@__domain__</b> account was successfully created.')
 		this.accountCreatedMsg = accountCreatedMsg.replace('__username__', this.formData.username).replace('__domain__', domain)
 	},
 	methods: {
-		getLocalizedText(text) {
-			return t(this.appName, text)
-		},
 		useMyAccount() {
 			window.location.href = window.location.origin
 		},

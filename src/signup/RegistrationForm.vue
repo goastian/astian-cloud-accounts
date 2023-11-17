@@ -3,12 +3,12 @@
 		<form @submit.prevent="submitRegistrationForm">
 			<div class="display-flex">
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
-					{{ getLocalizedText('Create Murena Account') }}
+					{{ t(appName,'Create Murena Account') }}
 				</h1>
 				<div class="grid">
 					<select v-model="formData.selectedLanguage" class="padding-0" @change="onLanguageChange">
 						<option v-for="language in languages" :key="language.code" :value="language.code">
-							{{ getLocalizedText(language.name) }}
+							{{ t(appName,language.name) }}
 						</option>
 					</select>
 				</div>
@@ -16,16 +16,16 @@
 			<div id="fields-displayname" class="fields">
 				<div class="field">
 					<div class="control">
-						<label>{{ getLocalizedText('Display name') }}<sup>*</sup></label>
+						<label>{{ t(appName,'Display name') }}<sup>*</sup></label>
 						<input id="displayname"
 							v-model="formData.displayname"
 							name="displayname"
 							type="text"
 							class="form-input"
-							:placeholder="getLocalizedText('Your name as shown to others')"
+							:placeholder="t(appName,'Your name as shown to others')"
 							@input="validateForm(['displayname'])">
 						<p v-if="validation.isDisplaynameEmpty" class="validation-warning">
-							{{ getLocalizedText('Display name is required.') }}
+							{{ t(appName,'Display name is required.') }}
 						</p>
 					</div>
 				</div>
@@ -34,13 +34,13 @@
 			<div id="fields-username" class="fields">
 				<div class="field">
 					<div class="control">
-						<label>{{ getLocalizedText('Username') }}<sup>*</sup></label>
+						<label>{{ t(appName,'Username') }}<sup>*</sup></label>
 						<div class="username-group">
 							<input id="username"
 								v-model="formData.username"
 								name="username"
 								class="form-input"
-								:placeholder="getLocalizedText('Username')"
+								:placeholder="t(appName,'Username')"
 								type="text"
 								@input="validateForm(['username'])">
 							<div id="username-domain-div" class="pad-left-5">
@@ -48,13 +48,13 @@
 							</div>
 						</div>
 						<p v-if="validation.isUsernameEmpty" class="validation-warning">
-							{{ getLocalizedText('Username is required.') }}
+							{{ t(appName,'Username is required.') }}
 						</p>
 						<p v-else-if="validation.isUsernameNotValid" class="validation-warning">
-							{{ getLocalizedText(usernameValidationMessage) }}
+							{{ t(appName,usernameValidationMessage) }}
 						</p>
 						<p v-else-if="isUsernameAvailable" class="validation-success">
-							{{ getLocalizedText('Available!') }}
+							{{ t(appName,'Available!') }}
 						</p>
 					</div>
 				</div>
@@ -63,7 +63,7 @@
 			<div id="fields-password" class="fields">
 				<div class="field">
 					<div class="control">
-						<label>{{ getLocalizedText('Enter Password') }}<sup>*</sup></label>
+						<label>{{ t(appName,'Enter Password') }}<sup>*</sup></label>
 						<div class="password-group">
 							<Password id="password"
 								v-model="formData.password"
@@ -73,21 +73,21 @@
 								type="password"
 								name="password"
 								:default-class="form - input"
-								:placeholder="getLocalizedText('Password')"
+								:placeholder="t(appName,'Password')"
 								@input="validateForm(['password'])" />
 							<input id="repassword"
 								v-model="formData.repassword"
 								type="password"
 								name="repassword"
 								class="form-input"
-								:placeholder="getLocalizedText('Confirm')"
+								:placeholder="t(appName,'Confirm')"
 								@input="validateForm(['repassword'])">
 						</div>
 						<p v-if="validation.isPasswordEmpty" class="validation-warning">
-							{{ getLocalizedText('Password is required.') }}
+							{{ t(appName,'Password is required.') }}
 						</p>
 						<p v-if="validation.isRepasswordEmpty" class="validation-warning">
-							{{ getLocalizedText('Confirm password is required.') }}
+							{{ t(appName,'Confirm password is required.') }}
 						</p>
 						<p v-for="(error, index) in passworderrors"
 							:key="index"
@@ -96,7 +96,7 @@
 						</p>
 						<p v-if="!validation.isPasswordEmpty && !validation.isRepasswordEmpty && validation.isRePasswordMatched"
 							class="validation-warning">
-							{{ getLocalizedText('The confirm password does not match the password.') }}
+							{{ t(appName,'The confirm password does not match the password.') }}
 						</p>
 					</div>
 				</div>
@@ -110,11 +110,11 @@
 								v-model="formData.accepttns"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-tns" class="action-checkbox__label" v-html="getLocalizedText('I have read and accept the <a href=\'http://murena.io/apps/terms_of_service/en/termsandconditions\' target=\'_blank\'>Terms of Service</a>.')" />
+							<label for="action-tns" class="action-checkbox__label" v-html="t(appName,'I have read and accept the <a href=\'http://murena.io/apps/terms_of_service/en/termsandconditions\' target=\'_blank\'>Terms of Service</a>.')" />
 						</span>
 
 						<p v-if="validation.isAccepttnsEmpty" class="validation-error">
-							{{ getLocalizedText('You must read and accept the Terms of Service to create your account.') }}
+							{{ t(appName,'You must read and accept the Terms of Service to create your account.') }}
 						</p>
 					</div>
 				</div>
@@ -128,7 +128,7 @@
 								v-model="formData.newsletter_eos"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-newsletter_eos" class="action-checkbox__label">{{ getLocalizedText('I want to receive news about /e/OS') }}</label>
+							<label for="action-newsletter_eos" class="action-checkbox__label">{{ t(appName,'I want to receive news about /e/OS') }}</label>
 						</span>
 					</div>
 				</div>
@@ -142,7 +142,7 @@
 								v-model="formData.newsletter_product"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-newsletter_product" class="action-checkbox__label">{{ getLocalizedText('I want to receive news about Murena products and promotions') }}</label>
+							<label for="action-newsletter_product" class="action-checkbox__label">{{ t(appName,'I want to receive news about Murena products and promotions') }}</label>
 						</span>
 					</div>
 				</div>
@@ -151,7 +151,7 @@
 				<button :wide="true"
 					class="btn-primary"
 					type="primary">
-					{{ getLocalizedText('Create My Account') }}
+					{{ t(appName,'Create My Account') }}
 				</button>
 			</div>
 		</form>
@@ -263,10 +263,10 @@ export default {
 			const isEnoughCharacters = this.formData.username.length >= minCharacterCount
 
 			if (!isValidUsername) {
-				this.usernameValidationMessage = this.getLocalizedText('Username must consist of letters, numbers, hyphens, and underscores only.')
+				this.usernameValidationMessage = t(this.appName, 'Username must consist of letters, numbers, hyphens, and underscores only.')
 				this.validation.isUsernameNotValid = true
 			} else if (!isEnoughCharacters) {
-				this.usernameValidationMessage = this.getLocalizedText('Username must be at least 3 characters long.')
+				this.usernameValidationMessage = t(this.appName, 'Username must be at least 3 characters long.')
 				this.validation.isUsernameNotValid = true
 			} else {
 				this.checkUsername()
@@ -282,7 +282,7 @@ export default {
 				const response = await Axios.post(url, data)
 				if (response.status === 400) {
 					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
+					this.usernameValidationMessage = t(this.appName, 'Username is already taken.')
 				}
 				if (response.status === 200) {
 					this.isUsernameAvailable = true
@@ -290,9 +290,9 @@ export default {
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 400) {
-					this.usernameValidationMessage = this.getLocalizedText('Username is already taken.')
+					this.usernameValidationMessage = t(this.appName, 'Username is already taken.')
 				} else {
-					this.usernameValidationMessage = this.getLocalizedText('Something went wrong.')
+					this.usernameValidationMessage = t(this.appName, 'Something went wrong.')
 				}
 			}
 		},
@@ -304,9 +304,6 @@ export default {
 			if (isFormValid) {
 				this.$emit('form-submitted', { isFormValid })
 			}
-		},
-		getLocalizedText(text) {
-			return t(this.appName, text)
 		},
 		onLanguageChange() {
 			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/accounts/' + this.formData.selectedLanguage + '/signup'

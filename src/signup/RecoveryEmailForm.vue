@@ -2,26 +2,26 @@
 	<div id="recoveryEmailForm">
 		<div>
 			<h1 class="has-text-centered subtitle is-3">
-				{{ getLocalizedText('For security reasons you need to set a recovery address for your Murena Cloud account.') }}
+				{{ t(appName,'For security reasons you need to set a recovery address for your Murena Cloud account.') }}
 			</h1>
 			<h1 class="has-text-centered subtitle is-3">
-				{{ getLocalizedText('As long as you don\'t, you\'ll have limited access to your account.') }}
+				{{ t(appName,'As long as you don\'t, you\'ll have limited access to your account.') }}
 			</h1>
 		</div>
 
 		<div id="fields">
 			<div class="field">
 				<div class="control">
-					<label>{{ getLocalizedText('Recovery Email') }}</label>
+					<label>{{ t(appName,'Recovery Email') }}</label>
 					<input id="email"
 						v-model="formData.email"
 						name="email"
 						type="email"
 						class="form-input"
-						:placeholder="getLocalizedText('Recovery Email')"
+						:placeholder="t(appName,'Recovery Email')"
 						@input="validateForm(['email'])">
 					<p v-if="validation.isEmailEmpty" class="validation-warning">
-						{{ getLocalizedText('Recovery Email is required.') }}
+						{{ t(appName,'Recovery Email is required.') }}
 					</p>
 				</div>
 			</div>
@@ -32,13 +32,13 @@
 				class="btn-default w-50"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(false)">
-				{{ getLocalizedText('Later') }}
+				{{ t(appName,'Later') }}
 			</button>
 			<button :wide="true"
 				class="btn-primary w-50"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(true)">
-				{{ getLocalizedText('Set my recovery email address') }}
+				{{ t(appName,'Set my recovery email address') }}
 			</button>
 		</div>
 	</div>
@@ -85,9 +85,6 @@ export default {
 			if (isFormValid) {
 				this.$emit('form-submitted', { isFormValid })
 			}
-		},
-		getLocalizedText(text) {
-			return t(this.appName, text)
 		},
 	},
 }
