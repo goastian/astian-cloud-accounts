@@ -278,15 +278,10 @@ export default {
 				username: this.formData.username,
 			}
 			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
+
 			try {
-				const response = await Axios.post(url, data)
-				if (response.status === 400) {
-					this.validation.isUsernameNotValid = true
-					this.usernameValidationMessage = t(this.appName, 'You chose username is already taken.')
-				}
-				if (response.status === 200) {
-					this.isUsernameAvailable = true
-				}
+				await Axios.post(url, data)
+				this.isUsernameAvailable = true
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 400) {

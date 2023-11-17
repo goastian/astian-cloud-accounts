@@ -83,18 +83,15 @@ export default {
 	methods: {
 		async checkAnswer() {
 			this.validation.isCaptchaInputNotMatched = false
+
 			try {
 				const data = {
 					captchaInput: this.formData.captchaInput,
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
-				const response = await Axios.post(url, data)
-				if (response.status === 200) {
-					const isFormValid = true
-					this.$emit('form-submitted', { isFormValid })
-				} else {
-					this.validation.isCaptchaInputNotMatched = true
-				}
+				await Axios.post(url, data)
+				const isFormValid = true
+				this.$emit('form-submitted', { isFormValid })
 			} catch (error) {
 				this.validation.isCaptchaInputNotMatched = true
 			}
