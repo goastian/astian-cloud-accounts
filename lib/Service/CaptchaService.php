@@ -89,7 +89,7 @@ class CaptchaService {
 	 * @param mixed $operand2 The second operand.
 	 * @param string $operator The mathematical operator ('+' or '-').
 	 *
-	 * @return string The result of calcuulated
+	 * @return float The result of calcuulated
 	 */
 	public function calculateResult($operand1, $operand2, $operator): float {
 		$operand1 = floatval($operand1);
@@ -191,7 +191,7 @@ class CaptchaService {
 	 *
 	 * @return void
 	 */
-	private function updateSession(string $captchaResult): void {
+	private function updateSession(float $captchaResult): void {
 		$this->session->set('captcha_result', $captchaResult);
 		$this->session->set('captcha_verified', false);
 	}
