@@ -89,7 +89,7 @@
 						<p v-if="validation.isRepasswordEmpty" class="validation-warning">
 							{{ t(appName,'Confirm password is required.') }}
 						</p>
-						<p v-for="(error, index) in passworderrors"
+						<p v-for="(error, index) in passwordErrors"
 							:key="index"
 							class="validation-warning">
 							{{ error }}
@@ -194,8 +194,8 @@ export default {
 				{ code: 'it', name: 'Italian' },
 				{ code: 'es', name: 'Spanish' },
 			],
-			passworderrors: [],
-			passwordrules: [
+			passwordErrors: [],
+			passwordRules: [
 				{ message: 'At least 6 characters.', regex: /.{6,}/ },
 				{ message: 'Lowercase letters: a-z.', regex: /[a-z]+/ },
 				{ message: 'Uppercase letters: a-z.', regex: /[A-Z]+/ },
@@ -238,14 +238,14 @@ export default {
 			}
 		},
 		async passwordValidation() {
-			this.passworderrors = []
+			this.passwordErrors = []
 			this.validation.isPasswordNotValid = false
 
 			if (this.formData.password) {
 				let isValid = true
-				for (const condition of this.passwordrules) {
+				for (const condition of this.passwordRules) {
 					if (!condition.regex.test(this.formData.password)) {
-						this.passworderrors.push(condition.message)
+						this.passwordErrors.push(condition.message)
 						isValid = false // Set flag to false if the password fails any condition
 					}
 				}

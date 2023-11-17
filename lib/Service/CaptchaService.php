@@ -91,7 +91,7 @@ class CaptchaService {
 	 *
 	 * @return float The result of calcuulated
 	 */
-	public function calculateResult($operand1, $operand2, $operator): float {
+	private function calculateResult($operand1, $operand2, $operator): float {
 		$operand1 = floatval($operand1);
 		$operand2 = floatval($operand2);
 		

@@ -93,18 +93,10 @@ class UserService {
 	}
 
 	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
-		try {
-			$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
-		} catch (Exception $e) {
-			throw new Exception("setRecoveryEmail error: " . $e->getMessage());
-		}
+		$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
 	}
 	public function setTOS(string $uid, bool $tosAccepted): void {
-		try {
-			$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
-		} catch (Exception $e) {
-			throw new Exception("setTOS error: " . $e->getMessage());
-		}
+		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 	}
 
 	public function getHMEAliasesFromConfig($uid) : array {
@@ -164,7 +156,7 @@ class UserService {
 
 		return null;
 	}
-	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language) : void {
+	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en') : void {
 		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
@@ -202,7 +194,7 @@ class UserService {
 	public function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
-	public function setUserLanguage(string $username, string $language) {
+	public function setUserLanguage(string $username, string $language = 'en') {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
 	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID) : \SendGrid\Mail\Mail {
@@ -239,19 +231,15 @@ class UserService {
 	 * @return array An array containing information about the registered user.
 	 * @throws Exception If the username or recovery email is already taken.
 	 */
-	public function registerUser(string $displayname, string $recoveryemail, string $username, string $userEmail, string $password): array {
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 
-		$userExists = $this->userExists($username);
-		if ($userExists) {
+		if ($this->userExists($username)) {
 			throw new Exception("Username is already taken.");
 		}
-		if($recoveryemail !== '') {
-			$emailExists = $this->checkRecoveryEmailAvailable($recoveryemail);
-			if ($emailExists) {
-				throw new Exception("Recovery email address is already taken.");
-			}
+		if (empty($recoveryEmail) || $this->checkRecoveryEmailAvailable($recoveryEmail)) {
+			throw new Exception("Recovery email address is already taken.");
 		}
-		return $this->addNewUserToLDAP($displayname, $recoveryemail, $username, $userEmail, $password);
+		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
 	}
 	/**
@@ -266,7 +254,7 @@ class UserService {
 	 * @return array Information about the added user.
 	 * @throws Exception If there is an error while creating the Murena account.
 	 */
-	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
+	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): ?array {
 		try {
 			$connection = $this->LDAPConnectionService->getLDAPConnection();
 			$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
@@ -295,7 +283,7 @@ class UserService {
 			return $newUserEntry;
 		} catch (Exception $e) {
 			$this->logger->error('Error adding adding new user to LDAP: ' . $username . ': ' . $e->getMessage());
-			return ['error' => 'Error while creating Murena account.'];
+			return null;
 		}
 	}
 	/**
@@ -306,6 +294,7 @@ class UserService {
 	 * @return bool True if the recovery email address is available, false otherwise.
 	 */
 	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
+		$recoveryEmail = strtolower($recoveryEmail);
 		$users = $this->config->getUsersForUserValue('email-recovery', 'recovery-email', $recoveryEmail);
 		if(count($users)) {
 			return true;

@@ -189,7 +189,6 @@ class AccountController extends Controller {
 	 */
 	public function verifyCaptcha(string $humanverification = '') : DataResponse {
 		$response = new DataResponse();
-		$this->session->set('captcha_verified', false);
 		
 		$captchaResult = (string)$this->session->get('captcha_result', '');
 		$response->setStatus(400);
