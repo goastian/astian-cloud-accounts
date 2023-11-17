@@ -400,46 +400,4 @@ class UserService {
 		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
 	}
-	/**
-	 * Calculate the result of a mathematical operation.
-	 *
-	 * @param mixed $operand1 The first operand.
-	 * @param mixed $operand2 The second operand.
-	 * @param string $operator The mathematical operator ('+' or '-').
-	 *
-	 * @return mixed|null The result of the calculation, or null if the operator is invalid.
-	 */
-	public function calculateResult($operand1, $operand2, $operator): mixed {
-		$operand1 = floatval($operand1);
-		$operand2 = floatval($operand2);
-	
-		switch ($operator) {
-			case '+':
-				return $operand1 + $operand2;
-			case '-':
-				return $operand1 - $operand2;
-			default:
-				return null;
-		}
-	}
-	/**
-	 * Check if the provided human verification code matches the calculated result of a mathematical operation.
-	 *
-	 * @param mixed $operand1 The first operand.
-	 * @param mixed $operand2 The second operand.
-	 * @param string $operator The mathematical operator ('+' or '-').
-	 * @param mixed $humanverificationCode The human verification code provided by the user.
-	 *
-	 * @return bool True if the provided code does not match the calculated result, false otherwise.
-	 */
-	public function checkAnswer($operand1, $operand2, string $operator, $humanverificationCode): bool {
-		// Calculate the result of the mathematical operation
-		$result = $this->calculateResult($operand1, $operand2, $operator);
-
-		$captchaResult = intval($result, 10);
-		$humanVerificationCode = intval($humanverificationCode, 10);
-
-		// Check if the provided code matches the calculated result
-		return $humanVerificationCode !== $captchaResult;
-	}
 }

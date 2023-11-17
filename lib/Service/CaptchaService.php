@@ -74,11 +74,37 @@ class CaptchaService {
 		// Destroy the image resource
 		imagedestroy($image);
 
-		// Update session with the operands and operator
-		$this->updateSession($num1, $num2, $sym);
+		// Calculate result
+		$result = $this->calculateResult($num1, $num2, $sym);
+
+		// Update session with the result
+		$this->updateSession($result);
 
 		// Return the binary representation of the generated image
 		return $imageData;
+	}
+	/**
+	 * Calculate the result of a mathematical operation.
+	 *
+	 * @param mixed $operand1 The first operand.
+	 * @param mixed $operand2 The second operand.
+	 * @param string $operator The mathematical operator ('+' or '-').
+	 *
+	 * @return string The result of calcuulated
+	 */
+	public function calculateResult($operand1, $operand2, $operator): float {
+		$operand1 = floatval($operand1);
+		$operand2 = floatval($operand2);
+		
+		switch ($operator) {
+			case '+':
+				return $operand1 + $operand2;
+			case '-':
+				return $operand1 - $operand2;
+			default:
+				return 0;
+		}
+		
 	}
 
 	/**
@@ -162,16 +188,12 @@ class CaptchaService {
 	/**
 	 * Update session variables with provided numeric operands and operator symbols.
 	 *
-	 * @param string $num1 The first numeric operand.
-	 * @param string $num2 The second numeric operand.
-	 * @param string $symbol The operator symbol.
+	 * @param string $captchaResult Captcha Result.
 	 *
 	 * @return void
 	 */
-	private function updateSession(string $num1, string $num2, string $symbol): void {
-		$this->session->set('operand1', $num1);
-		$this->session->set('operand2', $num2);
-		$this->session->set('operator', $symbol);
+	private function updateSession(string $captchaResult): void {
+		$this->session->set('captcha_result', $captchaResult);
 		$this->session->set('captcha_verified', false);
 	}
 

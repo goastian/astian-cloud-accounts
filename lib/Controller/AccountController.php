@@ -183,20 +183,12 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function verifyCaptcha(string $humanverification = '') : DataResponse {
-		
+		$response = new DataResponse();
 		$this->session->set('captcha_verified', false);
 		
-		$operand1 = $this->session->get('operand1');
-		$operand2 = $this->session->get('operand2');
-		$operator = $this->session->get('operator');
-		
-		$response = new DataResponse();
+		$captchaResult = $this->session->get('captcha_result', '');
 		$response->setStatus(400);
-		if (!$humanverification || !$operand1 || !$operand2 || !$operator) {
-			return $response;
-		}
-		
-		if (!$this->userService->checkAnswer($operand1, $operand2, $operator, $humanverification)) {
+		if ($captchaResult === $humanverification) {
 			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
 		}
