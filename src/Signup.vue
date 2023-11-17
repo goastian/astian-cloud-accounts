@@ -4,7 +4,7 @@
 			<div id="registration">
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
 				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
-				<RecoveryEmailForm v-if="showRecoverEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
+				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" v-model="formData" />
 			</div>
 		</section>
@@ -47,7 +47,7 @@ export default {
 			appName: APPLICATION_NAME,
 			showRegistrationForm: true,
 			showCaptchaForm: false,
-			showRecoverEmailForm: false,
+			showRecoveryEmailForm: false,
 			showSuccessSection: false,
 		}
 	},
@@ -56,14 +56,14 @@ export default {
 			if (data.isFormValid) {
 				this.showRegistrationForm = false
 				this.showCaptchaForm = true
-				this.showRecoverEmailForm = false
+				this.showRecoveryEmailForm = false
 			}
 		},
 		submitCaptchaForm(data) {
 			if (data.isFormValid) {
 				this.showRegistrationForm = false
 				this.showCaptchaForm = false
-				this.showRecoverEmailForm = true
+				this.showRecoveryEmailForm = true
 			}
 		},
 		submitRecoveryEmailForm(data) {
@@ -85,7 +85,7 @@ export default {
 				if (response.data.success) {
 					this.showRegistrationForm = false
 					this.showCaptchaForm = false
-					this.showRecoverEmailForm = false
+					this.showRecoveryEmailForm = false
 					this.showSuccessSection = true
 				} else {
 					this.showMessage(this.getLocalizedText(response.data.message), 'error')
