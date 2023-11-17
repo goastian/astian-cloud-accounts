@@ -11,18 +11,18 @@
 				<div class="field">
 					<div class="control">
 						<label>{{ t(appName,'Human Verification') }}<sup>*</sup></label>
-						<div class="humanverification-group">
-							<input id="humanverification"
-								v-model="formData.humanverification"
-								name="humanverification"
+						<div class="captchaInput-group">
+							<input id="captchaInput"
+								v-model="formData.captchaInput"
+								name="captchaInput"
 								class="form-input"
 								:placeholder="t(appName,'Human Verification')"
 								type="text">
 						</div>
-						<p v-if="validation.isHumanverificationEmpty" class="validation-warning">
+						<p v-if="validation.isCaptchaInputEmpty" class="validation-warning">
 							{{ t(appName,'Human Verification is required.') }}
 						</p>
-						<p v-else-if="validation.isHumanverificationNotMatched"
+						<p v-else-if="validation.isCaptchaInputNotMatched"
 							class="validation-warning">
 							{{ t(appName,'Human Verification code is not correct.') }}
 						</p>
@@ -64,8 +64,8 @@ export default {
 		return {
 			appName: APPLICATION_NAME,
 			validation: {
-				isHumanverificationEmpty: false,
-				isHumanverificationNotMatched: false,
+				isCaptchaInputEmpty: false,
+				isCaptchaInputNotMatched: false,
 			},
 			captchaImageUrl: generateUrl(`/apps/${APPLICATION_NAME}/accounts/captcha`),
 		}
@@ -82,10 +82,10 @@ export default {
 	},
 	methods: {
 		async checkAnswer() {
-			this.validation.isHumanverificationNotMatched = false
+			this.validation.isCaptchaInputNotMatched = false
 			try {
 				const data = {
-					humanverification: this.formData.humanverification,
+					captchaInput: this.formData.captchaInput,
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				const response = await Axios.post(url, data)
@@ -93,15 +93,15 @@ export default {
 					const isFormValid = true
 					this.$emit('form-submitted', { isFormValid })
 				} else {
-					this.validation.isHumanverificationNotMatched = true
+					this.validation.isCaptchaInputNotMatched = true
 				}
 			} catch (error) {
-				this.validation.isHumanverificationNotMatched = true
+				this.validation.isCaptchaInputNotMatched = true
 			}
 		},
 		submitCaptchaForm() {
-			this.validation.isHumanverificationEmpty = this.formData.humanverification === ''
-			if (!this.validation.isHumanverificationEmpty) {
+			this.validation.isCaptchaInputEmpty = this.formData.captchaInput === ''
+			if (!this.validation.isCaptchaInputEmpty) {
 				this.checkAnswer()
 			}
 		},

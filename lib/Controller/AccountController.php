@@ -183,16 +183,16 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param string $humanverification The user-provided human verification input.
+	 * @param string $captchaInput The user-provided human verification input.
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $humanverification = '') : DataResponse {
+	public function verifyCaptcha(string $captchaInput = '') : DataResponse {
 		$response = new DataResponse();
 		
 		$captchaResult = (string)$this->session->get('captcha_result', '');
 		$response->setStatus(400);
-		if ($captchaResult === $humanverification) {
+		if ($captchaResult === $captchaInput) {
 			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
 		}

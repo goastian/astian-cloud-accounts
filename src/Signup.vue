@@ -37,7 +37,7 @@ export default {
 				username: '',
 				password: '',
 				repassword: '',
-				humanverification: '',
+				captchaInput: '',
 				email: '',
 				accepttns: false,
 				newsletter_eos: false,
