@@ -11,6 +11,7 @@ use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
@@ -71,7 +72,14 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = ''): DataResponse {
+		
 		$response = new DataResponse();
+		
+		if(!$this->session->get('captcha_verified')) {
+			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
+			$response->setStatus(400);
+			return $response;
+		}
 
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
@@ -86,12 +94,6 @@ class AccountController extends Controller {
 				$response->setStatus(400);
 				return $response;
 			}
-		}
-		
-		if(!$this->session->get('captcha_verified')) {
-			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
-			$response->setStatus(400);
-			return $response;
 		}
 		
 		try {
@@ -131,9 +133,9 @@ class AccountController extends Controller {
 	 *
 	 * @return string|null If validation fails, a string describing the error; otherwise, null.
 	 */
-	public function validateInput(string $inputName, string $value, int $maxLength = null) : mixed {
+	public function validateInput(string $inputName, string $value, int $maxLength = null) : ?string {
 		if ($value === '') {
-			return "$inputName is missing.";
+			return "$inputName is required.";
 		}
 	
 		if ($maxLength !== null && strlen($value) > $maxLength) {
@@ -155,10 +157,9 @@ class AccountController extends Controller {
 	 */
 	public function checkUsernameAvailable(string $username) : DataResponse {
 		$response = new DataResponse();
+		$response->setStatus(400);
 		if (!$this->userService->userExists($username)) {
 			$response->setStatus(200);
-		} else {
-			$response->setStatus(400);
 		}
 		return $response;
 	}
@@ -168,8 +169,13 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function captcha():void {
-		echo $this->captchaService->generateCaptcha();
+	public function captcha(): Http\DataDisplayResponse {
+		$captchaValue = $this->captchaService->generateCaptcha();
+
+		$response = new Http\DataDisplayResponse($captchaValue, Http::STATUS_OK, ['Content-Type' => 'image/png']);
+		$response->cacheFor(3600 * 24, false, false);
+
+		return $response;
 	}
 	/**
 	 * Verify a human verification input against captcha session values.
