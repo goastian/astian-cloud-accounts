@@ -102,6 +102,6 @@ class LDAPConnectionService {
 		return $this->ldapConfig->ldapUserDisplayName;
 	}
 	public function getLdapQuota() {
-		return $this->config->getSystemValue('default_quota', '1000');
+		return $this->config->getSystemValue('default_quota', '1024');
 	}
 }
