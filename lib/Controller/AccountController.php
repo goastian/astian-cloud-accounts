@@ -193,6 +193,7 @@ class AccountController extends Controller {
 		$captchaResult = (string)$this->session->get('captcha_result', '');
 		$response->setStatus(400);
 		if ($captchaResult === $captchaInput) {
+			$this->session->remove('captcha_result');
 			$this->session->set('captcha_verified', true);
 			$response->setStatus(200);
 		}

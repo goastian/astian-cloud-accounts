@@ -18,11 +18,11 @@ class CaptchaService {
 		$this->session = $session;
 	}
 	/**
-	 * Generate a CAPTCHA image and return its binary representation.
+	 * Generate a captcha image and return its binary representation.
 	 *
-	 * @return string The binary representation of the generated CAPTCHA image.
+	 * @return string|null Binary representation of the generated image, or null on failure.
 	 */
-	public function generateCaptcha(): string {
+	public function generateCaptcha(): ?string {
 		// Configuration parameters
 		$width = self::WIDTH;
 		$height = self::HEIGHT;
@@ -33,7 +33,10 @@ class CaptchaService {
 		// Create the initial image resource
 		$im = imagecreatetruecolor($width, $height);
 		$ns = imagecolorallocate($im, 200, 200, 200); // Noise color
-		$image = imagecreate($width, $height) or die('Unable to initialize GD');
+		$image = imagecreate($width, $height);
+		if (!$image) {
+			return;
+		}
 	
 		// Draw random lines on the image
 		$this->drawRandomLines($image, 10);
@@ -73,6 +76,8 @@ class CaptchaService {
 		// Destroy the image resource
 		imagedestroy($image);
 	
+		$num1 = intval($num1);
+		$num2 = intval($num2);
 		// Calculate result
 		$result = $this->calculateResult($num1, $num2, $sym);
 	
@@ -85,15 +90,13 @@ class CaptchaService {
 	/**
 	 * Calculate the result of a mathematical operation.
 	 *
-	 * @param mixed $operand1 The first operand.
-	 * @param mixed $operand2 The second operand.
+	 * @param int $operand1 The first operand.
+	 * @param int $operand2 The second operand.
 	 * @param string $operator The mathematical operator ('+' or '-').
 	 *
-	 * @return float The result of calcuulated
+	 * @return int The result of calcuulated
 	 */
-	private function calculateResult($operand1, $operand2, $operator): float {
-		$operand1 = floatval($operand1);
-		$operand2 = floatval($operand2);
+	private function calculateResult(int $operand1, int $operand2,string $operator): int {
 		
 		switch ($operator) {
 			case '+':
