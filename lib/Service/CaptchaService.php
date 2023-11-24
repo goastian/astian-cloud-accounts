@@ -96,7 +96,7 @@ class CaptchaService {
 	 *
 	 * @return int The result of calcuulated
 	 */
-	private function calculateResult(int $operand1, int $operand2,string $operator): int {
+	private function calculateResult(int $operand1, int $operand2, string $operator): int {
 		
 		switch ($operator) {
 			case '+':
