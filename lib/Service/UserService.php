@@ -182,7 +182,7 @@ class UserService {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			$this->logger->error('Error sending username: ' . $username . ': ' . $e->getMessage());
+			$this->logger->error('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
 		}
 	}
 	private function getSendGridAPIKey() : string {
