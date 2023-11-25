@@ -79,10 +79,9 @@ export default {
 			if (setrecoveryemail) {
 				this.validateForm(['email'])
 				isFormValid = Object.values(this.validation).every(value => !value)
+				this.$emit('form-submitted', { isFormValid })
 			} else {
 				this.email = ''
-			}
-			if (isFormValid) {
 				this.$emit('form-submitted', { isFormValid })
 			}
 		},
