@@ -236,7 +236,7 @@ class UserService {
 		if ($this->userExists($username)) {
 			throw new Exception("Username is already taken.");
 		}
-		if (!empty($recoveryEmail) || $this->checkRecoveryEmailAvailable($recoveryEmail)) {
+		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
 			throw new Exception("Recovery email address is already taken.");
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
