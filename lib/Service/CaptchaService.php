@@ -196,7 +196,6 @@ class CaptchaService {
 	 */
 	private function updateSession(float $captchaResult): void {
 		$this->session->set('captcha_result', $captchaResult);
-		$this->session->set('captcha_verified', false);
 	}
 
 	
