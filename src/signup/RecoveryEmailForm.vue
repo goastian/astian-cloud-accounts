@@ -31,13 +31,13 @@
 			<button :wide="true"
 				class="btn-default w-50"
 				type="primary"
-				@click.prevent="laterSubmit()">
+				@click.prevent="submitRecoveryEmailForm(false)">
 				{{ t(appName,'Later') }}
 			</button>
 			<button :wide="true"
 				class="btn-primary w-50"
 				type="primary"
-				@click.prevent="submitRecoveryEmailForm()">
+				@click.prevent="submitRecoveryEmailForm(true)">
 				{{ t(appName,'Set my recovery email address') }}
 			</button>
 		</div>
@@ -74,16 +74,16 @@ export default {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
 			})
 		},
-		laterSubmit() {
-			const isFormValid = true
-			this.email = ''
-			this.$emit('form-submitted', { isFormValid })
-		},
-		submitRecoveryEmailForm() {
+		submitRecoveryEmailForm(setrecoveryemail) {
 			let isFormValid = true
-			this.validateForm(['email'])
-			isFormValid = Object.values(this.validation).every(value => !value)
-			this.$emit('form-submitted', { isFormValid })
+			if (setrecoveryemail) {
+				this.validateForm(['email'])
+				isFormValid = Object.values(this.validation).every(value => !value)
+				this.$emit('form-submitted', { isFormValid })
+			} else {
+				this.formData.email = ''
+				this.$emit('form-submitted', { isFormValid })
+			}
 		},
 	},
 }
