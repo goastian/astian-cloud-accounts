@@ -35,7 +35,7 @@ class CaptchaService {
 		$ns = imagecolorallocate($im, 200, 200, 200); // Noise color
 		$image = imagecreate($width, $height);
 		if (!$image) {
-			return;
+			return null;
 		}
 	
 		// Draw random lines on the image
