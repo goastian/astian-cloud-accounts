@@ -473,9 +473,6 @@ p.validation-success:before {
 	border-color: var(--color-primary);
 	font-size: large;
 }
-.password-group div div {
-    margin-bottom: 0;
-}
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	.fields .field .control input {
