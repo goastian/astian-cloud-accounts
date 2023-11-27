@@ -473,7 +473,7 @@ p.validation-success:before {
 	border-color: var(--color-primary);
 	font-size: large;
 }
-.password-group div {
+.password-group div div {
     margin-bottom: 0;
 }
 /** mobile font sizes **/
