@@ -102,16 +102,15 @@ class AccountController extends Controller {
 
 			$newUserEntry = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
 			
+			$this->userService->setAccountDataLocally($username, $userEmail, $newUserEntry['quota']);
 			$this->userService->createHMEAlias($username, $userEmail);
 			$this->userService->createNewDomainAlias($username, $userEmail);
-			
 			$this->userService->setTOS($username, true);
 			$this->userService->setUserLanguage($username, $language);
 			
 			if($recoveryEmail !== '') {
 				$this->userService->setRecoveryEmail($username, $recoveryEmail);
 			}
-			$this->userService->setAccountDataLocally($username, $userEmail, $newUserEntry['quota']);
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
