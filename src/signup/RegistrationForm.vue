@@ -308,6 +308,9 @@ export default {
 </script>
 
 <style scoped>
+#registrationForm{
+	width: 90%;
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
