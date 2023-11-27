@@ -369,8 +369,8 @@ export default {
 	font-size: 12px;
 	width: 100%;
 }
-.password-group div {
-    margin-bottom: 0;
+.password-group {
+    display: flex;
 }
 .password-group .Password{
 	flex-grow: 1;
@@ -472,6 +472,9 @@ p.validation-success:before {
 	color: white;
 	border-color: var(--color-primary);
 	font-size: large;
+}
+.password-group div {
+    margin-bottom: 0;
 }
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
