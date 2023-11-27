@@ -113,7 +113,7 @@
 							<label for="action-tns" class="action-checkbox__label" v-html="t(appName,'I have read and accept the <a href=\'http://murena.io/apps/terms_of_service/en/termsandconditions\' target=\'_blank\'>Terms of Service</a>.')" />
 						</span>
 
-						<p v-if="validation.isAccepttnsEmpty" class="validation-error">
+						<p v-if="validation.isAccepttnsEmpty" class="validation-warning">
 							{{ t(appName,'You must read and accept the Terms of Service to create your account.') }}
 						</p>
 					</div>
@@ -472,6 +472,9 @@ p.validation-success:before {
 	color: white;
 	border-color: var(--color-primary);
 	font-size: large;
+}
+.Password__strength-meter{
+	margin-bottom: 0;
 }
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
