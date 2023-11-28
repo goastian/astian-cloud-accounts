@@ -5,21 +5,27 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Service;
 
 use Exception;
+use OCA\User_LDAP\Configuration;
+use OCA\User_LDAP\Helper;
+use OCP\IConfig;
 use OCP\IUserManager;
 
 class LDAPConnectionService {
 	/** @var IUserManager */
 	private $userManager;
-
 	private $configuration;
-
 	private $ldapEnabled;
-
 	private $access;
+	private $ldapConfig;
+	private IConfig $config;
 
-	public function __construct(IUserManager $userManager) {
+	public function __construct(IUserManager $userManager, Helper $ldapBackendHelper, IConfig $config) {
 		$this->userManager = $userManager;
 		$this->getConfigurationFromBackend();
+		$ldapConfigPrefixes = $ldapBackendHelper->getServerConfigurationPrefixes(true);
+		$prefix = array_shift($ldapConfigPrefixes);
+		$this->ldapConfig = new Configuration($prefix);
+		$this->config = $config;
 	}
 
 
@@ -47,22 +53,13 @@ class LDAPConnectionService {
 		return $backend->getBackendName() === 'LDAP';
 	}
 
-	public function isLDAPEnabled() : bool {
+	public function isLDAPEnabled(): bool {
 		return $this->ldapEnabled;
 	}
 
 	public function username2dn(string $username) {
 		return $this->access->username2dn($username);
 	}
-	
-
-	public function getUserBaseDn() : string {
-		if (isset($this->configuration['ldap_base_users'])) {
-			return $this->configuration['ldap_base_users'];
-		}
-		throw new Exception('User Base Dn not set!');
-	}
-
 	public function getLDAPConnection() {
 		if (!$this->ldapEnabled) {
 			throw new Exception('LDAP backend is not enabled');
@@ -83,7 +80,7 @@ class LDAPConnectionService {
 		return $conn;
 	}
 
-	public function closeLDAPConnection($conn) : void {
+	public function closeLDAPConnection($conn): void {
 		ldap_close($conn);
 	}
 
@@ -92,5 +89,19 @@ class LDAPConnectionService {
 			throw new Exception('Access not defined!');
 		}
 		return $this->access;
+	}
+
+	public function getLDAPBaseUsers(): array {
+		$bases = $this->ldapConfig->ldapBaseUsers;
+		if (empty($bases)) {
+			$bases = $this->ldapConfig->ldapBase;
+		}
+		return $bases;
+	}
+	public function getDisplayNameAttribute(): string {
+		return $this->ldapConfig->ldapUserDisplayName;
+	}
+	public function getLdapQuota() {
+		return $this->config->getSystemValue('default_quota', '1024');
 	}
 }
