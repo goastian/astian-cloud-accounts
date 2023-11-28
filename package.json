@@ -9,8 +9,8 @@
 	"private": true,
 	"scripts": {
 		"build": "NODE_ENV=production webpack --progress",
-    	"dev": "NODE_ENV=development webpack --progress",
-    	"watch": "NODE_ENV=development webpack --progress --watch",
+		"dev": "NODE_ENV=development webpack --progress",
+		"watch": "NODE_ENV=development webpack --progress --watch",
 		"lint": "eslint --ext .js,.vue src",
 		"lint:fix": "eslint --ext .js,.vue src --fix",
 		"stylelint": "stylelint {src,css}/**/{*.scss,*.css} --allow-empty-input",
@@ -23,7 +23,8 @@
 		"@nextcloud/l10n": "^1.6.0",
 		"@nextcloud/router": "^2.0.0",
 		"@nextcloud/vue": "^5.4.0",
-		"vue": "^2.7.0"
+		"vue": "^2.7.0",
+		"vue-password-strength-meter": "^1.7.2"
 	},
 	"browserslist": [
 		"extends @nextcloud/browserslist-config"
