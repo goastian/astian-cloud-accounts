@@ -44,6 +44,7 @@ class AccountController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
+	 * @UseSession
 	 * @NoCSRFRequired
 	 *
 	 * @param string $lang Language code (default: 'en')
