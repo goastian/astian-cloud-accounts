@@ -13,9 +13,11 @@ use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\ISession;
+use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
 
 class AccountController extends Controller {
@@ -25,12 +27,16 @@ class AccountController extends Controller {
 	private $captchaService;
 	protected $l10nFactory;
 	private $session;
+	private $userSession;
+	private $urlGenerator;
 	public function __construct(
 		$AppName,
 		IRequest $request,
 		UserService $userService,
 		CaptchaService $captchaService,
 		IFactory $l10nFactory,
+		IUserSession $userSession,
+		IURLGenerator $urlGenerator,
 		ISession $session
 	) {
 		parent::__construct($AppName, $request);
@@ -39,18 +45,22 @@ class AccountController extends Controller {
 		$this->captchaService = $captchaService;
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
+		$this->userSession = $userSession;
+		$this->urlGenerator = $urlGenerator;
 	}
 
 	/**
 	 * @NoAdminRequired
-	 * @UseSession
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
 	 * @param string $lang Language code (default: 'en')
 	 *
-	 * @return \OCP\AppFramework\Http\TemplateResponse
 	 */
 	public function index(string $lang = 'en') {
+		if ($this->userSession->isLoggedIn()) {
+			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
+		}
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
