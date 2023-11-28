@@ -43,7 +43,6 @@ class AccountController extends Controller {
 
 	/**
 	 * @NoAdminRequired
-	 * @PublicPage
 	 * @UseSession
 	 * @NoCSRFRequired
 	 *
