@@ -12,6 +12,7 @@ use OCP\IConfig;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IUserSession;
+use OCP\Util;
 
 class BeforeTemplateRenderedListener implements IEventListener {
 	private $userSession;
