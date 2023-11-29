@@ -301,7 +301,7 @@ export default {
 			}
 		},
 		onLanguageChange() {
-			window.location.href = `${window.location.origin}/apps/${APPLICATION_NAME}/accounts/signup?lang=${this.formData.selectedLanguage}`
+			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/accounts/' + this.formData.selectedLanguage + '/signup'
 		},
 	},
 }

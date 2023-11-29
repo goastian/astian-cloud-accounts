@@ -30,6 +30,8 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
+	private const SELECTED_LANGUAGE_KEY = 'selected_language';
+
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -62,6 +64,8 @@ class AccountController extends Controller {
 		if ($this->userSession->isLoggedIn()) {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
+
+		$this->session->set(self::SELECTED_LANGUAGE_KEY, $lang);
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
