@@ -21,18 +21,20 @@ class BeforeTemplateRenderedListener implements IEventListener {
 	private $session;
 	private $config;
 	private $appManager;
+	private Util $util;
 
 	private const SNAPPYMAIL_APP_ID = 'snappymail';
 	private const SNAPPYMAIL_URL = '/apps/snappymail/';
 	private const SNAPPYMAIL_AUTOLOGIN_PWD = '1';
 
-	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager) {
+	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager, Util $util) {
 		$this->appName = $appName;
 		$this->userSession = $userSession;
 		$this->request = $request;
 		$this->session = $session;
 		$this->config = $config;
 		$this->appManager = $appManager;
+		$this->util = $util;
 	}
 
 	public function handle(Event $event): void {
