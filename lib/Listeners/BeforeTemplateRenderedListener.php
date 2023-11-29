@@ -41,6 +41,10 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if ($this->userSession->isLoggedIn() && $this->appManager->isEnabledForUser(self::SNAPPYMAIL_APP_ID) && strpos($this->request->getPathInfo(), self::SNAPPYMAIL_URL) !== false) {
 			$this->autoLoginWebmail();
 		}
+		$pathInfo = $this->request->getPathInfo();
+		if (strpos($pathInfo, '/apps/snappymail/') !== false) {
+			$this->util->addScript($this->appName, 'snappymail');
+		}
 	}
 
 
@@ -73,11 +77,6 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if ($this->config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
 			return $this->config->getUserValue($username, 'settings', 'email', '');
 		}
-		$pathInfo = $this->request->getPathInfo();
-		if (strpos($pathInfo, '/apps/snappymail/') !== false) {
-			$this->util->addScript($this->appName, 'snappymail');
-		}
-
 
 	}
 }
