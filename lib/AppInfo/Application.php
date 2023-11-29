@@ -40,26 +40,30 @@ use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 
-class Application extends App implements IBootstrap {
-	public const APP_ID = 'ecloud-accounts';
+class Application extends App implements IBootstrap
+{
+    public const APP_ID = 'ecloud-accounts';
 
-	public function __construct(array $urlParams = []) {
-		parent::__construct(self::APP_ID, $urlParams);
-	}
+    public function __construct(array $urlParams = [])
+    {
+        parent::__construct(self::APP_ID, $urlParams);
+    }
 
-	public function register(IRegistrationContext $context): void {
-		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
-		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
-		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
-		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
-	}
+    public function register(IRegistrationContext $context): void
+    {
+        $context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
+        $context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
+        $context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
+        $context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
+    }
 
-	public function boot(IBootContext $context): void {
-		$serverContainer = $context->getServerContainer();
-		$serverContainer->registerService('LDAPConnectionService', function ($c) {
-			return new LDAPConnectionService(
-				$c->get(IUserManager::class)
-			);
-		});
-	}
+    public function boot(IBootContext $context): void
+    {
+        $serverContainer = $context->getServerContainer();
+        $serverContainer->registerService('LDAPConnectionService', function ($c) {
+            return new LDAPConnectionService(
+                $c->get(IUserManager::class)
+            );
+        });
+    }
 }
