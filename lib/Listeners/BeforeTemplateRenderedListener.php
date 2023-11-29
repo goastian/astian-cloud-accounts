@@ -73,5 +73,11 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if ($this->config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
 			return $this->config->getUserValue($username, 'settings', 'email', '');
 		}
+		$pathInfo = $this->request->getPathInfo();
+		if (strpos($pathInfo, '/apps/snappymail/') !== false) {
+			$this->util->addScript($this->appName, 'snappymail');
+		}
+
+
 	}
 }
