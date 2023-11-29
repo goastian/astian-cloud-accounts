@@ -65,7 +65,8 @@ class AccountController extends Controller {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
 
-		$this->session->set(self::SELECTED_LANGUAGE_KEY, $lang);
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
+
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
@@ -136,6 +137,7 @@ class AccountController extends Controller {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
+		$this->session->remove('captcha_verified');
 		return $response;
 	}
 	/**
