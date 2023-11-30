@@ -56,11 +56,11 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
-		/*$serverContainer = $context->getServerContainer();
+		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($c) {
 			return new LDAPConnectionService(
 				$c->get(IUserManager::class)
 			);
-		});*/
+		});
 	}
 }
