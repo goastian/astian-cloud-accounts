@@ -48,9 +48,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		\OC::$server->getLogger()->error("here it is");
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
-		\OC::$server->getLogger()->error("here it is after");
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
@@ -58,7 +56,7 @@ class Application extends App implements IBootstrap {
 
 	public function boot(IBootContext $context): void {
 		$serverContainer = $context->getServerContainer();
-		$serverContainer->registerService('LDAPConnectionService', function ($c) {
+		$serverContainer->registerService('LDAPConnectionService', function ($context) {
 			return new LDAPConnectionService(
 				$c->get(IUserManager::class)
 			);
