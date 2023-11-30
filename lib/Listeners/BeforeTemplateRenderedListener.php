@@ -48,7 +48,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		}
 		$pathInfo = $this->request->getPathInfo();
 		if (strpos($pathInfo, '/apps/snappymail/') !== false) {
-			$this->util->addScript($this->appName,  $this->appName .'-snappymail');
+			$this->util->addScript($this->appName, $this->appName .'-snappymail');
 		}
 	}
 
