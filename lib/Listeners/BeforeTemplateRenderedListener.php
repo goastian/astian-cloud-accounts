@@ -38,9 +38,11 @@ class BeforeTemplateRenderedListener implements IEventListener {
 	}
 
 	public function handle(Event $event): void {
+		\OC::$server->getLogger()->error("cal data new before");
 		if (!($event instanceof BeforeTemplateRenderedEvent)) {
 			return;
 		}
+		\OC::$server->getLogger()->error("cal data new");
 		if ($this->userSession->isLoggedIn() && $this->appManager->isEnabledForUser(self::SNAPPYMAIL_APP_ID) && strpos($this->request->getPathInfo(), self::SNAPPYMAIL_URL) !== false) {
 			$this->autoLoginWebmail();
 		}
