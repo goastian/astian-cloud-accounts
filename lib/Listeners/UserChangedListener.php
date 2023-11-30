@@ -34,6 +34,7 @@ class UserChangedListener implements IEventListener {
 	}
 
 	public function handle(Event $event): void {
+		\OC::$server->getLogger()->error(">>>>>>>> UserChangedListener <<<<<<<<");
 		if (!($event instanceof UserChangedEvent)) {
 			return;
 		}
@@ -41,6 +42,10 @@ class UserChangedListener implements IEventListener {
 		$feature = $event->getFeature();
 		$user = $event->getUser();
 		$username = $user->getUID();
+
+		\OC::$server->getLogger()->error(">>>>>>>> username:: " . $username);
+		\OC::$server->getLogger()->error(">>>>>>>> feature:: " . $feature);
+		\OC::$server->getLogger()->error(">>>>>>>> user:: " . $user);
 		
 		if ($feature === self::QUOTA_FEATURE) {
 			$updatedQuota = $event->getValue();
