@@ -58,7 +58,7 @@ class Application extends App implements IBootstrap {
 		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($context) {
 			return new LDAPConnectionService(
-				$c->get(IUserManager::class)
+				$context->get(IUserManager::class)
 			);
 		});
 	}
