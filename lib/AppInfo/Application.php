@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
@@ -37,8 +36,10 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\IUserManager;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
+use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
