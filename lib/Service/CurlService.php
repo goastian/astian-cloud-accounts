@@ -14,6 +14,8 @@ namespace OCA\EcloudAccounts\Service;
 use Exception;
 
 class CurlService {
+
+	private int $lastStatusCode = 0;
 	/**
 	 * GET alias for request method
 	 *
@@ -42,6 +44,14 @@ class CurlService {
 
 	public function delete($url, $params = [], $headers = [], $userOptions = []) {
 		return $this->request('DELETE', $url, $params, $headers, $userOptions);
+	}
+
+	/**
+	 * @return int
+	 */
+
+	public function getLastStatusCode() : int {
+		return $this->getLastStatusCode;
 	}
 
 
@@ -89,6 +99,9 @@ class CurlService {
 		curl_setopt_array($ch, $options);
 
 		$response = curl_exec($ch);
+
+		$this->lastStatusCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
 
 		if ($errno = curl_errno($ch)) {
 			var_dump($errno);

@@ -389,4 +389,33 @@ class UserService {
 		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
 	}
+
+	public function isUsernameTaken(string $username) : bool {
+		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonApiVersion = $this->apiConfig['commonApiVersion'];
+
+		if (!isset($commonApiUrl) || empty($commonApiUrl)) {
+			return false;
+		}
+		$endpoint = $commonApiVersion . '/users/';
+		$url = $commonApiUrl . $endpoint . $username;
+
+		$token = $this->apiConfig['commonServiceToken'];
+		$headers = [
+			"Authorization: Bearer $token"
+		];
+
+		$this->curl->get($url, [], $headers);
+
+		$statusCode = $this->curl->getLastStatusCode();
+		if ($statusCode === 404) {
+			return false;
+		}
+
+		if ($statusCode === 200) {
+			return true;
+		}
+
+		throw new Exception("Error checking if username is taken at common source, status code: " . (string) $statusCode);
+	}
 }

@@ -30,6 +30,8 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
+	private const SESSION_USERNAME_CHECK = 'username_check_passed';
+
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -92,6 +94,12 @@ class AccountController extends Controller {
 			return $response;
 		}
 
+		if (!$this->session->get(self::SESSION_USERNAME_CHECK)) {
+			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
+			$response->setStatus(400);
+			return $response;
+		}
+
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
 			'displayname' => ['value' => $displayname, 'maxLength' => 30],
@@ -132,6 +140,8 @@ class AccountController extends Controller {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
+
+		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		return $response;
 	}
 	/**
@@ -168,9 +178,16 @@ class AccountController extends Controller {
 	public function checkUsernameAvailable(string $username) : DataResponse {
 		$response = new DataResponse();
 		$response->setStatus(400);
-		if (!$this->userService->userExists($username)) {
+
+		if (empty($username)) {
+			return $response;
+		}
+
+		if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 			$response->setStatus(200);
 		}
+
+		$this->session->set('username_check_passed', true);
 		return $response;
 	}
 
@@ -200,7 +217,7 @@ class AccountController extends Controller {
 	public function verifyCaptcha(string $captchaInput = '') : DataResponse {
 		$response = new DataResponse();
 		
-		$captchaResult = (string)$this->session->get('captcha_result', '');
+		$captchaResult = (string) $this->session->get('captcha_result', '');
 		$response->setStatus(400);
 		if ($captchaResult === $captchaInput) {
 			$this->session->remove('captcha_result');
