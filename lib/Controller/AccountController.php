@@ -30,7 +30,6 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
-	private const SELECTED_LANGUAGE_KEY = 'selected_language';
 
 	public function __construct(
 		$AppName,
