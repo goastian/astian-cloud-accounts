@@ -418,4 +418,36 @@ class UserService {
 
 		throw new Exception("Error checking if username is taken at common source, status code: " . (string) $statusCode);
 	}
+
+	public function addUsernameToCommonDataStore(string $username) : void {
+		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonApiVersion = $this->apiConfig['commonApiVersion'];
+
+		if (!isset($commonApiUrl) || empty($commonApiUrl)) {
+			return;
+		}
+		$endpoint = $commonApiVersion . '/users/';
+		$url = $commonApiUrl . $endpoint ;
+		
+		$params = [
+			'username' => $username
+		];
+
+		$token = $this->apiConfig['commonServiceToken'];
+		$headers = [
+			"Authorization: Bearer $token"
+		];
+		
+		try {
+			$this->curl->post($url, $params, $headers);
+
+			if ($this->curl->getLastStatusCode() !== 200) {
+				throw new Exception();
+			}
+		} catch (Exception $e) {
+			$this->logger->error('Error adding username ' . $username . ' to common data store');
+		}
+		
+
+	}
 }

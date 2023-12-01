@@ -142,6 +142,7 @@ class AccountController extends Controller {
 		}
 
 		$this->session->remove(self::SESSION_USERNAME_CHECK);
+		$this->userService->addUsernameToCommonDataStore($username);
 		return $response;
 	}
 	/**
