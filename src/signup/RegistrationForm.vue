@@ -268,7 +268,7 @@ export default {
 			} else if (!isEnoughCharacters) {
 				this.usernameValidationMessage = t(this.appName, 'Username must be at least 3 characters long.')
 				this.validation.isUsernameNotValid = true
-			} 
+			}
 		},
 
 		async checkUsername() {
