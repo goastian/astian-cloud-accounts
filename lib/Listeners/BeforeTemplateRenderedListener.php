@@ -45,6 +45,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 			$this->autoLoginWebmail();
 		}
 		$pathInfo = $this->request->getPathInfo();
+		$username = $this->userSession->getUser()->getUID();
 		$emailVerified = $this->config->getUserValue($username, 'email-recovery', 'recovery-email-verified', 'true');
 		if($emailVerified == 'false') {
 			if (strpos($pathInfo, '/apps/snappymail/') !== false) {
