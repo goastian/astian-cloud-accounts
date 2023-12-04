@@ -196,10 +196,7 @@ export default {
 			],
 			passwordErrors: [],
 			passwordRules: [
-				{ message: 'At least 6 characters.', regex: /.{6,}/ },
-				{ message: 'Lowercase letters: a-z.', regex: /[a-z]+/ },
-				{ message: 'Uppercase letters: A-Z.', regex: /[A-Z]+/ },
-				{ message: 'One number required.', regex: /[0-9]+/ },
+				{ message: 'At least 6 characters.', regex: /.{8,32}/ },
 			],
 			isUsernameAvailable: false,
 		}
