@@ -31,6 +31,8 @@ class AccountController extends Controller {
 	private $userSession;
 	private $urlGenerator;
 
+	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
+
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -90,7 +92,7 @@ class AccountController extends Controller {
 		
 		$response = new DataResponse();
 		
-		if(!$this->session->get('captcha_verified')) {
+		if(!$this->session->get(self::CAPTCHA_VERIFIED_CHECK)) {
 			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
@@ -136,7 +138,7 @@ class AccountController extends Controller {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
-		$this->session->remove('captcha_verified');
+		$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 		return $response;
 	}
 	/**
@@ -209,7 +211,7 @@ class AccountController extends Controller {
 		$response->setStatus(400);
 		if ($captchaResult === $captchaInput) {
 			$this->session->remove('captcha_result');
-			$this->session->set('captcha_verified', true);
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
 		return $response;
