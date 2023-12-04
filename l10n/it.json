@@ -68,7 +68,8 @@
 		"Human Verification is required.": "È necessaria la verifica umana.",
 		"Human Verification code is not correct.": "Il codice di verifica umano non è corretto.",
 		"Recovery Email is required.": "L'e-mail di recupero è necessaria.",
-		"You must read and accept the Terms of Service to create your account.": "Per creare il proprio account è necessario leggere e accettare i Termini di servizio."
+		"You must read and accept the Terms of Service to create your account.": "Per creare il proprio account è necessario leggere e accettare i Termini di servizio.",
+		"Incorrect password length: Required length is 8 to 32":"Lunghezza della password errata: La lunghezza richiesta è da 8 a 32"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

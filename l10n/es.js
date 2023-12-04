@@ -76,5 +76,6 @@ OC.L10N.register(
 		"Success!": "¡Éxito!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Su cuenta <b>__username__@__domain__</b> se ha creado correctamente.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "Si desea utilizar su correo electrónico de murena.io en una aplicación de correo como Thunderbird, Outlook u otra, visite <a href='__supportURL__'>esta página</a>.",
+		"Incorrect password length: Required length is 8 to 32": "Longitud de contraseña incorrecta: La longitud requerida es de 8 a 32"
 	},
 	"nplurals=2; plural=(n != 1);");
