@@ -196,7 +196,7 @@ export default {
 			],
 			passwordErrors: [],
 			passwordRules: [
-				{ message: t(this.appName, ' Incorrect password length: Required length is 8 to 32') regex: /.{8,32}/ },
+				{ message: t(this.appName, 'Incorrect password length: Required length is 8 to 32') ,regex: /.{8,32}/ },
 			],
 			isUsernameAvailable: false,
 		}
