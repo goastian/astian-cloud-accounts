@@ -6,7 +6,7 @@
 					{{ t(appName,'Create Murena Account') }}
 				</h1>
 				<div class="grid">
-					<select v-model="formData.selectedLanguage" class="padding-0" @change="onLanguageChange">
+					<select v-model="formData.selectedLanguage" class="padding-0 lang-select" @change="onLanguageChange">
 						<option v-for="language in languages" :key="language.code" :value="language.code">
 							{{ t(appName,language.name) }}
 						</option>
@@ -315,6 +315,11 @@ export default {
 }
 .padding-0 {
 	padding: 0;
+}
+.lang-select {
+	font-size: 14px;
+	line-weight:24px;
+	color: rgba(0, 0, 0, 0.8);
 }
 .fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
