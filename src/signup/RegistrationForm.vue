@@ -1,17 +1,17 @@
 <template>
 	<div id="registrationForm">
+		<div class="grid">
+			<select v-model="formData.selectedLanguage" class="padding-0 lang-select" @change="onLanguageChange">
+				<option v-for="language in languages" :key="language.code" :value="language.code">
+					{{ t(appName,language.name) }}
+				</option>
+			</select>
+		</div>
 		<form @submit.prevent="submitRegistrationForm">
 			<div class="display-flex">
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
 					{{ t(appName,'Create Murena Account') }}
 				</h1>
-				<div class="grid">
-					<select v-model="formData.selectedLanguage" class="padding-0 lang-select" @change="onLanguageChange">
-						<option v-for="language in languages" :key="language.code" :value="language.code">
-							{{ t(appName,language.name) }}
-						</option>
-					</select>
-				</div>
 			</div>
 			<div id="fields-displayname" class="fields">
 				<div class="field">
