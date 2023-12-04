@@ -320,7 +320,12 @@ export default {
 	font-size: 14px;
 	line-height:24px;
 	color: rgba(0, 0, 0, 0.6);
-	background: url("../../img/expand_more.svg") no-repeat right 8px center
+	font-weight:400;
+	background: url("../../img/expand_more.svg") no-repeat right 8px center;
+	float: right;
+    position: absolute;
+    top: 54px;
+    right: 0;
 }
 .fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
