@@ -11,8 +11,8 @@ use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\ISession;
-use OCP\IUserSession;
 use OCP\IUser;
+use OCP\IUserSession;
 use OCP\Util;
 
 class BeforeTemplateRenderedListener implements IEventListener {
