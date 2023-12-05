@@ -31,6 +31,7 @@ class AccountController extends Controller {
 	private $userSession;
 	private $urlGenerator;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
+	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 
 	public function __construct(
 		$AppName,
@@ -64,6 +65,9 @@ class AccountController extends Controller {
 		if ($this->userSession->isLoggedIn()) {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
+
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
+
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
@@ -88,7 +92,7 @@ class AccountController extends Controller {
 		
 		$response = new DataResponse();
 		
-		if(!$this->session->get('captcha_verified')) {
+		if(!$this->session->get(self::CAPTCHA_VERIFIED_CHECK)) {
 			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
@@ -143,6 +147,7 @@ class AccountController extends Controller {
 
 		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		$this->userService->addUsernameToCommonDataStore($username);
+		$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 		return $response;
 	}
 	/**
@@ -222,7 +227,7 @@ class AccountController extends Controller {
 		$response->setStatus(400);
 		if ($captchaResult === $captchaInput) {
 			$this->session->remove('captcha_result');
-			$this->session->set('captcha_verified', true);
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
 		return $response;
