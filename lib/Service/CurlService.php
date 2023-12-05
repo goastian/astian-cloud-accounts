@@ -51,7 +51,7 @@ class CurlService {
 	 */
 
 	public function getLastStatusCode() : int {
-		return $this->getLastStatusCode;
+		return $this->lastStatusCode;
 	}
 
 
