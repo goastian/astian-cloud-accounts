@@ -12,6 +12,7 @@ use OCP\IConfig;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IUserSession;
+use OCP\IUser;
 use OCP\Util;
 
 class BeforeTemplateRenderedListener implements IEventListener {
@@ -47,7 +48,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 	   
 		$user = $this->userSession->getUser();
 		if ($user instanceof IUser) {
-			$userID = $currentUser->getUID();
+			$userID = $user->getUID();
 			$pathInfo = $this->request->getPathInfo();
 			$emailVerified = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email-verified', 'true');
 			if($emailVerified == 'false') {
