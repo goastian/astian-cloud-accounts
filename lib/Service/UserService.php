@@ -197,6 +197,10 @@ class UserService {
 	public function setUserLanguage(string $username, string $language = 'en') {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
+	public function setRecoveryEmailVerified(string $username, string $value = 'false') {
+		$this->config->setUserValue($username, 'email-recovery', 'recovery-email-verified', $value);
+	}
+	
 	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID) : \SendGrid\Mail\Mail {
 		$mainDomain = $this->getMainDomain();
 
