@@ -197,7 +197,7 @@ class UserService {
 	public function setUserLanguage(string $username, string $language = 'en') {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
-	public function setRecoveryEmailVerified(string $username, string $value = 'false') {
+	public function setRecoveryEmailVerifionStatus(string $username, string $value = 'false') {
 		$this->config->setUserValue($username, 'email-recovery', 'recovery-email-verified', $value);
 	}
 	
