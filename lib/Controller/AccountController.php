@@ -74,6 +74,25 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param string $lang Language code (default: 'en')
+	 *
+	 */
+	public function index_without_lang(string $lang = 'en') {
+		if ($this->userSession->isLoggedIn()) {
+			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
+		}
+		return new TemplateResponse(
+			Application::APP_ID,
+			'signup',
+			['appName' => Application::APP_ID, 'lang' => $lang],
+			TemplateResponse::RENDER_AS_GUEST
+		);
+	}
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
 	 * @param string $displayname      User's display name
 	 * @param string $recoveryEmail    User's recovery email
 	 * @param string $username         User's username
