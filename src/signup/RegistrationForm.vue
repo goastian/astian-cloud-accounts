@@ -214,7 +214,9 @@ export default {
 	created() {
 		const currentURL = window.location.href
 		const urlSegments = currentURL.split('/')
+		/* eslint-disable no-console */
 		console.log(urlSegments.length)
+		/* eslint-disable no-console */
 		this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
 	},
 	methods: {
