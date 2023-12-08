@@ -77,7 +77,7 @@ class AccountController extends Controller {
 	 * @param string $lang Language code (default: 'en')
 	 *
 	 */
-	public function index_without_lang(string $lang = 'en') {
+	public function indexWithoutLang(string $lang = 'en') {
 		if ($this->userSession->isLoggedIn()) {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
