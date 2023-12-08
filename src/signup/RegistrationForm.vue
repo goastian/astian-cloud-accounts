@@ -215,9 +215,9 @@ export default {
 		const currentURL = window.location.href
 		const urlSegments = currentURL.split('/')
 		this.formData.selectedLanguage = 'en'
-		if (urlSegments.length==8) {
+		if (urlSegments.length === 8) {
 			this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
-		} 
+		}
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
