@@ -74,6 +74,8 @@ OC.L10N.register(
 		"I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.": "J'ai lu et j'accepte les <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Termes de service</a>.",
 		"Success!": "Succès !",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Votre compte <b>__username__@__domain__</b> a été créé avec succès.",
-		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "Si vous souhaitez utiliser votre email murena.io dans une application de messagerie comme Thunderbird, Outlook ou autre, veuillez visiter <a href='__supportURL__'>cette page</a>."
+		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "Si vous souhaitez utiliser votre email murena.io dans une application de messagerie comme Thunderbird, Outlook ou autre, veuillez visiter <a href='__supportURL__'>cette page</a>.",
+		"Please set your recovery email address and use your email account without restrictions.": "Merci de définir une adresse e-mail de récupération pour bénéficier d'un usage de votre compte sans restrictions.",
+		"SET RECOVERY EMAIL NOW": "DEFINIR L'ADRESSE DE RECUPERATION MAINTENANT"
 	},
 	"nplurals=2; plural=(n != 1);");

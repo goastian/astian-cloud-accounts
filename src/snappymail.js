@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const link = document.createElement('a')
 	link.textContent = 'SET RECOVERY EMAIL NOW'
 	const rootUrl = OC.getRootPath()
-	link.href = rootUrl + 'settings/user/security'
+	link.href = rootUrl + '/settings/user/security'
 	link.style.display = 'block'
 	newDiv.appendChild(link)
 	targetElement.insertBefore(newDiv, targetElement.firstChild)
