@@ -218,10 +218,6 @@ export default {
 		if (urlSegments.length === 8) {
 			this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
 		}
-		/* eslint-disable no-console */
-		console.log(urlSegments.length)
-		console.log(this.formData.selectedLanguage)
-		/* eslint-enable no-console */
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
