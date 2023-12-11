@@ -216,6 +216,10 @@ export default {
 		const urlSegments = currentURL.split('/')
 		this.formData.selectedLanguage = 'en'
 		if (urlSegments.length === 8) {
+			/* eslint-disable no-console */
+			console.log(urlSegments.length )
+			console.log(urlSegments[urlSegments.length - 2] )
+			/* eslint-enable no-console */
 			this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
 		}
 	},
