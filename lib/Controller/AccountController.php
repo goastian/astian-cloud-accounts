@@ -145,7 +145,7 @@ class AccountController extends Controller {
 			$this->userService->setUserLanguage($username, $language);
 			
 			if($recoveryEmail !== '') {
-				$this->userService->setRecoveryEmail($username, $recoveryEmail);
+				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
 			}
 			$this->userService->setRecoveryEmailVerificationStatus($username, 'false');
 		

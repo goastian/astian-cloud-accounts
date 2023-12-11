@@ -95,6 +95,9 @@ class UserService {
 	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
 		$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
 	}
+	public function setUnverifiedRecoveryEmail(string $uid, string $recoveryEmail): void {
+		$this->config->setUserValue($uid, 'email-recovery', 'unverified-recovery-email', $recoveryEmail);
+	}
 	public function setTOS(string $uid, bool $tosAccepted): void {
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 	}
