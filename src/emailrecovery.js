@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	img.src = OC.generateUrl('/custom_apps/' + APPLICATION_NAME + '/img/warning.svg')
 	newDiv.appendChild(img)
 	const textNode = document.createTextNode(t(APPLICATION_NAME, 'Please set your recovery email address to use your email account without restrictions.'))
-    newDiv.appendChild(textNode)
+	newDiv.appendChild(textNode)
 	const link = document.createElement('a')
 	link.textContent = t(APPLICATION_NAME, 'SET RECOVERY EMAIL NOW')
 	const rootUrl = OC.getRootPath()
