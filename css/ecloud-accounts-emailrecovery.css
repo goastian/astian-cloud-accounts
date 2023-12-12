@@ -3,14 +3,13 @@
     position: absolute;
     top: 50px;
     width: 100%;
-    z-index: 2000;
+    z-index: 2100;
     height: 50px;
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
     background: #333333;
     color: #ffffff;
-
     a {
         color: #ffffff;
     }
