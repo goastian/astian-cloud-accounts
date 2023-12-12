@@ -10,6 +10,6 @@ module.exports = {
 		'delete-account-listeners': path.join(__dirname, 'src/delete-account-listeners.js'),
 		'beta-user-setting': path.join(__dirname, 'src/beta-user-setting.js'),
 		'signup': path.join(__dirname, 'src/signup.js'),
-		'snappymail': path.join(__dirname, 'src/snappymail.js')
+		'snappymail': path.join(__dirname, 'src/emailrecovery.js')
 	},
 }
