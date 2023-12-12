@@ -78,7 +78,7 @@ OC.L10N.register(
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Your <b>__username__@__domain__</b> account was successfully created.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.",
 		"Recovery email address is already taken.": "Recovery email address is already taken.",
-		"Please set your recovery email address to use your email account without restrictions.":  "Please set your recovery email address and use your email account without restrictions.",
+		"Please set your recovery email address to use your email account without restrictions.":  "Please set your recovery email address to use your email account without restrictions.",
 		"SET RECOVERY EMAIL NOW": "SET RECOVERY EMAIL NOW"
 	},
 	"nplurals=2; plural=(n != 1);");
