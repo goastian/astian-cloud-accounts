@@ -10,4 +10,12 @@
     align-items: center;
     background: #333333;
     color: #ffffff;
+
+    a {
+        color: #ffffff;
+    }
+}
+
+#content {
+    height: calc(100% - env(safe-area-inset-bottom) - 100px - var(--body-container-margin)) !important;
 }
