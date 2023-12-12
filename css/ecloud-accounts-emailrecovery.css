@@ -10,11 +10,16 @@
     align-items: center;
     background: #333333;
     color: #ffffff;
+    font-size:16px;
+    font-weight: 400;
+    line-height: 24px; 
 }
 .recovery-email a {
     color: #ffffff;
     padding-left: 24px;
     text-decoration: underline;
+    font-size:16px;
+    font-weight: 600;
 }
 #content {
     margin-top:100px !important;
