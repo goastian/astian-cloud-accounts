@@ -9,5 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	link.href = rootUrl + '/settings/user/security'
 	link.style.display = 'block'
 	newDiv.appendChild(link)
-	targetElement.appendChild(newDiv)
+	const parentElement = targetElement.parentNode
+	parentElement.insertBefore(newDiv, targetElement.nextSibling)
 })
