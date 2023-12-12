@@ -50,11 +50,10 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if ($user instanceof IUser) {
 			$userID = $user->getUID();
 			$pathInfo = $this->request->getPathInfo();
-			$emailVerified = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email-verified', 'true');
-			if($emailVerified === 'false') {
-				if (strpos($pathInfo, '/apps/snappymail/') !== false) {
-					$this->util->addScript($this->appName, $this->appName . '-snappymail');
-				}
+			$recoveryEmail = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email', '');
+			if($recoveryEmail === '') {
+				$this->util->addStyle($this->appName, $this->appName . '-emailrecovery');
+				$this->util->addScript($this->appName, $this->appName . '-emailrecovery');
 			}
 		}
 
