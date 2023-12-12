@@ -75,7 +75,7 @@ OC.L10N.register(
 		"Success!": "Successo!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "L'account <b>__username__@__domain__</b> è stato creato con successo.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "Se si desidera utilizzare l'e-mail di murena.io in un'applicazione di posta elettronica come Thunderbird, Outlook o altre, visitare <a href='__supportURL__'>questa pagina</a>.",
-		"Please set your recovery email address and use your email account without restrictions.": "Per poter usare l'account email senza restrizioni devi impostare l'indirizzo email di recovery.",
+		"Please set your recovery email address to use your email account without restrictions.": "Per poter usare l'account email senza restrizioni devi impostare l'indirizzo email di recovery.",
 		"SET RECOVERY EMAIL NOW": "IMPOSTA ADESSO LA EMAIL DI RECOVERY"
 	},
 	"nplurals=2; plural=(n != 1);");

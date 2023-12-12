@@ -17,5 +17,6 @@
     text-decoration: underline;
 }
 #content {
+    margin-top:100px !important;
     height: calc(100% - env(safe-area-inset-bottom) - 100px - var(--body-container-margin)) !important;
 }

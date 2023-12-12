@@ -69,7 +69,7 @@
 		"Human Verification code is not correct.": "Il codice di verifica umano non è corretto.",
 		"Recovery Email is required.": "L'e-mail di recupero è necessaria.",
 		"You must read and accept the Terms of Service to create your account.": "Per creare il proprio account è necessario leggere e accettare i Termini di servizio.",
-		"Please set your recovery email address and use your email account without restrictions.": "Per poter usare l'account email senza restrizioni devi impostare l'indirizzo email di recovery.",
+		"Please set your recovery email address to use your email account without restrictions.": "Per poter usare l'account email senza restrizioni devi impostare l'indirizzo email di recovery.",
 		"SET RECOVERY EMAIL NOW": "IMPOSTA ADESSO LA EMAIL DI RECOVERY"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
