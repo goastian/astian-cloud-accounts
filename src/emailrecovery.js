@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
 	const targetElement = document.getElementById('header')
 	const newDiv = document.createElement('div')
 	newDiv.className = 'recovery-email'
