@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const link = document.createElement('a')
 	link.textContent = t(APPLICATION_NAME, 'SET RECOVERY EMAIL NOW')
 	const rootUrl = OC.getRootPath()
-	link.href = rootUrl + '/settings/user/security'
+	link.href = rootUrl + '/settings/user/security#recovery-email-div'
 	link.style.display = 'block'
 	newDiv.appendChild(link)
 	const parentElement = targetElement.parentNode
