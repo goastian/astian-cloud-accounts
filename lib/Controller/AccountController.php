@@ -147,7 +147,6 @@ class AccountController extends Controller {
 			if($recoveryEmail !== '') {
 				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
 			}
-			$this->userService->setRecoveryEmailVerificationStatus($username, 'false');
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
