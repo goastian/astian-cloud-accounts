@@ -1,3 +1,6 @@
+html{
+	background:var(--color-main-background); 
+}
 
 #body-login .warning-messsage {
 	width: 100% !important;
