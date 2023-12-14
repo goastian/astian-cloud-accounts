@@ -1,0 +1,28 @@
+
+#body-login .warning-messsage {
+	width: 100% !important;
+} 
+
+.v-align header {
+	width: 100% !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: flex-start !important;
+} 
+
+#header {
+	padding-left: 150px !important;
+}  
+
+.v-align main {
+	width: 50%;
+	margin: 0 auto;
+} 
+@media only screen and (min-width: 481px) and (max-width: 768px) {
+	.v-align main {
+		width: 100% !important;
+	}
+	#header {
+		padding-left: 10px !important;
+	}     
+}       
