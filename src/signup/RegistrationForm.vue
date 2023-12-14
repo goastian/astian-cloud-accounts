@@ -388,7 +388,7 @@ export default {
 	flex-grow: 1;
     flex-basis: 0;
 	max-width: unset;
-	margin-top: 10px;
+	margin-top: 5px;
     margin-bottom: 10px;
 	margin-right: 10px;
 }
@@ -398,6 +398,9 @@ export default {
     border: 1px solid #E6E8E9;
 	padding: 10px 20px;
 }
+.password-group #password {
+    height: 58px;
+}	
 #inviteHeader,
 #registerHeading {
 	margin-bottom: 12px;
