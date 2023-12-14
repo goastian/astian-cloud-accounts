@@ -25,8 +25,8 @@ return ['routes' => [
 		'url' => '/issue/submit', 'verb' => 'POST'
 	],
 	
-	['name' => 'account#index', 'url' => '/accounts/{lang}/signup', 'verb' => 'GET', 'postfix' =>'signwithlang'],
-	['name' => 'account#index', 'url' => '/accounts/signup', 'verb' => 'GET', 'postfix' =>'signwithoutlang'],
+	['name' => 'account#index', 'url' => '/accounts/{lang}/signup', 'verb' => 'GET', 'postfix' => 'signwithlang'],
+	['name' => 'account#index', 'url' => '/accounts/signup', 'verb' => 'GET', 'postfix' => 'signwithoutlang'],
 	['name' => 'account#create', 'url' => '/accounts/create', 'verb' => 'POST'],
 	['name' => 'account#captcha', 'url' => '/accounts/captcha', 'verb' => 'GET'],
 	['name' => 'account#verify_captcha', 'url' => '/accounts/verify_captcha', 'verb' => 'POST'],
