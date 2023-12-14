@@ -38,6 +38,10 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (!($event instanceof BeforeTemplateRenderedEvent)) {
 			return;
 		}
+		$pathInfo = $this->request->getPathInfo();
+		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts//') !== false ) {
+			$this->util->addStyle($this->appName, 'user-registration');
+		}
 		if ($this->userSession->isLoggedIn() && $this->appManager->isEnabledForUser(self::SNAPPYMAIL_APP_ID) && strpos($this->request->getPathInfo(), self::SNAPPYMAIL_URL) !== false) {
 			$this->autoLoginWebmail();
 		}
