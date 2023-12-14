@@ -398,9 +398,6 @@ export default {
     border: 1px solid #E6E8E9;
 	padding: 10px 20px;
 }
-.password-group .Password #password {
-    height: 58px;
-}
 #inviteHeader,
 #registerHeading {
 	margin-bottom: 12px;
