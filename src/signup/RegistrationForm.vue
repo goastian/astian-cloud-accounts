@@ -400,7 +400,7 @@ export default {
 }
 #inviteHeader,
 #registerHeading {
-	margin-bottom: 10%;
+	margin-bottom: 12px;
 	font-size: 24px;
 	text-align: left !important;
 	font-weight: 500;
