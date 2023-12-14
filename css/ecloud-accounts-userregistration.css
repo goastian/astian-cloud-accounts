@@ -15,7 +15,7 @@
 }  
 
 .v-align main {
-	width: 50%;
+	width: 50% !important;
 	margin: 0 auto;
 } 
 @media only screen and (min-width: 481px) and (max-width: 768px) {
