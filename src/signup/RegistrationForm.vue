@@ -400,7 +400,7 @@ export default {
 }
 .password-group #password {
     height: 58px;
-}	
+}
 #inviteHeader,
 #registerHeading {
 	margin-bottom: 12px;
