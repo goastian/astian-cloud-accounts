@@ -14,7 +14,7 @@ html{
 } 
 
 #header {
-	padding-left: 150px !important;
+	padding-left: 5% !important;
 }  
 
 .v-align main {
@@ -24,8 +24,5 @@ html{
 @media only screen and (min-width: 481px) and (max-width: 768px) {
 	.v-align main {
 		width: 100% !important;
-	}
-	#header {
-		padding-left: 10px !important;
-	}     
+	}   
 }       

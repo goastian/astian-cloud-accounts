@@ -325,7 +325,7 @@ export default {
 	float: right;
 	position: absolute;
 	top: 54px;
-	right: 150px;
+	right: 5%;
 }
 .fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
@@ -526,17 +526,6 @@ p.validation-success:before {
 	input {
 		font-size: 1.0em;
 		line-height: 1.0em;
-	}
-	.lang-select {
-		font-size: 14px;
-		line-height:24px;
-		color: rgba(0, 0, 0, 0.6);
-		font-weight:400;
-		background: url("../../img/expand_more.svg") no-repeat right 8px center;
-		float: right;
-		position: absolute;
-		top: 54px;
-		right: 10px;
 	}
 }
 @media screen and (max-width: 500px) {
