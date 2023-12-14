@@ -538,7 +538,6 @@ p.validation-success:before {
 		top: 54px;
 		right: 10px;
 	}
-	
 }
 @media screen and (max-width: 500px) {
 	#main {
