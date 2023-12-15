@@ -8,6 +8,7 @@ html{
 
 #body-login .v-align{
 	align-items: flex-start !important;
+	justify-content:flex-start !important;
 }
 
 .v-align header {
