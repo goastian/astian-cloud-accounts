@@ -25,7 +25,7 @@ html{
 .password-group #password {
     height: 58px !important;
 }
-@media only screen and (min-width: 481px) and (max-width: 768px) {
+@media only screen  and (max-width: 768px) {
 	.v-align main {
 		width: 100% !important;
 	}   
