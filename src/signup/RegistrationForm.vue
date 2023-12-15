@@ -324,7 +324,7 @@ export default {
 	background: url("../../img/expand_more.svg") no-repeat right 8px center;
 	float: right;
 	position: absolute;
-	top: 54px;
+	top: 67px;
 	right: 5%;
 }
 .fields input[type='checkbox'].checkbox + label:before{
