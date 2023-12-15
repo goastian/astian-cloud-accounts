@@ -28,5 +28,8 @@ html{
 @media only screen  and (max-width: 768px) {
 	.v-align main {
 		width: 100% !important;
-	}   
+	}
+	#body-login .v-align {
+		padding: 5vh 0vh !important;
+	}	   
 }       
