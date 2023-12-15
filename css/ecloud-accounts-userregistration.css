@@ -6,10 +6,14 @@ html{
 	width: 100% !important;
 } 
 
+#body-login .v-align{
+	align-items: flex-start !important;
+}
+
 .v-align header {
 	width: 100% !important;
 	display: flex !important;
-	align-items: center !important;
+	align-items: flex-start !important;
 	justify-content: flex-start !important;
 } 
 
@@ -23,7 +27,7 @@ html{
 }
 
 .password-group #password {
-    height: 58px !important;
+	height: 58px !important;
 }
 @media only screen  and (max-width: 768px) {
 	.v-align main {
