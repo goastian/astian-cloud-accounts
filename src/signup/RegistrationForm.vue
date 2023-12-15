@@ -1,17 +1,17 @@
 <template>
 	<div id="registrationForm">
+		<div class="grid">
+			<select v-model="formData.selectedLanguage" class="padding-0 lang-select" @change="onLanguageChange">
+				<option v-for="language in languages" :key="language.code" :value="language.code">
+					{{ t(appName,language.name) }}
+				</option>
+			</select>
+		</div>
 		<form @submit.prevent="submitRegistrationForm">
 			<div class="display-flex">
 				<h1 id="registerHeading" class="has-text-centered subtitle is-3">
 					{{ t(appName,'Create Murena Account') }}
 				</h1>
-				<div class="grid">
-					<select v-model="formData.selectedLanguage" class="padding-0" @change="onLanguageChange">
-						<option v-for="language in languages" :key="language.code" :value="language.code">
-							{{ t(appName,language.name) }}
-						</option>
-					</select>
-				</div>
 			</div>
 			<div id="fields-displayname" class="fields">
 				<div class="field">
@@ -196,10 +196,7 @@ export default {
 			],
 			passwordErrors: [],
 			passwordRules: [
-				{ message: 'At least 6 characters.', regex: /.{6,}/ },
-				{ message: 'Lowercase letters: a-z.', regex: /[a-z]+/ },
-				{ message: 'Uppercase letters: a-z.', regex: /[A-Z]+/ },
-				{ message: 'One number required.', regex: /[0-9]+/ },
+				{ message: t(this.appName, 'Incorrect password length: Required length is 8 to 32'), regex: /.{8,32}/ },
 			],
 			isUsernameAvailable: false,
 		}
@@ -217,7 +214,10 @@ export default {
 	created() {
 		const currentURL = window.location.href
 		const urlSegments = currentURL.split('/')
-		this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
+		this.formData.selectedLanguage = 'en'
+		if (urlSegments.length === 8) {
+			this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
+		}
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
@@ -268,8 +268,6 @@ export default {
 			} else if (!isEnoughCharacters) {
 				this.usernameValidationMessage = t(this.appName, 'Username must be at least 3 characters long.')
 				this.validation.isUsernameNotValid = true
-			} else {
-				this.checkUsername()
 			}
 		},
 
@@ -293,7 +291,7 @@ export default {
 		},
 		submitRegistrationForm() {
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
-
+			this.checkUsername()
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
 			if (isFormValid) {
@@ -317,6 +315,17 @@ export default {
 }
 .padding-0 {
 	padding: 0;
+}
+.lang-select {
+	font-size: 14px;
+	line-height:24px;
+	color: rgba(0, 0, 0, 0.6);
+	font-weight:400;
+	background: url("../../img/expand_more.svg") no-repeat right 8px center;
+	float: right;
+	position: absolute;
+	top: 67px;
+	right: 5%;
 }
 .fields input[type='checkbox'].checkbox + label:before{
 	height: 15px;
@@ -379,7 +388,7 @@ export default {
 	flex-grow: 1;
     flex-basis: 0;
 	max-width: unset;
-	margin-top: 10px;
+	margin-top: 5px;
     margin-bottom: 10px;
 	margin-right: 10px;
 }
@@ -391,7 +400,7 @@ export default {
 }
 #inviteHeader,
 #registerHeading {
-	margin-bottom: 10%;
+	margin-bottom: 12px;
 	font-size: 24px;
 	text-align: left !important;
 	font-weight: 500;

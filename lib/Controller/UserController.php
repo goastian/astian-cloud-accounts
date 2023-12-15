@@ -94,10 +94,7 @@ class UserController extends ApiController {
 		}
 		// $this->userService->sendWelcomeEmail($uid, $email);
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
-		$recoveryEmailUpdated = $this->userService->setRecoveryEmail($uid, $recoveryEmail);
-		if (!$recoveryEmailUpdated) {
-			return $this->getErrorResponse($response, 'error_setting_recovery', 400);
-		}
+		$this->userService->setRecoveryEmail($uid, $recoveryEmail);
 		$hmeAliasAdded = $this->userService->addHMEAliasInConfig($uid, $hmeAlias);
 		if (!$hmeAliasAdded) {
 			return $this->getErrorResponse($response, 'error_adding_hme_alias', 400);

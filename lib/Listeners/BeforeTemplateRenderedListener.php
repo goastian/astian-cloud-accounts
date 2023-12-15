@@ -58,6 +58,12 @@ class BeforeTemplateRenderedListener implements IEventListener {
 
 
 
+		$pathInfo = $this->request->getPathInfo();
+
+		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts') !== false) {
+			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
+		}
+
 	}
 
 

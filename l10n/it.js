@@ -74,8 +74,9 @@ OC.L10N.register(
 		"I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.": "Ho letto e accetto i <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Termini di servizio</a>.",
 		"Success!": "Successo!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "L'account <b>__username__@__domain__</b> è stato creato con successo.",
-		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "Se si desidera utilizzare l'e-mail di murena.io in un'applicazione di posta elettronica come Thunderbird, Outlook o altre, visitare <a href='__supportURL__'>questa pagina</a>.",
 		"Please set your recovery email address to use your email account without restrictions.": "Per poter usare l'account email senza restrizioni devi impostare l'indirizzo email di recovery.",
-		"SET RECOVERY EMAIL NOW": "IMPOSTA ADESSO LA EMAIL DI RECOVERY"
+		"SET RECOVERY EMAIL NOW": "IMPOSTA ADESSO LA EMAIL DI RECOVERY",
+		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "Se si desidera utilizzare l'e-mail di murena.io in un'applicazione di posta elettronica come Thunderbird, Outlook o altre, visitare <a href='https://doc.e.foundation/support-topics/configure-email'>questa pagina</a>.",
+		"Incorrect password length: Required length is 8 to 32":"Lunghezza della password errata: La lunghezza richiesta è da 8 a 32"
 	},
 	"nplurals=2; plural=(n != 1);");
