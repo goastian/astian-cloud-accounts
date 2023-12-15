@@ -95,6 +95,9 @@ class UserService {
 	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
 		$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
 	}
+	public function setUnverifiedRecoveryEmail(string $uid, string $recoveryEmail): void {
+		$this->config->setUserValue($uid, 'email-recovery', 'unverified-recovery-email', $recoveryEmail);
+	}
 	public function setTOS(string $uid, bool $tosAccepted): void {
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 	}
@@ -197,6 +200,7 @@ class UserService {
 	public function setUserLanguage(string $username, string $language = 'en') {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
+	
 	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID) : \SendGrid\Mail\Mail {
 		$mainDomain = $this->getMainDomain();
 
