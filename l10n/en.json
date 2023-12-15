@@ -73,7 +73,7 @@
 		"I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.": "I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.",
 		"Success!": "Success!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Your <b>__username__@__domain__</b> account was successfully created.",
-		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='__supportURL__'>this page</a>.",
+		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.",
 		"Please set your recovery email address to use your email account without restrictions.": "Please set your recovery email address to use your email account without restrictions.",
 		"SET RECOVERY EMAIL NOW": "SET RECOVERY EMAIL NOW",
 		"Incorrect password length: Required length is 8 to 32": "Incorrect password length: Required length is 8 to 32"
