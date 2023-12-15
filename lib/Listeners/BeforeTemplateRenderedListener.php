@@ -49,7 +49,6 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		$user = $this->userSession->getUser();
 		if ($user instanceof IUser) {
 			$userID = $user->getUID();
-			$pathInfo = $this->request->getPathInfo();
 			$recoveryEmail = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email', '');
 			if($recoveryEmail === '') {
 				$this->util->addStyle($this->appName, $this->appName . '-emailrecovery');
