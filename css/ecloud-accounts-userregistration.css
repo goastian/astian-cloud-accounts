@@ -37,4 +37,7 @@ html{
 	#body-login .v-align {
 		padding: 5vh 0vh !important;
 	}	   
-}       
+}
+#fields-password .Password__strength-meter{
+    margin-bottom: 0;
+}
