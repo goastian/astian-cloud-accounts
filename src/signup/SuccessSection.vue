@@ -13,7 +13,7 @@
 					@click="useMyAccount">
 					{{ t(appName,'Use My Account Now') }}
 				</button>
-				<p id="moreDetailMsg" class="font-16" v-html="t(appName,'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href=\'https://doc.e.foundation/support-topics/configure-email\'>this page</a>.')" />
+				<p id="moreDetailMsg" class="font-16" v-html="t(appName,'If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.')" />
 			</div>
 		</section>
 	</div>
