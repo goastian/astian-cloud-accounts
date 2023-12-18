@@ -1,0 +1,45 @@
+.recovery-email {
+    display: inline-flex;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    z-index: 9999;
+    min-height: 50px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    background: #333333;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+
+    a {
+        color: #ffffff;
+        padding-left: 24px;
+        text-decoration: underline;
+        font-size: 16px;
+        font-weight: 600;
+    }
+}
+
+#body-user #header,
+#body-settings #header,
+#body-public #header {
+    top: 50px !important;
+}
+
+#content {
+    margin-top: 100px !important;
+    height: calc(100% - env(safe-area-inset-bottom) - 100px - var(--body-container-margin)) !important;
+
+    @media only screen and (max-width: 480px) {
+        margin-top: 150px !important;
+        height: calc(100% - env(safe-area-inset-bottom) - 150px - var(--body-container-margin)) !important;
+    }
+
+    @media only screen and (min-width: 481px) and (max-width: 768px) {
+        margin-top: 125px !important;
+        height: calc(100% - env(safe-area-inset-bottom) - 125px - var(--body-container-margin)) !important;
+    }
+}

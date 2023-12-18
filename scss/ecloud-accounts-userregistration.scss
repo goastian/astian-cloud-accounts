@@ -1,0 +1,65 @@
+html {
+    background: var(--color-main-background);
+}
+
+#body-login {
+    .warning-messsage {
+        width: 100% !important;
+    }
+
+    .v-align {
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+
+        header {
+            width: 100% !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: flex-start !important;
+        }
+
+        main {
+            width: 50% !important;
+            margin: 0 auto;
+        }
+
+        @media only screen and (max-width: 768px) {
+            padding: 5vh 0vh !important;
+
+            main {
+                width: 100% !important;
+            }
+        }
+    }
+}
+
+#header {
+    padding-left: 5% !important;
+}
+
+.v-align {
+    main {
+        width: 50% !important;
+        margin: 0 auto;
+    }
+}
+
+.password-group {
+    #password {
+        height: 58px !important;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .v-align {
+        main {
+            width: 100% !important;
+        }
+    }
+}
+
+#fields-password {
+    .Password__strength-meter {
+        margin-bottom: 0;
+    }
+}
