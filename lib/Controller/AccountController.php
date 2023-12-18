@@ -234,10 +234,10 @@ class AccountController extends Controller {
 	public function verifyCaptcha(string $captchaInput = '') : DataResponse {
 		$response = new DataResponse();
 		
-		$captchaResult = (string) $this->session->get('captcha_result', '');
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
 		$response->setStatus(400);
 		if ($captchaResult === $captchaInput) {
-			$this->session->remove('captcha_result');
+			$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
