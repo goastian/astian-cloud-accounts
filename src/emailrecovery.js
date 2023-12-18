@@ -1,5 +1,6 @@
+import { generateUrl } from '@nextcloud/router'
+const APPLICATION_NAME = 'ecloud-accounts'
 document.addEventListener('DOMContentLoaded', function() {
-	const APPLICATION_NAME = 'ecloud-accounts'
 	const newDiv = createNewDiv('recovery-email')
 	const img = createImageElement(APPLICATION_NAME)
 	const textNode = createTextNode(APPLICATION_NAME)
@@ -28,7 +29,7 @@ function createNewDiv(className) {
  */
 function createImageElement(appName) {
 	const img = document.createElement('img')
-	img.src = OC.generateUrl('/custom_apps/' + appName + '/img/warning.svg')
+	img.src = generateUrl('/custom_apps/' + appName + '/img/warning.svg')
 	return img
 }
 
