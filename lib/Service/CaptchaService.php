@@ -8,11 +8,12 @@ use OCP\ISession;
 
 class CaptchaService {
 	private $session;
-	public const WIDTH = 80;
-	public const HEIGHT = 40;
-	public const NUMBERS = '123456789';
-	public const SYMBOLS = '+-';
-	public const NOISE_LEVEL = 13;
+	private const WIDTH = 80;
+	private const HEIGHT = 40;
+	private const NUMBERS = '123456789';
+	private const SYMBOLS = '+-';
+	private const NOISE_LEVEL = 13;
+	public const CAPTCHA_RESULT_KEY = 'captcha_result';
 
 	public function __construct(ISession $session) {
 		$this->session = $session;
@@ -195,7 +196,7 @@ class CaptchaService {
 	 * @return void
 	 */
 	private function updateSession(float $captchaResult): void {
-		$this->session->set('captcha_result', $captchaResult);
+		$this->session->set(self::CAPTCHA_RESULT_KEY, $captchaResult);
 	}
 
 	
