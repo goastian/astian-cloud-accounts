@@ -289,9 +289,9 @@ export default {
 				}
 			}
 		},
-		submitRegistrationForm() {
+		async submitRegistrationForm() {
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
-			this.checkUsername()
+			await this.checkUsername()
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
 			if (isFormValid) {

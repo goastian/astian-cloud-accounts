@@ -30,7 +30,7 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
-
+	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 
 	public function __construct(
@@ -99,6 +99,12 @@ class AccountController extends Controller {
 			return $response;
 		}
 
+		if (!$this->session->get(self::SESSION_USERNAME_CHECK)) {
+			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
+			$response->setStatus(400);
+			return $response;
+		}
+
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
 			'displayname' => ['value' => $displayname, 'maxLength' => 30],
@@ -139,7 +145,15 @@ class AccountController extends Controller {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
+
+		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
+
+		try {
+			$this->userService->addUsernameToCommonDataStore($username);
+		} catch (Exception $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+		}
 		return $response;
 	}
 	/**
@@ -176,9 +190,21 @@ class AccountController extends Controller {
 	public function checkUsernameAvailable(string $username) : DataResponse {
 		$response = new DataResponse();
 		$response->setStatus(400);
-		if (!$this->userService->userExists($username)) {
-			$response->setStatus(200);
+
+		if (empty($username)) {
+			return $response;
 		}
+
+		try {
+			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
+				$response->setStatus(200);
+				$this->session->set(self::SESSION_USERNAME_CHECK, true);
+			}
+		} catch (Exception $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID ]);
+			$response->setStatus(500);
+		}
+
 		return $response;
 	}
 
@@ -208,10 +234,10 @@ class AccountController extends Controller {
 	public function verifyCaptcha(string $captchaInput = '') : DataResponse {
 		$response = new DataResponse();
 		
-		$captchaResult = (string)$this->session->get('captcha_result', '');
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
 		$response->setStatus(400);
 		if ($captchaResult === $captchaInput) {
-			$this->session->remove('captcha_result');
+			$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
