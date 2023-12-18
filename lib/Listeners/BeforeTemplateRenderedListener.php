@@ -51,8 +51,8 @@ class BeforeTemplateRenderedListener implements IEventListener {
 				$userID = $user->getUID();
 				$recoveryEmail = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email', '');
 				if($recoveryEmail === '') {
-					$this->util->addStyle($this->appName, $this->appName . '-emailrecovery');
-					$this->util->addScript($this->appName, $this->appName . '-emailrecovery');
+					$this->util->addStyle($this->appName, $this->appName . '-email-recovery');
+					$this->util->addScript($this->appName, $this->appName . '-email-recovery');
 				}
 			}
 		}
@@ -60,7 +60,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		$pathInfo = $this->request->getPathInfo();
 
 		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts') !== false) {
-			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
+			$this->util->addStyle($this->appName, $this->appName . '-user-registration');
 		}
 
 	}
