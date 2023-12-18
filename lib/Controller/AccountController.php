@@ -147,8 +147,13 @@ class AccountController extends Controller {
 		}
 
 		$this->session->remove(self::SESSION_USERNAME_CHECK);
-		$this->userService->addUsernameToCommonDataStore($username);
 		$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
+
+		try {
+			$this->userService->addUsernameToCommonDataStore($username);
+		} catch (Exception $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+		}
 		return $response;
 	}
 	/**

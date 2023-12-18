@@ -442,16 +442,10 @@ class UserService {
 			"Authorization: Bearer $token"
 		];
 		
-		try {
-			$this->curl->post($url, $params, $headers);
+		$this->curl->post($url, $params, $headers);
 
-			if ($this->curl->getLastStatusCode() !== 200) {
-				throw new Exception();
-			}
-		} catch (Exception $e) {
-			$this->logger->error('Error adding username ' . $username . ' to common data store');
+		if ($this->curl->getLastStatusCode() !== 200) {
+			throw new Exception('Error adding username ' . $username . ' to common data store');
 		}
-		
-
 	}
 }
