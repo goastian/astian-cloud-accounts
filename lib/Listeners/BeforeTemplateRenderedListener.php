@@ -35,7 +35,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		$this->session = $session;
 		$this->config = $config;
 		$this->appManager = $appManager;
-		$this->util = $util; 
+		$this->util = $util;
 	}
 
 	public function handle(Event $event): void {
