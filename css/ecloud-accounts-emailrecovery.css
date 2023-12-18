@@ -23,8 +23,8 @@
 	font-weight: 600;
 }
 
-#body-user #header{
-	top:50px;
+#body-user #header, #body-settings #header, #body-public #header{
+	top:50px !important;
 }
 
 #content {
