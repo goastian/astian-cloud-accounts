@@ -38,7 +38,10 @@ function createImageElement(appName) {
  * @param appName
  */
 function createTextNode(appName) {
-	return document.createTextNode(t(appName, 'Please set your recovery email address to use your email account without restrictions.'))
+	const p = document.createElement('p')
+	const text = document.createTextNode(t(appName, 'Please set your recovery email address to use your email account without restrictions.'))
+	p.appendChild(text)
+	return p
 }
 
 /**
