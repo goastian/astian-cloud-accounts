@@ -75,6 +75,7 @@ class AccountController extends Controller {
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
+	
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
@@ -132,7 +133,7 @@ class AccountController extends Controller {
 			$this->userService->setUserLanguage($username, $language);
 			
 			if($recoveryEmail !== '') {
-				$this->userService->setRecoveryEmail($username, $recoveryEmail);
+				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
 			}
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
