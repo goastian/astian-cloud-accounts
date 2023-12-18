@@ -195,11 +195,16 @@ class AccountController extends Controller {
 			return $response;
 		}
 
-		if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
-			$response->setStatus(200);
+		try {
+			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
+				$response->setStatus(200);
+				$this->session->set('username_check_passed', true);
+			}
+		} catch (Exception $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID ]);
+			$response->setStatus(500);
 		}
 
-		$this->session->set('username_check_passed', true);
 		return $response;
 	}
 
