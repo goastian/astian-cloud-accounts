@@ -59,5 +59,5 @@ function createLinkElement(appName) {
 function insertIntoDOM(element) {
 	const targetElement = document.getElementById('header')
 	const parentElement = targetElement.parentNode
-	parentElement.insertBefore(element, targetElement.nextSibling)
+	parentElement.insertBefore(element, targetElement)
 }
