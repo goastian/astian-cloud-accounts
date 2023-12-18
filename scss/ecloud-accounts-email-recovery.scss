@@ -13,6 +13,9 @@
     font-size: 16px;
     font-weight: 400;
     line-height: 24px;
+    img {
+        padding-right:10px;
+    }
 
     a {
         color: #ffffff;
@@ -48,8 +51,9 @@
         display: block;
         padding-left: 10px;
 
-        a{
-            text-align:center;
+        img {
+            top:5px;
+            position: relative;
         }
     }
     #body-user #header,
