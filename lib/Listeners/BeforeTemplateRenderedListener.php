@@ -45,18 +45,17 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if ($this->userSession->isLoggedIn() && $this->appManager->isEnabledForUser(self::SNAPPYMAIL_APP_ID) && strpos($this->request->getPathInfo(), self::SNAPPYMAIL_URL) !== false) {
 			$this->autoLoginWebmail();
 		}
-	   
-		$user = $this->userSession->getUser();
-		if ($user instanceof IUser) {
-			$userID = $user->getUID();
-			$recoveryEmail = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email', '');
-			if($recoveryEmail === '') {
-				$this->util->addStyle($this->appName, $this->appName . '-emailrecovery');
-				$this->util->addScript($this->appName, $this->appName . '-emailrecovery');
+		if ($this->userSession->isLoggedIn()) {
+			$user = $this->userSession->getUser();
+			if ($user instanceof IUser) {
+				$userID = $user->getUID();
+				$recoveryEmail = $this->config->getUserValue($userID, 'email-recovery', 'recovery-email', '');
+				if($recoveryEmail === '') {
+					$this->util->addStyle($this->appName, $this->appName . '-emailrecovery');
+					$this->util->addScript($this->appName, $this->appName . '-emailrecovery');
+				}
 			}
 		}
-
-
 
 		$pathInfo = $this->request->getPathInfo();
 
