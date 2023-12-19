@@ -46,7 +46,7 @@ OC.L10N.register(
 		"Create My Account": "Mein Konto erstellen",
 		"Verify": "Überprüfen Sie",
 		"Later": "Später",
-		"Set my recovery email address": "Meine Wiederherstellungs-E-Mail-Adresse festlegen",
+		"Set My Recovery Email Now": "Meine Wiederherstellungs-E-Mail jetzt einstellen",
 		"Display name": "Name anzeigen",
 		"Username": "Benutzername",
 		"Enter Password": "Passwort eingeben",

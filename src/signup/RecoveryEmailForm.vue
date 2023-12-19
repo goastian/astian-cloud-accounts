@@ -36,7 +36,7 @@
 				class="btn-primary w-50 mx-10"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(true)">
-				{{ t(appName,'Set my recovery email address') }}
+				{{ t(appName,'Set My Recovery Email Now') }}
 			</button>
 			<button :wide="true"
 				class="btn-default w-50 mx-10"
