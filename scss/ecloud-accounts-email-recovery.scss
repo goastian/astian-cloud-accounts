@@ -51,6 +51,13 @@
         height: calc(100% - env(safe-area-inset-bottom) - 125px - var(--body-container-margin)) !important;
     }
 }
+@media only screen and (max-width: 1024px) {
+    #body-user #header,
+    #body-settings #header,
+    #body-public #header {
+        top: 90px !important;
+    }    
+}
 @media only screen and (max-width: 768px) {
     .recovery-email {
         display: block;
