@@ -3,7 +3,7 @@
 		<div id="fields">
 			<div class="field">
 				<div class="control">
-					<label class="bold">{{ t(appName,'Recovery Email') }}</label>
+					<label>{{ t(appName,'Recovery Email') }}</label>
 					<input id="email"
 						v-model="formData.email"
 						name="email"
@@ -19,9 +19,9 @@
 		</div>
 
 		<div>
-			<h1 class="has-text-centered subtitle is-3">
-				<span class="bold">{{ t(appName,'Important:') }}</span>
-				<span class="pl-10">{{ t(appName,'For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.') }}</span>
+			<h1 class="text-justified subtitle is-3">
+				<span class="important">{{ t(appName,'Important:') }}</span>
+				<span>{{ t(appName,'For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.') }}</span>
 			</h1>
 		</div>
 
@@ -87,11 +87,13 @@ export default {
 }
 </script>
 <style scoped>
-.bold{
+.important{
 	font-weight: bold;
+	color: black;
+	padding-right: 10px;
 }
-.pl-10{
-	padding-left: 10px;
+.text-justified{
+	text-align: justify;
 }
 #recoveryEmailForm {
     max-width: 670px;
@@ -220,7 +222,7 @@ export default {
 }
 
 #fields label {
-	color: #333333;
+	color: black;
 	font-size: 16px;
 	font-weight: 900;
 }
