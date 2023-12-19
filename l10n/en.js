@@ -78,6 +78,7 @@ OC.L10N.register(
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Your <b>__username__@__domain__</b> account was successfully created.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.",
 		"Recovery email address is already taken.": "Recovery email address is already taken.",
-		"Incorrect password length: Required length is 8 to 32": "Incorrect password length: Required length is 8 to 32"
+		"Incorrect password length: Required length is 8 to 32": "Incorrect password length: Required length is 8 to 32",
+		"Use an alternative email": "Use an alternative email"
 	},
 	"nplurals=2; plural=(n != 1);");

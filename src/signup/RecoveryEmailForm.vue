@@ -18,7 +18,7 @@
 						name="email"
 						type="email"
 						class="form-input"
-						:placeholder="t(appName,'Recovery Email')"
+						:placeholder="t(appName,'Use an alternative email')"
 						@input="validateForm(['email'])">
 					<p v-if="validation.isEmailEmpty" class="validation-warning">
 						{{ t(appName,'Recovery Email is required.') }}
@@ -29,16 +29,16 @@
 
 		<div id="groups" class="aliases-info display-flex">
 			<button :wide="true"
-				class="btn-default w-50"
-				type="primary"
-				@click.prevent="submitRecoveryEmailForm(false)">
-				{{ t(appName,'Later') }}
-			</button>
-			<button :wide="true"
 				class="btn-primary w-50"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(true)">
 				{{ t(appName,'Set my recovery email address') }}
+			</button>
+			<button :wide="true"
+				class="btn-default w-50"
+				type="primary"
+				@click.prevent="submitRecoveryEmailForm(false)">
+				{{ t(appName,'Later') }}
 			</button>
 		</div>
 	</div>
@@ -92,6 +92,7 @@ export default {
 .display-flex {
 	display: flex;
 	justify-content: space-between;
+	flex-direction: column;
 }
 
 /** mobile font sizes **/
@@ -242,7 +243,7 @@ p.validation-warning:before {
     padding-right: 5px;
 }
 .btn-primary {
-	width: 95%;
+	width: 100%;
 	background-color: var(--color-primary);
 	color: white;
 	border-color: var(--color-primary);
@@ -250,11 +251,11 @@ p.validation-warning:before {
 }
 
 .btn-default{
-	width: 95%;
-	background-color: var(--color-warning);
-	color: white;
-	border-color: var(--color-warning);
-	font-size: large;
+	width: 100%;
+    background-color: var(--color-primary-text);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    font-size: large;
 }
 
 @media screen and (max-width: 500px) {
