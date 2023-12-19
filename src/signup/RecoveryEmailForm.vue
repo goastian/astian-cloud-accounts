@@ -111,6 +111,8 @@ export default {
 .title{
 	font-size: 20px;
 	color: var(--color-main-text);
+	margin-bottom: 30px;
+    font-weight: bold;
 }
 .display-flex {
 	display: flex;
