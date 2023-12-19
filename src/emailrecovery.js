@@ -2,14 +2,16 @@ import { generateUrl } from '@nextcloud/router'
 const APPLICATION_NAME = 'ecloud-accounts'
 document.addEventListener('DOMContentLoaded', function() {
 	const newDiv = createNewDiv('recovery-email')
+	const contentDiv = document.createElement('div')
+	contentDiv.id = 'image-text-container'
 	const img = createImageElement(APPLICATION_NAME)
 	const textNode = createTextNode(APPLICATION_NAME)
 	const link = createLinkElement(APPLICATION_NAME)
 
-	newDiv.appendChild(img)
-	newDiv.appendChild(textNode)
+	contentDiv.appendChild(img)
+	contentDiv.appendChild(textNode)
+	newDiv.appendChild(contentDiv)
 	newDiv.appendChild(link)
-
 	insertIntoDOM(newDiv)
 })
 
