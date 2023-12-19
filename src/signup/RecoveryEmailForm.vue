@@ -90,7 +90,6 @@ export default {
 .important{
 	font-weight: bold;
 	color: black;
-	padding-right: 10px;
 }
 .text-justified{
 	text-align: justify;
@@ -98,6 +97,7 @@ export default {
 #recoveryEmailForm {
     max-width: 670px;
     width: 100%;
+	margin: 0 auto;
 }
 .display-flex {
 	display: flex;
