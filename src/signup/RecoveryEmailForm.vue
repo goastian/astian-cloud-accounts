@@ -2,8 +2,8 @@
 	<div id="recoveryEmailForm">
 		<div id="fields">
 			<div class="mx-10">
-				<h1 class="text-justified">
-					<span>{{ t(appName,'Set a recovery email address') }}</span>
+				<h1 class="text-justified title">
+					{{ t(appName,'Set a recovery email address') }}
 				</h1>
 			</div>
 
@@ -95,7 +95,7 @@ export default {
 <style scoped>
 .important{
 	font-weight: bold;
-	color: black;
+	color: var(--color-main-text);
 }
 .text-justified{
 	text-align: justify;
@@ -108,6 +108,10 @@ export default {
 .mx-10{
 	margin: 10px 0;
 }
+.title{
+	font-size: 20px;
+	color: var(--color-main-text);
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
@@ -116,30 +120,13 @@ export default {
 
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
-	#fields .field .control input {
+	#fields input {
 		padding-left: 2%;
 		padding-right: 2%;
 	}
 }
 
 @media screen and (max-width: 768px) {
-	#successMessages {
-		margin-left: 5%;
-		margin-right: 5%;
-	}
-
-	#success h1 {
-		font-size: 1.5em;
-	}
-
-	#inviteHeader,
-	#registerHeading {
-		font-size: 1.5em;
-	}
-
-	#fields {
-		background-color: white;
-	}
 
 	#fields .field {
 		font-size: 1.0em;
@@ -174,14 +161,7 @@ export default {
 	margin-bottom: 10px;
 }
 
-#fields input#username,
-#fields input#new-password,
-#fields input#repassword {
-	width: 50%;
-}
-
-#fields input,
-#fields input[type="password"] {
+#fields input{
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
@@ -197,10 +177,6 @@ export default {
 	margin-bottom: 10px;
 }
 
-#fields {
-	background-color: white;
-}
-
 #fields .field {
 	font-size: 1.3em;
 }
@@ -209,44 +185,11 @@ export default {
 	font-size: 15px;
 }
 
-#inviteHeader,
-#registerHeading {
-	margin-bottom: 10%;
-	font-size: 24px;
-	text-align: left !important;
-	font-weight: 500;
-}
-
-#currentLangImg {
-	border-radius: 50%;
-	margin: 0 auto;
-	border: 0.1em transparent black;
-	height: 24px;
-	width: 24px;
-	max-width: none;
-}
-
-#submitButton:hover {
-	opacity: 0.9;
-}
-
 #fields label {
-	color: black;
+	color: var(--color-main-text);
 	font-size: 16px;
 	font-weight: 900;
 }
-
-sup {
-	color: #ff0000;
-	font-weight: 500;
-	font-size: 14px;
-	padding-left: 3px;
-}
-
-#tos_div label {
-	line-height: 1.5rem;
-}
-
 .validation-warning{
 	color: #ff0000;
     padding-left: 5px;
@@ -277,14 +220,4 @@ p.validation-warning:before {
     font-size: large;
 }
 
-@media screen and (max-width: 500px) {
-	#main {
-		padding: 0 1.5rem;
-	}
-
-	#inviteHeader,
-	#registerHeading {
-		font-size: 18px;
-	}
-}
 </style>
