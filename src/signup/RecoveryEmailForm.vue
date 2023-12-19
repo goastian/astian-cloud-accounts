@@ -18,7 +18,7 @@
 			</div>
 		</div>
 
-		<div>
+		<div class="mx-10">
 			<h1 class="text-justified subtitle is-3">
 				<span class="important">{{ t(appName,'Important:') }}</span>
 				<span>{{ t(appName,'For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.') }}</span>
@@ -27,13 +27,13 @@
 
 		<div id="groups" class="aliases-info display-flex">
 			<button :wide="true"
-				class="btn-primary w-50"
+				class="btn-primary w-50 mx-10"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(true)">
 				{{ t(appName,'Set my recovery email address') }}
 			</button>
 			<button :wide="true"
-				class="btn-default w-50"
+				class="btn-default w-50 mx-10"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(false)">
 				{{ t(appName,'Later') }}
@@ -95,9 +95,12 @@ export default {
 	text-align: justify;
 }
 #recoveryEmailForm {
-    max-width: 670px;
+    max-width: 500px;
     width: 100%;
 	margin: 0 auto;
+}
+.mx-10{
+	margin: 10px 0;
 }
 .display-flex {
 	display: flex;
@@ -258,7 +261,6 @@ p.validation-warning:before {
 	color: var(--color-primary-text);
 	border-color: var(--color-primary);
 	font-size: large;
-	margin: 15px 0;
 }
 
 .btn-default{
@@ -267,7 +269,6 @@ p.validation-warning:before {
     color: var(--color-primary);
     border-color: var(--color-primary);
     font-size: large;
-	margin: 15px 0;
 }
 
 @media screen and (max-width: 500px) {
