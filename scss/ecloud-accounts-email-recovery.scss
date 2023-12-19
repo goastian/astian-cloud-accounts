@@ -17,6 +17,7 @@
         display:inline-flex;
         img {
             padding-right:10px;
+            align-self: start;
         }
     }    
 
@@ -54,12 +55,6 @@
     .recovery-email {
         display: block;
         padding: 16px 0 16px 10px;
-        #image-text-container{
-            img {
-                top:-13px;
-                position: relative;
-            }
-        }
         a{
             padding: 8px 0 0 30px;
         }
