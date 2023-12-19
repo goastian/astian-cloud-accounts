@@ -45,9 +45,9 @@ export default {
 				selectedLanguage: 'en',
 			},
 			appName: APPLICATION_NAME,
-			showRegistrationForm: false, // temporary changes
+			showRegistrationForm: true,
 			showCaptchaForm: false,
-			showRecoveryEmailForm: true, // temporary changes
+			showRecoveryEmailForm: false,
 			showSuccessSection: false,
 		}
 	},
