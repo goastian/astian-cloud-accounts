@@ -7,7 +7,7 @@
 				</h1>
 			</div>
 
-			<div class="field">
+			<div class="field mx-10">
 				<div class="control">
 					<label>{{ t(appName,'Recovery Email') }}</label>
 					<input id="email"
@@ -149,10 +149,6 @@ export default {
 		font-size: 1.0em;
 		line-height: 1.0em;
 	}
-}
-
-#fields {
-	margin: 10px;
 }
 
 #fields .control {
