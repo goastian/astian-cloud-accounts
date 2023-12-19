@@ -95,7 +95,7 @@ export default {
 <style scoped>
 .important{
 	font-weight: bold;
-	color: var(--color-main-text);
+	color: black;
 }
 .text-justified{
 	text-align: justify;
@@ -110,7 +110,7 @@ export default {
 }
 .title{
 	font-size: 20px;
-	color: var(--color-main-text);
+	color: black;
 	margin-bottom: 30px;
     font-weight: bold;
 }
@@ -184,7 +184,7 @@ export default {
 }
 
 #fields label {
-	color: var(--color-main-text);
+	color: black;
 	font-size: 16px;
 	font-weight: 900;
 }
