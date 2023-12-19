@@ -49,7 +49,7 @@ OC.L10N.register(
 		"Create My Account": "Create My Account",
 		"Verify": "Verify",
 		"Later": "Later",
-		"Set my recovery email address": "Set my recovery email address",
+		"Set My Recovery Email Now": "Set My Recovery Email Now",
 		"Display name": "Display name",
 		"Username": "Username",
 		"Enter Password": "Enter Password",
