@@ -86,6 +86,10 @@ export default {
 }
 </script>
 <style scoped>
+#recoveryEmailForm {
+    max-width: 670px;
+    width: 100%;
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
