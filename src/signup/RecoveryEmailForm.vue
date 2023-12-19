@@ -1,6 +1,12 @@
 <template>
 	<div id="recoveryEmailForm">
 		<div id="fields">
+			<div class="mx-10">
+				<h1 class="text-justified">
+					<span>{{ t(appName,'Set a recovery email address') }}</span>
+				</h1>
+			</div>
+
 			<div class="field">
 				<div class="control">
 					<label>{{ t(appName,'Recovery Email') }}</label>

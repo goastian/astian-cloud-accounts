@@ -79,6 +79,7 @@ OC.L10N.register(
 		"Incorrect password length: Required length is 8 to 32": "Longitud de contraseña incorrecta: La longitud requerida es de 8 a 32",
 		"Use an alternative email": "Utilizar un correo electrónico alternativo",
 		"Important:": "Importante:",
-		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Por razones de seguridad, se requiere un correo electrónico de recuperación. Si decides configurarlo más tarde, tu cuenta quedará parcialmente restringida."
+		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Por razones de seguridad, se requiere un correo electrónico de recuperación. Si decides configurarlo más tarde, tu cuenta quedará parcialmente restringida.",
+		"Set a recovery email address": "Establecer una dirección de correo electrónico de recuperación"
 	},
 	"nplurals=2; plural=(n != 1);");
