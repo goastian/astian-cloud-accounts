@@ -18,15 +18,16 @@
         img {
             padding-right:10px;
         }
+    }    
 
-        a {
-            color: #ffffff;
-            padding-left: 24px;
-            text-decoration: underline;
-            font-size: 16px;
-            font-weight: 600;
-        }
+    a {
+        color: #ffffff;
+        padding-left: 24px;
+        text-decoration: underline;
+        font-size: 16px;
+        font-weight: 600;
     }
+   
 }
 
 #body-user #header,
@@ -60,7 +61,7 @@
             }
         }
         a{
-            padding-top: 8px;
+            padding: 8px 0 0 30px;
         }
     }
     #body-user #header,
