@@ -1,14 +1,5 @@
 <template>
 	<div id="recoveryEmailForm">
-		<div>
-			<h1 class="has-text-centered subtitle is-3">
-				{{ t(appName,'For security reasons you need to set a recovery address for your Murena Cloud account.') }}
-			</h1>
-			<h1 class="has-text-centered subtitle is-3">
-				{{ t(appName,'As long as you don\'t, you\'ll have limited access to your account.') }}
-			</h1>
-		</div>
-
 		<div id="fields">
 			<div class="field">
 				<div class="control">
@@ -25,6 +16,12 @@
 					</p>
 				</div>
 			</div>
+		</div>
+
+		<div>
+			<h1 class="has-text-centered subtitle is-3">
+				{{ t(appName,'Important: For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.') }}
+			</h1>
 		</div>
 
 		<div id="groups" class="aliases-info display-flex">
@@ -245,9 +242,10 @@ p.validation-warning:before {
 .btn-primary {
 	width: 100%;
 	background-color: var(--color-primary);
-	color: white;
+	color: var(--color-primary-text);
 	border-color: var(--color-primary);
 	font-size: large;
+	margin: 15px 0;
 }
 
 .btn-default{
@@ -256,6 +254,7 @@ p.validation-warning:before {
     color: var(--color-primary);
     border-color: var(--color-primary);
     font-size: large;
+	margin: 15px 0;
 }
 
 @media screen and (max-width: 500px) {

@@ -75,6 +75,7 @@ OC.L10N.register(
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Ihr <b>__username__@__domain__</b>-Konto wurde erfolgreich erstellt.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "Wenn Sie Ihre murena.io-E-Mail in einer Mail-Anwendung wie Thunderbird, Outlook oder einer anderen nutzen möchten, besuchen Sie bitte <a href='https://doc.e.foundation/support-topics/configure-email'>diese Seite</a>.",
 		"Incorrect password length: Required length is 8 to 32": "Falsche Passwortlänge: Erforderliche Länge ist 8 bis 32",
-		"Use an alternative email": "Verwenden Sie eine alternative E-Mail"
+		"Use an alternative email": "Verwenden Sie eine alternative E-Mail",
+		"Important: For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Wichtig! Aus Sicherheitsgründen ist eine Wiederherstellungs-E-Mail erforderlich. Wenn Sie sich entscheiden, diese später einzustellen, wird Ihr Konto teilweise eingeschränkt."
 	},
 	"nplurals=2; plural=(n != 1);");
