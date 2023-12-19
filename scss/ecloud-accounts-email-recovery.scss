@@ -49,16 +49,21 @@
 @media only screen and (max-width: 768px) {
     .recovery-email {
         display: block;
-        padding-left: 10px;
-
-        img {
-            top:5px;
-            position: relative;
+        padding: 16px 0 16px 10px;
+        #image-text-container{
+            display:inline-flex;
+            img {
+                top:5px;
+                position: relative;
+            }
+        }
+        a{
+            padding-top: 8px;
         }
     }
     #body-user #header,
     #body-settings #header,
     #body-public #header {
-        top: 75px !important;
+        top: 120px !important;
     }    
 }
