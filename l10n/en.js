@@ -79,6 +79,7 @@ OC.L10N.register(
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.",
 		"Recovery email address is already taken.": "Recovery email address is already taken.",
 		"Incorrect password length: Required length is 8 to 32": "Incorrect password length: Required length is 8 to 32",
-		"Use an alternative email": "Use an alternative email"
+		"Use an alternative email": "Use an alternative email",
+		"Important: For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Important: For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted."
 	},
 	"nplurals=2; plural=(n != 1);");
