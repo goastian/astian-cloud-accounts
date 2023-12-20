@@ -104,7 +104,6 @@ class CurlService {
 		
 
 		if ($errno = curl_errno($ch)) {
-			var_dump($errno);
 			$errorMessage = curl_strerror($errno);
 			throw new Exception("Curl error $errno - $errorMessage");
 		}
