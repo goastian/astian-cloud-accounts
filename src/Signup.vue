@@ -109,6 +109,11 @@ export default {
 section#main {
 	overflow-x: hidden;
 }
+#registration {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+}
 @media screen and (max-width: 500px) {
 	#main {
 		padding: 0 1.5rem;
