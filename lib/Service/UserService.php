@@ -459,8 +459,25 @@ class UserService {
 	 * @return mixed response of the external endpoint
 	 */
 	public function newsletterSignup(string $userEmail, array $listIds, string $userLanguage) {
-		
+		$newsletterApiUrl = $this->apiConfig['newsletter_base_url'];
 
-		return null;
+		if (!isset($newsletterApiUrl) || empty($newsletterApiUrl)) {
+			return;
+		}
+		
+		$endpoint = '/api/signup';
+		$url = $newsletterApiUrl . $endpoint ;
+		
+		$params = [
+			'userEmail' => $userEmail,
+			'listIds' => $listIds,
+			'userLanguage' => $userLanguage
+		];
+		
+		$this->curl->post($url, $params, $headers);
+
+		if ($this->curl->getLastStatusCode() !== 200) {
+			throw new Exception('Error adding email ' . $userEmail . ' to newsletter app');
+		}
 	}
 }
