@@ -127,12 +127,26 @@ class AccountController extends Controller {
 			$userEmail = $username.'@'.$mainDomain;
 
 			$newUserEntry = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
-			
 			$this->userService->setAccountDataLocally($username, $userEmail, $newUserEntry['quota']);
 			$this->userService->createHMEAlias($username, $userEmail);
 			$this->userService->createNewDomainAlias($username, $userEmail);
 			$this->userService->setTOS($username, true);
 			$this->userService->setUserLanguage($username, $language);
+			if ($newsletter_eos || $newsletter_product) {
+				$list_ids = [];
+			
+				if ($newsletter_eos) {
+					$list_ids[] = $this->config->getSystemValue('newsletter_eos_list_id');
+				}
+			
+				if ($newsletter_product) {
+					$list_ids[] = $this->config->getSystemValue('newsletter_product_list_id');
+				}
+			
+				if (!empty($list_ids)) {
+					$this->userService->newsletterSignup($userEmail, $list_ids, $language);
+				}
+			}
 			
 			if($recoveryEmail !== '') {
 				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
