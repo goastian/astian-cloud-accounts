@@ -109,6 +109,11 @@ export default {
 }
 </script>
 <style scoped>
+#captchaForm {
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
