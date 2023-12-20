@@ -473,8 +473,12 @@ class UserService {
 			'listIds' => $listIds,
 			'userLanguage' => $userLanguage
 		];
-		
-		$this->curl->post($url, $params);
+		$params_string = json_encode($params);
+		$headers = [
+			'Content-Type: application/json',
+			'Content-Length: ' . strlen($params_string)
+		];
+		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
 			throw new Exception('Error adding email ' . $userEmail . ' to newsletter app');
