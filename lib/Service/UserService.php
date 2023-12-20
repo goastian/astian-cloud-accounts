@@ -474,7 +474,7 @@ class UserService {
 			'userLanguage' => $userLanguage
 		];
 		
-		$this->curl->post($url, $params, $headers);
+		$this->curl->post($url, $params);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
 			throw new Exception('Error adding email ' . $userEmail . ' to newsletter app');
