@@ -100,11 +100,6 @@ export default {
 .text-justified{
 	text-align: justify;
 }
-#recoveryEmailForm {
-    max-width: 500px;
-    width: 100%;
-	margin: 0 auto;
-}
 .mx-10{
 	margin: 10px 0;
 }
