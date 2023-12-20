@@ -20,6 +20,7 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
+use OCP\IConfig;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -30,6 +31,8 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
+	/** @var IConfig */
+	private $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 
@@ -41,7 +44,8 @@ class AccountController extends Controller {
 		IFactory $l10nFactory,
 		IUserSession $userSession,
 		IURLGenerator $urlGenerator,
-		ISession $session
+		ISession $session,
+		IConfig $config
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -50,6 +54,7 @@ class AccountController extends Controller {
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
 		$this->userSession = $userSession;
+		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 	}
 
