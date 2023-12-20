@@ -101,8 +101,8 @@ export default {
 	text-align: justify;
 }
 #recoveryEmailForm {
-    max-width: 500px;
-    width: 100%;
+	max-width: 500px;
+	width: 100%;
 	margin: 0 auto;
 }
 .mx-10{
@@ -112,7 +112,7 @@ export default {
 	font-size: 20px;
 	color: black;
 	margin-bottom: 10%;
-    font-weight: bold;
+	font-weight: bold;
 }
 .display-flex {
 	display: flex;
