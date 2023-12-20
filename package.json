@@ -9,7 +9,7 @@
 	"private": true,
 	"scripts": {
 		"build-scss": "sass scss:css --style compressed --no-source-map",
-        "build": "npm run build-scss && NODE_ENV=production webpack --progress",
+		"build": "npm run build-scss && NODE_ENV=production webpack --progress",
 		"dev": "NODE_ENV=development webpack --progress",
 		"watch": "NODE_ENV=development webpack --progress --watch",
 		"lint": "eslint --ext .js,.vue src",
