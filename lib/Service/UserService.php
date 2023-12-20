@@ -459,7 +459,7 @@ class UserService {
 	 * @return mixed response of the external endpoint
 	 */
 	public function newsletterSignup(string $userEmail, array $listIds, string $userLanguage) {
-		$newsletterApiUrl = $this->apiConfig['newsletter_base_url'];
+		$newsletterApiUrl = $this->config->getSystemValue('newsletter_base_url', '');
 
 		if (!isset($newsletterApiUrl) || empty($newsletterApiUrl)) {
 			return;
