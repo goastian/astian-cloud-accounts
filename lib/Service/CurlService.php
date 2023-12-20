@@ -82,6 +82,10 @@ class CurlService {
 				break;
 			case 'POST':
 				$options[CURLOPT_POST] = true;
+				$jsonContent = in_array('Content-Type: application/json', $headers);
+				if ($jsonContent) {
+					$params = json_encode($params);
+				}
 				$options[CURLOPT_POSTFIELDS] = $params;
 				break;
 			case 'DELETE':
