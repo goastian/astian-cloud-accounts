@@ -307,7 +307,9 @@ export default {
 
 <style scoped>
 #registrationForm{
-	width: 90%;
+	max-width: 700px;
+	width: 100%;
+	margin: 0 auto;
 }
 .display-flex {
 	display: flex;
