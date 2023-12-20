@@ -469,9 +469,9 @@ class UserService {
 		$url = $newsletterApiUrl . $endpoint ;
 		
 		$params = [
-			'userEmail' => $userEmail,
-			'listIds' => $listIds,
-			'userLanguage' => $userLanguage
+			'email' => $userEmail,
+			'list_ids' => $listIds,
+			'contact_language' => $userLanguage
 		];
 		$params_string = json_encode($params);
 		$headers = [
