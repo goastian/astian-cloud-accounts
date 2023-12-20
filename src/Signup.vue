@@ -74,6 +74,8 @@ export default {
 					password: this.formData.password,
 					recoveryEmail: this.formData.email,
 					language: this.formData.selectedLanguage,
+					newsletter_eos: this.formData.newsletter_eos,
+					newsletter_product: this.formData.newsletter_product,
 				}
 				this.submitForm(data)
 			}

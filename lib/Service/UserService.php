@@ -448,4 +448,19 @@ class UserService {
 			throw new Exception('Error adding username ' . $username . ' to common data store');
 		}
 	}
+
+	/**
+	 * Newsletter signup,
+	 * perform call to newsletter app api to signup the user
+	 *
+	 * @param $userEmail string
+	 * @param $listIds array
+	 * @param $userLanguage string
+	 * @return mixed response of the external endpoint
+	 */
+	public function newsletterSignup(string $userEmail, array $listIds, string $userLanguage) {
+		
+
+		return null;
+	}
 }
