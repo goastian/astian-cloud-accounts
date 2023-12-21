@@ -32,7 +32,7 @@ class AccountController extends Controller {
 	private $userSession;
 	private $urlGenerator;
 	/** @var IConfig */
-	private $config;
+	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 
@@ -139,13 +139,13 @@ class AccountController extends Controller {
 			$this->userService->setUserLanguage($username, $language);
 			if ($newsletter_eos || $newsletter_product) {
 				$list_ids = [];
-			
+				$newsletterListIds =  $this->config->getSystemValue('newsletter_list_ids');
 				if ($newsletter_eos) {
-					$list_ids[] = $this->config->getSystemValue('newsletter_eos_list_id');
+					$list_ids[] = $newsletterListIds['eos'];
 				}
 			
 				if ($newsletter_product) {
-					$list_ids[] = $this->config->getSystemValue('newsletter_product_list_id');
+					$list_ids[] = $newsletterListIds['product'];
 				}
 			
 				if (!empty($list_ids)) {
