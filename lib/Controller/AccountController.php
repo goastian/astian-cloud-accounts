@@ -139,7 +139,7 @@ class AccountController extends Controller {
 			$this->userService->setUserLanguage($username, $language);
 			if ($newsletter_eos || $newsletter_product) {
 				$list_ids = [];
-				$newsletterListIds =  $this->config->getSystemValue('newsletter_list_ids');
+				$newsletterListIds = $this->config->getSystemValue('newsletter_list_ids');
 				if ($newsletter_eos) {
 					$list_ids[] = $newsletterListIds['eos'];
 				}
