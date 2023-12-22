@@ -458,7 +458,7 @@ class UserService {
 	 * @param $userLanguage string
 	 * @return mixed response of the external endpoint
 	 */
-	public function newsletterSignup(string $userEmail, array $listIds, string $userLanguage): void{
+	public function newsletterSignup(string $userEmail, array $listIds, string $userLanguage): void {
 		$newsletterApiUrl = $this->config->getSystemValue('newsletter_base_url', '');
 
 		if (!isset($newsletterApiUrl) || empty($newsletterApiUrl)) {
