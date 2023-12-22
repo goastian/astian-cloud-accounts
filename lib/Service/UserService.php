@@ -481,7 +481,7 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			throw new Exception('Error adding email ' . $userEmail . ' to newsletter app');
+			$this->logger->error('Error adding email ' . $userEmail . ' to newsletter app');
 		}
 	}
 }
