@@ -40,8 +40,8 @@ export default {
 				captchaInput: '',
 				email: '',
 				accepttns: false,
-				newsletter_eos: false,
-				newsletter_product: false,
+				newsletterEos: false,
+				newsletterProduct: false,
 				selectedLanguage: 'en',
 			},
 			appName: APPLICATION_NAME,
@@ -74,8 +74,8 @@ export default {
 					password: this.formData.password,
 					recoveryEmail: this.formData.email,
 					language: this.formData.selectedLanguage,
-					newsletter_eos: this.formData.newsletter_eos,
-					newsletter_product: this.formData.newsletter_product,
+					newsletterEos: this.formData.newsletterEos,
+					newsletterProduct: this.formData.newsletterProduct,
 				}
 				this.submitForm(data)
 			}

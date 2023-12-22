@@ -91,12 +91,12 @@ class AccountController extends Controller {
 	 * @param string $username         User's username
 	 * @param string $password         User's password
 	 * @param string $language         User's language preference
-	 * @param bool $newsletter_eos     Users's subscribe to eos newsletter
-	 * @param bool $newsletter_product Users's subscribe to murena product newsletter
+	 * @param bool $newsletterEos     Users's subscribe to eos newsletter
+	 * @param bool $newsletterProduct Users's subscribe to murena product newsletter
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = '', bool $newsletter_eos = false, bool $newsletter_product = false): DataResponse {
+	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = '', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
 		
 		$response = new DataResponse();
 		
@@ -137,14 +137,14 @@ class AccountController extends Controller {
 			$this->userService->createNewDomainAlias($username, $userEmail);
 			$this->userService->setTOS($username, true);
 			$this->userService->setUserLanguage($username, $language);
-			if ($newsletter_eos || $newsletter_product) {
+			if ($newsletterEos || $newsletterProduct) {
 				$list_ids = [];
 				$newsletterListIds = $this->config->getSystemValue('newsletter_list_ids');
-				if ($newsletter_eos) {
+				if ($newsletterEos) {
 					$list_ids[] = $newsletterListIds['eos'];
 				}
 			
-				if ($newsletter_product) {
+				if ($newsletterProduct) {
 					$list_ids[] = $newsletterListIds['product'];
 				}
 			
