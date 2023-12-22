@@ -131,7 +131,7 @@ class AccountController extends Controller {
 			$this->userService->createNewDomainAlias($username, $userEmail);
 			$this->userService->setTOS($username, true);
 			$this->userService->setUserLanguage($username, $language);
-			
+			$this->userService->setRecoveryEmail($username, '');
 			if($recoveryEmail !== '') {
 				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
 			}
