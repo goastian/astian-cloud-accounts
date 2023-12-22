@@ -9,6 +9,7 @@ namespace OCA\EcloudAccounts\Controller;
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\CaptchaService;
+use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -26,6 +27,7 @@ class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	private $userService;
+	private $newsletterService;
 	private $captchaService;
 	protected $l10nFactory;
 	private $session;
@@ -40,6 +42,7 @@ class AccountController extends Controller {
 		$AppName,
 		IRequest $request,
 		UserService $userService,
+		NewsLetterService $newsletterService,
 		CaptchaService $captchaService,
 		IFactory $l10nFactory,
 		IUserSession $userSession,
@@ -50,6 +53,7 @@ class AccountController extends Controller {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->userService = $userService;
+		$this->newsletterService = $newsletterService;
 		$this->captchaService = $captchaService;
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
@@ -137,7 +141,7 @@ class AccountController extends Controller {
 			$this->userService->createNewDomainAlias($username, $userEmail);
 			$this->userService->setTOS($username, true);
 			$this->userService->setUserLanguage($username, $language);
-			$this->userService->setNewsletterSignup($newsletterEos, $newsletterProduct, $userEmail, $language);
+			$this->newsletterService->setNewsletterSignup($newsletterEos, $newsletterProduct, $userEmail, $language);
 			
 			if($recoveryEmail !== '') {
 				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
