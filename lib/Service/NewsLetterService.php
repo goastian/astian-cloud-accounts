@@ -10,9 +10,13 @@ use OCP\ILogger;
 use OCP\IUserManager;
 
 class NewsLetterService {
+	/** @var IUserManager */
 	private $userManager;
+	/** @var IConfig */
 	private $config;
+	/** @var CurlService */
 	private $curl;
+	/** @var ILogger */
 	private $logger;
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger) {
