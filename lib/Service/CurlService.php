@@ -85,6 +85,9 @@ class CurlService {
 				$jsonContent = in_array('Content-Type: application/json', $headers);
 				if ($jsonContent) {
 					$params = json_encode($params);
+					if (json_last_error() !== JSON_ERROR_NONE) {
+						throw new Exception('JSON encoding failed: ' . json_last_error_msg());
+					}
 				}
 				$options[CURLOPT_POSTFIELDS] = $params;
 				break;

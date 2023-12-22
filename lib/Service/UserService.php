@@ -448,17 +448,47 @@ class UserService {
 			throw new Exception('Error adding username ' . $username . ' to common data store');
 		}
 	}
-
 	/**
 	 * Newsletter signup,
 	 * perform call to newsletter app api to signup the user
 	 *
-	 * @param $userEmail string
-	 * @param $listIds array
-	 * @param $userLanguage string
+	 * @param bool $newsletterEos
+	 * @param bool $newsletterProduct
+	 * @param string $userEmail
+	 * @param string $language
+	 * @return void
+	 */
+	public function setNewsletterSignup(bool $newsletterEos, bool $newsletterProduct, string $userEmail, string $language): void {
+		if ($newsletterEos || $newsletterProduct) {
+			$listIds = [];
+			$newsletterListIds = $this->config->getSystemValue('newsletter_list_ids');
+			if ($newsletterEos) {
+				$listIds[] = $newsletterListIds['eos'];
+			}
+		
+			if ($newsletterProduct) {
+				$listIds[] = $newsletterListIds['product'];
+			}
+		
+			if (!empty($listIds)) {
+				try {
+					$this->signupForNewsletter($userEmail, $listIds, $language);
+				} catch (Exception $e) {
+					$this->logger->error('Signup for newsletter failed: ' . $e->getMessage());
+				}
+			}
+		}
+	}
+	/**
+	 * Signup for newsletter,
+	 * perform call to newsletter app api to signup the user
+	 *
+	 * @param  string $userEmail
+	 * @param  Array $listIds
+	 * @param string $userLanguage
 	 * @return mixed response of the external endpoint
 	 */
-	public function newsletterSignup(string $userEmail, array $listIds, string $userLanguage): void {
+	public function signupForNewsletter(string $userEmail, array $listIds, string $userLanguage): void {
 		$newsletterApiUrl = $this->config->getSystemValue('newsletter_base_url', '');
 
 		if (!isset($newsletterApiUrl) || empty($newsletterApiUrl)) {
@@ -481,7 +511,7 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			$this->logger->error('Error adding email ' . $userEmail . ' to newsletter app');
+			throw new Exception('Error adding email ' . $userEmail . ' to newsletter app');
 		}
 	}
 }

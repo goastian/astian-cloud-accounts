@@ -137,21 +137,7 @@ class AccountController extends Controller {
 			$this->userService->createNewDomainAlias($username, $userEmail);
 			$this->userService->setTOS($username, true);
 			$this->userService->setUserLanguage($username, $language);
-			if ($newsletterEos || $newsletterProduct) {
-				$list_ids = [];
-				$newsletterListIds = $this->config->getSystemValue('newsletter_list_ids');
-				if ($newsletterEos) {
-					$list_ids[] = $newsletterListIds['eos'];
-				}
-			
-				if ($newsletterProduct) {
-					$list_ids[] = $newsletterListIds['product'];
-				}
-			
-				if (!empty($list_ids)) {
-					$this->userService->newsletterSignup($userEmail, $list_ids, $language);
-				}
-			}
+			$this->userService->setNewsletterSignup($newsletterEos, $newsletterProduct, $userEmail, $language);
 			
 			if($recoveryEmail !== '') {
 				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
