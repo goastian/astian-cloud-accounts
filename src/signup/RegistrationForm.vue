@@ -335,7 +335,7 @@ export default {
 	margin-right: 10px;
 }
 .fields {
-	margin: 10px;
+	margin: 10px 0;
 }
 .fields .control {
 	text-align: left;
@@ -528,6 +528,10 @@ p.validation-success:before {
 	input {
 		font-size: 1.0em;
 		line-height: 1.0em;
+	}
+	.fields input#new-password,
+	.fields input#repassword {
+		width: 100%;
 	}
 }
 @media screen and (max-width: 500px) {
