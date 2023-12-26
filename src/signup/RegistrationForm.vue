@@ -489,6 +489,9 @@ p.validation-success:before {
 	border-color: var(--color-primary);
 	font-size: large;
 }
+.pad-left-5{
+	padding-left: 5px;
+}
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	.fields .field .control input {
