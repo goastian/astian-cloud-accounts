@@ -342,10 +342,12 @@ export default {
 	text-align: left;
 	margin: 10px 0;
 }
-.fields input#username,
 .fields input#new-password,
 .fields input#repassword {
 	width: 45%;
+}
+.fields input#username {
+	width: 50%;
 }
 .fields input,
 .fields input[type="password"] {
