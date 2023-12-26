@@ -171,9 +171,9 @@ export default {
 	transition: all 0.5s linear;
 	border: 1px solid #E6E8E9;
 	border-radius: 8px;
-	padding: 10px 20px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	padding: 30px 20px;
+    margin: 10px 0;
+    box-sizing: border-box;
 }
 
 #fields .field {
