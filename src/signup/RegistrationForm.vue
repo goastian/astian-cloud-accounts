@@ -533,6 +533,9 @@ p.validation-success:before {
 	.fields input#repassword {
 		width: 100%;
 	}
+	.password-group .Password{
+		margin: 0;
+	}
 }
 @media screen and (max-width: 500px) {
 	#main {

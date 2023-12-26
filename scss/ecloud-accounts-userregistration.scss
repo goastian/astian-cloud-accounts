@@ -34,6 +34,7 @@ html {
 @media only screen and (max-width: 768px) {
 	.v-align main {
 		width: 100% !important;
+		overflow-y: scroll;
 	}
 
 	#body-login .v-align {
