@@ -111,7 +111,6 @@ export default {
 <style scoped>
 #captchaForm {
     max-width: 500px;
-    width: 100%;
     margin: 0 auto;
 	padding: 0 10px;
 }
