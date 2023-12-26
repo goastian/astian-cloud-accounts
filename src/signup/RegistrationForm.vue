@@ -125,7 +125,7 @@
 					<div class="control">
 						<span class="action-checkbox">
 							<input id="action-newsletter_eos"
-								v-model="formData.newsletter_eos"
+								v-model="formData.newsletterEos"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
 							<label for="action-newsletter_eos" class="action-checkbox__label">{{ t(appName,'I want to receive news about /e/OS') }}</label>
@@ -139,7 +139,7 @@
 					<div class="control">
 						<span class="action-checkbox">
 							<input id="action-newsletter_product"
-								v-model="formData.newsletter_product"
+								v-model="formData.newsletterProduct"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
 							<label for="action-newsletter_product" class="action-checkbox__label">{{ t(appName,'I want to receive news about Murena products and promotions') }}</label>

@@ -82,6 +82,13 @@ class CurlService {
 				break;
 			case 'POST':
 				$options[CURLOPT_POST] = true;
+				$jsonContent = in_array('Content-Type: application/json', $headers);
+				if ($jsonContent) {
+					$params = json_encode($params);
+					if (json_last_error() !== JSON_ERROR_NONE) {
+						throw new Exception('JSON encoding failed: ' . json_last_error_msg());
+					}
+				}
 				$options[CURLOPT_POSTFIELDS] = $params;
 				break;
 			case 'DELETE':
@@ -104,7 +111,6 @@ class CurlService {
 		
 
 		if ($errno = curl_errno($ch)) {
-			var_dump($errno);
 			$errorMessage = curl_strerror($errno);
 			throw new Exception("Curl error $errno - $errorMessage");
 		}
