@@ -32,6 +32,7 @@ class NewsLetterService {
 		try {
 			if ($newsletterEos || $newsletterProduct) {
 				$listIds = [];
+				$newsletterListIds = $this->config->getSystemValue('newsletter_list_ids');
 				if ($newsletterEos) {
 					$listIds[] = $newsletterListIds['eos'];
 				}
