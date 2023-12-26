@@ -354,16 +354,16 @@ export default {
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
-    display: block;
-    width: 100%;
-    font-size: 16px;
-    line-height: 1.3em;
-    transition: all 0.5s linear;
-    border: 1px solid #E6E8E9;
-    border-radius: 8px;
-    padding: 30px 20px;
-    margin: 10px 0;
-    box-sizing: border-box;
+	display: block;
+	width: 100%;
+	font-size: 16px;
+	line-height: 1.3em;
+	transition: all 0.5s linear;
+	border: 1px solid #E6E8E9;
+	border-radius: 8px;
+	padding: 30px 20px;
+	margin: 10px 0;
+	box-sizing: border-box;
 }
 .username-group {
 	display: flex;

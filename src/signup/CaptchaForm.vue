@@ -173,8 +173,8 @@ export default {
 	border: 1px solid #E6E8E9;
 	border-radius: 8px;
 	padding: 30px 20px;
-    margin: 10px 0;
-    box-sizing: border-box;
+	margin: 10px 0;
+	box-sizing: border-box;
 }
 #fields .field {
 	font-size: 1.3em;
