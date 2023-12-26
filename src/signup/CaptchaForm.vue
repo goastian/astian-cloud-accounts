@@ -110,8 +110,8 @@ export default {
 </script>
 <style scoped>
 #captchaForm {
-    max-width: 500px;
-    margin: 0 auto;
+	max-width: 500px;
+	margin: 0 auto;
 	padding: 0 10px;
 }
 .display-flex {
