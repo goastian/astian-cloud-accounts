@@ -154,7 +154,7 @@ export default {
 	}
 }
 #fields {
-	margin: 10px;
+	margin: 10px 0;
 	background-color: white;
 }
 #fields .control {
