@@ -29,24 +29,25 @@ class NewsLetterService {
 	}
 
 	public function setNewsletterSignup(bool $newsletterEos, bool $newsletterProduct, string $userEmail, string $language): void {
-		if ($newsletterEos || $newsletterProduct) {
-			$listIds = [];
-			$newsletterListIds = $this->config->getSystemValue('newsletter_list_ids');
-			if ($newsletterEos) {
-				$listIds[] = $newsletterListIds['eos'];
-			}
+		try {
+			if ($newsletterEos || $newsletterProduct) {
+				$listIds = [];
+				if ($newsletterEos) {
+					$listIds[] = $newsletterListIds['eos'];
+				}
 
-			if ($newsletterProduct) {
-				$listIds[] = $newsletterListIds['product'];
-			}
-
-			if (!empty($listIds)) {
-				try {
+				if ($newsletterProduct) {
+					$listIds[] = $newsletterListIds['product'];
+				}
+				
+				if (!empty($listIds)) {
+					
 					$this->signupForNewsletter($userEmail, $listIds, $language);
-				} catch (Exception $e) {
-					$this->logger->error('Signup for newsletter failed: ' . $e->getMessage());
+					
 				}
 			}
+		} catch (Exception $e) {
+			$this->logger->error('Signup for newsletter failed: ' . $e->getMessage());
 		}
 	}
 
