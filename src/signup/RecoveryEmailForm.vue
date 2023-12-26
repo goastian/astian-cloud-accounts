@@ -171,8 +171,8 @@ export default {
 	border: 1px solid #E6E8E9;
 	border-radius: 8px;
 	padding: 30px 20px;
-    margin: 10px 0;
-    box-sizing: border-box;
+	margin: 10px 0;
+	box-sizing: border-box;
 }
 
 #fields .field {
@@ -212,10 +212,10 @@ p.validation-warning:before {
 
 .btn-default{
 	width: 100%;
-    background-color: var(--color-primary-text);
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    font-size: large;
+	background-color: var(--color-primary-text);
+	color: var(--color-primary);
+	border-color: var(--color-primary);
+	font-size: large;
 }
 
 </style>
