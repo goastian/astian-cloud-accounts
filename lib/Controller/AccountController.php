@@ -9,12 +9,14 @@ namespace OCA\EcloudAccounts\Controller;
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\CaptchaService;
+use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
@@ -25,11 +27,14 @@ class AccountController extends Controller {
 	protected $appName;
 	protected $request;
 	private $userService;
+	private $newsletterService;
 	private $captchaService;
 	protected $l10nFactory;
 	private $session;
 	private $userSession;
 	private $urlGenerator;
+	/** @var IConfig */
+	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 
@@ -37,19 +42,23 @@ class AccountController extends Controller {
 		$AppName,
 		IRequest $request,
 		UserService $userService,
+		NewsLetterService $newsletterService,
 		CaptchaService $captchaService,
 		IFactory $l10nFactory,
 		IUserSession $userSession,
 		IURLGenerator $urlGenerator,
-		ISession $session
+		ISession $session,
+		IConfig $config
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->userService = $userService;
+		$this->newsletterService = $newsletterService;
 		$this->captchaService = $captchaService;
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
 		$this->userSession = $userSession;
+		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 	}
 
@@ -86,10 +95,12 @@ class AccountController extends Controller {
 	 * @param string $username         User's username
 	 * @param string $password         User's password
 	 * @param string $language         User's language preference
+	 * @param bool $newsletterEos     Users's subscribe to eos newsletter
+	 * @param bool $newsletterProduct Users's subscribe to murena product newsletter
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = ''): DataResponse {
+	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = '', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
 		
 		$response = new DataResponse();
 		
@@ -125,7 +136,6 @@ class AccountController extends Controller {
 			$userEmail = $username.'@'.$mainDomain;
 
 			$newUserEntry = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
-			
 			$this->userService->setAccountDataLocally($username, $userEmail, $newUserEntry['quota']);
 			$this->userService->createHMEAlias($username, $userEmail);
 			$this->userService->createNewDomainAlias($username, $userEmail);
