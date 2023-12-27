@@ -1,16 +1,13 @@
 <template>
 	<div id="recoveryEmailForm">
-		<div>
-			<h1 class="has-text-centered subtitle is-3">
-				{{ t(appName,'For security reasons you need to set a recovery address for your Murena Cloud account.') }}
-			</h1>
-			<h1 class="has-text-centered subtitle is-3">
-				{{ t(appName,'As long as you don\'t, you\'ll have limited access to your account.') }}
-			</h1>
-		</div>
-
 		<div id="fields">
-			<div class="field">
+			<div class="mx-10">
+				<h1 class="text-justified title">
+					{{ t(appName,'Set a recovery email address') }}
+				</h1>
+			</div>
+
+			<div class="field mx-10">
 				<div class="control">
 					<label>{{ t(appName,'Recovery Email') }}</label>
 					<input id="email"
@@ -18,7 +15,7 @@
 						name="email"
 						type="email"
 						class="form-input"
-						:placeholder="t(appName,'Recovery Email')"
+						:placeholder="t(appName,'Use an alternative email')"
 						@input="validateForm(['email'])">
 					<p v-if="validation.isEmailEmpty" class="validation-warning">
 						{{ t(appName,'Recovery Email is required.') }}
@@ -27,18 +24,25 @@
 			</div>
 		</div>
 
+		<div class="mx-10">
+			<h1 class="text-justified subtitle is-3">
+				<span class="important">{{ t(appName,'Important:') }}</span>
+				<span>{{ t(appName,'For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.') }}</span>
+			</h1>
+		</div>
+
 		<div id="groups" class="aliases-info display-flex">
 			<button :wide="true"
-				class="btn-default w-50"
+				class="btn-primary w-50 mx-10"
+				type="primary"
+				@click.prevent="submitRecoveryEmailForm(true)">
+				{{ t(appName,'Set My Recovery Email Now') }}
+			</button>
+			<button :wide="true"
+				class="btn-default w-50 mx-10"
 				type="primary"
 				@click.prevent="submitRecoveryEmailForm(false)">
 				{{ t(appName,'Later') }}
-			</button>
-			<button :wide="true"
-				class="btn-primary w-50"
-				type="primary"
-				@click.prevent="submitRecoveryEmailForm(true)">
-				{{ t(appName,'Set my recovery email address') }}
 			</button>
 		</div>
 	</div>
@@ -89,37 +93,42 @@ export default {
 }
 </script>
 <style scoped>
+.important{
+	font-weight: bold;
+	color: black;
+}
+.text-justified{
+	text-align: justify;
+}
+#recoveryEmailForm {
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 0 10px;
+}
+.mx-10{
+	margin: 10px 0;
+}
+.title{
+	font-size: 20px;
+	color: black;
+	margin-bottom: 10%;
+	font-weight: bold;
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
+	flex-direction: column;
 }
 
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
-	#fields .field .control input {
+	#fields input {
 		padding-left: 2%;
 		padding-right: 2%;
 	}
 }
 
 @media screen and (max-width: 768px) {
-	#successMessages {
-		margin-left: 5%;
-		margin-right: 5%;
-	}
-
-	#success h1 {
-		font-size: 1.5em;
-	}
-
-	#inviteHeader,
-	#registerHeading {
-		font-size: 1.5em;
-	}
-
-	#fields {
-		background-color: white;
-	}
 
 	#fields .field {
 		font-size: 1.0em;
@@ -144,24 +153,13 @@ export default {
 	}
 }
 
-#fields {
-	margin: 10px;
-}
-
 #fields .control {
 	text-align: left;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-#fields input#username,
-#fields input#new-password,
-#fields input#repassword {
-	width: 50%;
-}
-
-#fields input,
-#fields input[type="password"] {
+#fields input{
 	background-color: var(--color-secondary-element);
 	margin-bottom: 0;
 	color: rgba(0, 0, 0, 0.8);
@@ -172,13 +170,9 @@ export default {
 	transition: all 0.5s linear;
 	border: 1px solid #E6E8E9;
 	border-radius: 8px;
-	padding: 10px 20px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
-#fields {
-	background-color: white;
+	padding: 30px 20px;
+	margin: 10px 0;
+	box-sizing: border-box;
 }
 
 #fields .field {
@@ -189,44 +183,11 @@ export default {
 	font-size: 15px;
 }
 
-#inviteHeader,
-#registerHeading {
-	margin-bottom: 10%;
-	font-size: 24px;
-	text-align: left !important;
-	font-weight: 500;
-}
-
-#currentLangImg {
-	border-radius: 50%;
-	margin: 0 auto;
-	border: 0.1em transparent black;
-	height: 24px;
-	width: 24px;
-	max-width: none;
-}
-
-#submitButton:hover {
-	opacity: 0.9;
-}
-
 #fields label {
-	color: #333333;
+	color: black;
 	font-size: 16px;
 	font-weight: 900;
 }
-
-sup {
-	color: #ff0000;
-	font-weight: 500;
-	font-size: 14px;
-	padding-left: 3px;
-}
-
-#tos_div label {
-	line-height: 1.5rem;
-}
-
 .validation-warning{
 	color: #ff0000;
     padding-left: 5px;
@@ -242,29 +203,19 @@ p.validation-warning:before {
     padding-right: 5px;
 }
 .btn-primary {
-	width: 95%;
+	width: 100%;
 	background-color: var(--color-primary);
-	color: white;
+	color: var(--color-primary-text);
 	border-color: var(--color-primary);
 	font-size: large;
 }
 
 .btn-default{
-	width: 95%;
-	background-color: var(--color-warning);
-	color: white;
-	border-color: var(--color-warning);
+	width: 100%;
+	background-color: var(--color-primary-text);
+	color: var(--color-primary);
+	border-color: var(--color-primary);
 	font-size: large;
 }
 
-@media screen and (max-width: 500px) {
-	#main {
-		padding: 0 1.5rem;
-	}
-
-	#inviteHeader,
-	#registerHeading {
-		font-size: 18px;
-	}
-}
 </style>

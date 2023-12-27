@@ -307,7 +307,10 @@ export default {
 
 <style scoped>
 #registrationForm{
-	width: 90%;
+	display: flex;
+	max-width: 700px;
+	width: 100%;
+	margin: 0 auto;
 }
 .display-flex {
 	display: flex;
@@ -333,17 +336,18 @@ export default {
 	margin-right: 10px;
 }
 .fields {
-	margin: 10px;
+	margin: 10px 0;
 }
 .fields .control {
 	text-align: left;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin: 10px 0;
 }
-.fields input#username,
 .fields input#new-password,
 .fields input#repassword {
 	width: 45%;
+}
+.fields input#username {
+	width: 50%;
 }
 .fields input,
 .fields input[type="password"] {
@@ -357,9 +361,9 @@ export default {
 	transition: all 0.5s linear;
 	border: 1px solid #E6E8E9;
 	border-radius: 8px;
-	padding: 10px 20px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	padding: 30px 20px;
+	margin: 10px 0;
+	box-sizing: border-box;
 }
 .username-group {
 	display: flex;
@@ -485,6 +489,9 @@ p.validation-success:before {
 	border-color: var(--color-primary);
 	font-size: large;
 }
+.pad-left-5{
+	padding-left: 5px;
+}
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
 	.fields .field .control input {
@@ -526,6 +533,13 @@ p.validation-success:before {
 	input {
 		font-size: 1.0em;
 		line-height: 1.0em;
+	}
+	.fields input#new-password,
+	.fields input#repassword {
+		width: 100%;
+	}
+	.password-group .Password{
+		margin: 0;
 	}
 }
 @media screen and (max-width: 500px) {

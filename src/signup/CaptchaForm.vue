@@ -109,6 +109,11 @@ export default {
 }
 </script>
 <style scoped>
+#captchaForm {
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 0 10px;
+}
 .display-flex {
 	display: flex;
 	justify-content: space-between;
@@ -148,7 +153,7 @@ export default {
 	}
 }
 #fields {
-	margin: 10px;
+	margin: 10px 0;
 	background-color: white;
 }
 #fields .control {
@@ -167,9 +172,9 @@ export default {
 	transition: all 0.5s linear;
 	border: 1px solid #E6E8E9;
 	border-radius: 8px;
-	padding: 10px 20px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	padding: 30px 20px;
+	margin: 10px 0;
+	box-sizing: border-box;
 }
 #fields .field {
 	font-size: 1.3em;

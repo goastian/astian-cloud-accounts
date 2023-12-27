@@ -56,7 +56,11 @@ export default {
 </script>
 
 <style scoped>
-
+#successSection{
+	max-width: 500px;
+	width: 100%;
+	margin: 0 auto;
+}
 @media screen and (max-width: 768px) {
 	#successMessages {
 		margin-left: 5%;
