@@ -47,7 +47,7 @@ OC.L10N.register(
 		"Create My Account": "Crea il mio account",
 		"Verify": "Verifica",
 		"Later": "Più tardi",
-		"Set my recovery email address": "Impostare l'indirizzo e-mail di recupero",
+		"Set My Recovery Email Now": "Imposta ora la mia e-mail di recupero",
 		"Display name": "Nome visualizzato",
 		"Username": "Nome utente",
 		"Enter Password": "Inserire la password",
@@ -75,6 +75,10 @@ OC.L10N.register(
 		"Success!": "Successo!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "L'account <b>__username__@__domain__</b> è stato creato con successo.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "Se si desidera utilizzare l'e-mail di murena.io in un'applicazione di posta elettronica come Thunderbird, Outlook o altre, visitare <a href='https://doc.e.foundation/support-topics/configure-email'>questa pagina</a>.",
-		"Incorrect password length: Required length is 8 to 32":"Lunghezza della password errata: La lunghezza richiesta è da 8 a 32"
+		"Incorrect password length: Required length is 8 to 32":"Lunghezza della password errata: La lunghezza richiesta è da 8 a 32",
+		"Use an alternative email": "Utilizzare un'e-mail alternativa",
+		"Important:": "Importante:",
+		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Per motivi di sicurezza, è necessaria un'e-mail di recupero. Se si decide di impostarla in un secondo momento, l'account verrà parzialmente limitato.",
+		"Set a recovery email address": "Impostare un indirizzo e-mail di recupero"
 	},
 	"nplurals=2; plural=(n != 1);");

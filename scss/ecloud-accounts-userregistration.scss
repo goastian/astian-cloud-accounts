@@ -29,6 +29,7 @@ html {
 
 .password-group #password {
 	height: 58px !important;
+	margin-left: 0;
 }
 
 @media only screen and (max-width: 768px) {
@@ -37,7 +38,8 @@ html {
 	}
 
 	#body-login .v-align {
-		padding: 5vh 0vh !important;
+		padding: 2vh 0vh !important;
+		max-height: fit-content !important;
 	}
 }
 
