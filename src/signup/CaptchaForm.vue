@@ -94,6 +94,7 @@ export default {
 				this.$emit('form-submitted', { isFormValid })
 			} catch (error) {
 				this.validation.isCaptchaInputNotMatched = true
+				this.refreshCaptchaImage()
 			}
 		},
 		submitCaptchaForm() {
@@ -104,6 +105,9 @@ export default {
 		},
 		showMessage(message, type) {
 			type === 'success' ? showSuccess(message) : showError(message)
+		},
+		refreshCaptchaImage() {
+			this.captchaImageUrl = generateUrl(`/apps/${this.appName}/accounts/captcha?v=${Date.now()}`)
 		},
 	},
 }
