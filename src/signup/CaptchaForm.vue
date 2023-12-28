@@ -106,7 +106,7 @@ export default {
 		showMessage(message, type) {
 			type === 'success' ? showSuccess(message) : showError(message)
 		},
-		async refreshCaptchaImage() {
+		refreshCaptchaImage() {
 			try {
 				this.captchaImageUrl = generateUrl(`/apps/${this.appName}/accounts/captcha?timestamp=${Date.now()}`)
 			} catch (error) {
