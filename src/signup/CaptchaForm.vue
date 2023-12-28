@@ -107,11 +107,7 @@ export default {
 			type === 'success' ? showSuccess(message) : showError(message)
 		},
 		refreshCaptchaImage() {
-			try {
-				this.captchaImageUrl = generateUrl(`/apps/${this.appName}/accounts/captcha?timestamp=${Date.now()}`)
-			} catch (error) {
-				console.error('Error refreshing captcha image:', error)
-			}
+			this.captchaImageUrl = generateUrl(`/apps/${this.appName}/accounts/captcha?timestamp=${Date.now()}`)
 		},
 	},
 }
