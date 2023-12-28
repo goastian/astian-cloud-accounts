@@ -252,6 +252,7 @@ class AccountController extends Controller {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
+		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 		return $response;
 	}
 
