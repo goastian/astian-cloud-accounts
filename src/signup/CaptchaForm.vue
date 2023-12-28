@@ -107,7 +107,7 @@ export default {
 			type === 'success' ? showSuccess(message) : showError(message)
 		},
 		refreshCaptchaImage() {
-			this.captchaImageUrl = generateUrl(`/apps/${this.appName}/accounts/captcha?timestamp=${Date.now()}`)
+			this.captchaImageUrl = generateUrl(`/apps/${this.appName}/accounts/captcha?v=${Date.now()}`)
 		},
 	},
 }
