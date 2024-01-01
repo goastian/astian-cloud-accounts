@@ -17,6 +17,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
+use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
@@ -37,7 +38,7 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
-
+	private ILogger $logger;
 	public function __construct(
 		$AppName,
 		IRequest $request,
@@ -48,7 +49,8 @@ class AccountController extends Controller {
 		IUserSession $userSession,
 		IURLGenerator $urlGenerator,
 		ISession $session,
-		IConfig $config
+		IConfig $config,
+		ILogger $logger
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -60,6 +62,7 @@ class AccountController extends Controller {
 		$this->userSession = $userSession;
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
+		$this->logger = $logger;
 	}
 
 	/**
