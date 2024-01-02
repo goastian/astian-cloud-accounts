@@ -351,7 +351,7 @@ export default {
 }
 #registrationForm .fields input,
 #registrationForm .fields input[type="password"] {
-#registrationForm 	background-color: var(--input-background-color);
+	background-color: var(--input-background-color);
 	margin-bottom: 0;
 	color: var(--color-main-text);
 	display: block;
