@@ -349,13 +349,15 @@ export default {
 .fields input#username {
 	width: 50%;
 }
+.fields input{
+	width: 100%;
+}
 #registrationForm .fields input,
 #registrationForm .fields input[type="password"] {
 	background-color: var(--input-background-color);
 	margin-bottom: 0;
 	color: var(--color-main-text);
 	display: block;
-	width: 100%;
 	font-size: 16px;
 	line-height: 1.3em;
 	transition: all 0.5s linear;
