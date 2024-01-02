@@ -349,9 +349,9 @@ export default {
 .fields input#username {
 	width: 50%;
 }
-.fields input,
-.fields input[type="password"] {
-	background-color: var(--input-background-color);
+#registrationForm .fields input,
+#registrationForm .fields input[type="password"] {
+#registrationForm 	background-color: var(--input-background-color);
 	margin-bottom: 0;
 	color: var(--color-main-text);
 	display: block;
