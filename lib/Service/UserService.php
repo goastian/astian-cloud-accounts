@@ -48,10 +48,14 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
+		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
+		if(!$commonServiceURL) {
+			$commonServiceURL = rtrim($commonServiceURL, '/') . '/';
+		}
 		$this->apiConfig = [
 			'mainDomain' => $this->config->getSystemValue('main_domain', ''),
-			'commonApiUrl' => rtrim($this->config->getSystemValue('common_services_url', ''), '/') . '/',
-			'commonServiceToken' => $this->config->getSystemValue('common_service_token', ''),
+			'commonApiUrl' => $commonServiceURL,
+			'commonServiceToken' => $this->config->getSystemValue('common_services_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
 			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
 			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
