@@ -27,9 +27,12 @@ html {
 	margin: 0 auto;
 }
 
-.password-group #password {
-	height: 58px !important;
+#registrationForm .password-group #password {
+	height: 62px;
 	margin-left: 0;
+	background-color: var(--input-background-color);
+	color: var(--color-main-text);
+	border: 1px solid #E6E8E9;
 }
 
 @media only screen and (max-width: 768px) {
