@@ -27,8 +27,8 @@ html {
 	margin: 0 auto;
 }
 
-.password-group #password {
-	height: 58px !important;
+#registrationForm .password-group #password {
+	height: 62px;
 	margin-left: 0;
 	background-color: var(--input-background-color);
 	color: var(--color-main-text);
