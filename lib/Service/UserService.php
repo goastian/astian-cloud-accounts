@@ -49,9 +49,11 @@ class UserService {
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
-		if(!$commonServiceURL) {
+
+		if (!empty($commonServiceURL)) {
 			$commonServiceURL = rtrim($commonServiceURL, '/') . '/';
 		}
+
 		$this->apiConfig = [
 			'mainDomain' => $this->config->getSystemValue('main_domain', ''),
 			'commonApiUrl' => $commonServiceURL,
