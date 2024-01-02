@@ -351,9 +351,9 @@ export default {
 }
 .fields input,
 .fields input[type="password"] {
-	background-color: var(--color-secondary-element);
+	background-color: var(--input-background-color);
 	margin-bottom: 0;
-	color: rgba(0, 0, 0, 0.8);
+	color: var(--color-main-text);
 	display: block;
 	width: 100%;
 	font-size: 16px;
