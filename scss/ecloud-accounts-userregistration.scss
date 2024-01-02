@@ -25,6 +25,9 @@ html {
 .v-align main {
 	width: 50% !important;
 	margin: 0 auto;
+	background-color: var(--input-background-color);
+	color: var(--color-main-text);
+	border: 1px solid #E6E8E9;
 }
 
 .password-group #password {

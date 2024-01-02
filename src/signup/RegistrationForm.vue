@@ -353,8 +353,7 @@ export default {
 	width: 100%;
 }
 #registrationForm .fields input,
-#registrationForm .fields input[type="password"],
-#registrationForm .password-group #password {
+#registrationForm .fields input[type="password"] {
 	background-color: var(--input-background-color);
 	margin-bottom: 0;
 	color: var(--color-main-text);
@@ -367,9 +366,6 @@ export default {
 	padding: 30px 20px;
 	margin: 10px 0;
 	box-sizing: border-box;
-}
-#registrationForm .password-group #password {
-    margin-top: 6px;
 }
 .username-group {
 	display: flex;
