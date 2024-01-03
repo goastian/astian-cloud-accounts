@@ -56,8 +56,8 @@ class UserService {
 
 		$this->apiConfig = [
 			'mainDomain' => $this->config->getSystemValue('main_domain', ''),
-			'commonApiUrl' => $commonServiceURL,
-			'commonServiceToken' => $this->config->getSystemValue('common_services_token', ''),
+			'commonServicesURL' => $commonServiceURL,
+			'commonServicesToken' => $this->config->getSystemValue('common_services_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
 			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
 			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
@@ -321,13 +321,13 @@ class UserService {
 	 * @return void
 	 */
 	public function createHMEAlias(string $username, string $resultmail): void {
-		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
-		$token = $this->apiConfig['commonServiceToken'];
+		$token = $this->apiConfig['commonServicesToken'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 		
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
-		$url = $commonApiUrl . $endpoint . $resultmail;
+		$url = $commonServicesURL . $endpoint . $resultmail;
 		$data = array(
 			"domain" => $aliasDomain
 		);
@@ -354,14 +354,14 @@ class UserService {
 	 * @return mixed The result of the domain alias creation request, decoded from JSON.
 	 */
 	public function createNewDomainAlias(string $username, string $userEmail): mixed {
-		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
-		$token = $this->apiConfig['commonServiceToken'];
+		$token = $this->apiConfig['commonServicesToken'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
 		$endpoint = $commonApiVersion . '/aliases/';
-		$url = $commonApiUrl . $endpoint . $userEmail;
+		$url = $commonServicesURL . $endpoint . $userEmail;
 
 		$data = array(
 			"alias" => $username,
@@ -401,16 +401,16 @@ class UserService {
 	}
 
 	public function isUsernameTaken(string $username) : bool {
-		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
-		if (!isset($commonApiUrl) || empty($commonApiUrl)) {
+		if (!isset($commonServicesURL) || empty($commonServicesURL)) {
 			return false;
 		}
 		$endpoint = $commonApiVersion . '/users/';
-		$url = $commonApiUrl . $endpoint . $username;
+		$url = $commonServicesURL . $endpoint . $username;
 
-		$token = $this->apiConfig['commonServiceToken'];
+		$token = $this->apiConfig['commonServicesToken'];
 		$headers = [
 			"Authorization: Bearer $token"
 		];
@@ -430,20 +430,20 @@ class UserService {
 	}
 
 	public function addUsernameToCommonDataStore(string $username) : void {
-		$commonApiUrl = $this->apiConfig['commonApiUrl'];
+		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
-		if (!isset($commonApiUrl) || empty($commonApiUrl)) {
+		if (!isset($commonServicesURL) || empty($commonServicesURL)) {
 			return;
 		}
 		$endpoint = $commonApiVersion . '/users/';
-		$url = $commonApiUrl . $endpoint ;
+		$url = $commonServicesURL . $endpoint ;
 		
 		$params = [
 			'username' => $username
 		];
 
-		$token = $this->apiConfig['commonServiceToken'];
+		$token = $this->apiConfig['commonServicesToken'];
 		$headers = [
 			"Authorization: Bearer $token"
 		];
