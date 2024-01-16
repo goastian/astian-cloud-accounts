@@ -463,12 +463,10 @@ class UserService {
 			return;
 		}
 
-		$endpoint = $commonApiVersion . '/emails/';
-		$url = $commonServicesURL . $endpoint ; // DELETE /v2/emails/@email
-		
-		$params = [
-			'email' => $email
-		];
+		$endpoint = $commonApiVersion . '/emails/' . $email;
+		$url = $commonServicesURL . $endpoint; // DELETE /v2/emails/@email
+
+		$params = [];
 
 		$token = $this->apiConfig['commonServicesToken'];
 		$headers = [
