@@ -32,6 +32,7 @@ class BeforeUserDeletedListener implements IEventListener {
 
 
 	public function handle(Event $event): void {
+		$this->logger->info("deleteMailFolder handle called");
 		if (!($event instanceof BeforeUserDeletedEvent)) {
 			return;
 		}
