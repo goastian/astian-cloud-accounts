@@ -463,7 +463,7 @@ class UserService {
 			return;
 		}
 
-		$endpoint = $commonApiVersion . '/emails/'; 
+		$endpoint = $commonApiVersion . '/emails/';
 		$url = $commonServicesURL . $endpoint ; // DELETE /v2/emails/@email
 		
 		$params = [
