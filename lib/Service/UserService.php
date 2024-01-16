@@ -138,32 +138,29 @@ class UserService {
 	 * @param $welcomeSecret string generated at ecloud selfhosting install and added as a custom var in NC's config
 	 * @return mixed response of the external endpoint
 	 */
-	public function ecloudDelete(string $userID, string $welcomeDomain, string $welcomeSecret, string $email, bool $isUserOnLDAP = false) {
-		$endpoint = '/postDelete.php';
-		if ($isUserOnLDAP) {
-			$endpoint = '/postDeleteLDAP.php';
-		}
-		$postDeleteUrl = "https://" . $welcomeDomain . $endpoint;
-		/**
-		 * send action to docker_welcome
-		 * Handling the non NC part of deletion process
-		 */
-		try {
-			$params = [
-				'sec' => $welcomeSecret,
-				'uid' => $userID,
-				'email' => $email
-			];
+	public function ecloudDelete(string $email) {
+		$commonServicesURL = $this->apiConfig['commonServicesURL'];
+		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
-			$answer = $this->curl->post($postDeleteUrl, $params);
-
-			return json_decode($answer, true);
-		} catch (\Exception $e) {
-			$this->logger->error('There has been an issue while contacting the external deletion script');
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
+		if (!isset($commonServicesURL) || empty($commonServicesURL)) {
+			return;
 		}
 
-		return null;
+		$endpoint = $commonApiVersion . '/emails/' . $email;
+		$url = $commonServicesURL . $endpoint; // DELETE /v2/emails/@email
+		$this->logger->info("deleteMailFolder for URL ".$url);
+		$params = [];
+
+		$token = $this->apiConfig['commonServicesToken'];
+		$headers = [
+			"Authorization: Bearer $token"
+		];
+		
+		$this->curl->delete($url, $params, $headers);
+
+		if ($this->curl->getLastStatusCode() !== 200) {
+			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
+		}
 	}
 	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en') : void {
 		
@@ -452,31 +449,6 @@ class UserService {
 
 		if ($this->curl->getLastStatusCode() !== 200) {
 			throw new Exception('Error adding username ' . $username . ' to common data store');
-		}
-	}
-
-	public function deleteMailFolder(string $email) : void {
-		$commonServicesURL = $this->apiConfig['commonServicesURL'];
-		$commonApiVersion = $this->apiConfig['commonApiVersion'];
-
-		if (!isset($commonServicesURL) || empty($commonServicesURL)) {
-			return;
-		}
-
-		$endpoint = $commonApiVersion . '/emails/' . $email;
-		$url = $commonServicesURL . $endpoint; // DELETE /v2/emails/@email
-		$this->logger->info("deleteMailFolder for URL ".$url);
-		$params = [];
-
-		$token = $this->apiConfig['commonServicesToken'];
-		$headers = [
-			"Authorization: Bearer $token"
-		];
-		
-		$this->curl->delete($url, $params, $headers);
-
-		if ($this->curl->getLastStatusCode() !== 200) {
-			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
 		}
 	}
 }
