@@ -63,6 +63,12 @@ class BeforeUserDeletedListener implements IEventListener {
 		} catch (Exception $e) {
 			$this->logger->error('Error deleting aliases for user '. $uid . ' :' . $e->getMessage());
 		}
+
+		try {
+			$this->userService->deleteMailFolder($email);
+		} catch (Exception $e) {
+			$this->logger->error('Error deleting mail folder for user '. $uid . ' :' . $e->getMessage());
+		}
 	}
 
 	private function handleShopAccounts(string $uid, string $email) {

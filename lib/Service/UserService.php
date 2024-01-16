@@ -454,4 +454,31 @@ class UserService {
 			throw new Exception('Error adding username ' . $username . ' to common data store');
 		}
 	}
+
+	public function deleteMailFolder(string $email) : void {
+		$commonServicesURL = $this->apiConfig['commonServicesURL'];
+		$commonApiVersion = $this->apiConfig['commonApiVersion'];
+
+		if (!isset($commonServicesURL) || empty($commonServicesURL)) {
+			return;
+		}
+
+		$endpoint = $commonApiVersion . '/emails/'; 
+		$url = $commonServicesURL . $endpoint ; // DELETE /v2/emails/@email
+		
+		$params = [
+			'email' => $email
+		];
+
+		$token = $this->apiConfig['commonServicesToken'];
+		$headers = [
+			"Authorization: Bearer $token"
+		];
+		
+		$this->curl->delete($url, $params, $headers);
+
+		if ($this->curl->getLastStatusCode() !== 200) {
+			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
+		}
+	}
 }
