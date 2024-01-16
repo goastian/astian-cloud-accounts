@@ -32,7 +32,7 @@ class BeforeUserDeletedListener implements IEventListener {
 
 
 	public function handle(Event $event): void {
-		$this->logger->info("deleteMailFolder handle called");
+		$this->logger->error("deleteMailFolder handle called");
 		if (!($event instanceof BeforeUserDeletedEvent)) {
 			return;
 		}
@@ -46,7 +46,7 @@ class BeforeUserDeletedListener implements IEventListener {
 
 		$isUserOnLDAP = $this->LDAPConnectionService->isUserOnLDAPBackend($user);
 
-		$this->logger->info("PostDelete user {user}", array('user' => $uid));
+		$this->logger->error("PostDelete user {user}", array('user' => $uid));
 		$this->userService->ecloudDelete(
 			$uid,
 			$this->config->getSystemValue('e_welcome_domain'),
