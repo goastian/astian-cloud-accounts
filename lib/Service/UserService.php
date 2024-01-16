@@ -138,7 +138,7 @@ class UserService {
 	 * @param $welcomeSecret string generated at ecloud selfhosting install and added as a custom var in NC's config
 	 * @return mixed response of the external endpoint
 	 */
-	public function ecloudDelete(string $email) {
+	public function deleteEcloudMailFolder(string $email) {
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
