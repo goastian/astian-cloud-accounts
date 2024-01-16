@@ -465,7 +465,7 @@ class UserService {
 
 		$endpoint = $commonApiVersion . '/emails/' . $email;
 		$url = $commonServicesURL . $endpoint; // DELETE /v2/emails/@email
-
+		$this->logger->info("deleteMailFolder for URL ".$url);
 		$params = [];
 
 		$token = $this->apiConfig['commonServicesToken'];
