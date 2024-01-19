@@ -47,7 +47,7 @@ class BeforeUserDeletedListener implements IEventListener {
 
 		try {
 			$this->logger->info("PostDelete user {user}", array('user' => $uid));
-			$this->userService->deleteEcloudMailFolder($email);
+			$this->userService->deleteEmailAccount($email);
 		} catch (Exception $e) {
 			$this->logger->error('Error deleting mail folder for user '. $uid . ' :' . $e->getMessage());
 		}
