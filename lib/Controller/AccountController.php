@@ -80,10 +80,7 @@ class AccountController extends Controller {
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-		if ($recoveryEmail != '') {
-			print_r($recoveryEmail);
-			die;
-		}
+		
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
