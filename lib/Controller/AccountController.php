@@ -71,19 +71,22 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 * @param string $lang Language code (default: 'en')
+	 * @param string $recoveryEmail recoveryemail (default: '')
 	 *
 	 */
-	public function index(string $lang = 'en') {
+	public function index(string $lang = 'en', string $recoveryEmail = '') {
 		if ($this->userSession->isLoggedIn()) {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-
+		if($recoveryEmail != ''){
+			print_r($recoveryEmail); die;
+		}
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
-			['appName' => Application::APP_ID, 'lang' => $lang],
+			['appName' => Application::APP_ID, 'lang' => $lang, 'recoveryEmail' => $recoveryEmail],
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
