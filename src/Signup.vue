@@ -2,13 +2,6 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
-				<p v-if="recoveryEmail">
-					Recovery Email: {{ recoveryEmail }}
-				</p>
-				<p v-else>
-					No recovery email provided.
-				</p>
-
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
 				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
@@ -37,12 +30,6 @@ export default {
 		RecoveryEmailForm,
 		SuccessSection,
 	},
-	props: {
-		recoveryEmail: {
-			type: String,
-			default: '',
-		},
-	},
 	data() {
 		return {
 			formData: {
@@ -62,7 +49,16 @@ export default {
 			showCaptchaForm: false,
 			showRecoveryEmailForm: false,
 			showSuccessSection: false,
+			recoveryEmail: '',
 		}
+	},
+	mounted() {
+		// Extracting the recovery email from the URL when the component is mounted
+		const urlParams = new URLSearchParams(window.location.search)
+		this.recoveryEmail = urlParams.get('recoveryEmail')
+
+		// Set formData.email directly to recoveryEmail
+		this.formData.email = this.recoveryEmail
 	},
 	methods: {
 		submitRegistrationForm(data) {
