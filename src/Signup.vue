@@ -2,6 +2,13 @@
 	<div>
 		<section id="main" class="register-page">
 			<div id="registration">
+				<p v-if="recoveryEmail">
+					Recovery Email: {{ recoveryEmail }}
+				</p>
+				<p v-else>
+					No recovery email provided.
+				</p>
+
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
 				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
@@ -29,6 +36,12 @@ export default {
 		CaptchaForm,
 		RecoveryEmailForm,
 		SuccessSection,
+	},
+	props: {
+		recoveryEmail: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
