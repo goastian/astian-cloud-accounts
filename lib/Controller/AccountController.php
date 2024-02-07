@@ -74,14 +74,16 @@ class AccountController extends Controller {
 	 * @param string $recoveryEmail recoveryemail (default: '')
 	 *
 	 */
-	public function index(string $lang = 'en', string $recoveryEmail = '') {
+	public function index(string $lang = 'en', string $recoveryEmail = '')
+	{
 		if ($this->userSession->isLoggedIn()) {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-		if($recoveryEmail != ''){
-			print_r($recoveryEmail); die;
+		if ($recoveryEmail != '') {
+			print_r($recoveryEmail);
+			die;
 		}
 		return new TemplateResponse(
 			Application::APP_ID,
