@@ -51,6 +51,14 @@ export default {
 			showSuccessSection: false,
 		}
 	},
+	mounted() {
+		// Extracting the recovery email from the URL when the component is mounted
+		const urlParams = new URLSearchParams(window.location.search)
+		const recoveryEmail = urlParams.get('recoveryEmail')
+
+		// Set formData.email directly to recoveryEmail
+		this.formData.email = recoveryEmail || ''
+	},
 	methods: {
 		submitRegistrationForm(data) {
 			if (data.isFormValid) {
