@@ -48,19 +48,16 @@ export default {
 			showRegistrationForm: true,
 			showCaptchaForm: false,
 			showRecoveryEmailForm: false,
-			showSuccessSection: false,
-			recoveryEmail: '',
+			showSuccessSection: false
 		}
 	},
 	mounted() {
 		// Extracting the recovery email from the URL when the component is mounted
 		const urlParams = new URLSearchParams(window.location.search)
-		this.recoveryEmail = urlParams.get('recoveryEmail')
-		if (!this.recoveryEmail) {
-			this.recoveryEmail = ''
-		}
+		const recoveryEmail = urlParams.get('recoveryEmail')
+		
 		// Set formData.email directly to recoveryEmail
-		this.formData.email = this.recoveryEmail
+		this.formData.email = recoveryEmail ? recoveryEmail : ''
 	},
 	methods: {
 		submitRegistrationForm(data) {
