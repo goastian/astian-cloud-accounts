@@ -306,6 +306,10 @@ class UserService {
 		if(count($users)) {
 			return true;
 		}
+		$users = $this->config->getUsersForUserValue('email-recovery', 'unverified-recovery-email', $recoveryEmail);
+		if(count($users)) {
+			return true;
+		}
 		return false;
 	}
 
