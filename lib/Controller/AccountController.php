@@ -152,9 +152,6 @@ class AccountController extends Controller {
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
-			$response->setStatus(200);
-			$response->setData(['success' => true]);
-			
 			$this->session->remove(self::SESSION_USERNAME_CHECK);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 
@@ -163,10 +160,15 @@ class AccountController extends Controller {
 			} catch (Exception $e) {
 				$this->logger->logException($e, ['app' => Application::APP_ID]);
 			}
+			
+			$response->setStatus(200);
+			$response->setData(['success' => true]);
+
 		} catch (Exception $e) {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
+
 		return $response;
 	}
 	/**
