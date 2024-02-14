@@ -56,7 +56,9 @@ export default {
 		// Extracting the recovery email from the URL when the component is mounted
 		const urlParams = new URLSearchParams(window.location.search)
 		this.recoveryEmail = urlParams.get('recoveryEmail')
-
+		if (!this.recoveryEmail) {
+			this.recoveryEmail = ''
+		}
 		// Set formData.email directly to recoveryEmail
 		this.formData.email = this.recoveryEmail
 	},
