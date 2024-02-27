@@ -58,7 +58,7 @@ class SSOMapper {
 		$qb->delete(self::CREDENTIAL_TABLE)
 			->where('USER_ID = :username')
 			->andWhere('TYPE = "otp"')
-			->andWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"nextcloud_totp\"%" OR CREDENTIAL_DATA LIKE "%\"subType\":\"totp\"%"')
+			->andWhere('CREDENTIAL_DATA LIKE "%\"subType\":\"totp\"%"')
 			->setParameter('username', $userId)
 			->execute();
 	}
@@ -112,10 +112,11 @@ class SSOMapper {
 				'value' => $secret
 			]),
 			'CREDENTIAL_DATA' => json_encode([
-				'subType' => 'nextcloud_totp',
+				'subType' => 'totp',
 				'period' => 30,
 				'digits' => 6,
 				'algorithm' => 'HmacSHA1',
+				'secretEncoding' => 'BASE32',
 			]),
 		];
 
