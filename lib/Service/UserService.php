@@ -246,6 +246,9 @@ class UserService {
 		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
 			throw new Exception("Recovery email address is already taken.");
 		}
+		if (!empty($recoveryEmail) && !$this->checkValidDomain($recoveryEmail)) {
+			throw new Exception("Recovery email address cannot have domains like @e.email or @murena.io");
+		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
 	}
@@ -312,6 +315,29 @@ class UserService {
 		}
 		return false;
 	}
+
+	/**
+	 * Check if a recovery email address is available (not already taken by another user).
+	 *
+	 * @param string $recoveryEmail The recovery email address to check.
+	 *
+	 * @return bool True if the recovery email address is available, false otherwise.
+	 */
+	public function checkValidDomain(string $recoveryEmail): bool {
+		$recoveryEmail = strtolower($recoveryEmail);
+		$notAllowedDomains = ['e.email', 'murena.io'];
+		
+		// Extract domain from the recovery email
+		$emailParts = explode('@', $recoveryEmail);
+		if (count($emailParts) !== 2) {
+			return false; // Invalid email format
+		}
+		$domain = $emailParts[1];
+	
+		// Check if the domain is in the allowed domains list
+		return !in_array($domain, $notAllowedDomains);
+	}
+	
 
 	/**
 	 * Create a Hide My Email (HME) alias for a user.
