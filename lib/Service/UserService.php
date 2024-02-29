@@ -39,7 +39,6 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 
-	public const NOT_ALLOWED_DOMAINS = ['e.email', 'murena.io'];
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
 		$this->config = $config;
@@ -328,12 +327,16 @@ class UserService {
 	 * @return bool True if the recovery email address is valid, false otherwise.
 	 */
 	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
+		$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
+		$mainDomain = $this->config->getSystemValue('main_domain', '');
+
+		$notAllowedDomains = [$legacyDomain, $mainDomain];
 		$recoveryEmail = strtolower($recoveryEmail);
 		
 		$emailParts = explode('@', $recoveryEmail);
 		$domain = $emailParts[1] ?? '';
 	
-		return !in_array($domain, self::NOT_ALLOWED_DOMAINS);
+		return !in_array($domain, $notAllowedDomains);
 	}
 
 	/**
