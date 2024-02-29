@@ -152,8 +152,8 @@ class AccountController extends Controller {
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
-			$this->session->remove(self::SESSION_USERNAME_CHECK);
-			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
+			// $this->session->remove(self::SESSION_USERNAME_CHECK);
+			// $this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 
 			try {
 				$this->userService->addUsernameToCommonDataStore($username);
