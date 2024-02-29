@@ -39,6 +39,7 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 
+	public const NOT_ALLOWED_DOMAINS = ['e.email', 'murena.io'];
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
 		$this->config = $config;
@@ -243,10 +244,13 @@ class UserService {
 		if ($this->userExists($username)) {
 			throw new Exception("Username is already taken.");
 		}
+		if (!empty($recoveryEmail) && !$this->isValidEmailFormat($recoveryEmail)) {
+			throw new Exception("Recovery email address is in invalid format.");
+		}
 		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
 			throw new Exception("Recovery email address is already taken.");
 		}
-		if (!empty($recoveryEmail) && !$this->checkValidDomain($recoveryEmail)) {
+		if (!empty($recoveryEmail) && !$this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
 			throw new Exception("Recovery email address cannot have domains like @e.email or @murena.io");
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
@@ -317,27 +321,34 @@ class UserService {
 	}
 
 	/**
-	 * Check if a recovery email address is available (not already taken by another user).
+	 * Check if a recovery email address domain is allowed
 	 *
 	 * @param string $recoveryEmail The recovery email address to check.
 	 *
-	 * @return bool True if the recovery email address is available, false otherwise.
+	 * @return bool True if the recovery email address is valid, false otherwise.
 	 */
-	public function checkValidDomain(string $recoveryEmail): bool {
+	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
 		$recoveryEmail = strtolower($recoveryEmail);
-		$notAllowedDomains = ['e.email', 'murena.io'];
 		
-		// Extract domain from the recovery email
 		$emailParts = explode('@', $recoveryEmail);
 		if (count($emailParts) !== 2) {
 			return false; // Invalid email format
 		}
 		$domain = $emailParts[1];
 	
-		// Check if the domain is in the allowed domains list
-		return !in_array($domain, $notAllowedDomains);
+		return !in_array($domain, self::NOT_ALLOWED_DOMAINS);
 	}
-	
+
+	/**
+	 * Check if a recovery email address is in valid format
+	 *
+	 * @param string $recoveryEmail The recovery email address to check.
+	 *
+	 * @return bool True if the recovery email address is valid, false otherwise.
+	 */
+	public function isValidEmailFormat(string $recoveryEmail): bool {
+		return filter_var($recoveryEmail, FILTER_VALIDATE_EMAIL) !== false;
+	}
 
 	/**
 	 * Create a Hide My Email (HME) alias for a user.
