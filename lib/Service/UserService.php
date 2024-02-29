@@ -321,7 +321,7 @@ class UserService {
 	}
 
 	/**
-	 * Check if a recovery email address domain is allowed
+	 * Check if a recovery email address domain is restricted for some domains
 	 *
 	 * @param string $recoveryEmail The recovery email address to check.
 	 *
