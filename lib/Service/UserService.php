@@ -38,7 +38,7 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-	private $notAllowedDomains;
+	private $restrictedDomains;
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
@@ -67,7 +67,7 @@ class UserService {
 
 		$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
 		$mainDomain = $this->config->getSystemValue('main_domain', '');
-		$this->notAllowedDomains = [ $legacyDomain, $mainDomain ];
+		$this->restrictedDomains = [ $legacyDomain, $mainDomain ];
 	}
 
 
@@ -338,7 +338,7 @@ class UserService {
 		$emailParts = explode('@', $recoveryEmail);
 		$domain = $emailParts[1] ?? '';
 	
-		return !in_array($domain, $this->notAllowedDomains);
+		return !in_array($domain, $this->restrictedDomains);
 	}
 
 	/**
