@@ -245,7 +245,7 @@ class UserService {
 			throw new Exception("Username is already taken.");
 		}
 		if (!empty($recoveryEmail) && !$this->isValidEmailFormat($recoveryEmail)) {
-			throw new Exception("Recovery email address is in invalid format.");
+			throw new Exception("The recovery email address has an incorrect format.");
 		}
 		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
 			throw new Exception("Recovery email address is already taken.");
