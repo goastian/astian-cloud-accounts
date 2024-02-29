@@ -63,7 +63,6 @@ class UserService {
 			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
 			'objectClass' => $this->config->getSystemValue('ldap_object_class', []),
 		];
-
 	}
 
 
@@ -201,6 +200,9 @@ class UserService {
 	public function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
+	public function getLegacyDomain() : string {
+		return $this->config->getSystemValue('legacy_domain', '');
+	}
 	public function setUserLanguage(string $username, string $language = 'en') {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
@@ -334,8 +336,9 @@ class UserService {
 		$emailParts = explode('@', $recoveryEmail);
 		$domain = $emailParts[1] ?? '';
 		
-		$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
-		$mainDomain = $this->config->getSystemValue('main_domain', '');
+		$legacyDomain = $this->getLegacyDomain();
+		$mainDomain = $this->getMainDomain();
+		
 		$restrictedDomains = [ $legacyDomain, $mainDomain ];
 
 		return !in_array($domain, $restrictedDomains);
