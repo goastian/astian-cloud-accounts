@@ -331,10 +331,7 @@ class UserService {
 		$recoveryEmail = strtolower($recoveryEmail);
 		
 		$emailParts = explode('@', $recoveryEmail);
-		if (count($emailParts) !== 2) {
-			return false; // Invalid email format
-		}
-		$domain = $emailParts[1];
+		$domain = $emailParts[1] ?? '';
 	
 		return !in_array($domain, self::NOT_ALLOWED_DOMAINS);
 	}
