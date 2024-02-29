@@ -38,6 +38,7 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
+	private $notAllowedDomains;
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
@@ -63,6 +64,10 @@ class UserService {
 			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
 			'objectClass' => $this->config->getSystemValue('ldap_object_class', []),
 		];
+
+		$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
+		$mainDomain = $this->config->getSystemValue('main_domain', '');
+		$this->notAllowedDomains = [ $legacyDomain, $mainDomain ];
 	}
 
 
@@ -250,7 +255,7 @@ class UserService {
 			throw new Exception("Recovery email address is already taken.");
 		}
 		if (!empty($recoveryEmail) && !$this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-			throw new Exception("Recovery email address cannot have domains like @e.email or @murena.io");
+			throw new Exception("Recovery email address cannot have murena domains.");
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
@@ -327,16 +332,13 @@ class UserService {
 	 * @return bool True if the recovery email address is valid, false otherwise.
 	 */
 	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
-		$legacyDomain = $this->config->getSystemValue('legacy_domain', '');
-		$mainDomain = $this->config->getSystemValue('main_domain', '');
-
-		$notAllowedDomains = [$legacyDomain, $mainDomain];
+		
 		$recoveryEmail = strtolower($recoveryEmail);
 		
 		$emailParts = explode('@', $recoveryEmail);
 		$domain = $emailParts[1] ?? '';
 	
-		return !in_array($domain, $notAllowedDomains);
+		return !in_array($domain, $this->notAllowedDomains);
 	}
 
 	/**
