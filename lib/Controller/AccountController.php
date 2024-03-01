@@ -104,17 +104,17 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = '', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
-		
+		$l = $this->l10nFactory->get(Application::APP_ID, $language);
 		$response = new DataResponse();
 		
 		if(!$this->session->get(self::CAPTCHA_VERIFIED_CHECK)) {
-			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
+			$response->setData(['message' => $l->t('Captcha is not verified!'), 'success' => false]);
 			$response->setStatus(400);
 			return $response;
 		}
 
 		if (!$this->session->get(self::SESSION_USERNAME_CHECK)) {
-			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
+			$response->setData(['message' => $l->t('Username is already taken.'), 'success' => false]);
 			$response->setStatus(400);
 			return $response;
 		}
