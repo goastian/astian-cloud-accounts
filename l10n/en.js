@@ -85,6 +85,7 @@ OC.L10N.register(
 		"Set a recovery email address": "Set a recovery email address",
 		"Recovery email address has an incorrect format.": "Recovery email address has an incorrect format.",
 		"Recovery email address is already taken.": "Recovery email address is already taken.",
-		"Recovery email address cannot have murena domains.": "Recovery email address cannot have murena domains."
+		"Recovery email address cannot have murena domains.": "Recovery email address cannot have murena domains.",
+		"Captcha is not verified!": "Captcha is not verified!"
 	},
 	"nplurals=2; plural=(n != 1);");
