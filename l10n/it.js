@@ -79,6 +79,9 @@ OC.L10N.register(
 		"Use an alternative email": "Utilizzare un'e-mail alternativa",
 		"Important:": "Importante:",
 		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Per motivi di sicurezza, è necessaria un'e-mail di recupero. Se si decide di impostarla in un secondo momento, l'account verrà parzialmente limitato.",
-		"Set a recovery email address": "Impostare un indirizzo e-mail di recupero"
+		"Set a recovery email address": "Impostare un indirizzo e-mail di recupero",
+		"Recovery email address has an incorrect format.": "L'indirizzo e-mail di recupero ha un formato errato.",
+		"Recovery email address is already taken.": "L'indirizzo e-mail di recupero è già stato preso.",
+		"Recovery email address cannot have murena domains.": "L'indirizzo e-mail di recupero non può avere domini murena."
 	},
 	"nplurals=2; plural=(n != 1);");

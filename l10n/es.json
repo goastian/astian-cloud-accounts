@@ -79,7 +79,10 @@
 		"Use an alternative email": "Utilizar un correo electrónico alternativo",
 		"Important:": "Importante:",
 		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Por razones de seguridad, se requiere un correo electrónico de recuperación. Si decides configurarlo más tarde, tu cuenta quedará parcialmente restringida.",
-		"Set a recovery email address": "Establecer una dirección de correo electrónico de recuperación"
+		"Set a recovery email address": "Establecer una dirección de correo electrónico de recuperación",
+		"Recovery email address has an incorrect format.": "La dirección de correo electrónico de recuperación tiene un formato incorrecto.",
+		"Recovery email address is already taken.": "La dirección de correo electrónico de recuperación ya está ocupada.",
+		"Recovery email address cannot have murena domains.": "La dirección de correo electrónico de recuperación no puede tener dominios murena."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

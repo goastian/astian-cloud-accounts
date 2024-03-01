@@ -78,7 +78,10 @@
 		"Use an alternative email": "Use an alternative email",
 		"Important:": "Important:",
 		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.",
-		"Set a recovery email address": "Set a recovery email address"
+		"Set a recovery email address": "Set a recovery email address",
+		"Recovery email address has an incorrect format.": "Recovery email address has an incorrect format.",
+		"Recovery email address is already taken.": "Recovery email address is already taken.",
+		"Recovery email address cannot have murena domains.": "Recovery email address cannot have murena domains."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }
