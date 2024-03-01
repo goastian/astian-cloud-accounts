@@ -38,7 +38,6 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-	private $l10n;
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
@@ -49,7 +48,7 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
-		$this->l10n = $this->l10nFactory->get("ecloud-accounts");
+		
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
@@ -244,18 +243,18 @@ class UserService {
 	 * @throws Exception If the username or recovery email is already taken.
 	 */
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
-
+		$l = $this->l10nFactory->get("ecloud-accounts");
 		if ($this->userExists($username)) {
-			throw new Exception($this->l10n->t('Username is already taken.'));
+			throw new Exception($l->t('Username is already taken.'));
 		}
 		if (!empty($recoveryEmail) && !$this->isValidEmailFormat($recoveryEmail)) {
-			throw new Exception($this->l10n->t('Recovery email address has an incorrect format.'));
+			throw new Exception($l->t('Recovery email address has an incorrect format.'));
 		}
 		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
-			throw new Exception($this->l10n->t('Recovery email address is already taken.'));
+			throw new Exception($l->t('Recovery email address is already taken.'));
 		}
 		if (!empty($recoveryEmail) && !$this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-			throw new Exception($this->l10n->t('Recovery email address cannot have murena domains.'));
+			throw new Exception($l->t('Recovery email address cannot have murena domains.'));
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
