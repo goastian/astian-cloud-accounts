@@ -243,7 +243,7 @@ class UserService {
 	 * @throws Exception If the username or recovery email is already taken.
 	 */
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password, string $language): array {
-		$l = $this->l10nFactory->get("ecloud-accounts", $language);
+		$l = $this->l10nFactory->get(Application::APP_ID, $language);
 		
 		if ($this->userExists($username)) {
 			throw new Exception($l->t('Username is already taken.'));
