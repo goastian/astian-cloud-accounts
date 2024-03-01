@@ -10,7 +10,6 @@ use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\Defaults;
 use OCP\IConfig;
-use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -39,10 +38,9 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-	/** @var IL10N */
-	protected $l10n;
+	private $l10n;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IL10N $l10n) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -51,7 +49,7 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
-		$this->l10n = $l10n;
+		$this->l10n = $this->l10nFactory->get("ecloud-accounts");
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
