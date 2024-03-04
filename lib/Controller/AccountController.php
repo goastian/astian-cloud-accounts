@@ -165,6 +165,8 @@ class AccountController extends Controller {
 			$response->setData(['success' => true]);
 
 		} catch (Exception $e) {
+			$this->session->set(self::SESSION_USERNAME_CHECK, true);
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		}
