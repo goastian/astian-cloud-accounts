@@ -246,19 +246,29 @@ class UserService {
 		if ($this->userExists($username)) {
 			throw new Exception("Username is already taken.");
 		}
-		if(!empty($recoveryEmail)) {
-			if (!$this->isValidEmailFormat($recoveryEmail)) {
-				throw new Exception('Recovery email address has an incorrect format.');
-			}
-			if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
-				throw new Exception('Recovery email address is already taken.');
-			}
-			if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-				throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
-			}
+		if (!empty($recoveryEmail)) {
+			$this->validateRecoveryEmail($recoveryEmail);
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
+	}
+	/**
+	 * Validates the recovery email address.
+	 *
+	 * @param string $recoveryEmail The recovery email address to be validated.
+	 * @throws Exception If the recovery email address has an incorrect format, is already taken, or if the domain is disallowed.
+	 * @return void
+	 */
+	public function validateRecoveryEmail(string $recoveryEmail): void {
+		if (!$this->isValidEmailFormat($recoveryEmail)) {
+			throw new Exception('Recovery email address has an incorrect format.');
+		}
+		if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
+			throw new Exception('Recovery email address is already taken.');
+		}
+		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
+			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
+		}
 	}
 	/**
 	 * Add a new user to the LDAP directory.
