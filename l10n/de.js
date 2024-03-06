@@ -81,7 +81,7 @@ OC.L10N.register(
 		"Set a recovery email address": "Festlegen einer Wiederherstellungs-E-Mail-Adresse",
 		"Recovery email address has an incorrect format.": "Die E-Mail-Adresse für die Wiederherstellung hat ein falsches Format.",
 		"Recovery email address is already taken.": "Die E-Mail-Adresse für die Wiederherstellung ist bereits vergeben.",
-		"Recovery email address cannot have murena domains.": "Wiederherstellungs-E-Mail-Adressen können keine Murena-Domänen haben.",
+		"You cannot set an email address with a Murena domain as recovery email address.": "Sie können keine E-Mail-Adresse mit einer Murena-Domäne als Wiederherstellungs-E-Mail-Adresse festlegen.",
 		"Captcha is not verified!": "Captcha wird nicht überprüft!"
 	},
 	"nplurals=2; plural=(n != 1);");

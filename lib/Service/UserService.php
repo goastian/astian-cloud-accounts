@@ -254,7 +254,7 @@ class UserService {
 				throw new Exception('Recovery email address is already taken.');
 			}
 			if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-				throw new Exception('Recovery email address cannot have murena domains.');
+				throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
 			}
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);

@@ -77,7 +77,7 @@
 		"Set a recovery email address": "Impostare un indirizzo e-mail di recupero",
 		"Recovery email address has an incorrect format.": "L'indirizzo e-mail di recupero ha un formato errato.",
 		"Recovery email address is already taken.": "L'indirizzo e-mail di recupero è già stato preso.",
-		"Recovery email address cannot have murena domains.": "L'indirizzo e-mail di recupero non può avere domini murena.",
+		"You cannot set an email address with a Murena domain as recovery email address.": "Non è possibile impostare un indirizzo e-mail con un dominio Murena come indirizzo e-mail di recupero.",
 		"Captcha is not verified!": "Il Captcha non è verificato!"
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
