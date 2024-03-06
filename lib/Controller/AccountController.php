@@ -103,7 +103,7 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = '', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
+	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
 		$l = $this->l10nFactory->get(Application::APP_ID, $language);
 		$response = new DataResponse();
 		
