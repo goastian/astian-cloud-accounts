@@ -255,7 +255,7 @@ class UserService {
 			if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
 				throw new Exception($l->t('Recovery email address is already taken.'));
 			}
-			if (!$this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
+			if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
 				throw new Exception($l->t('Recovery email address cannot have murena domains.'));
 			}
 		}
@@ -331,7 +331,7 @@ class UserService {
 	 *
 	 * @param string $recoveryEmail The recovery email address to check.
 	 *
-	 * @return bool True if the recovery email address is valid, false otherwise.
+	 * @return bool True if the recovery email address is disallowed, false otherwise.
 	 */
 	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
 		
@@ -345,7 +345,7 @@ class UserService {
 		
 		$restrictedDomains = [ $legacyDomain, $mainDomain ];
 
-		return !in_array($domain, $restrictedDomains);
+		return in_array($domain, $restrictedDomains);
 	}
 
 	/**
