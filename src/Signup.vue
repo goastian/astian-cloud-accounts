@@ -101,7 +101,7 @@ export default {
 			} catch (error) {
 				// Handle network errors and unexpected response structures here
 				const errorMessage = error.response ? error.response.data.message : error.message
-				this.showMessage(t(this.appName, errorMessage), 'error')
+				this.showMessage(t(this.appName, 'Recovery email address cannot have murena domains.'), 'error')
 			}
 		},
 		showMessage(message, type) {
