@@ -101,7 +101,7 @@ export default {
 			} catch (error) {
 				// Handle network errors and unexpected response structures here
 				const errorMessage = error.response ? error.response.data.message : error.message
-				this.showMessage(errorMessage, 'error')
+				this.showMessage(t(this.appName, errorMessage), 'error')
 			}
 		},
 		showMessage(message, type) {
