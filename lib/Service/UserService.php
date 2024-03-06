@@ -200,6 +200,9 @@ class UserService {
 	public function getMainDomain() : string {
 		return $this->config->getSystemValue('main_domain', '');
 	}
+	public function getLegacyDomain() : string {
+		return $this->config->getSystemValue('legacy_domain', '');
+	}
 	public function setUserLanguage(string $username, string $language = 'en') {
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
@@ -239,15 +242,33 @@ class UserService {
 	 * @throws Exception If the username or recovery email is already taken.
 	 */
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
-
+		
 		if ($this->userExists($username)) {
 			throw new Exception("Username is already taken.");
 		}
-		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
-			throw new Exception("Recovery email address is already taken.");
+		if (!empty($recoveryEmail)) {
+			$this->validateRecoveryEmail($recoveryEmail);
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
+	}
+	/**
+	 * Validates the recovery email address.
+	 *
+	 * @param string $recoveryEmail The recovery email address to be validated.
+	 * @throws Exception If the recovery email address has an incorrect format, is already taken, or if the domain is disallowed.
+	 * @return void
+	 */
+	public function validateRecoveryEmail(string $recoveryEmail): void {
+		if (!$this->isValidEmailFormat($recoveryEmail)) {
+			throw new Exception('Recovery email address has an incorrect format.');
+		}
+		if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
+			throw new Exception('Recovery email address is already taken.');
+		}
+		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
+			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
+		}
 	}
 	/**
 	 * Add a new user to the LDAP directory.
@@ -311,6 +332,39 @@ class UserService {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Check if a recovery email address domain is restricted for some domains
+	 *
+	 * @param string $recoveryEmail The recovery email address to check.
+	 *
+	 * @return bool True if the recovery email address is disallowed, false otherwise.
+	 */
+	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
+		
+		$recoveryEmail = strtolower($recoveryEmail);
+		
+		$emailParts = explode('@', $recoveryEmail);
+		$domain = $emailParts[1] ?? '';
+		
+		$legacyDomain = $this->getLegacyDomain();
+		$mainDomain = $this->getMainDomain();
+		
+		$restrictedDomains = [ $legacyDomain, $mainDomain ];
+
+		return in_array($domain, $restrictedDomains);
+	}
+
+	/**
+	 * Check if a recovery email address is in valid format
+	 *
+	 * @param string $recoveryEmail The recovery email address to check.
+	 *
+	 * @return bool True if the recovery email address is valid, false otherwise.
+	 */
+	public function isValidEmailFormat(string $recoveryEmail): bool {
+		return filter_var($recoveryEmail, FILTER_VALIDATE_EMAIL) !== false;
 	}
 
 	/**

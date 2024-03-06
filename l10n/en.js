@@ -82,6 +82,10 @@ OC.L10N.register(
 		"Use an alternative email": "Use an alternative email",
 		"Important:": "Important:",
 		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.",
-		"Set a recovery email address": "Set a recovery email address"
+		"Set a recovery email address": "Set a recovery email address",
+		"Recovery email address has an incorrect format.": "Recovery email address has an incorrect format.",
+		"Recovery email address is already taken.": "Recovery email address is already taken.",
+		"You cannot set an email address with a Murena domain as recovery email address.": "You cannot set an email address with a Murena domain as recovery email address.",
+		"Captcha is not verified!": "Captcha is not verified!"
 	},
 	"nplurals=2; plural=(n != 1);");
