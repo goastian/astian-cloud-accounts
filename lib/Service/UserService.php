@@ -248,14 +248,16 @@ class UserService {
 		if ($this->userExists($username)) {
 			throw new Exception($l->t('Username is already taken.'));
 		}
-		if (!empty($recoveryEmail) && !$this->isValidEmailFormat($recoveryEmail)) {
-			throw new Exception($l->t('Recovery email address has an incorrect format.'));
-		}
-		if (!empty($recoveryEmail) && $this->checkRecoveryEmailAvailable($recoveryEmail)) {
-			throw new Exception($l->t('Recovery email address is already taken.'));
-		}
-		if (!empty($recoveryEmail) && !$this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-			throw new Exception($l->t('Recovery email address cannot have murena domains.'));
+		if(!empty($recoveryEmail)) {
+			if (!$this->isValidEmailFormat($recoveryEmail)) {
+				throw new Exception($l->t('Recovery email address has an incorrect format.'));
+			}
+			if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
+				throw new Exception($l->t('Recovery email address is already taken.'));
+			}
+			if (!$this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
+				throw new Exception($l->t('Recovery email address cannot have murena domains.'));
+			}
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 		
