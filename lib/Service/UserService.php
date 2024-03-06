@@ -242,21 +242,20 @@ class UserService {
 	 * @return array An array containing information about the registered user.
 	 * @throws Exception If the username or recovery email is already taken.
 	 */
-	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password, string $language): array {
-		$l = $this->l10nFactory->get(Application::APP_ID, $language);
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		
 		if ($this->userExists($username)) {
-			throw new Exception($l->t('Username is already taken.'));
+			throw new Exception('Username is already taken.');
 		}
 		if(!empty($recoveryEmail)) {
 			if (!$this->isValidEmailFormat($recoveryEmail)) {
-				throw new Exception($l->t('Recovery email address has an incorrect format.'));
+				throw new Exception('Recovery email address has an incorrect format.');
 			}
 			if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
-				throw new Exception($l->t('Recovery email address is already taken.'));
+				throw new Exception('Recovery email address is already taken.');
 			}
 			if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-				throw new Exception($l->t('Recovery email address cannot have murena domains.'));
+				throw new Exception('Recovery email address cannot have murena domains.');
 			}
 		}
 		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
