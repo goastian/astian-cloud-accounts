@@ -96,6 +96,7 @@ class UserService {
 		if($this->userExists($uid)) {
 			return $this->userManager->get($uid);
 		}
+		return null;
 	}
 
 	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
