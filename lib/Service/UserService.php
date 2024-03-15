@@ -242,7 +242,7 @@ class UserService {
 	 *
 	 * @return array An array containing information about the registered user.
 	 * @throws Exception If the username or recovery email is already taken.
-	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store 
+	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		
