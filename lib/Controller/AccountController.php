@@ -160,10 +160,13 @@ class AccountController extends Controller {
 			} catch (Exception $e) {
 				$this->logger->logException($e, ['app' => Application::APP_ID]);
 			}
-			
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
+		} catch (LDAPUserCreationException $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
+			$response->setStatus(500);
 		} catch (Exception $e) {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);

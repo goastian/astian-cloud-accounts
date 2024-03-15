@@ -83,6 +83,7 @@ OC.L10N.register(
 		"Recovery email address has an incorrect format.": "Le format de l'adresse électronique de récupération est incorrect.",
 		"Recovery email address is already taken.": "L'adresse électronique de récupération est déjà prise.",
 		"You cannot set an email address with a Murena domain as recovery email address.": "Vous ne pouvez pas définir une adresse électronique avec un domaine Murena comme adresse électronique de récupération.",
-		"Captcha is not verified!": "Captcha n'est pas vérifié !"
+		"Captcha is not verified!": "Captcha n'est pas vérifié !",
+		"A server-side error occurred while processing your request! Please try again later.": "Erreur du serveur dans la gestion de votre demande ! Merci d'essayer ultérieurement."
 	},
 	"nplurals=2; plural=(n != 1);");
