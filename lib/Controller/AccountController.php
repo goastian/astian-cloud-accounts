@@ -137,8 +137,9 @@ class AccountController extends Controller {
 		try {
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
-
 			$newUserEntry = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
+			sleep(2);
+
 			$this->userService->setAccountDataLocally($username, $userEmail, $newUserEntry['quota']);
 			$this->userService->createHMEAlias($username, $userEmail);
 			$this->userService->createNewDomainAlias($username, $userEmail);
@@ -160,10 +161,13 @@ class AccountController extends Controller {
 			} catch (Exception $e) {
 				$this->logger->logException($e, ['app' => Application::APP_ID]);
 			}
-			
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
+		} catch (LDAPUserCreationException | Error $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
+			$response->setStatus(500);
 		} catch (Exception $e) {
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
