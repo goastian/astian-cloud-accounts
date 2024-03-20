@@ -8,6 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
 use OCP\IConfig;
 use OCP\ILogger;
@@ -15,8 +16,8 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Util;
-use Throwable;
 
+use Throwable;
 use UnexpectedValueException;
 
 class UserService {
@@ -241,6 +242,7 @@ class UserService {
 	 *
 	 * @return array An array containing information about the registered user.
 	 * @throws Exception If the username or recovery email is already taken.
+	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		
@@ -281,39 +283,34 @@ class UserService {
 	 * @param string $password The password of the new user.
 	 *
 	 * @return array Information about the added user.
-	 * @throws Exception If there is an error while creating the Murena account.
+	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
 	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): ?array {
-		try {
-			$connection = $this->LDAPConnectionService->getLDAPConnection();
-			$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
+		$connection = $this->LDAPConnectionService->getLDAPConnection();
+		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		
-			$newUserDN = "username=$username," . $base;
+		$newUserDN = "username=$username," . $base;
 		
-			$newUserEntry = [
-				'mailAddress' => $userEmail,
-				'username' => $username,
-				'usernameWithoutDomain' => $username,
-				'userPassword' => $password,
-				'displayName' => $displayname,
-				'quota' => $this->LDAPConnectionService->getLdapQuota(),
-				'recoveryMailAddress' => $recoveryEmail,
-				'active' => 'TRUE',
-				'mailActive' => 'TRUE',
-				'userClusterID' => $this->apiConfig['userCluserId'],
-				'objectClass' => $this->apiConfig['objectClass']
-			];
+		$newUserEntry = [
+			'mailAddress' => $userEmail,
+			'username' => $username,
+			'usernameWithoutDomain' => $username,
+			'userPassword' => $password,
+			'displayName' => $displayname,
+			'quota' => $this->LDAPConnectionService->getLdapQuota(),
+			'recoveryMailAddress' => $recoveryEmail,
+			'active' => 'TRUE',
+			'mailActive' => 'TRUE',
+			'userClusterID' => $this->apiConfig['userCluserId'],
+			'objectClass' => $this->apiConfig['objectClass']
+		];
 
-			$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 		
-			if (!$ret) {
-				throw new Exception("Error while creating Murena account.");
-			}
-			return $newUserEntry;
-		} catch (Exception $e) {
-			$this->logger->error('Error adding adding new user to LDAP: ' . $username . ': ' . $e->getMessage());
-			return null;
+		if (!$ret) {
+			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
+		return $newUserEntry;
 	}
 	/**
 	 * Check if a recovery email address is available (not already taken by another user).
@@ -441,7 +438,6 @@ class UserService {
 	 * @return void
 	 */
 	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
-		
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error('User not found');
