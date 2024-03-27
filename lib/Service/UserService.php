@@ -291,35 +291,29 @@ class UserService {
 		
 		$newUserDN = "username=$username," . $base;
 		$quota = $this->LDAPConnectionService->getLdapQuota() * 1024 * 1024;
-		try {
-			$newUserEntry = [
-				'mailAddress' => $userEmail,
-				'username' => $username,
-				'usernameWithoutDomain' => $username,
-				'userPassword' => $password,
-				'displayName' => $displayname,
-				'quota' => $quota,
-				'recoveryMailAddress' => $recoveryEmail,
-				'active' => 'TRUE',
-				'mailActive' => 'TRUE',
-				'userClusterID' => $this->apiConfig['userCluserId'],
-				'objectClass' => $this->apiConfig['objectClass']
-			];
+		$newUserEntry = [
+			'mailAddress' => $userEmail,
+			'username' => $username,
+			'usernameWithoutDomain' => $username,
+			'userPassword' => $password,
+			'displayName' => $displayname,
+			'quota' => $quota,
+			'recoveryMailAddress' => $recoveryEmail,
+			'active' => 'TRUE',
+			'mailActive' => 'TRUE',
+			'userClusterID' => $this->apiConfig['userCluserId'],
+			'objectClass' => $this->apiConfig['objectClass']
+		];
 
-			$ret = ldap_add($connection, $newUserDN, $newUserEntry);
-			
-			if (!$ret) {
-				throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
-			}
-			if (is_null($this->getUser($username))) {
-				throw new Exception($username." user not found.");
-			}
-			return $newUserEntry;
-		} catch (LDAPUserCreationException $e) {
-			throw $e;
-		} catch (Exception $e) {
-			throw $e;
+		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
+		
+		if (!$ret) {
+			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
+		if (is_null($this->getUser($username))) {
+			throw new Exception($username." user not found.");
+		}
+		return $newUserEntry;
 	}
 	/**
 	 * Check if a recovery email address is available (not already taken by another user).
