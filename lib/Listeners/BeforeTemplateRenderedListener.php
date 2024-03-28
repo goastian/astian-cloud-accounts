@@ -67,7 +67,9 @@ class BeforeTemplateRenderedListener implements IEventListener {
 
 		// Just send over '1' as password to trigger login as the plugin will set the correct access token
 		$password = self::SNAPPYMAIL_AUTOLOGIN_PWD; // As we cannot pass by reference to LoginProcess
-		$account = $actions->LoginProcess($accountId, $password, false);
+		$oPasswordSensitive = new SnappyMail\SensitiveString($password);
+
+		$account = $actions->LoginProcess($accountId, $oPasswordSensitive, false);
 		if ($account) {
 			$actions->Plugins()->RunHook('login.success', array($account));
 			$actions->SetAuthToken($account);
