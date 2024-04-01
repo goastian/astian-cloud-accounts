@@ -290,14 +290,14 @@ class UserService {
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		
 		$newUserDN = "username=$username," . $base;
-		
+		$quota = $this->LDAPConnectionService->getLdapQuota() * 1024 * 1024;
 		$newUserEntry = [
 			'mailAddress' => $userEmail,
 			'username' => $username,
 			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
 			'displayName' => $displayname,
-			'quota' => $this->LDAPConnectionService->getLdapQuota(),
+			'quota' => $quota,
 			'recoveryMailAddress' => $recoveryEmail,
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
