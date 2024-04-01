@@ -252,8 +252,12 @@ class UserService {
 		if (!empty($recoveryEmail)) {
 			$this->validateRecoveryEmail($recoveryEmail);
 		}
-		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
-		
+		$newUserDetail = $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
+		$user = $this->getUser($username);
+		if (is_null($user)) {
+			throw new Exception("User " .  $username. " not found.");
+		}
+		return $newUserDetail;
 	}
 	/**
 	 * Validates the recovery email address.
@@ -309,10 +313,6 @@ class UserService {
 		
 		if (!$ret) {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
-		}
-		$user = $this->getUser($username);
-		if (is_null($user)) {
-			throw new Exception("Error while creating user: " .  $username);
 		}
 		return $newUserEntry;
 	}
