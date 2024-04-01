@@ -310,6 +310,10 @@ class UserService {
 		if (!$ret) {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
+		$user = $this->getUser($username);
+		if (is_null($user)) {
+			throw new Exception("Error while creating user: " .  $username);
+		}
 		return $newUserEntry;
 	}
 	/**
