@@ -126,6 +126,7 @@ class UserService {
 			$this->config->setUserValue($uid, 'hide-my-email', 'email-aliases', $aliases);
 			return true;
 		} catch (UnexpectedValueException $e) {
+        	$this->logger->error("Error adding HME alias '$alias' to config for user with UID: $uid. Error: " . $e->getMessage());
 			return false;
 		}
 	}
@@ -252,12 +253,7 @@ class UserService {
 		if (!empty($recoveryEmail)) {
 			$this->validateRecoveryEmail($recoveryEmail);
 		}
-		$newUserDetail = $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
-		$user = $this->getUser($username);
-		if (is_null($user)) {
-			throw new Exception("User " .  $username. " not found.");
-		}
-		return $newUserDetail;
+		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 	}
 	/**
 	 * Validates the recovery email address.
@@ -289,7 +285,7 @@ class UserService {
 	 * @return array Information about the added user.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): ?array {
+	private function addNewUserToLDAP(string $displayName, string $recoveryEmail, string $username, string $userEmail, string $password): ?array {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		
@@ -300,7 +296,7 @@ class UserService {
 			'username' => $username,
 			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
-			'displayName' => $displayname,
+			'displayName' => $displayName,
 			'quota' => $quota,
 			'recoveryMailAddress' => $recoveryEmail,
 			'active' => 'TRUE',
@@ -398,8 +394,10 @@ class UserService {
 		if($hmeAlias != '') {
 			$hmeAliasAdded = $this->addHMEAliasInConfig($username, $hmeAlias);
 			if (!$hmeAliasAdded) {
-				$this->logger->error('Error adding HME Alias in config.');
+				$this->logger->error("Failed to add HME Alias '$hmeAlias' for username '$username' in config.");
 			}
+		}else {
+			$this->logger->error("Failed to create HME Alias for username '$username'. Response: " . json_encode($result));
 		}
 	}
 	/**
@@ -430,6 +428,9 @@ class UserService {
 		
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
+		if ($this->curl->getLastStatusCode() !== 200) {
+			$this->logger->error("Failed to create new domain alias '$username' for email '$userEmail'.");
+		}
 		return $result;
 	}
 	/**
@@ -443,6 +444,9 @@ class UserService {
 	 */
 	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
 		$user = $this->getUser($uid);
+		if (is_null($user)) {
+			throw new Exception("User with username '$uid' not found.");
+		}
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
 		
@@ -477,7 +481,7 @@ class UserService {
 			return true;
 		}
 
-		throw new Exception("Error checking if username is taken at common source, status code: " . (string) $statusCode);
+		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 	}
 
 	public function addUsernameToCommonDataStore(string $username) : void {
@@ -502,7 +506,7 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			throw new Exception('Error adding username ' . $username . ' to common data store');
+			throw new Exception("Error adding username '$username' to common data store.");
 		}
 	}
 }
