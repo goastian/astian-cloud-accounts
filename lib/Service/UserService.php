@@ -443,11 +443,6 @@ class UserService {
 	 */
 	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
 		$user = $this->getUser($uid);
-		if (is_null($user)) {
-			$this->logger->error('User not found');
-			return;
-		}
-		
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
 		
