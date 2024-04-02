@@ -248,7 +248,7 @@ class UserService {
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
 		
 		if ($this->userExists($username)) {
-			throw new Exception("Username is already taken.");
+			throw new Exception("Username '$username' is already taken.");
 		}
 		if (!empty($recoveryEmail)) {
 			$this->validateRecoveryEmail($recoveryEmail);
