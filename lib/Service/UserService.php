@@ -126,7 +126,7 @@ class UserService {
 			$this->config->setUserValue($uid, 'hide-my-email', 'email-aliases', $aliases);
 			return true;
 		} catch (UnexpectedValueException $e) {
-        	$this->logger->error("Error adding HME alias '$alias' to config for user with UID: $uid. Error: " . $e->getMessage());
+			$this->logger->error("Error adding HME alias '$alias' to config for user with UID: $uid. Error: " . $e->getMessage());
 			return false;
 		}
 	}
@@ -396,7 +396,7 @@ class UserService {
 			if (!$hmeAliasAdded) {
 				$this->logger->error("Failed to add HME Alias '$hmeAlias' for username '$username' in config.");
 			}
-		}else {
+		} else {
 			$this->logger->error("Failed to create HME Alias for username '$username'. Response: " . json_encode($result));
 		}
 	}
