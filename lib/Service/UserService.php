@@ -162,6 +162,7 @@ class UserService {
 		$this->curl->delete($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
+			$this->logger->error('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
 			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
 		}
 	}
@@ -481,7 +482,7 @@ class UserService {
 		if ($statusCode === 200) {
 			return true;
 		}
-
+		$this->logger->error("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 	}
 
@@ -507,6 +508,7 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
+			$this->logger->error("Error adding username '$username' to common data store.");
 			throw new Exception("Error adding username '$username' to common data store.");
 		}
 	}
