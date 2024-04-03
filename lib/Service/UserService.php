@@ -445,6 +445,7 @@ class UserService {
 	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
+			$this->logger->error("User with username '$uid' not found.");
 			throw new Exception("User with username '$uid' not found.");
 		}
 		// Set the email address for the user
