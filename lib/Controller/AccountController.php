@@ -169,7 +169,7 @@ class AccountController extends Controller {
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
 		} catch (Exception $e) {
-			$response->setData(['message' => $e->getMessage(), 'success' => false]);
+			$response->setData(['message' => 'An error occurred while creating your account!', 'success' => false]);
 			$response->setStatus(500);
 		}
 
