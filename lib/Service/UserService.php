@@ -483,7 +483,7 @@ class UserService {
 			return true;
 		}
 		$this->logger->error("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
-		throw new Exception();
+		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 	}
 
 	public function addUsernameToCommonDataStore(string $username) : void {
