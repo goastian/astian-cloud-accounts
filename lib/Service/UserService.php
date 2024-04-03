@@ -163,7 +163,7 @@ class UserService {
 
 		if ($this->curl->getLastStatusCode() !== 200) {
 			$this->logger->error('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
-			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
+			throw new Exception();
 		}
 	}
 	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en') : void {
@@ -447,7 +447,7 @@ class UserService {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			$this->logger->error("User with username '$uid' not found.");
-			throw new Exception("User with username '$uid' not found.");
+			throw new Exception();
 		}
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
@@ -483,7 +483,7 @@ class UserService {
 			return true;
 		}
 		$this->logger->error("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
-		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
+		throw new Exception();
 	}
 
 	public function addUsernameToCommonDataStore(string $username) : void {
@@ -509,7 +509,7 @@ class UserService {
 
 		if ($this->curl->getLastStatusCode() !== 200) {
 			$this->logger->error("Error adding username '$username' to common data store.");
-			throw new Exception("Error adding username '$username' to common data store.");
+			throw new Exception();
 		}
 	}
 }
