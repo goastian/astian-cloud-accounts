@@ -162,8 +162,7 @@ class UserService {
 		$this->curl->delete($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			$this->logger->error('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
-			throw new Exception();
+			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
 		}
 	}
 	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en') : void {
