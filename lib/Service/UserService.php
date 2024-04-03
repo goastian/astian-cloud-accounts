@@ -446,8 +446,7 @@ class UserService {
 	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
-			$this->logger->error("User with username '$uid' not found.");
-			throw new Exception();
+			throw new Exception("User with username '$uid' not found.");
 		}
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
@@ -482,7 +481,6 @@ class UserService {
 		if ($statusCode === 200) {
 			return true;
 		}
-		$this->logger->error("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 	}
 
@@ -508,8 +506,7 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			$this->logger->error("Error adding username '$username' to common data store.");
-			throw new Exception();
+			throw new Exception("Error adding username '$username' to common data store.");
 		}
 	}
 }
