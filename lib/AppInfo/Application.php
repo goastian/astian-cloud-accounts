@@ -26,11 +26,12 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-
+use OCA\EcloudAccounts\Listeners\AccessTokenUpdatedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -39,8 +40,6 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
-use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
-use OCA\EcloudAccounts\Listeners\AccessTokenUpdatedListener;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';

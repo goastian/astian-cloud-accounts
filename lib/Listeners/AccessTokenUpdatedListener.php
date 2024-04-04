@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\IUserSession;
-use OCP\ISession;
-use OCP\App\IAppManager;
 use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
 use OCA\SnappyMail\Util\SnappyMailHelper;
+use OCP\App\IAppManager;
+use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\ISession;
+use OCP\IUserSession;
 
 class AccessTokenUpdatedListener implements IEventListener {
 	private IUserSession $userSession;
