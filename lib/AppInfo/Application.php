@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
+
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
@@ -36,10 +36,11 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
+use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
+use OCA\EcloudAccounts\Listeners\AccessTokenUpdatedListener;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -49,7 +50,8 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
+		//$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
+		$context->registerEventListener(AccessTokenUpdatedEvent::class, AccessTokenUpdatedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
