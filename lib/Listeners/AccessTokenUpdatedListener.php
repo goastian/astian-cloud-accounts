@@ -28,21 +28,24 @@ class AccessTokenUpdatedListener implements IEventListener {
 	}
 
 	public function handle(Event $event): void {
+        \OC::$server->getLogger()->error("call1");
 		if (!($event instanceof AccessTokenUpdatedEvent) || !$this->userSession->isLoggedIn() || !$this->session->exists('is_oidc')) {
 			return;
 		}
-
+        \OC::$server->getLogger()->error("call2");
 		// just-in-case checks(also maybe useful for selfhosters)
 		if (!$this->appManager->isEnabledForUser(self::SNAPPYMAIL_APP_ID) || !$this->appManager->isEnabledForUser(self::OIDC_LOGIN_APP_ID)) {
 			return;
 		}
-		
+        \OC::$server->getLogger()->error("call3");
 		$accessToken = $event->getAccessToken();
 		if (!$accessToken) {
 			return;
 		}
-		
+		\OC::$server->getLogger()->error($accessToken);
+
 		$username = $this->userSession->getUser()->getUID();
+        \OC::$server->getLogger()->error($username);
 
 		$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
 	}
