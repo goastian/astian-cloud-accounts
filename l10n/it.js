@@ -84,6 +84,7 @@ OC.L10N.register(
 		"Recovery email address is already taken.": "L'indirizzo e-mail di recupero è già stato preso.",
 		"You cannot set an email address with a Murena domain as recovery email address.": "Non è possibile impostare un indirizzo e-mail con un dominio Murena come indirizzo e-mail di recupero.",
 		"Captcha is not verified!": "Il Captcha non è verificato!",
-		"A server-side error occurred while processing your request! Please try again later.": "Si è verificato un errore lato server nel processare la tua richiesta! Ritenta più tardi."
+		"A server-side error occurred while processing your request! Please try again later.": "Si è verificato un errore lato server nel processare la tua richiesta! Ritenta più tardi.",
+		"An error occurred while creating your account!": "Si è verificato un errore nella creazione dell'account!"
 	},
 	"nplurals=2; plural=(n != 1);");
