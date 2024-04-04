@@ -52,6 +52,6 @@ class AccessTokenUpdatedListener implements IEventListener {
 		$this->session->set('snappymail-nc-uid', SnappyMailHelper::encodePassword($accessToken, $username));
 		$this->session->set('snappymail-passphrase', SnappyMailHelper::encodePassword($accessToken, $username));
 		
-		//$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
+		$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
 	}
 }
