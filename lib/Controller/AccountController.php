@@ -162,10 +162,14 @@ class AccountController extends Controller {
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
-		} catch (LDAPUserCreationException | AddUsernameToCommonStoreException | Error $e) {
+		} catch (LDAPUserCreationException | Error $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
+		} catch (AddUsernameToCommonStoreException $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setStatus(200);
+			$response->setData(['success' => true]);
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'An error occurred while creating your account!', 'success' => false]);
