@@ -23,6 +23,8 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
+use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -161,6 +163,10 @@ class AccountController extends Controller {
 			$response->setData(['success' => true]);
 
 		} catch (LDAPUserCreationException | Error $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
+			$response->setStatus(500);
+		} catch (AddUsernameToCommonStoreException | Error $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
