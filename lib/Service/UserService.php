@@ -8,6 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
 use OCP\IConfig;
@@ -482,7 +483,17 @@ class UserService {
 		}
 		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 	}
-
+	/**
+	 * Adds a username to the common data store.
+	 *
+	 * This method sends a POST request to the common data store API endpoint to add a username.
+	 * If the operation is successful, the username will be added to the data store.
+	 * If the operation fails, an exception will be thrown.
+	 *
+	 * @param string $username The username to add to the common data store.
+	 *
+	 * @throws AddUsernameToCommonStoreException If an error occurs while adding the username to the common data store.
+	 */
 	public function addUsernameToCommonDataStore(string $username) : void {
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
@@ -505,7 +516,7 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			throw new Exception("Error adding username '$username' to common data store.");
+			throw new AddUsernameToCommonStoreException("Error adding username '$username' to common data store.");
 		}
 	}
 }
