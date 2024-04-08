@@ -8,6 +8,8 @@ namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
@@ -23,8 +25,6 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
-use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
-use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -162,11 +162,7 @@ class AccountController extends Controller {
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
-		} catch (LDAPUserCreationException | Error $e) {
-			$this->logger->logException($e, ['app' => Application::APP_ID]);
-			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
-			$response->setStatus(500);
-		} catch (AddUsernameToCommonStoreException | Error $e) {
+		} catch (LDAPUserCreationException | AddUsernameToCommonStoreException | Error $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
