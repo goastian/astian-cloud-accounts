@@ -242,7 +242,7 @@ class UserService {
 	 * @param string $userEmail The email address of the user.
 	 * @param string $password The password chosen by the user.
 	 *
-	 * @return void 
+	 * @return void
 	 * @throws Exception If the username or recovery email is already taken.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
