@@ -242,11 +242,11 @@ class UserService {
 	 * @param string $userEmail The email address of the user.
 	 * @param string $password The password chosen by the user.
 	 *
-	 * @return array An array containing information about the registered user.
+	 * @return void 
 	 * @throws Exception If the username or recovery email is already taken.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void {
 		
 		if ($this->userExists($username)) {
 			throw new Exception("Username '$username' is already taken.");
@@ -254,7 +254,7 @@ class UserService {
 		if (!empty($recoveryEmail)) {
 			$this->validateRecoveryEmail($recoveryEmail);
 		}
-		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
+		$this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 	}
 	/**
 	 * Validates the recovery email address.
@@ -283,15 +283,17 @@ class UserService {
 	 * @param string $userEmail The email address of the new user.
 	 * @param string $password The password of the new user.
 	 *
-	 * @return array Information about the added user.
+	 * @return void
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	private function addNewUserToLDAP(string $displayName, string $recoveryEmail, string $username, string $userEmail, string $password): ?array {
+	private function addNewUserToLDAP(string $displayName, string $recoveryEmail, string $username, string $userEmail, string $password): void {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		
 		$newUserDN = "username=$username," . $base;
+		
 		$quota = $this->LDAPConnectionService->getLdapQuota() * 1024 * 1024;
+		$quota = intval($quota);
 		$newUserEntry = [
 			'mailAddress' => $userEmail,
 			'username' => $username,
@@ -305,13 +307,12 @@ class UserService {
 			'userClusterID' => $this->apiConfig['userCluserId'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
-
+		
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 		
 		if (!$ret) {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
-		return $newUserEntry;
 	}
 	/**
 	 * Check if a recovery email address is available (not already taken by another user).
@@ -443,14 +444,14 @@ class UserService {
 	 *
 	 * @return void
 	 */
-	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
+	public function setAccountDataLocally(string $uid, string $mailAddress): void {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			throw new Exception("User with username '$uid' not found.");
 		}
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
-		
+		$quota = $this->LDAPConnectionService->getLdapQuota();
 		// Format and set the quota for the user (in megabytes)
 		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
