@@ -521,6 +521,6 @@ class UserService {
 		}
 	}
 	private function getDefaultQuota() {
-		return $this->config->getSystemValue('default_quota_in_megabytes', 1024);
+		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 }
