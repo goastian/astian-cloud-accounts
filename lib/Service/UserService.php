@@ -292,8 +292,8 @@ class UserService {
 		
 		$newUserDN = "username=$username," . $base;
 		
-		$quota = $this->LDAPConnectionService->getLdapQuota() * 1024 * 1024;
-		$quota = intval($quota);
+		$quota = $this->getDefaultQuota() * 1024 * 1024;
+		
 		$newUserEntry = [
 			'mailAddress' => $userEmail,
 			'username' => $username,
@@ -451,7 +451,7 @@ class UserService {
 		}
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
-		$quota = $this->LDAPConnectionService->getLdapQuota();
+		$quota = $this->getDefaultQuota();
 		// Format and set the quota for the user (in megabytes)
 		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
@@ -519,5 +519,8 @@ class UserService {
 		if ($this->curl->getLastStatusCode() !== 200) {
 			throw new AddUsernameToCommonStoreException("Error adding username '$username' to common data store.");
 		}
+	}
+	private function getDefaultQuota() {
+		return $this->config->getSystemValue('default_quota_in_megabytes', 1024);
 	}
 }
