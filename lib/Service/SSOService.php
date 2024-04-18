@@ -5,7 +5,6 @@ namespace OCA\EcloudAccounts\Service;
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
-use OCA\EcloudAccounts\Db\TwoFactorMapper;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\Security\ICrypto;
@@ -18,17 +17,15 @@ class SSOService {
 	private array $ssoConfig = [];
 	private string $adminAccessToken;
 	private string $currentUserId;
-	private TwoFactorMapper $twoFactorMapper;
 	private ICrypto $crypto;
 
 	private const ADMIN_TOKEN_ENDPOINT = '/auth/realms/master/protocol/openid-connect/token';
 	private const USERS_ENDPOINT = '/users';
 	private const CREDENTIALS_ENDPOINT = '/users/{USER_ID}/credentials';
 
-	public function __construct($appName, IConfig $config, CurlService $curlService, TwoFactorMapper $twoFactorMapper, ICrypto $crypto, ILogger $logger) {
+	public function __construct($appName, IConfig $config, CurlService $curlService, ICrypto $crypto, ILogger $logger) {
 		$this->appName = $appName;
 		$this->config = $config;
-		$this->twoFactorMapper = $twoFactorMapper;
 		$this->ssoConfig['admin_client_id'] = $this->config->getSystemValue('oidc_admin_client_id', '');
 		$this->ssoConfig['admin_client_secret'] = $this->config->getSystemValue('oidc_admin_client_secret', '');
 		$this->ssoConfig['admin_username'] = $this->config->getSystemValue('oidc_admin_username', '');
@@ -40,13 +37,16 @@ class SSOService {
 		$this->logger = $logger;
 	}
 
-	public function migrateCredential(string $username) : void {
+	public function shouldSync2FA() : bool {
+		return $this->config->getSystemValue('oidc_admin_sync_2fa', false);
+	}
+
+	public function migrateCredential(string $username, string $secret) : void {
 		if(empty($this->currentUserId)) {
 			$this->getUserId($username);
 		}
 		$this->deleteCredentials($username);
 
-		$secret = $this->twoFactorMapper->getSecret($username);
 		$decryptedSecret = $this->crypto->decrypt($secret);
 		$language = $this->config->getUserValue($username, 'core', 'lang', 'en');
 		$credentialEntry = $this->getCredentialEntry($decryptedSecret, $language);
