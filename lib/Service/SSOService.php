@@ -82,7 +82,7 @@ class SSOService {
 			return [];
 		}
 
-		$credentials = array_filter($credentials, function($credential) {
+		$credentials = array_filter($credentials, function ($credential) {
 			if ($credential['type'] !== 'otp') {
 				return false;
 			}
@@ -93,7 +93,7 @@ class SSOService {
 			return true;
 		});
 
-		return array_map(function($credential) {
+		return array_map(function ($credential) {
 			return $credential['id'];
 		}, $credentials);
 	}
@@ -104,7 +104,7 @@ class SSOService {
 	 * @return array
 	 */
 
-	 private function getCredentialEntry(string $secret, string $language) : array {
+	private function getCredentialEntry(string $secret, string $language) : array {
 		$l10n = $this->l10nFactory->get(Application::APP_ID, $language);
 		$userLabel = $l10n->t('Murena Cloud 2FA');
 

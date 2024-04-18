@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use Exception;
-use OCA\EcloudAccounts\Service\SSOService;
 use OCA\EcloudAccounts\Db\TwoFactorMapper;
+use OCA\EcloudAccounts\Service\SSOService;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
