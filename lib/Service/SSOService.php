@@ -7,8 +7,8 @@ use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\IConfig;
 use OCP\ILogger;
-use OCP\Security\ICrypto;
 use OCP\L10N\IFactory;
+use OCP\Security\ICrypto;
 
 class SSOService {
 	private IConfig $config;
