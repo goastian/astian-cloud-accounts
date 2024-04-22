@@ -26,12 +26,18 @@ class SSOService {
 	public function __construct($appName, IConfig $config, CurlService $curlService, ICrypto $crypto, ILogger $logger) {
 		$this->appName = $appName;
 		$this->config = $config;
+
+		$ssoProviderUrl = $this->config->getSystemValue('oidc_login_provider_url', '');
+		$ssoProviderUrlParts = explode($ssoProviderUrl, '/auth');
+		$rootUrl = $ssoProviderUrlParts[0];
+		$realmsPart = $ssoProviderUrl[1];
+
 		$this->ssoConfig['admin_client_id'] = $this->config->getSystemValue('oidc_admin_client_id', '');
 		$this->ssoConfig['admin_client_secret'] = $this->config->getSystemValue('oidc_admin_client_secret', '');
 		$this->ssoConfig['admin_username'] = $this->config->getSystemValue('oidc_admin_username', '');
 		$this->ssoConfig['admin_password'] = $this->config->getSystemValue('oidc_admin_password', '');
-		$this->ssoConfig['provider_url'] = $this->config->getSystemValue('oidc_login_provider_url', '');
-		$this->ssoConfig['root_url'] = explode('/auth', $this->ssoConfig['provider_url'])[0];
+		$this->ssoConfig['admin_rest_api_url'] = $rootUrl . '/auth/admin' . $realmsPart;
+		$this->ssoConfig['root_url'] = $rootUrl;
 		$this->crypto = $crypto;
 		$this->curl = $curlService;
 		$this->logger = $logger;
@@ -143,7 +149,7 @@ class SSOService {
 		if (!empty($this->adminAccessToken)) {
 			return;
 		}
-		$adminAccessTokenRoute = $this->ssoConfig['provider_url'] . self::ADMIN_TOKEN_ENDPOINT;
+		$adminAccessTokenRoute = $this->ssoConfig['root_url'] . self::ADMIN_TOKEN_ENDPOINT;
 		$requestBody = [
 			'username' => $this->ssoConfig['admin_username'],
 			'password' => $this->ssoConfig['admin_password'],
