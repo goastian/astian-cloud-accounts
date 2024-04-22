@@ -180,15 +180,15 @@ class SSOService {
 		];
 
 		if ($method === 'GET') {
-			$answer = $this->curl->get($shop['url'] . $endpoint, $data, $headers);
+			$answer = $this->curl->get($url, $data, $headers);
 		}
 
 		if ($method === 'DELETE') {
-			$answer = $this->curl->delete($shop['url'] . $endpoint, $data, $headers);
+			$answer = $this->curl->delete($url, $data, $headers);
 		}
 
 		if ($method === 'POST') {
-			$answer = $this->curl->post($shop['url'] . $endpoint, json_encode($data), $headers);
+			$answer = $this->curl->post($url, json_encode($data), $headers);
 		}
 
 		$statusCode = $this->curl->getLastStatusCode();
