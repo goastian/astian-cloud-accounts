@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
-use OCA\EcloudAccounts\Db\SSOService;
+use OCA\EcloudAccounts\Service\SSOService;
 use OCA\EcloudAccounts\Db\TwoFactorMapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
