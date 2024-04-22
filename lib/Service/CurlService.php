@@ -115,9 +115,9 @@ class CurlService {
 			case 'PUT':
 				$options[CURLOPT_CUSTOMREQUEST] = "PUT";
 				$options[CURLOPT_POSTFIELDS] = $this->buildPostData($params, $headers);
-				// no break
+				break;
 			default:
-				throw new Exception('Unsuported method.');
+				throw new Exception('Unsupported method.');
 				break;
 		}
 		$options[CURLOPT_URL] = $url;

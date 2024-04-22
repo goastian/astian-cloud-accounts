@@ -121,24 +121,14 @@ class SSOService {
 		$l10n = $this->l10nFactory->get(Application::APP_ID, $language);
 		$userLabel = $l10n->t('Murena Cloud 2FA');
 
+		$secretData = '{"value":"' . $secret . '"}';
+		$credentialData = '{"subType":"totp","period":30,"digits":6,"algorithm":"HmacSHA1","secretEncoding":"BASE32"}';
 		$credentialEntry = [
 			'userLabel' => $userLabel,
 			'type' => 'otp',
-			'secretData' => json_encode([
-				'value' => $secret
-			]),
-			'credentialData' => json_encode([
-				'subType' => 'totp',
-				'period' => 30,
-				'digits' => 6,
-				'algorithm' => 'HmacSHA1',
-				'secretEncoding' => 'BASE32',
-			]),
+			'secretData' => $secretData,
+			'credentialData' => $credentialData
 		];
-
-		foreach ($credentialEntry as $key => &$value) {
-			$value = "'" . $value . "'";
-		}
 		return $credentialEntry;
 	}
 
