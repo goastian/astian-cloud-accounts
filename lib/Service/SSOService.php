@@ -8,6 +8,7 @@ use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\Security\ICrypto;
+use OCP\L10N\IFactory;
 
 class SSOService {
 	private IConfig $config;
@@ -18,19 +19,20 @@ class SSOService {
 	private string $adminAccessToken;
 	private string $currentUserId;
 	private ICrypto $crypto;
+	private IFactory $l10nFactory;
 
 	private const ADMIN_TOKEN_ENDPOINT = '/auth/realms/master/protocol/openid-connect/token';
 	private const USERS_ENDPOINT = '/users';
 	private const CREDENTIALS_ENDPOINT = '/users/{USER_ID}/credentials';
 
-	public function __construct($appName, IConfig $config, CurlService $curlService, ICrypto $crypto, ILogger $logger) {
+	public function __construct($appName, IConfig $config, CurlService $curlService, ICrypto $crypto, IFactory $l10nFactory, ILogger $logger) {
 		$this->appName = $appName;
 		$this->config = $config;
 
 		$ssoProviderUrl = $this->config->getSystemValue('oidc_login_provider_url', '');
-		$ssoProviderUrlParts = explode($ssoProviderUrl, '/auth');
+		$ssoProviderUrlParts = explode('/auth', $ssoProviderUrl);
 		$rootUrl = $ssoProviderUrlParts[0];
-		$realmsPart = $ssoProviderUrl[1];
+		$realmsPart = $ssoProviderUrlParts[1];
 
 		$this->ssoConfig['admin_client_id'] = $this->config->getSystemValue('oidc_admin_client_id', '');
 		$this->ssoConfig['admin_client_secret'] = $this->config->getSystemValue('oidc_admin_client_secret', '');
@@ -41,6 +43,7 @@ class SSOService {
 		$this->crypto = $crypto;
 		$this->curl = $curlService;
 		$this->logger = $logger;
+		$this->l10nFactory = $l10nFactory;
 	}
 
 	public function shouldSync2FA() : bool {
@@ -56,11 +59,13 @@ class SSOService {
 		$decryptedSecret = $this->crypto->decrypt($secret);
 		$language = $this->config->getUserValue($username, 'core', 'lang', 'en');
 		$credentialEntry = $this->getCredentialEntry($decryptedSecret, $language);
-		$url = $this->ssoConfig['provider_url'] . self::USERS_ENDPOINT . '/' . $this->currentUserId;
+		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '/' . $this->currentUserId;
 
 		$data = [
 			'credentials' => [$credentialEntry]
 		];
+
+		$this->logger->debug('migrateCredential calling SSO API with url: '. $url . ' and data: ' . print_r($data, true));
 		$this->callSSOAPI($url, 'PUT', $data, 204);
 	}
 
@@ -71,17 +76,19 @@ class SSOService {
 		$credentialIds = $this->getCredentialIds();
 
 		foreach ($credentialIds as $credentialId) {
-			$url = $this->ssoConfig['provider_url'] . self::CREDENTIALS_ENDPOINT;
-			$url = str_replace($url, '{USER_ID}', $this->currentUserId);
+			$url = $this->ssoConfig['admin_rest_api_url'] . self::CREDENTIALS_ENDPOINT;
+			$url = str_replace('{USER_ID}', $this->currentUserId, $url);
 			$url .= '/' . $credentialId;
-
+			$this->logger->debug('deleteCredentials calling SSO API with url: '. $url);
 			$this->callSSOAPI($url, 'DELETE', [], 204);
 		}
 	}
 
 	private function getCredentialIds() : array {
-		$url = $this->ssoConfig['provider_url'] . self::CREDENTIALS_ENDPOINT;
-		$url = str_replace($url, '{USER_ID}', $this->currentUserId);
+		$url = $this->ssoConfig['admin_rest_api_url'] . self::CREDENTIALS_ENDPOINT;
+		$url = str_replace('{USER_ID}', $this->currentUserId, $url);
+		$this->logger->debug('getCredentialIds calling SSO API with url: '. $url);
+
 		$credentials = $this->callSSOAPI($url, 'GET');
 
 		if (empty($credentials) || !is_array($credentials)) {
@@ -137,12 +144,13 @@ class SSOService {
 
 	private function getUserId(string $username) : void {
 		$usernameWithoutDomain = explode('@', $username)[0];
-		$url = $this->ssoConfig['provider_url'] . self::USERS_ENDPOINT . '?exact=true&username=' . $usernameWithoutDomain;
+		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '?exact=true&username=' . $usernameWithoutDomain;
+		$this->logger->debug('getUserId calling SSO API with url: '. $url);
 		$users = $this->callSSOAPI($url, 'GET');
 		if (empty($users) || !is_array($users) || !isset($users[0])) {
 			throw new Exception();
 		}
-		$this->currentUserId = $users[0]['username'];
+		$this->currentUserId = $users[0]['id'];
 	}
 
 	private function getAdminAccessToken() : void {
@@ -161,6 +169,7 @@ class SSOService {
 		$headers = [
 			'Content-Type: application/x-www-form-urlencoded'
 		];
+		$this->logger->debug('getAdminAccessToken calling SSO API with url: '. $adminAccessTokenRoute . ' and headers: ' . print_r($headers, true) . ' and body: ' . print_r($requestBody, true));
 		$response = $this->curl->post($adminAccessTokenRoute, $requestBody, $headers);
 
 		if (!$this->curl->getLastStatusCode() === 200) {
@@ -178,11 +187,11 @@ class SSOService {
 		if (empty($url)) {
 			return null;
 		}
-		$accessToken = $this->getAdminAccessToken();
+		$this->getAdminAccessToken();
 		$headers = [
 			"cache-control: no-cache",
-			"content-type: application/json",
-			"Authorization: Bearer " . $accessToken
+			"Content-Type: application/json",
+			"Authorization: Bearer " . $this->adminAccessToken
 		];
 
 		if ($method === 'GET') {
@@ -194,7 +203,11 @@ class SSOService {
 		}
 
 		if ($method === 'POST') {
-			$answer = $this->curl->post($url, json_encode($data), $headers);
+			$answer = $this->curl->post($url, $data, $headers);
+		}
+
+		if ($method === 'PUT') {
+			$answer = $this->curl->put($url, $data, $headers);
 		}
 
 		$statusCode = $this->curl->getLastStatusCode();

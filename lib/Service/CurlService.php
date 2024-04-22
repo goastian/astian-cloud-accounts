@@ -46,6 +46,10 @@ class CurlService {
 		return $this->request('DELETE', $url, $params, $headers, $userOptions);
 	}
 
+	public function put($url, $params = [], $headers = [], $userOptions = []) {
+		return $this->request('PUT', $url, $params, $headers, $userOptions);
+	}
+
 	/**
 	 * @return int
 	 */
@@ -54,7 +58,7 @@ class CurlService {
 		return $this->lastStatusCode;
 	}
 
-	private function buildPostData(array $params = [], array $headers = []) : string {
+	private function buildPostData($params = [], $headers = []) {
 		$jsonContent = in_array('Content-Type: application/json', $headers);
 		if ($jsonContent) {
 			$params = json_encode($params);
@@ -70,7 +74,7 @@ class CurlService {
 			return $params;
 		}
 
-		return '';
+		return $params;
 	}
 
 	/**
@@ -108,6 +112,9 @@ class CurlService {
 					$url = $url . '?' . http_build_query($params);
 				}
 				break;
+			case 'PUT':
+				$options[CURLOPT_CUSTOMREQUEST] = "PUT";
+				$options[CURLOPT_POSTFIELDS] = $this->buildPostData($params, $headers);
 			default:
 				throw new Exception('Unsuported method.');
 				break;
