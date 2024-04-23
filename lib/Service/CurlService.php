@@ -63,7 +63,7 @@ class CurlService {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER => $headers
 		);
-		array_merge($options, $userOptions);
+		$options = array_merge($options, $userOptions);
 		switch ($method) {
 			case 'GET':
 				if ($params) {
@@ -80,8 +80,12 @@ class CurlService {
 					$url = $url . '?' . http_build_query($params);
 				}
 				break;
+			case 'PUT':
+				$options[CURLOPT_CUSTOMREQUEST] = "PUT";
+				$options[CURLOPT_POSTFIELDS] = $this->buildPostData($params, $headers);
+				break;
 			default:
-				throw new Exception('Unsuported method.');
+				throw new Exception('Unsupported method.');
 				break;
 		}
 		$options[CURLOPT_URL] = $url;
