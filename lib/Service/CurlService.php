@@ -95,7 +95,7 @@ class CurlService {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER => $headers
 		);
-		array_merge($options, $userOptions);
+		$options = array_merge($options, $userOptions);
 		switch ($method) {
 			case 'GET':
 				if ($params) {
