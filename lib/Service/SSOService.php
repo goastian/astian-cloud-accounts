@@ -3,7 +3,6 @@
 
 namespace OCA\EcloudAccounts\Service;
 
-use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\SSOAdminAccessTokenException;
 use OCA\EcloudAccounts\Exception\SSOAdminAPIException;
