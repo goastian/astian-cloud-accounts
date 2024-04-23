@@ -5,6 +5,8 @@ namespace OCA\EcloudAccounts\Service;
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\SSOAdminAccessTokenException;
+use OCA\EcloudAccounts\Exception\SSOAdminAPIException;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\L10N\IFactory;
@@ -138,7 +140,7 @@ class SSOService {
 		$this->logger->debug('getUserId calling SSO API with url: '. $url);
 		$users = $this->callSSOAPI($url, 'GET');
 		if (empty($users) || !is_array($users) || !isset($users[0])) {
-			throw new Exception();
+			throw new SSOAdminAPIException('Error: no user found for search with url: ' . $url);
 		}
 		$this->currentUserId = $users[0]['id'];
 	}
@@ -163,12 +165,13 @@ class SSOService {
 		$response = $this->curl->post($adminAccessTokenRoute, $requestBody, $headers);
 
 		if (!$this->curl->getLastStatusCode() === 200) {
-			throw new Exception();
+			$statusCode = strval($this->curl->getLastStatusCode());
+			throw new SSOAdminAccessTokenException('Error getting Admin Access token. Status Code: ' . $statusCode);
 		}
 		$response = json_decode($response, true);
 
 		if (!isset($response['access_token'])) {
-			throw new Exception();
+			throw new SSOAdminAccessTokenException('Error: admin access token not set in response!');
 		}
 		$this->adminAccessToken = $response['access_token'];
 	}
@@ -203,7 +206,7 @@ class SSOService {
 		$statusCode = $this->curl->getLastStatusCode();
 
 		if ($statusCode !== $expectedStatusCode) {
-			throw new Exception();
+			throw new SSOAdminAPIException('Error calling SSO API with url ' . $url . ' status code: ' . $statusCode);
 		}
 
 		$answer = json_decode($answer, true);
