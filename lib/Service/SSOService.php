@@ -97,11 +97,12 @@ class SSOService {
 		}
 
 		$credentials = array_filter($credentials, function ($credential) {
-			if ($credential['type'] !== 'otp') {
+			if ($credential['type'] !== 'otp' || !isset($credential['credentialData'])) {
 				return false;
 			}
 			$credentialData = json_decode($credential['credentialData'], true);
-			if ($credentialData['subType'] !== 'totp' || $credentialData['secretEncoding'] !== 'BASE32') {
+			if (!isset($credentialData['subType']) || !isset($credentialData['subType'])
+				|| $credentialData['subType'] !== 'totp' || $credentialData['secretEncoding'] !== 'BASE32') {
 				return false;
 			}
 			return true;
@@ -122,6 +123,7 @@ class SSOService {
 		$l10n = $this->l10nFactory->get(Application::APP_ID, $language);
 		$userLabel = $l10n->t('Murena Cloud 2FA');
 
+		// We build manually instead of json_encode to avoid any tricky escaping issues as this is a nested json object
 		$secretData = '{"value":"' . $secret . '"}';
 		$credentialData = '{"subType":"totp","period":30,"digits":6,"algorithm":"HmacSHA1","secretEncoding":"BASE32"}';
 		$credentialEntry = [
