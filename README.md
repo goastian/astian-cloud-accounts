@@ -57,3 +57,14 @@ The values should be set as follows:
 'welcome_sendgrid_template_ids' => [ 'en' => 'EN_TEMPLATE_ID', 'es' => 'ES_TEMPLATE_ID', ... ]
 ...
 ```
+
+## Sync 2FA secrets with Keycloak based SSO service
+
+- Enable admin service client in Keycloak
+- Configure the following parameters in `config.php`:
+  - `oidc_admin_client_id` (client ID of the admin service client)
+  - `oidc_admin_client_secret` (client secret of the admin service client)
+  - `oidc_admin_username` (username of admin account)
+  - `oidc_admin_password` (password of admin account)
+  - `oidc_login_provider_url` (provider URL: see also https://github.com/pulsejet/nextcloud-oidc-login)
+  - `oidc_admin_sync_2fa` -> (set to boolean value true to enable sync; defaults to false)
