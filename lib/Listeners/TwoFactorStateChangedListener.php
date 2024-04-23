@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Listeners;
 
-use Exception;
 use OCA\EcloudAccounts\Db\TwoFactorMapper;
 use OCA\EcloudAccounts\Service\SSOService;
 use OCA\TwoFactorTOTP\Event\StateChanged;
@@ -37,19 +36,15 @@ class TwoFactorStateChangedListener implements IEventListener {
 
 		$user = $event->getUser();
 		$username = $user->getUID();
-		try {
-			// When state change event is fired by user disabling 2FA, delete existing 2FA credentials and return
-			// i.e. disable 2FA for user at SSO
-			if (!$event->isEnabled()) {
-				$this->ssoService->deleteCredentials($username);
-				return;
-			}
-
-			$secret = $this->twoFactorMapper->getSecret($username);
-			$this->ssoService->migrateCredential($username, $secret);
-		} catch (Exception $e) {
-			$stateText = $event->isEnabled() ? 'new secret enabled' : 'disabled';
-			$this->logger->error('Error updating secret state(' . $stateText  .') for user: ' . $username . ': ' . $e->getMessage());
+		// When state change event is fired by user disabling 2FA, delete existing 2FA credentials and return
+		// i.e. disable 2FA for user at SSO
+		if (!$event->isEnabled()) {
+			$this->ssoService->deleteCredentials($username);
+			return;
 		}
+
+		$secret = $this->twoFactorMapper->getSecret($username);
+		$this->ssoService->migrateCredential($username, $secret);
+
 	}
 }
