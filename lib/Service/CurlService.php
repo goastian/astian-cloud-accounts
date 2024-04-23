@@ -46,6 +46,10 @@ class CurlService {
 		return $this->request('DELETE', $url, $params, $headers, $userOptions);
 	}
 
+	public function put($url, $params = [], $headers = [], $userOptions = []) {
+		return $this->request('PUT', $url, $params, $headers, $userOptions);
+	}
+
 	/**
 	 * @return int
 	 */
@@ -54,6 +58,24 @@ class CurlService {
 		return $this->lastStatusCode;
 	}
 
+	private function buildPostData($params = [], $headers = []) {
+		$jsonContent = in_array('Content-Type: application/json', $headers);
+		if ($jsonContent) {
+			$params = json_encode($params);
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				throw new Exception('JSON encoding failed: ' . json_last_error_msg());
+			}
+			return $params;
+		}
+		
+		$formContent = in_array('Content-Type: application/x-www-form-urlencoded', $headers);
+		if ($formContent) {
+			$params = http_build_query($params);
+			return $params;
+		}
+
+		return $params;
+	}
 
 	/**
 	 * Curl run request
@@ -73,7 +95,7 @@ class CurlService {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER => $headers
 		);
-		array_merge($options, $userOptions);
+		$options = array_merge($options, $userOptions);
 		switch ($method) {
 			case 'GET':
 				if ($params) {
@@ -82,14 +104,7 @@ class CurlService {
 				break;
 			case 'POST':
 				$options[CURLOPT_POST] = true;
-				$jsonContent = in_array('Content-Type: application/json', $headers);
-				if ($jsonContent) {
-					$params = json_encode($params);
-					if (json_last_error() !== JSON_ERROR_NONE) {
-						throw new Exception('JSON encoding failed: ' . json_last_error_msg());
-					}
-				}
-				$options[CURLOPT_POSTFIELDS] = $params;
+				$options[CURLOPT_POSTFIELDS] = $this->buildPostData($params, $headers);
 				break;
 			case 'DELETE':
 				$options[CURLOPT_CUSTOMREQUEST] = "DELETE";
@@ -97,8 +112,12 @@ class CurlService {
 					$url = $url . '?' . http_build_query($params);
 				}
 				break;
+			case 'PUT':
+				$options[CURLOPT_CUSTOMREQUEST] = "PUT";
+				$options[CURLOPT_POSTFIELDS] = $this->buildPostData($params, $headers);
+				break;
 			default:
-				throw new Exception('Unsuported method.');
+				throw new Exception('Unsupported method.');
 				break;
 		}
 		$options[CURLOPT_URL] = $url;
