@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
-use OCA\EcloudAccounts\Db\SSOMapper;
 use OCA\EcloudAccounts\Db\TwoFactorMapper;
+use OCA\EcloudAccounts\Service\SSOService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Migrate2FASecrets extends Command {
-	private SSOMapper $ssoMapper;
+	private SSOService $ssoService;
 	private TwoFactorMapper $twoFactorMapper;
 	private OutputInterface $commandOutput;
 
-	public function __construct(SSOMapper $ssoMapper, TwoFactorMapper $twoFactorMapper) {
-		$this->ssoMapper = $ssoMapper;
+	public function __construct(SSOService $ssoService, TwoFactorMapper $twoFactorMapper) {
+		$this->ssoService = $ssoService;
 		$this->twoFactorMapper = $twoFactorMapper;
 		parent::__construct();
 	}
@@ -60,7 +60,7 @@ class Migrate2FASecrets extends Command {
 		$entries = $this->twoFactorMapper->getEntries($usernames);
 		foreach ($entries as $entry) {
 			try {
-				$this->ssoMapper->migrateCredential($entry['username'], $entry['secret']);
+				$this->ssoService->migrateCredential($entry['username'], $entry['secret']);
 			} catch (\Exception $e) {
 				$this->commandOutput->writeln('Error inserting entry for user ' . $entry['username'] . ' message: ' . $e->getMessage());
 				continue;
