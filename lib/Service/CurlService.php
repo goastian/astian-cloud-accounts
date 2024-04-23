@@ -44,6 +44,36 @@ class CurlService {
 		return $this->request('DELETE', $url, $params, $headers, $userOptions);
 	}
 
+	public function put($url, $params = [], $headers = [], $userOptions = []) {
+		return $this->request('PUT', $url, $params, $headers, $userOptions);
+	}
+
+	/**
+	 * @return int
+	 */
+
+	public function getLastStatusCode() : int {
+		return $this->lastStatusCode;
+	}
+
+	private function buildPostData($params = [], $headers = []) {
+		$jsonContent = in_array('Content-Type: application/json', $headers);
+		if ($jsonContent) {
+			$params = json_encode($params);
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				throw new Exception('JSON encoding failed: ' . json_last_error_msg());
+			}
+			return $params;
+		}
+		
+		$formContent = in_array('Content-Type: application/x-www-form-urlencoded', $headers);
+		if ($formContent) {
+			$params = http_build_query($params);
+			return $params;
+		}
+
+		return $params;
+	}
 
 	/**
 	 * Curl run request
@@ -74,7 +104,7 @@ class CurlService {
 				break;
 			case 'POST':
 				$options[CURLOPT_POST] = true;
-				$options[CURLOPT_POSTFIELDS] = $params;
+				$options[CURLOPT_POSTFIELDS] = $this->buildPostData($params, $headers);
 				break;
 			case 'DELETE':
 				$options[CURLOPT_CUSTOMREQUEST] = "DELETE";
