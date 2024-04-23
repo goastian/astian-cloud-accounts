@@ -163,7 +163,7 @@ class SSOService {
 		$this->logger->debug('getAdminAccessToken calling SSO API with url: '. $adminAccessTokenRoute . ' and headers: ' . print_r($headers, true) . ' and body: ' . print_r($requestBody, true));
 		$response = $this->curl->post($adminAccessTokenRoute, $requestBody, $headers);
 
-		if (!$this->curl->getLastStatusCode() === 200) {
+		if ($this->curl->getLastStatusCode() !== 200) {
 			$statusCode = strval($this->curl->getLastStatusCode());
 			throw new SSOAdminAccessTokenException('Error getting Admin Access token. Status Code: ' . $statusCode);
 		}
