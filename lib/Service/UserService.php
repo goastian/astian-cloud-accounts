@@ -8,6 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
 use OCP\IConfig;
@@ -126,6 +127,7 @@ class UserService {
 			$this->config->setUserValue($uid, 'hide-my-email', 'email-aliases', $aliases);
 			return true;
 		} catch (UnexpectedValueException $e) {
+			$this->logger->error("Error adding HME alias '$alias' to config for user with UID: $uid. Error: " . $e->getMessage());
 			return false;
 		}
 	}
@@ -240,20 +242,19 @@ class UserService {
 	 * @param string $userEmail The email address of the user.
 	 * @param string $password The password chosen by the user.
 	 *
-	 * @return array An array containing information about the registered user.
+	 * @return void
 	 * @throws Exception If the username or recovery email is already taken.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): array {
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void {
 		
 		if ($this->userExists($username)) {
-			throw new Exception("Username is already taken.");
+			throw new Exception("Username '$username' is already taken.");
 		}
 		if (!empty($recoveryEmail)) {
 			$this->validateRecoveryEmail($recoveryEmail);
 		}
-		return $this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
-		
+		$this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
 	}
 	/**
 	 * Validates the recovery email address.
@@ -282,21 +283,23 @@ class UserService {
 	 * @param string $userEmail The email address of the new user.
 	 * @param string $password The password of the new user.
 	 *
-	 * @return array Information about the added user.
+	 * @return void
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	private function addNewUserToLDAP(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): ?array {
+	private function addNewUserToLDAP(string $displayName, string $recoveryEmail, string $username, string $userEmail, string $password): void {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		
 		$newUserDN = "username=$username," . $base;
-		$quota = $this->LDAPConnectionService->getLdapQuota() * 1024 * 1024;
+		
+		$quota = $this->getDefaultQuota() * 1024 * 1024;
+		
 		$newUserEntry = [
 			'mailAddress' => $userEmail,
 			'username' => $username,
 			'usernameWithoutDomain' => $username,
 			'userPassword' => $password,
-			'displayName' => $displayname,
+			'displayName' => $displayName,
 			'quota' => $quota,
 			'recoveryMailAddress' => $recoveryEmail,
 			'active' => 'TRUE',
@@ -304,13 +307,12 @@ class UserService {
 			'userClusterID' => $this->apiConfig['userCluserId'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
-
+		
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
 		
 		if (!$ret) {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
-		return $newUserEntry;
 	}
 	/**
 	 * Check if a recovery email address is available (not already taken by another user).
@@ -394,8 +396,10 @@ class UserService {
 		if($hmeAlias != '') {
 			$hmeAliasAdded = $this->addHMEAliasInConfig($username, $hmeAlias);
 			if (!$hmeAliasAdded) {
-				$this->logger->error('Error adding HME Alias in config.');
+				$this->logger->error("Failed to add HME Alias '$hmeAlias' for username '$username' in config.");
 			}
+		} else {
+			$this->logger->error("Failed to create HME Alias for username '$username'. Response: " . json_encode($result));
 		}
 	}
 	/**
@@ -426,6 +430,9 @@ class UserService {
 		
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
+		if ($this->curl->getLastStatusCode() !== 200) {
+			$this->logger->error("Failed to create new domain alias '$username' for email '$userEmail'.");
+		}
 		return $result;
 	}
 	/**
@@ -437,16 +444,14 @@ class UserService {
 	 *
 	 * @return void
 	 */
-	public function setAccountDataLocally(string $uid, string $mailAddress, string $quota): void {
+	public function setAccountDataLocally(string $uid, string $mailAddress): void {
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
-			$this->logger->error('User not found');
-			return;
+			throw new Exception("User with username '$uid' not found.");
 		}
-		
 		// Set the email address for the user
 		$user->setEMailAddress($mailAddress);
-		
+		$quota = $this->getDefaultQuota();
 		// Format and set the quota for the user (in megabytes)
 		$quota = strval($quota) . ' MB';
 		$user->setQuota($quota);
@@ -477,10 +482,19 @@ class UserService {
 		if ($statusCode === 200) {
 			return true;
 		}
-
-		throw new Exception("Error checking if username is taken at common source, status code: " . (string) $statusCode);
+		throw new Exception("Error checking if username '$username' is taken at common source, status code: " . (string) $statusCode);
 	}
-
+	/**
+	 * Adds a username to the common data store.
+	 *
+	 * This method sends a POST request to the common data store API endpoint to add a username.
+	 * If the operation is successful, the username will be added to the data store.
+	 * If the operation fails, an exception will be thrown.
+	 *
+	 * @param string $username The username to add to the common data store.
+	 *
+	 * @throws AddUsernameToCommonStoreException If an error occurs while adding the username to the common data store.
+	 */
 	public function addUsernameToCommonDataStore(string $username) : void {
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
@@ -503,7 +517,10 @@ class UserService {
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			throw new Exception('Error adding username ' . $username . ' to common data store');
+			throw new AddUsernameToCommonStoreException("Error adding username '$username' to common data store.");
 		}
+	}
+	private function getDefaultQuota() {
+		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 }

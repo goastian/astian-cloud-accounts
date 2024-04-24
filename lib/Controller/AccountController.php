@@ -8,6 +8,8 @@ namespace OCA\EcloudAccounts\Controller;
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
@@ -137,10 +139,10 @@ class AccountController extends Controller {
 		try {
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
-			$newUserEntry = $this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
+			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
 			sleep(2);
 
-			$this->userService->setAccountDataLocally($username, $userEmail, $newUserEntry['quota']);
+			$this->userService->setAccountDataLocally($username, $userEmail);
 			$this->userService->createHMEAlias($username, $userEmail);
 			$this->userService->createNewDomainAlias($username, $userEmail);
 			$this->userService->setTOS($username, true);
@@ -156,11 +158,7 @@ class AccountController extends Controller {
 			$this->session->remove(self::SESSION_USERNAME_CHECK);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 
-			try {
-				$this->userService->addUsernameToCommonDataStore($username);
-			} catch (Exception $e) {
-				$this->logger->logException($e, ['app' => Application::APP_ID]);
-			}
+			$this->userService->addUsernameToCommonDataStore($username);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
@@ -168,8 +166,13 @@ class AccountController extends Controller {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
+		} catch (AddUsernameToCommonStoreException $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setStatus(200);
+			$response->setData(['success' => true]);
 		} catch (Exception $e) {
-			$response->setData(['message' => $e->getMessage(), 'success' => false]);
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => 'An error occurred while creating your account!', 'success' => false]);
 			$response->setStatus(500);
 		}
 
