@@ -42,7 +42,10 @@ class AccessTokenUpdatedListener implements IEventListener {
 		if (!$accessToken) {
 			return;
 		}
+		$sUID = $event->getUser()->getUID();
+		$this->session->set('snappymail-nc-uid', $sUID);
 		\OC::$server->getLogger()->error($accessToken);
+		\OC::$server->getLogger()->error("snappymail-nc-uid:".$sUID);
 
 		$username = $this->userSession->getUser()->getUID();
 		\OC::$server->getLogger()->error($username);
@@ -53,7 +56,6 @@ class AccessTokenUpdatedListener implements IEventListener {
 		$this->session->set('snappymail-nc-uid', $username);
 		$this->session->set('snappymail-passphrase', SnappyMailHelper::encodePassword($accessToken, $username));
 		$this->session->set('oidc_access_token', $accessToken);
-		$this->session->set('is_oidc', 1);
 		$this->session->set('snappymail-password', SnappyMailHelper::encodePassword($accessToken, $username));
 	}
 }
