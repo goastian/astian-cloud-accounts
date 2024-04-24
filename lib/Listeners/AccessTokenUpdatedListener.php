@@ -42,13 +42,9 @@ class AccessTokenUpdatedListener implements IEventListener {
 		if (!$accessToken) {
 			return;
 		}
-		$sUID = $event->getUser()->getUID();
-		$this->session->set('snappymail-nc-uid', $sUID);
-		\OC::$server->getLogger()->error($accessToken);
-		\OC::$server->getLogger()->error("snappymail-nc-uid:".$sUID);
 
 		$username = $this->userSession->getUser()->getUID();
-		\OC::$server->getLogger()->error($username);
+		\OC::$server->getLogger()->error("ecloudaccounts-username".$username);
 		
 		//\OC::$server->getSession()['snappymail-nc-uid'] = $username;
 		//OC::$server->getSession()['snappymail-passphrase'] = SnappyMailHelper::encodePassword($accessToken, $username);
