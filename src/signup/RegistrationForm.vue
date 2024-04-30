@@ -105,7 +105,7 @@
 			<div id="fields-accepttns" class="fields">
 				<div class="field">
 					<div class="control">
-						<span class="action-checkbox">
+						<span class="action-checkbox required">
 							<input id="action-tns"
 								v-model="formData.accepttns"
 								type="checkbox"
@@ -128,7 +128,7 @@
 								v-model="formData.newsletterEos"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-newsletter_eos" class="action-checkbox__label">{{ t(appName,'I want to receive news about /e/OS') }}</label>
+							<label for="action-newsletter_eos" class="action-checkbox__label">{{ t(appName,'I want to receive news about /e/OS.') }}</label>
 						</span>
 					</div>
 				</div>
@@ -142,7 +142,7 @@
 								v-model="formData.newsletterProduct"
 								type="checkbox"
 								class="checkbox action-checkbox__checkbox focusable">
-							<label for="action-newsletter_product" class="action-checkbox__label">{{ t(appName,'I want to receive news about Murena products and promotions') }}</label>
+							<label for="action-newsletter_product" class="action-checkbox__label">{{ t(appName,'I want to receive news about Murena products and promotions.') }}</label>
 						</span>
 					</div>
 				</div>
@@ -354,9 +354,9 @@ export default {
 }
 #registrationForm .fields input,
 #registrationForm .fields input[type="password"] {
-	background-color: var(--input-background-color);
+	background-color: #ffffff;
 	margin-bottom: 0;
-	color: var(--color-main-text);
+	color: #000000;
 	display: block;
 	font-size: 16px;
 	line-height: 1.3em;
@@ -493,6 +493,11 @@ p.validation-success:before {
 }
 .pad-left-5{
 	padding-left: 5px;
+}
+span.action-checkbox.required:after {
+    content: "*";
+    font-size: large;
+    color: red;
 }
 /** mobile font sizes **/
 @media screen and (max-width: 650px) {
