@@ -166,9 +166,9 @@ export default {
 	margin-bottom: 10px;
 }
 #captchaForm #fields input {
-	background-color: var(--input-background-color);
+	background-color: #ffffff;
 	margin-bottom: 0;
-	color: var(--color-main-text);
+	color: #000000;
 	display: block;
 	width: 100%;
 	font-size: 16px;
