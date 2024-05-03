@@ -49,3 +49,10 @@ html {
 #fields-password .Password__strength-meter {
 	margin-bottom: 0;
 }
+.Password__strength-meter:before {
+	left: 50px;
+}
+
+.Password__strength-meter:after {
+	right: 50px;
+}
