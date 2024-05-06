@@ -14,6 +14,8 @@ namespace OCA\EcloudAccounts\Service;
 use Exception;
 
 class CurlService {
+
+	private int $lastStatusCode = 0;
 	/**
 	 * GET alias for request method
 	 *
@@ -126,8 +128,10 @@ class CurlService {
 
 		$response = curl_exec($ch);
 
+		$this->lastStatusCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
+
 		if ($errno = curl_errno($ch)) {
-			var_dump($errno);
 			$errorMessage = curl_strerror($errno);
 			throw new Exception("Curl error $errno - $errorMessage");
 		}
