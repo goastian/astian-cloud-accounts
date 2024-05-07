@@ -50,9 +50,11 @@ html {
 	margin-bottom: 0;
 }
 #fields-password .Password__strength-meter:before {
-	left: 50px;
+	left: 0;
 }
-
 #fields-password .Password__strength-meter:after {
-	right: 50px;
+	right: 0;
+}
+.Password__strength-meter:after, .Password__strength-meter:before{
+	width: 100%;
 }
