@@ -55,6 +55,6 @@ html {
 #fields-password .Password__strength-meter:after {
 	right: 0;
 }
-.Password__strength-meter:after, .Password__strength-meter:before{
+#fields-password .Password__strength-meter:after, #fields-password .Password__strength-meter:before{
 	width: 100%;
 }
