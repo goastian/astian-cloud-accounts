@@ -70,7 +70,7 @@ class Application extends App implements IBootstrap {
 		$userSession = $serverContainer->get(IUserSession::class);
 		$session = $serverContainer->get(ISession::class);
 		$tokenService = $serverContainer->get(TokenService::class);
-		$accessTokenExpiresAt = $this->session->get('oidc_access_token_expires_at');
+		$accessTokenExpiresAt = $session->get('oidc_access_token_expires_at');
 		$now = time();
 		if ($now > $accessTokenExpiresAt) {
 			$tokenService->refreshTokens();
