@@ -40,6 +40,9 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
+use OCP\ISession;
+use OCP\IUserSession;
+use OCA\OIDCLogin\Service\TokenService;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -63,5 +66,15 @@ class Application extends App implements IBootstrap {
 				$c->get(IUserManager::class)
 			);
 		});
+
+		$userSession = $serverContainer->get(IUserSession::class);
+        $session = $serverContainer->get(ISession::class);
+		$tokenService = $serverContainer->get(TokenService::class);
+		$accessTokenExpiresAt = $this->session->get('oidc_access_token_expires_at');
+		$now = time();
+		if ($now > $accessTokenExpiresAt) {
+			$tokenService->refreshTokens();
+		}	
+
 	}
 }
