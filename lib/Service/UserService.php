@@ -273,6 +273,28 @@ class UserService {
 		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
 			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
 		}
+		if ($this->isBlacklistedEmail($recoveryEmail)) {
+			throw new Exception('Recovery email is blacklisted.');
+		}
+	}
+	/**
+	 * Check if an email domain is blacklisted against a JSON list of disposable email domains.
+	 *
+	 * @param string $email The email address to check.
+	 * @return bool True if the email domain is blacklisted, false otherwise.
+	 */
+	public function isBlacklistedEmail(string $email): bool {
+		// Fetch the JSON data from the URL
+		$json_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
+		$json_data = file_get_contents($json_url);
+		
+		$blacklisted_domains = json_decode($json_data, true);
+		
+		$email_domain = strtolower(substr(strrchr($email, "@"), 1));
+		if (in_array($email_domain, $blacklisted_domains)) {
+			return true; // Email domain is blacklisted
+		}
+		return false; // Email domain is not blacklisted
 	}
 	/**
 	 * Add a new user to the LDAP directory.
