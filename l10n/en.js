@@ -88,6 +88,7 @@ OC.L10N.register(
 		"You cannot set an email address with a Murena domain as recovery email address.": "You cannot set an email address with a Murena domain as recovery email address.",
 		"Captcha is not verified!": "Captcha is not verified!",
 		"A server-side error occurred while processing your request! Please try again later.": "A server-side error occurred while processing your request! Please try again later.",
-		"An error occurred while creating your account!": "An error occurred while creating your account!"
+		"An error occurred while creating your account!": "An error occurred while creating your account!",
+		"The entered recovery email domain is blacklisted. Please try another.": "The entered recovery email domain is blacklisted. Please try another."
 	},
 	"nplurals=2; plural=(n != 1);");
