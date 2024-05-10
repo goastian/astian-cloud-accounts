@@ -257,7 +257,9 @@ class AccountController extends Controller {
 		$response = new DataResponse();
 		$captchaToken = getenv('BYPASS_CAPTCHA_TOKEN');
 		if($captchaInput === $captchaToken) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
+			$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 			return $response;
 		}
 
