@@ -260,11 +260,12 @@ class AccountController extends Controller {
 		// Initialize the default status to 400 (Bad Request)
 		$response->setStatus(400);
 		// Check if the input matches the bypass token or the stored captcha result
-		if ($captchaInput === $captchaToken || $captchaInput === $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '')) {
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
+		if ($captchaInput === $captchaToken || $captchaInput === $captchaResult) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
-		
+
 		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 		return $response;
 	}
