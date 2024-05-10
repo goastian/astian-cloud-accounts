@@ -255,8 +255,8 @@ class AccountController extends Controller {
 	 */
 	public function verifyCaptcha(string $captchaInput = '') : DataResponse {
 		$response = new DataResponse();
-		$captchToken = getenv('BYPASS_CAPTCHA_TOKEN');
-		if($captchInput === $captchToken) {
+		$captchaToken = getenv('BYPASS_CAPTCHA_TOKEN');
+		if($captchaInput === $captchaToken) {
 			$response->setStatus(200);
 			return $response;
 		}
