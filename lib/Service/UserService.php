@@ -9,6 +9,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
 use OCP\IConfig;
@@ -274,7 +275,7 @@ class UserService {
 			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
 		}
 		if ($this->isBlacklistedEmail($recoveryEmail)) {
-			throw new Exception('Recovery email is blacklisted.');
+			throw new BlacklistedEmailException('Recovery email is blacklisted.');
 		}
 	}
 	/**
