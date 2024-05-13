@@ -68,6 +68,7 @@ export default {
 				isCaptchaInputNotMatched: false,
 			},
 			captchaImageUrl: generateUrl(`/apps/${APPLICATION_NAME}/accounts/captcha`),
+			bypassToken: null,
 		}
 	},
 	computed: {
@@ -80,6 +81,9 @@ export default {
 			},
 		},
 	},
+	created() {
+        this.bypassToken = this.$route.query.bypassToken;
+    },
 	methods: {
 		async checkAnswer() {
 			this.validation.isCaptchaInputNotMatched = false
