@@ -92,6 +92,9 @@ export default {
 				const data = {
 					captchaInput: this.formData.captchaInput,
 				}
+				if (this.bypassToken === 1) {
+					data.bypassToken = this.bypassToken
+				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				await Axios.post(url, data)
 				const isFormValid = true
