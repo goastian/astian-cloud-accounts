@@ -25,7 +25,8 @@
 		"@nextcloud/router": "^2.0.0",
 		"@nextcloud/vue": "^5.4.0",
 		"vue": "^2.7.0",
-		"vue-password-strength-meter": "^1.7.2"
+		"vue-password-strength-meter": "^1.7.2",
+		"vue-router": "^3.6.5"
 	},
 	"browserslist": [
 		"extends @nextcloud/browserslist-config"
