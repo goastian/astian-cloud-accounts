@@ -253,7 +253,7 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $captchaInput = '',int $bypassToken = 0) : DataResponse {
+	public function verifyCaptcha(string $captchaInput = '', int $bypassToken = 0) : DataResponse {
 		$response = new DataResponse();
 		$captchaToken = $this->config->getSystemValue('BYPASS_CAPTCHA_TOKEN', '');
 		// Initialize the default status to 400 (Bad Request)

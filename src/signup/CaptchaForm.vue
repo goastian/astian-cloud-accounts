@@ -82,8 +82,8 @@ export default {
 		},
 	},
 	created() {
-        this.bypassToken = this.$route.query.bypassToken;
-    },
+		this.bypassToken = this.$route.query.bypassToken
+	},
 	methods: {
 		async checkAnswer() {
 			this.validation.isCaptchaInputNotMatched = false
