@@ -59,6 +59,10 @@ const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
 		value: Object,
+		bypassToken: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -68,7 +72,6 @@ export default {
 				isCaptchaInputNotMatched: false,
 			},
 			captchaImageUrl: generateUrl(`/apps/${APPLICATION_NAME}/accounts/captcha`),
-			bypassToken: null,
 		}
 	},
 	computed: {
@@ -81,9 +84,6 @@ export default {
 			},
 		},
 	},
-	created() {
-		this.bypassToken = this.$route.query.bypassToken
-	},
 	methods: {
 		async checkAnswer() {
 			this.validation.isCaptchaInputNotMatched = false
@@ -95,9 +95,8 @@ export default {
 				/* eslint-disable */
 				console.log(this.bypassToken)
 				if (this.bypassToken === 1) {
-					console.log("here")
+					console.log()
 					data.bypassToken = this.bypassToken
-					console.log("done")
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				await Axios.post(url, data)

@@ -3,7 +3,10 @@
 		<section id="main" class="register-page">
 			<div id="registration">
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
-				<CaptchaForm v-if="showCaptchaForm" v-model="formData" @form-submitted="submitCaptchaForm" />
+				<CaptchaForm v-if="showCaptchaForm"
+					v-model="formData"
+					:bypass-token="bypassToken"
+					@form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" v-model="formData" />
 			</div>
@@ -49,6 +52,7 @@ export default {
 			showCaptchaForm: false,
 			showRecoveryEmailForm: false,
 			showSuccessSection: false,
+			bypassToken: null,
 		}
 	},
 	mounted() {
@@ -58,6 +62,7 @@ export default {
 
 		// Set formData.email directly to recoveryEmail
 		this.formData.email = recoveryEmail || ''
+		this.bypassToken = this.$route.query.bypassToken
 	},
 	methods: {
 		submitRegistrationForm(data) {
