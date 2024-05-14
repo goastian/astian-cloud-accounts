@@ -94,8 +94,8 @@ export default {
 				}
 				/* eslint-disable */
 				console.log(this.bypassToken)
-				if (this.bypassToken === 1) {
-					console.log()
+				if (this.bypassToken === '1') {
+					console.log("by pass set")
 					data.bypassToken = this.bypassToken
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
