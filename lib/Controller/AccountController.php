@@ -253,14 +253,14 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $captchaInput = '', int $bypassToken = 0) : DataResponse {
+	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = '') : DataResponse {
 		$response = new DataResponse();
 		$captchaToken = $this->config->getSystemValue('BYPASS_CAPTCHA_TOKEN', '');
 		// Initialize the default status to 400 (Bad Request)
 		$response->setStatus(400);
 		// Check if the input matches the bypass token or the stored captcha result
 		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
-		if (($bypassToken === 1 && !empty($captchaToken) && $captchaInput === $captchaToken) || $captchaInput === $captchaResult) {
+		if (($bypassToken === "1" && !empty($captchaToken) && $captchaInput === $captchaToken) || $captchaInput === $captchaResult) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
