@@ -260,7 +260,7 @@ class AccountController extends Controller {
 		$response->setStatus(400);
 		// Check if the input matches the bypass token or the stored captcha result
 		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
-		if (($bypassToken === "1" && !empty($captchaToken) && $captchaInput === $captchaToken) || $captchaInput === $captchaResult) {
+		if (($bypassToken === $captchaToken && !empty($captchaToken)) || $captchaInput === $captchaResult) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
