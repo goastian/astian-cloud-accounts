@@ -79,9 +79,6 @@ export default {
 				this.$emit('input', formData)
 			},
 		},
-		bypassToken() {
-			return this.$route.query.bypassToken || null
-		},
 	},
 	methods: {
 		async checkAnswer() {
@@ -90,7 +87,7 @@ export default {
 			try {
 				const data = {
 					captchaInput: this.formData.captchaInput,
-					bypassToken: this.bypassToken,
+					bypassToken: this.$route.query.bypassToken || null,
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				await Axios.post(url, data)
