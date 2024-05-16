@@ -20,23 +20,6 @@ class BlacklistedDomainMapper {
 	public function updateBlacklistedDomains() {
 		$json_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 		$json_data = file_get_contents($json_url);
-		
 		$this->config->setAppValue('core', 'blacklisted_domains', $json_data);
-
-		$blacklisted_domains = json_decode($json_data, true);
-		try {
-			$dbTablePrefix = $this->config->getSystemValue('dbtableprefix', '');
-			$params = [];
-			$blacklistedDomainTable = $dbTablePrefix . 'blacklisted_domains';
-			$query = 'INSERT INTO ' . $blacklistedDomainTable . ' (domain) VALUES (?)';
-
-			foreach ($blacklisted_domains as $domain) {
-				$params[] = $domain;
-				$this->db->executeQuery($query, $params);
-			}
-			
-		} catch (Exception $e) {
-			$this->logger->error('Error updating mailbox usage! ' . $e->getMessage());
-		}
 	}
 }
