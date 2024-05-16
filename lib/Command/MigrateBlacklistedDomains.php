@@ -7,6 +7,7 @@ namespace OCA\EcloudAccounts\Command;
 use OCA\EcloudAccounts\Db\BlacklistedDomainMapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateBlacklistedDomains extends Command {
@@ -26,9 +27,10 @@ class MigrateBlacklistedDomains extends Command {
 	}
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		try {
-			$this->commandOutput = $output;
 			$this->migrateBlacklistedDomains();
+			return 0;
 		} catch (\Exception $e) {
+			return 1;
 		}
 	}
 	/**
@@ -38,6 +40,5 @@ class MigrateBlacklistedDomains extends Command {
 	 */
 	private function migrateBlacklistedDomains() : void {
 		$this->blacklistedDomainMapper->updateBlacklistedDomains();
-		$this->commandOutput->writeln('Migrated blacklisted domains successfully.');
 	}
 }
