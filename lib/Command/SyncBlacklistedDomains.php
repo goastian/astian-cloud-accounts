@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MigrateBlacklistedDomains extends Command {
+class SyncBlacklistedDomains extends Command {
 	private OutputInterface $commandOutput;
 	private BlacklistedDomainMapper $blacklistedDomainMapper;
 
@@ -20,8 +20,8 @@ class MigrateBlacklistedDomains extends Command {
 
 	protected function configure(): void {
 		$this
-			->setName('ecloud-accounts:migrate-blacklisted-domains')
-			->setDescription('Migrates blacklisted domains');
+			->setName('ecloud-accounts:sync-blacklisted-domains')
+			->setDescription('Sync blacklisted domains');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
