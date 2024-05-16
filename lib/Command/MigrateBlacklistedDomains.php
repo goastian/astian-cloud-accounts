@@ -25,14 +25,7 @@ class MigrateBlacklistedDomains extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		try {
-			$this->commandOutput = $output;
-			$this->migrateBlacklistedDomains();
-			return 0;
-		} catch (\Exception $e) {
-			$this->commandOutput->writeln($e->getMessage());
-			return 1;
-		}
+		$this->migrateBlacklistedDomains();
 	}
 
 	/**
