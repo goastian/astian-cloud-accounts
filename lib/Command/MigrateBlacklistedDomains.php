@@ -21,7 +21,14 @@ class MigrateBlacklistedDomains extends Command {
 	protected function configure(): void {
 		$this
 			->setName('ecloud-accounts:migrate-blacklisted-domains')
-			->setDescription('Migrates 2FA secrets to SSO database');
+			->setDescription('Migrates 2FA secrets to SSO database')
+			->addOption(
+				'users',
+				null,
+				InputOption::VALUE_OPTIONAL,
+				'comma separated list of users',
+				''
+			);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
