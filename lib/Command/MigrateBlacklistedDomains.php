@@ -18,7 +18,7 @@ class MigrateBlacklistedDomains extends Command {
 
 	protected function configure(): void {
 		$this
-			->setName('ecloud-accounts:blacklisted-domains')
+			->setName('ecloud-accounts:migrate-blacklisted-domains')
 			->setDescription('Migrate blacklisted domains to db table.');
 	}
 	protected function execute(): int {
