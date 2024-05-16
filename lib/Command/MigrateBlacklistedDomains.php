@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
-use Symfony\Component\Console\Command\Command;
 use OCA\EcloudAccounts\Db\BlacklistedDomainMapper;
+use Symfony\Component\Console\Command\Command;
 
 class MigrateWebmailAddressbooks extends Command {
 
@@ -30,7 +30,7 @@ class MigrateWebmailAddressbooks extends Command {
 		}
 	}
 	/**
-	 * Migrate 
+	 * Migrate
 	 *
 	 * @return void
 	 */
