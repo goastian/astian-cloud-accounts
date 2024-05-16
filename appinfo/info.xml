@@ -29,4 +29,7 @@
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
     </commands>
+    <background-jobs>
+		<job>OCA\EcloudAccounts\BackgroundJob\WeeklyBlacklistedDomainsJob</job>
+	</background-jobs>
 </info>
