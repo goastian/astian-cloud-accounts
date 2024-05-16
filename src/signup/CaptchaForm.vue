@@ -85,8 +85,11 @@ export default {
 			this.validation.isCaptchaInputNotMatched = false
 
 			try {
+				const urlParams = new URLSearchParams(window.location.search)
+				const bypassToken = urlParams.get('bypassToken')
 				const data = {
 					captchaInput: this.formData.captchaInput,
+					bypassToken: bypassToken || null,
 				}
 				const url = generateUrl(`/apps/${this.appName}/accounts/verify_captcha`)
 				await Axios.post(url, data)
