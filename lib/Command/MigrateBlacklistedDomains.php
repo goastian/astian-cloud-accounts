@@ -7,7 +7,7 @@ namespace OCA\EcloudAccounts\Command;
 use OCA\EcloudAccounts\Db\BlacklistedDomainMapper;
 use Symfony\Component\Console\Command\Command;
 
-class MigrateWebmailAddressbooks extends Command {
+class MigrateBlacklistedDomains extends Command {
 
 	private BlacklistedDomainMapper $blacklistedDomainMapper;
 
