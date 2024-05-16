@@ -89,8 +89,8 @@ export default {
 					captchaInput: this.formData.captchaInput,
 					bypassToken: this.$route.query.bypassToken || null,
 				}
-				const urlParams = new URLSearchParams(window.location.search);
-				const myParam = urlParams.get('bypassToken');
+				const urlParams = new URLSearchParams(window.location.search)
+				const myParam = urlParams.get('bypassToken')
 				/* eslint-disable no-console */
 				console.log("here is the value of bypassToken")
 				console.log(myParam)
