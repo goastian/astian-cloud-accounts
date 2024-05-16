@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
+use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,12 +19,12 @@ class MigrateBlacklistedDomains extends Command {
 	}
 
 	protected function configure() {
-		$this->setName('ecloud-accounts:migrate-blacklisted-domains')->setDescription('Migrate blacklisted domains');
+		$this->setName(Application::APP_ID.':migrate-blacklisted-domains')->setDescription('Migrate blacklisted domains');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->userService->updateBlacklistedDomains();
-		$output->writeln('Domains migrated successfully.');
+		$output->writeln('Updated blacklisted domains for creation.');
 		return 1;
 	}
 }

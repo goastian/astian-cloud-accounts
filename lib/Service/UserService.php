@@ -285,12 +285,18 @@ class UserService {
 	 * @return bool True if the email domain is blacklisted, false otherwise.
 	 */
 	public function isBlacklistedEmail(string $email): bool {
+		// Get the blacklisted domains from configuration
+		$blacklistedDomainsInJson = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
+		$blacklistedDomains = json_decode($blacklistedDomainsInJson, true);
 		
-		$json_data = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
-		$blacklisted_domains = json_decode($json_data, true);
+		// Split the email address into parts using explode
+		$emailParts = explode('@', $email);
 		
-		$email_domain = strtolower(substr(strrchr($email, "@"), 1));
-		if (in_array($email_domain, $blacklisted_domains)) {
+		// Extract the domain part
+		$emailDomain = strtolower(end($emailParts));
+		
+		// Check if the email domain is in the blacklisted domains array
+		if (in_array($emailDomain, $blacklistedDomains)) {
 			return true; // Email domain is blacklisted
 		}
 		return false; // Email domain is not blacklisted

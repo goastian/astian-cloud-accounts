@@ -13,12 +13,11 @@ class WeeklyBlacklistedDomainsJob extends TimedJob {
 	private LoggerInterface $logger;
 	private UserService $userService;
 	private ITimeFactory $timeFactory;
-
-
+	public const INTERVAL_PERIOD = 7 * 24 * 60 * 60;// Run for 7 days
 	public function __construct(LoggerInterface $logger, ITimeFactory $timeFactory, UserService $userService) {
 		parent::__construct($timeFactory);
 
-		$this->setInterval(7 * 24 * 60 * 60); // Run for 7 days
+		$this->setInterval(self::INTERVAL_PERIOD);
 		$this->timeFactory = $timeFactory;
 		$this->userService = $userService;
 		$this->logger = $logger;
@@ -28,7 +27,7 @@ class WeeklyBlacklistedDomainsJob extends TimedJob {
 		try {
 			$this->userService->updateBlacklistedDomains();
 		} catch (\Exception $e) {
-			$this->logger->error('Error running blacklisted domain migration', ['exception' => $e]);
+			$this->logger->logException('Error updating blacklisted domains for account creation', ['exception' => $e]);
 			return;
 		}
 	}
