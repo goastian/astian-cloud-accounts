@@ -21,7 +21,7 @@ class MigrateBlacklistedDomains extends Command {
 	protected function configure(): void {
 		$this
 			->setName('ecloud-accounts:migrate-blacklisted-domains')
-			->setDescription('Migrates 2FA secrets to SSO database')
+			->setDescription('Migrates blacklisted domains')
 			->addOption(
 				'users',
 				null,
@@ -32,19 +32,6 @@ class MigrateBlacklistedDomains extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->migrateBlacklistedDomains();
-	}
-
-	/**
-	 * Migrate user secrets to the SSO database
-	 *
-	 * @return void
-	 */
-	private function migrateBlacklistedDomains() : void {
-		try {
-			$this->blacklistedDomainMapper->updateBlacklistedDomains();
-		} catch (\Exception $e) {
-			$this->commandOutput->writeln('Error migrating domains. message: ' . $e->getMessage());
-		}
+		$this->blacklistedDomainMapper->updateBlacklistedDomains();
 	}
 }
