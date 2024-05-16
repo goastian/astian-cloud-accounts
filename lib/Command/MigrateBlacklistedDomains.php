@@ -10,9 +10,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateBlacklistedDomains extends Command {
-
-	private BlacklistedDomainMapper $blacklistedDomainMapper;
 	private OutputInterface $commandOutput;
+	private BlacklistedDomainMapper $blacklistedDomainMapper;
 
 	public function __construct(BlacklistedDomainMapper $blacklistedDomainMapper) {
 		$this->blacklistedDomainMapper = $blacklistedDomainMapper;
@@ -22,22 +21,30 @@ class MigrateBlacklistedDomains extends Command {
 	protected function configure(): void {
 		$this
 			->setName('ecloud-accounts:migrate-blacklisted-domains')
-			->setDescription('Migrate blacklisted domains to db table.');
+			->setDescription('Migrates 2FA secrets to SSO database');
 	}
+
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		try {
+			$this->commandOutput = $output;
 			$this->migrateBlacklistedDomains();
 			return 0;
 		} catch (\Exception $e) {
+			$this->commandOutput->writeln($e->getMessage());
 			return 1;
 		}
 	}
+
 	/**
-	 * Migrate
+	 * Migrate user secrets to the SSO database
 	 *
 	 * @return void
 	 */
 	private function migrateBlacklistedDomains() : void {
-		$this->blacklistedDomainMapper->updateBlacklistedDomains();
+		try {
+			$this->blacklistedDomainMapper->updateBlacklistedDomains();
+		} catch (\Exception $e) {
+			$this->commandOutput->writeln('Error migrating domains. message: ' . $e->getMessage());
+		}
 	}
 }
