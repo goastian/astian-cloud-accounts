@@ -285,10 +285,8 @@ class UserService {
 	 * @return bool True if the email domain is blacklisted, false otherwise.
 	 */
 	public function isBlacklistedEmail(string $email): bool {
-		// Fetch the JSON data from the URL
-		$json_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
-		$json_data = file_get_contents($json_url);
 		
+		$json_data = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
 		$blacklisted_domains = json_decode($json_data, true);
 		
 		$email_domain = strtolower(substr(strrchr($email, "@"), 1));
