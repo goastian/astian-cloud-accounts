@@ -9,7 +9,7 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\TimedJob;
 use Psr\Log\LoggerInterface;
 
-class WeeklyBlacklistedDomainsJob extends TimedJob {
+class BlacklistedDomainsJob extends TimedJob {
 	private LoggerInterface $logger;
 	private UserService $userService;
 	private ITimeFactory $timeFactory;
