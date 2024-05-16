@@ -27,6 +27,6 @@
     <commands>
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
-        <command>OCA\EcloudAccounts\Command\SyncBlacklistedDomains</command>
+        <command>OCA\EcloudAccounts\Command\MigrateBlacklistedDomains</command>
     </commands>
 </info>

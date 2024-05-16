@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SyncBlacklistedDomains extends Command {
+class MigrateBlacklistedDomains extends Command {
 	private OutputInterface $commandOutput;
 	private BlacklistedDomainMapper $blacklistedDomainMapper;
 
