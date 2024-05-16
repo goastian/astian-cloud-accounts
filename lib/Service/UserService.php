@@ -296,10 +296,7 @@ class UserService {
 		$emailDomain = strtolower(end($emailParts));
 		
 		// Check if the email domain is in the blacklisted domains array
-		if (in_array($emailDomain, $blacklistedDomains)) {
-			return true; // Email domain is blacklisted
-		}
-		return false; // Email domain is not blacklisted
+		return in_array($emailDomain, $blacklistedDomains);
 	}
 	/**
 	 * Add a new user to the LDAP directory.

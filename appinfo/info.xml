@@ -25,7 +25,7 @@
 		<personal-section>OCA\EcloudAccounts\Settings\BetaSection</personal-section>
 	</settings>
     <commands>
-        <command>OCA\EcloudAccounts\Command\MigrateBlacklistedDomains</command>
+        <command>OCA\EcloudAccounts\Command\UpdateBlacklistedDomains</command>
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
     </commands>
