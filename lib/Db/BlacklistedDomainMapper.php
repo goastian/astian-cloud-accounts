@@ -2,20 +2,13 @@
 
 namespace OCA\EcloudAccounts\Db;
 
-use Exception;
 use OCP\IConfig;
-use OCP\IDBConnection;
-use OCP\ILogger;
 
 class BlacklistedDomainMapper {
-	private $db;
 	private $config;
-	private $logger;
 
-	public function __construct(IDBConnection $db, IConfig $config, ILogger $logger) {
-		$this->db = $db;
+	public function __construct(IConfig $config) {
 		$this->config = $config;
-		$this->logger = $logger;
 	}
 	public function updateBlacklistedDomains() {
 		$json_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
