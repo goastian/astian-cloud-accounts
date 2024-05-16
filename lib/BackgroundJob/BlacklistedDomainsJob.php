@@ -18,6 +18,7 @@ class BlacklistedDomainsJob extends TimedJob {
 		parent::__construct($timeFactory);
 
 		$this->setInterval(self::INTERVAL_PERIOD);
+		$this->setTimeSensitivity(self::TIME_INSENSITIVE);
 		$this->timeFactory = $timeFactory;
 		$this->userService = $userService;
 		$this->logger = $logger;
