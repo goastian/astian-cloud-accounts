@@ -22,7 +22,7 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\EmailRecovery\BackgroundJob;
+namespace OCA\EcloudAccounts\BackgroundJob;
 
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Utility\ITimeFactory;
