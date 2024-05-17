@@ -527,7 +527,7 @@ class UserService {
 				$userDn = $this->LDAPConnectionService->username2dn($username);
 				
 				if ($userDn === false) {
-					throw new Exception('Could not find DN for username: ' . $username);
+					$this->logger->error('Could not find DN for username: ' . $username);
 				}
 				if (!ldap_modify($conn, $userDn, $attributes)) {
 					throw new Exception('Could not modify user entry at LDAP server!');
