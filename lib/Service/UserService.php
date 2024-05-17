@@ -520,6 +520,17 @@ class UserService {
 			throw new AddUsernameToCommonStoreException("Error adding username '$username' to common data store.");
 		}
 	}
+	public function updateAttributesInLDAP(string $username, array $attributes) {
+		if ($this->LDAPConnectionService->isLDAPEnabled()) {
+			$conn = $this->LDAPConnectionService->getLDAPConnection();
+			$userDn = $this->LDAPConnectionService->username2dn($username);
+			
+			if (!ldap_modify($conn, $userDn, $attributes)) {
+				throw new Exception('Could not modify user entry at LDAP server!');
+			}
+			$this->LDAPConnectionService->closeLDAPConnection($conn);
+		}
+	}
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
