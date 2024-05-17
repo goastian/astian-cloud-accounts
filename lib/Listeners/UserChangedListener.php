@@ -58,6 +58,29 @@ class UserChangedListener implements IEventListener {
 
 			$this->updateAttributesInLDAP($username, $recoveryEmailAttribute);
 		}
+
+		/** @var mixed $oldValue */
+		$oldValue = $event->getOldValue();
+		/** @var mixed $value */
+		$value = $event->getValue();
+		if ($feature === 'enabled'){
+			if($value === true && $oldValue === false){
+				$this->logger->info('Enabling an user', ['event' => $event]);
+				$userEnableAttributes = [
+					'active' => 'TRUE',
+					'mailActive' => 'TRUE',
+				];
+				$this->updateAttributesInLDAP($username, $userEnableAttributes);
+			}
+			if($value === false && $oldValue === true){
+				$this->logger->info('Disabling an user', ['event' => $event]);
+				$userEnableAttributes = [
+					'active' => 'FALSE',
+					'mailActive' => 'FALSE',
+				];
+				$this->updateAttributesInLDAP($username, $userEnableAttributes);
+			}
+		}
 	}
 
 	private function updateQuota(string $username, string $backend, int $quotaInBytes) {
