@@ -31,6 +31,7 @@ class MapActiveAttributetoLDAP extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		try {
+			$this->commandOutput = $output;
 			$this->userManager->callForSeenUsers(function (IUser $user) {
 				if ($this->isUserValid($user)) {
 					if ($user->isEnabled()) {
