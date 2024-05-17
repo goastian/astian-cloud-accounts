@@ -63,8 +63,8 @@ class UserChangedListener implements IEventListener {
 		$oldValue = $event->getOldValue();
 		/** @var mixed $value */
 		$value = $event->getValue();
-		if ($feature === 'enabled'){
-			if($value === true && $oldValue === false){
+		if ($feature === 'enabled') {
+			if($value === true && $oldValue === false) {
 				$this->logger->info('Enabling an user', ['event' => $event]);
 				$userEnableAttributes = [
 					'active' => 'TRUE',
@@ -72,7 +72,7 @@ class UserChangedListener implements IEventListener {
 				];
 				$this->updateAttributesInLDAP($username, $userEnableAttributes);
 			}
-			if($value === false && $oldValue === true){
+			if($value === false && $oldValue === true) {
 				$this->logger->info('Disabling an user', ['event' => $event]);
 				$userEnableAttributes = [
 					'active' => 'FALSE',
