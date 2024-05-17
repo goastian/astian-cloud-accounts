@@ -525,7 +525,7 @@ class UserService {
 		try {
 			$this->updateAttributesInLDAP($username, $userActiveAttributes);
 		} catch (Exception $e) {
-			$this->logger->error('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
+			$this->logger->logException('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
 		}
 	}
 	private function getActiveAttributes(bool $isEnabled): array {
@@ -547,7 +547,7 @@ class UserService {
 		}
 	
 		if (!ldap_modify($conn, $userDn, $attributes)) {
-			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server!');
+			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server. Attributes: ' . print_r($attributes, true));
 		}
 	
 		$this->LDAPConnectionService->closeLDAPConnection($conn);
