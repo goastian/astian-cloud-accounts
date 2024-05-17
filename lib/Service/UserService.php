@@ -522,13 +522,22 @@ class UserService {
 	}
 	public function updateAttributesInLDAP(string $username, array $attributes) {
 		if ($this->LDAPConnectionService->isLDAPEnabled()) {
-			$conn = $this->LDAPConnectionService->getLDAPConnection();
-			$userDn = $this->LDAPConnectionService->username2dn($username);
-			
-			if (!ldap_modify($conn, $userDn, $attributes)) {
-				throw new Exception('Could not modify user entry at LDAP server!');
+			try {
+				$conn = $this->LDAPConnectionService->getLDAPConnection();
+				$userDn = $this->LDAPConnectionService->username2dn($username);
+				
+				if ($userDn === false) {
+					throw new Exception('Could not find DN for username: ' . $username);
+				}
+				if (!ldap_modify($conn, $userDn, $attributes)) {
+					throw new Exception('Could not modify user entry at LDAP server!');
+				}
+				$this->LDAPConnectionService->closeLDAPConnection($conn);
+			} catch (Exception $e) {
+				// Handle the exception or log it as needed
+				$this->logger->error('LDAP operation failed', ['exception' => $e]);
+				throw $e; // Re-throw the exception if you want it to propagate
 			}
-			$this->LDAPConnectionService->closeLDAPConnection($conn);
 		}
 	}
 	private function getDefaultQuota() {
