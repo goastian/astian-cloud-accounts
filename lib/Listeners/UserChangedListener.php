@@ -19,6 +19,8 @@ class UserChangedListener implements IEventListener {
 
 	private const RECOVERY_EMAIL_FEATURE = 'recovery-email';
 
+	private const ENABLED_FEATURE = 'enabled';
+
 	private $util;
 
 	private $logger;
@@ -67,7 +69,7 @@ class UserChangedListener implements IEventListener {
 		$oldValue = $event->getOldValue();
 		/** @var mixed $value */
 		$value = $event->getValue();
-		if ($feature === 'enabled') {
+		if ($feature === self::ENABLED_FEATURE) {
 			if($value === true && $oldValue === false) {
 				$this->logger->info('Enabling an user', ['event' => $event]);
 				$userActiveAttributes = [
