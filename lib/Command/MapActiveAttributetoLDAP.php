@@ -34,19 +34,9 @@ class MapActiveAttributetoLDAP extends Command {
 			$this->commandOutput = $output;
 			$this->userManager->callForSeenUsers(function (IUser $user) {
 				if ($this->isUserValid($user)) {
-					if ($user->isEnabled()) {
-						$userActiveAttributes = [
-							'active' => 'TRUE',
-							'mailActive' => 'TRUE',
-						];
-					} else {
-						$userActiveAttributes = [
-							'active' => 'FALSE',
-							'mailActive' => 'FALSE',
-						];
-					}
 					$username = $user->getUID();
-					$this->userService->updateAttributesInLDAP($username, $userActiveAttributes);
+					$isEnabled = $user->isEnabled() ? true : false;
+					$this->userService->mapActiveAttributesInLDAP($username, $isEnabled);
 				}
 			});
 			return 0;

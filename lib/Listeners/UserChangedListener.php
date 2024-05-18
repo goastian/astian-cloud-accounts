@@ -65,27 +65,10 @@ class UserChangedListener implements IEventListener {
 			$this->userService->updateAttributesInLDAP($username, $recoveryEmailAttribute);
 		}
 
-		/** @var mixed $oldValue */
-		$oldValue = $event->getOldValue();
-		/** @var mixed $value */
-		$value = $event->getValue();
+		/** @var mixed $newValue */
+		$newValue = $event->getValue();
 		if ($feature === self::ENABLED_FEATURE) {
-			if($value === true && $oldValue === false) {
-				$this->logger->info('Enabling an user', ['event' => $event]);
-				$userActiveAttributes = [
-					'active' => 'TRUE',
-					'mailActive' => 'TRUE',
-				];
-				$this->userService->updateAttributesInLDAP($username, $userActiveAttributes);
-			}
-			if($value === false && $oldValue === true) {
-				$this->logger->info('Disabling an user', ['event' => $event]);
-				$userActiveAttributes = [
-					'active' => 'FALSE',
-					'mailActive' => 'FALSE',
-				];
-				$this->userService->updateAttributesInLDAP($username, $userActiveAttributes);
-			}
+			$this->userService->mapActiveAttributesInLDAP($username, $newValue);
 		}
 	}
 

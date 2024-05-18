@@ -520,6 +520,13 @@ class UserService {
 			throw new AddUsernameToCommonStoreException("Error adding username '$username' to common data store.");
 		}
 	}
+	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void {
+		$userActiveAttributes = [
+			'active' => $isEnabled ? 'TRUE' : 'FALSE',
+			'mailActive' => $isEnabled ? 'TRUE' : 'FALSE',
+		];
+		$this->updateAttributesInLDAP($username, $userActiveAttributes);
+	}
 	public function updateAttributesInLDAP(string $username, array $attributes) {
 		if ($this->LDAPConnectionService->isLDAPEnabled()) {
 			try {
