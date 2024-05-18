@@ -39,6 +39,7 @@ class MapActiveAttributetoLDAP extends Command {
 					$this->userService->mapActiveAttributesInLDAP($username, $isEnabled);
 				}
 			});
+			$this->commandOutput->writeln('Active attributes mapped successfully.');
 			return 0;
 		} catch (\Exception $e) {
 			$this->commandOutput->writeln($e->getMessage());
