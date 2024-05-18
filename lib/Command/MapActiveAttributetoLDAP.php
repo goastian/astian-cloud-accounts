@@ -34,25 +34,20 @@ class MapActiveAttributetoLDAP extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		try {
-			$this->commandOutput = $output;
-			$this->userManager->callForSeenUsers(function (IUser $user) {
-				if ($this->isUserValid($user)) {
-					$username = $user->getUID();
-					$isEnabled = $user->isEnabled() ? true : false;
-					try {
-						$this->userService->mapActiveAttributesInLDAP($username, $isEnabled);
-					} catch (Exception $e) {
-						$this->logger->error('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
-					}
+		$this->commandOutput = $output;
+		$this->userManager->callForSeenUsers(function (IUser $user) {
+			if ($this->isUserValid($user)) {
+				$username = $user->getUID();
+				$isEnabled = $user->isEnabled() ? true : false;
+				try {
+					$this->userService->mapActiveAttributesInLDAP($username, $isEnabled);
+				} catch (Exception $e) {
+					$this->logger->error('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
 				}
-			});
-			$this->commandOutput->writeln('Active attributes mapped successfully.');
-			return 0;
-		} catch (\Exception $e) {
-			$this->commandOutput->writeln($e->getMessage());
-			return 1;
-		}
+			}
+		});
+		$this->commandOutput->writeln('Active attributes mapped successfully.');
+		return 0;
 	}
 	/**
 	 * validate user
