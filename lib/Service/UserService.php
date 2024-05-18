@@ -522,11 +522,7 @@ class UserService {
 	}
 	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void {
 		$userActiveAttributes = $this->getActiveAttributes($isEnabled);
-		try {
-			$this->updateAttributesInLDAP($username, $userActiveAttributes);
-		} catch (Exception $e) {
-			$this->logger->logException('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
-		}
+		$this->updateAttributesInLDAP($username, $userActiveAttributes);
 	}
 	private function getActiveAttributes(bool $isEnabled): array {
 		return [
