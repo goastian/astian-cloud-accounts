@@ -275,7 +275,7 @@ class UserService {
 			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
 		}
 		if ($this->isBlacklistedEmail($recoveryEmail)) {
-			throw new BlacklistedEmailException('The entered recovery email domain is blacklisted. Please try another.');
+			throw new BlacklistedEmailException('The domain of this email address is blacklisted. Please provide another recovery address.');
 		}
 	}
 	/**

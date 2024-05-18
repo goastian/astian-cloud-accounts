@@ -86,6 +86,6 @@ OC.L10N.register(
 		"Captcha is not verified!": "Captcha n'est pas vérifié !",
 		"A server-side error occurred while processing your request! Please try again later.": "Erreur du serveur dans la gestion de votre demande ! Merci d'essayer ultérieurement.",
 		"An error occurred while creating your account!": "Une erreur s'est produite lors de la création de votre compte!",
-		"The entered recovery email domain is blacklisted. Please try another.": "Le domaine de l'email de récupération saisi est sur liste noire. Veuillez en essayer un autre."
+		"The domain of this email address is blacklisted. Please provide another recovery address.": "Le domain de cette adresse e-mail est sur liste noire. Merci de bien vouloir fournir une autre adresse de récupération."
 	},
 	"nplurals=2; plural=(n != 1);");
