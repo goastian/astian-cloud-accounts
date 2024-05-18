@@ -521,34 +521,38 @@ class UserService {
 		}
 	}
 	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void {
-		$userActiveAttributes = [
+		$userActiveAttributes = $this->getActiveAttributes($isEnabled);
+		try {
+			$this->updateAttributesInLDAP($username, $userActiveAttributes);
+		} catch (Exception $e) {
+			$this->logger->error('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
+		}
+	}
+	private function getActiveAttributes(bool $isEnabled): array {
+		return [
 			'active' => $isEnabled ? 'TRUE' : 'FALSE',
 			'mailActive' => $isEnabled ? 'TRUE' : 'FALSE',
 		];
-		$this->updateAttributesInLDAP($username, $userActiveAttributes);
 	}
-	public function updateAttributesInLDAP(string $username, array $attributes) {
-		if ($this->LDAPConnectionService->isLDAPEnabled()) {
-			try {
-				$conn = $this->LDAPConnectionService->getLDAPConnection();
-				$userDn = $this->LDAPConnectionService->username2dn($username);
-				
-				if ($userDn === false) {
-					$this->logger->error('Could not find DN for username: ' . $username);
-					return;
-				}
-				if (!ldap_modify($conn, $userDn, $attributes)) {
-					$this->logger->error('Could not modify user '.$username.' entry at LDAP server!');
-					return;
-				}
-				$this->LDAPConnectionService->closeLDAPConnection($conn);
-			} catch (Exception $e) {
-				// Handle the exception or log it as needed
-				$this->logger->error('LDAP operation failed', ['exception' => $e]);
-				throw $e; // Re-throw the exception if you want it to propagate
-			}
+	public function updateAttributesInLDAP(string $username, array $attributes): void {
+		if (!$this->LDAPConnectionService->isLDAPEnabled()) {
+			return;
 		}
+	
+		$conn = $this->LDAPConnectionService->getLDAPConnection();
+		$userDn = $this->LDAPConnectionService->username2dn($username);
+	
+		if ($userDn === false) {
+			throw new Exception('Could not find DN for username: ' . $username);
+		}
+	
+		if (!ldap_modify($conn, $userDn, $attributes)) {
+			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server!');
+		}
+	
+		$this->LDAPConnectionService->closeLDAPConnection($conn);
 	}
+	
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
