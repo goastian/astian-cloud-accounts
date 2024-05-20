@@ -71,7 +71,7 @@ class UserChangedListener implements IEventListener {
 			try {
 				$this->userService->mapActiveAttributesInLDAP($username, $newValue);
 			} catch (Exception $e) {
-				$this->logger->error('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
+				$this->logger->logException('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
 			}
 		}
 	}

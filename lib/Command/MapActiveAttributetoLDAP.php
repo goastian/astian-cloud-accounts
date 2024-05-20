@@ -42,7 +42,7 @@ class MapActiveAttributetoLDAP extends Command {
 				try {
 					$this->userService->mapActiveAttributesInLDAP($username, $isEnabled);
 				} catch (Exception $e) {
-					$this->logger->error('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
+					$this->logger->logException('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
 				}
 			}
 		});
