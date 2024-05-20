@@ -84,6 +84,7 @@ OC.L10N.register(
 		"You cannot set an email address with a Murena domain as recovery email address.": "Sie können keine E-Mail-Adresse mit einer Murena-Domäne als Wiederherstellungs-E-Mail-Adresse festlegen.",
 		"Captcha is not verified!": "Captcha wird nicht überprüft!",
 		"A server-side error occurred while processing your request! Please try again later.": "Ein serverseitiger Fehler ist bei der Bearbeitung Ihrer Anfrage aufgetreten! Bitte versuchen Sie es später noch einmal.",
-		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!"
+		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!",
+		"The domain of this email address is blacklisted. Please provide another recovery address.": "Die Domäne dieser E-Mailadresse ist auf der Sperrliste. Bitte geben Sie eine andere E-Mailadresse an."
 	},
 	"nplurals=2; plural=(n != 1);");

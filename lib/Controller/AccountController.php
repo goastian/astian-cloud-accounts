@@ -9,6 +9,7 @@ namespace OCA\EcloudAccounts\Controller;
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
@@ -165,6 +166,10 @@ class AccountController extends Controller {
 		} catch (LDAPUserCreationException | Error $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
+			$response->setStatus(500);
+		} catch (BlacklistedEmailException | Error $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
 		} catch (AddUsernameToCommonStoreException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
