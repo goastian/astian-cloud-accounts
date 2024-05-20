@@ -26,8 +26,8 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\AccessTokenUpdatedListener;
+use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
