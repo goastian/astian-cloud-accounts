@@ -9,6 +9,7 @@ namespace OCA\EcloudAccounts\Controller;
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
@@ -166,6 +167,10 @@ class AccountController extends Controller {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
+		} catch (BlacklistedEmailException | Error $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => $e->getMessage(), 'success' => false]);
+			$response->setStatus(500);
 		} catch (AddUsernameToCommonStoreException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setStatus(200);
@@ -253,15 +258,18 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $captchaInput = '') : DataResponse {
+	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = '') : DataResponse {
 		$response = new DataResponse();
-		
-		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
+		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
+		// Initialize the default status to 400 (Bad Request)
 		$response->setStatus(400);
-		if ($captchaResult === $captchaInput) {
+		// Check if the input matches the bypass token or the stored captcha result
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
+		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || (!empty($captchaResult) && $captchaInput === $captchaResult)) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
+
 		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 		return $response;
 	}

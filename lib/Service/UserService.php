@@ -9,6 +9,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
+use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
 use OCP\IConfig;
@@ -273,6 +274,29 @@ class UserService {
 		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
 			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
 		}
+		if ($this->isBlacklistedEmail($recoveryEmail)) {
+			throw new BlacklistedEmailException('The domain of this email address is blacklisted. Please provide another recovery address.');
+		}
+	}
+	/**
+	 * Check if an email domain is blacklisted against a JSON list of disposable email domains.
+	 *
+	 * @param string $email The email address to check.
+	 * @return bool True if the email domain is blacklisted, false otherwise.
+	 */
+	public function isBlacklistedEmail(string $email): bool {
+		// Get the blacklisted domains from configuration
+		$blacklistedDomainsInJson = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
+		$blacklistedDomains = json_decode($blacklistedDomainsInJson, true);
+		
+		// Split the email address into parts using explode
+		$emailParts = explode('@', $email);
+		
+		// Extract the domain part
+		$emailDomain = strtolower(end($emailParts));
+		
+		// Check if the email domain is in the blacklisted domains array
+		return in_array($emailDomain, $blacklistedDomains);
 	}
 	/**
 	 * Add a new user to the LDAP directory.
@@ -522,5 +546,10 @@ class UserService {
 	}
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
+	}
+	public function updateBlacklistedDomains() {
+		$blacklisted_domain_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
+		$json_data = file_get_contents($blacklisted_domain_url);
+		$this->config->setAppValue(Application::APP_ID, 'blacklisted_domains', $json_data);
 	}
 }
