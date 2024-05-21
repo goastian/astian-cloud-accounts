@@ -7,6 +7,7 @@ namespace OCA\EcloudAccounts\Listeners;
 use Exception;
 use OCA\EcloudAccounts\Db\MailboxMapper;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCA\EcloudAccounts\Service\UserService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\ILogger;
@@ -18,6 +19,8 @@ class UserChangedListener implements IEventListener {
 
 	private const RECOVERY_EMAIL_FEATURE = 'recovery-email';
 
+	private const ENABLED_FEATURE = 'enabled';
+
 	private $util;
 
 	private $logger;
@@ -26,11 +29,14 @@ class UserChangedListener implements IEventListener {
 
 	private $mailboxMapper;
 
-	public function __construct(Util $util, LDAPConnectionService $LDAPConnectionService, ILogger $logger, MailboxMapper $mailboxMapper) {
+	private $userService;
+
+	public function __construct(Util $util, LDAPConnectionService $LDAPConnectionService, ILogger $logger, MailboxMapper $mailboxMapper, UserService $userService) {
 		$this->util = $util;
 		$this->ldapConnectionService = $LDAPConnectionService;
 		$this->mailboxMapper = $mailboxMapper;
 		$this->logger = $logger;
+		$this->userService = $userService;
 	}
 
 	public function handle(Event $event): void {
@@ -41,6 +47,7 @@ class UserChangedListener implements IEventListener {
 		$feature = $event->getFeature();
 		$user = $event->getUser();
 		$username = $user->getUID();
+		$newValue = $event->getValue();
 		
 		if ($feature === self::QUOTA_FEATURE) {
 			$updatedQuota = $event->getValue();
@@ -56,7 +63,15 @@ class UserChangedListener implements IEventListener {
 				'recoveryMailAddress' => $recoveryEmail
 			];
 
-			$this->updateAttributesInLDAP($username, $recoveryEmailAttribute);
+			$this->userService->updateAttributesInLDAP($username, $recoveryEmailAttribute);
+		}
+
+		if ($feature === self::ENABLED_FEATURE) {
+			try {
+				$this->userService->mapActiveAttributesInLDAP($username, $newValue);
+			} catch (Exception $e) {
+				$this->logger->logException('Failed to update LDAP attributes for user: ' . $username, ['exception' => $e]);
+			}
 		}
 	}
 
@@ -69,22 +84,10 @@ class UserChangedListener implements IEventListener {
 				$quotaAttribute = [
 					'quota' => $quotaInBytes
 				];
-				$this->updateAttributesInLDAP($username, $quotaAttribute);
+				$this->userService->updateAttributesInLDAP($username, $quotaAttribute);
 			}
 		} catch (Exception $e) {
 			$this->logger->error("Error setting quota for user $username " . $e->getMessage());
-		}
-	}
-	
-	private function updateAttributesInLDAP(string $username, array $attributes) {
-		if ($this->ldapConnectionService->isLDAPEnabled()) {
-			$conn = $this->ldapConnectionService->getLDAPConnection();
-			$userDn = $this->ldapConnectionService->username2dn($username);
-			
-			if (!ldap_modify($conn, $userDn, $attributes)) {
-				throw new Exception('Could not modify user entry at LDAP server!');
-			}
-			$this->ldapConnectionService->closeLDAPConnection($conn);
 		}
 	}
 }
