@@ -47,6 +47,7 @@ class UserChangedListener implements IEventListener {
 		$feature = $event->getFeature();
 		$user = $event->getUser();
 		$username = $user->getUID();
+		$newValue = $event->getValue();
 		
 		if ($feature === self::QUOTA_FEATURE) {
 			$updatedQuota = $event->getValue();
@@ -65,8 +66,6 @@ class UserChangedListener implements IEventListener {
 			$this->userService->updateAttributesInLDAP($username, $recoveryEmailAttribute);
 		}
 
-		/** @var mixed $newValue */
-		$newValue = $event->getValue();
 		if ($feature === self::ENABLED_FEATURE) {
 			try {
 				$this->userService->mapActiveAttributesInLDAP($username, $newValue);
