@@ -544,6 +544,38 @@ class UserService {
 			throw new AddUsernameToCommonStoreException("Error adding username '$username' to common data store.");
 		}
 	}
+
+	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void {
+		$userActiveAttributes = $this->getActiveAttributes($isEnabled);
+		$this->updateAttributesInLDAP($username, $userActiveAttributes);
+	}
+
+	private function getActiveAttributes(bool $isEnabled): array {
+		return [
+			'active' => $isEnabled ? 'TRUE' : 'FALSE',
+			'mailActive' => $isEnabled ? 'TRUE' : 'FALSE',
+		];
+	}
+
+	public function updateAttributesInLDAP(string $username, array $attributes): void {
+		if (!$this->LDAPConnectionService->isLDAPEnabled()) {
+			return;
+		}
+	
+		$conn = $this->LDAPConnectionService->getLDAPConnection();
+		$userDn = $this->LDAPConnectionService->username2dn($username);
+	
+		if ($userDn === false) {
+			throw new Exception('Could not find DN for username: ' . $username);
+		}
+	
+		if (!ldap_modify($conn, $userDn, $attributes)) {
+			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server. Attributes: ' . print_r($attributes, true));
+		}
+	
+		$this->LDAPConnectionService->closeLDAPConnection($conn);
+	}
+	
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
