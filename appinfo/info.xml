@@ -28,6 +28,7 @@
         <command>OCA\EcloudAccounts\Command\UpdateBlacklistedDomains</command>
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
+        <command>OCA\EcloudAccounts\Command\MapActiveAttributetoLDAP</command>
     </commands>
     <background-jobs>
 		<job>OCA\EcloudAccounts\BackgroundJob\BlacklistedDomainsJob</job>
