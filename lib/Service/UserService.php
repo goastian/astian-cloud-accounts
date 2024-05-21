@@ -313,9 +313,9 @@ class UserService {
 	private function addNewUserToLDAP(string $displayName, string $recoveryEmail, string $username, string $userEmail, string $password): void {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
-		
 		$newUserDN = "username=$username," . $base;
 		
+		$displayName = htmlspecialchars($displayName);
 		$quota = $this->getDefaultQuota() * 1024 * 1024;
 		
 		$newUserEntry = [
