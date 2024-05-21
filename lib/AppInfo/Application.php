@@ -33,16 +33,13 @@ use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
-use OCA\OIDCLogin\Service\TokenService;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
-use OCP\ISession;
 use OCP\IUserManager;
-use OCP\IUserSession;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserChangedEvent;
 
@@ -68,15 +65,6 @@ class Application extends App implements IBootstrap {
 				$c->get(IUserManager::class)
 			);
 		});
-
-		$userSession = $serverContainer->get(IUserSession::class);
-		$session = $serverContainer->get(ISession::class);
-		$tokenService = $serverContainer->get(TokenService::class);
-		$accessTokenExpiresAt = $session->get('oidc_access_token_expires_at');
-		$now = time();
-		if ($now > $accessTokenExpiresAt) {
-			$tokenService->refreshTokens();
-		}
 
 	}
 }
