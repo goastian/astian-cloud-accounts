@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use OCA\OIDCLogin\Events\AccessTokenUpdatedEvent;
-use OCA\SnappyMail\Util\SnappyMailHelper;
 use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
