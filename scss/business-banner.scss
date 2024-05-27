@@ -1,0 +1,56 @@
+.recovery-email-banner {
+    display: inline-flex;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    min-height: 50px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    background: #333333;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    padding: 16px 6%;
+    #recovery-email-banner-container{
+        display:inline-flex;
+        img {
+            padding-right:10px;
+            align-self: start;
+        }
+        p{
+            margin: 0 auto;
+        }
+    }    
+
+    a {
+        color: #ffffff;
+        padding-left: 24px;
+        text-decoration: underline;
+        font-size: 16px;
+        font-weight: 600;
+    }
+   
+}
+
+@media only screen and (max-width: 768px) {
+    .recovery-email-banner {
+        display: block;
+        a{
+            padding: 8px 0 0 30px;
+        }
+    }
+}
+[data-object-type="email-recovery-important"] a.external {
+    background-color: var(--color-primary-element);
+    color: var(--color-primary-element-text);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 10px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    width: fit-content;
+}
