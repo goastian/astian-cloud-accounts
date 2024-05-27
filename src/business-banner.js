@@ -1,7 +1,7 @@
 import { generateUrl } from '@nextcloud/router'
-import { loadState } from '@nextcloud/initial-state'
+// import { loadState } from '@nextcloud/initial-state'
 
-const userLocation = loadState('ecloud-accounts', 'userLocation')
+// const userLocation = loadState('ecloud-accounts', 'userLocation')
 const APPLICATION_NAME = 'ecloud-accounts'
 document.addEventListener('DOMContentLoaded', function() {
 	const newDiv = createNewDiv('business-banner')
@@ -135,10 +135,7 @@ function createImageElement(appName) {
  */
 function createTextNode(appName) {
 	const p = document.createElement('p')
-	let labelText = t(appName, 'Own a Part of Murena!')
-	// if (userLocation !== 'USA') {
-	// 	labelText = t(appName, 'Please verify your recovery email address to fully enjoy your murena.io account.')
-	// }
+	const labelText = t(appName, 'Own a Part of Murena!')
 	const text = document.createTextNode(labelText)
 	p.appendChild(text)
 	return p
@@ -150,7 +147,7 @@ function createTextNode(appName) {
  */
 function createLinkElement(appName) {
 	const link = document.createElement('a')
-	let labelText = t(appName, 'LEARN MORE')
+	const labelText = t(appName, 'LEARN MORE')
 	link.textContent = labelText
 	link.href = 'https://murena.com/investors/'
 	link.style.display = 'block'
