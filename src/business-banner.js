@@ -4,34 +4,35 @@ import { generateUrl } from '@nextcloud/router'
 // const userLocation = loadState('ecloud-accounts', 'userLocation')
 const APPLICATION_NAME = 'ecloud-accounts'
 document.addEventListener('DOMContentLoaded', function() {
-	const newDiv = createNewDiv('business-banner')
-	const contentDiv = document.createElement('div')
-	contentDiv.id = 'business-banner-container'
-	const img = createImageElement(APPLICATION_NAME)
-	const textNode = createTextNode(APPLICATION_NAME)
-	const link = createLinkElement(APPLICATION_NAME)
-	const closeButton = createCloseButton()
+	if (!localStorage.getItem('bannerClosed')) {
+		const newDiv = createNewDiv('business-banner')
+		const contentDiv = document.createElement('div')
+		contentDiv.id = 'business-banner-container'
+		const img = createImageElement(APPLICATION_NAME)
+		const textNode = createTextNode(APPLICATION_NAME)
+		const link = createLinkElement(APPLICATION_NAME)
+		const closeButton = createCloseButton(newDiv)
 
-	contentDiv.appendChild(img)
-	contentDiv.appendChild(textNode)
-	newDiv.appendChild(contentDiv)
-	newDiv.appendChild(link)
-	newDiv.appendChild(closeButton)
-	insertIntoDOM(newDiv)
-	// Measure the height after the element is inserted into the DOM
-	const banner = document.getElementById('business-banner')
-	if (banner) {
-		const bannerHeight = banner.clientHeight + 'px'
-		const topHeight = (banner.clientHeight + 50) + 'px'
-		setTopStyle('#header', bannerHeight)
-		setMarginTopAndHeight('#content', topHeight)
-		setMarginTopAndHeight('#content-vue', topHeight)
-		setTopStyleWhenElementAvailable('#header-menu-user-menu', topHeight)
-		setTopStyleWhenElementAvailable('#header-menu-notifications', topHeight)
-		setTopStyle('#header-menu-unified-search', topHeight)
-		banner.style.height = bannerHeight
+		contentDiv.appendChild(img)
+		contentDiv.appendChild(textNode)
+		newDiv.appendChild(contentDiv)
+		newDiv.appendChild(link)
+		newDiv.appendChild(closeButton)
+		insertIntoDOM(newDiv)
+		// Measure the height after the element is inserted into the DOM
+		const banner = document.getElementById('business-banner')
+		if (banner) {
+			const bannerHeight = banner.clientHeight + 'px'
+			const topHeight = (banner.clientHeight + 50) + 'px'
+			setTopStyle('#header', bannerHeight)
+			setMarginTopAndHeight('#content', topHeight)
+			setMarginTopAndHeight('#content-vue', topHeight)
+			setTopStyleWhenElementAvailable('#header-menu-user-menu', topHeight)
+			setTopStyleWhenElementAvailable('#header-menu-notifications', topHeight)
+			setTopStyle('#header-menu-unified-search', topHeight)
+			banner.style.height = bannerHeight
+		}
 	}
-
 })
 
 /**
@@ -158,12 +159,18 @@ function createLinkElement(appName) {
 /**
  *
  * @param appName
+ * @param banner
  */
-function createCloseButton() {
+function createCloseButton(banner) {
 	const span = document.createElement('span')
 	const labelText = 'X'
 	span.textContent = labelText
 	span.style.display = 'block'
+	span.style.cursor = 'pointer'
+	span.addEventListener('click', function() {
+		banner.style.display = 'none'
+		localStorage.setItem('bannerClosed', 'true')
+	})
 	return span
 }
 
