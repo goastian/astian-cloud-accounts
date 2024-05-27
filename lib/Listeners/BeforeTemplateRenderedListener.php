@@ -50,7 +50,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts') !== false) {
 			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
 		}
-		if (($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) && $event->isLoggedIn() && !empty($this->userId)) {
+		if (($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) && $event->isLoggedIn()) {
 			// $recoveryEmail = $this->recoveryEmailService->getRecoveryEmail($this->userId);
 			// if ($recoveryEmail === '') {
 			$this->util->addStyle($this->appName, 'business-banner');
