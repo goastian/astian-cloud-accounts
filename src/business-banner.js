@@ -10,11 +10,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	const img = createImageElement(APPLICATION_NAME)
 	const textNode = createTextNode(APPLICATION_NAME)
 	const link = createLinkElement(APPLICATION_NAME)
+	const closeButton = createCloseButton()
 
 	contentDiv.appendChild(img)
 	contentDiv.appendChild(textNode)
 	newDiv.appendChild(contentDiv)
 	newDiv.appendChild(link)
+	newDiv.appendChild(closeButton)
 	insertIntoDOM(newDiv)
 	// Measure the height after the element is inserted into the DOM
 	const banner = document.getElementById('business-banner')
@@ -152,6 +154,17 @@ function createLinkElement(appName) {
 	link.href = 'https://murena.com/investors/'
 	link.style.display = 'block'
 	return link
+}
+/**
+ *
+ * @param appName
+ */
+function createCloseButton() {
+	const span = document.createElement('span')
+	const labelText = 'X'
+	span.textContent = labelText
+	span.style.display = 'block'
+	return span
 }
 
 /**
