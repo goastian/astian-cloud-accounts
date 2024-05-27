@@ -40,8 +40,8 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
-use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
+use OCP\User\Events\UserChangedEvent;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';

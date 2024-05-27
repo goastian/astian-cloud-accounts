@@ -6,10 +6,10 @@ namespace OCA\EcloudAccounts\Listeners;
 
 use Exception;
 use OCA\EcloudAccounts\Service\SSOService;
-use OCP\EventDispatcher\IEventListener;
-use OCP\User\Events\PasswordUpdatedEvent;
-use OCP\ILogger;
 use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\ILogger;
+use OCP\User\Events\PasswordUpdatedEvent;
 
 class PasswordUpdatedListener implements IEventListener {
 
@@ -27,7 +27,6 @@ class PasswordUpdatedListener implements IEventListener {
 			return;
 		}
 
-		$feature = $event->getFeature();
 		$user = $event->getUser();
 		$username = $user->getUID();
 
