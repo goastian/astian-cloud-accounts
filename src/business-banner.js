@@ -26,13 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (banner) {
 			const bannerHeight = banner.clientHeight + 'px'
 			const topHeight = (banner.clientHeight + 50) + 'px'
-			setTopStyle('#header', bannerHeight)
-			setMarginTopAndHeight('#content', topHeight)
-			setMarginTopAndHeight('#content-vue', topHeight)
-			setTopStyleWhenElementAvailable('#header-menu-user-menu', topHeight)
-			setTopStyleWhenElementAvailable('#header-menu-notifications', topHeight)
-			setTopStyle('#header-menu-unified-search', topHeight)
-			banner.style.height = bannerHeight
+			adjustHeaderContent(banner, bannerHeight, topHeight)
 		}
 	}
 })
@@ -174,13 +168,7 @@ function createCloseButton(banner) {
 		localStorage.setItem('bannerClosed', 'true')
 		const bannerHeight = '0'
 		const topHeight = 'auto'
-		setTopStyle('#header', bannerHeight)
-		setMarginTopAndHeight('#content', topHeight)
-		setMarginTopAndHeight('#content-vue', topHeight)
-		setTopStyleWhenElementAvailable('#header-menu-user-menu', topHeight)
-		setTopStyleWhenElementAvailable('#header-menu-notifications', topHeight)
-		setTopStyle('#header-menu-unified-search', topHeight)
-		banner.style.height = bannerHeight
+		adjustHeaderContent(banner, bannerHeight, topHeight)
 	})
 	return span
 }
@@ -193,4 +181,20 @@ function insertIntoDOM(element) {
 	const targetElement = document.getElementById('header')
 	const parentElement = targetElement.parentNode
 	parentElement.insertBefore(element, targetElement)
+}
+
+/**
+ *
+ * @param banner
+ * @param bannerHeight
+ * @param topHeight
+ */
+function adjustHeaderContent(banner, bannerHeight, topHeight) {
+	setTopStyle('#header', bannerHeight)
+	setMarginTopAndHeight('#content', topHeight)
+	setMarginTopAndHeight('#content-vue', topHeight)
+	setTopStyleWhenElementAvailable('#header-menu-user-menu', topHeight)
+	setTopStyleWhenElementAvailable('#header-menu-notifications', topHeight)
+	setTopStyle('#header-menu-unified-search', topHeight)
+	banner.style.height = bannerHeight
 }
