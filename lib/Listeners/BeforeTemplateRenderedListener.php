@@ -30,6 +30,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 	private const SNAPPYMAIL_AUTOLOGIN_PWD = '1';
 	private IInitialState $initialState;
 	private $userId;
+
 	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager, Util $util, $userId, IInitialState $initialState) {
 		$this->appName = $appName;
 		$this->userSession = $userSession;
@@ -54,6 +55,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts') !== false) {
 			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
 		}
+
 		if (($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) && $event->isLoggedIn()) {
 			$userLocation = 'USA';
 			$this->initialState->provideInitialState('userLocation', $userLocation);
