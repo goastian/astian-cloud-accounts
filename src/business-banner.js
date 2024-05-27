@@ -1,19 +1,21 @@
 import { generateUrl } from '@nextcloud/router'
-// import { loadState } from '@nextcloud/initial-state'
+import { loadState } from '@nextcloud/initial-state'
 
-// const userLocation = loadState('ecloud-accounts', 'userLocation')
+const userLocation = loadState('ecloud-accounts', 'userLocation')
 const APPLICATION_NAME = 'ecloud-accounts'
 document.addEventListener('DOMContentLoaded', function() {
 	if (!localStorage.getItem('bannerClosed')) {
 		const newDiv = createNewDiv('business-banner')
 		const contentDiv = document.createElement('div')
 		contentDiv.id = 'business-banner-container'
-		const img = createImageElement(APPLICATION_NAME)
+		if (userLocation === 'USA') {
+			const img = createImageElement(APPLICATION_NAME)
+			contentDiv.appendChild(img)
+		}
 		const textNode = createTextNode(APPLICATION_NAME)
 		const link = createLinkElement(APPLICATION_NAME)
 		const closeButton = createCloseButton(newDiv)
 
-		contentDiv.appendChild(img)
 		contentDiv.appendChild(textNode)
 		newDiv.appendChild(contentDiv)
 		newDiv.appendChild(link)
@@ -170,6 +172,15 @@ function createCloseButton(banner) {
 	span.addEventListener('click', function() {
 		banner.style.display = 'none'
 		localStorage.setItem('bannerClosed', 'true')
+		const bannerHeight = '0'
+		const topHeight = 'auto'
+		setTopStyle('#header', bannerHeight)
+		setMarginTopAndHeight('#content', topHeight)
+		setMarginTopAndHeight('#content-vue', topHeight)
+		setTopStyleWhenElementAvailable('#header-menu-user-menu', topHeight)
+		setTopStyleWhenElementAvailable('#header-menu-notifications', topHeight)
+		setTopStyle('#header-menu-unified-search', topHeight)
+		banner.style.height = bannerHeight
 	})
 	return span
 }

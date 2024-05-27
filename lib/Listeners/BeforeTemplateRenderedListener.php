@@ -55,14 +55,10 @@ class BeforeTemplateRenderedListener implements IEventListener {
 			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
 		}
 		if (($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) && $event->isLoggedIn()) {
-			// $recoveryEmail = $this->recoveryEmailService->getRecoveryEmail($this->userId);
-			// if ($recoveryEmail === '') {
-			// $unverifiedRecoveryEmail = $this->recoveryEmailService->getUnverifiedRecoveryEmail($this->userId);
 			$userLocation = 'USA';
 			$this->initialState->provideInitialState('userLocation', $userLocation);
 			$this->util->addStyle($this->appName, 'business-banner');
 			$this->util->addScript($this->appName, $this->appName . '-business-banner');
-			// }
 		}
 	}
 
