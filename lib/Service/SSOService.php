@@ -90,9 +90,7 @@ class SSOService {
 			$this->getUserId($username);
 		}
 
-		$language = $this->config->getUserValue($username, 'core', 'lang', 'en');
 		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '/' . $this->currentUserId . '/logout';
-
 
 		$this->logger->debug('logout calling SSO API with url: '. $url);
 		$this->callSSOAPI($url, 'POST', [], 201);
