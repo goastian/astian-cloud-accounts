@@ -6,6 +6,7 @@ namespace OCA\EcloudAccounts\Listeners;
 
 use OCP\App\IAppManager;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
@@ -13,7 +14,7 @@ use OCP\IRequest;
 use OCP\ISession;
 use OCP\IUserSession;
 use OCP\Util;
-use OCP\AppFramework\Http\TemplateResponse;
+
 class BeforeTemplateRenderedListener implements IEventListener {
 	private $userSession;
 	private $request;
@@ -52,8 +53,8 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) && $event->isLoggedIn() && !empty($this->userId)) {
 			// $recoveryEmail = $this->recoveryEmailService->getRecoveryEmail($this->userId);
 			// if ($recoveryEmail === '') {
-				$this->util->addStyle($this->appName, 'business-banner');
-				$this->util->addScript($this->appName, $this->appName . '-business-banner');
+			$this->util->addStyle($this->appName, 'business-banner');
+			$this->util->addScript($this->appName, $this->appName . '-business-banner');
 			// }
 		}
 	}
