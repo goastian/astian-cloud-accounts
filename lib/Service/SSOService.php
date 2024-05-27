@@ -85,6 +85,19 @@ class SSOService {
 		}
 	}
 
+	public function logout(string $username) : void {
+		if(empty($this->currentUserId)) {
+			$this->getUserId($username);
+		}
+
+		$language = $this->config->getUserValue($username, 'core', 'lang', 'en');
+		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '/' . $this->currentUserId . '/logout';
+
+
+		$this->logger->debug('logout calling SSO API with url: '. $url);
+		$this->callSSOAPI($url, 'POST', [], 201);
+	}
+
 	private function getCredentialIds() : array {
 		$url = $this->ssoConfig['admin_rest_api_url'] . self::CREDENTIALS_ENDPOINT;
 		$url = str_replace('{USER_ID}', $this->currentUserId, $url);
