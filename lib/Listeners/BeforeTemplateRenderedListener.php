@@ -7,6 +7,7 @@ namespace OCA\EcloudAccounts\Listeners;
 use OCP\App\IAppManager;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
@@ -27,8 +28,9 @@ class BeforeTemplateRenderedListener implements IEventListener {
 	private const SNAPPYMAIL_APP_ID = 'snappymail';
 	private const SNAPPYMAIL_URL = '/apps/snappymail/';
 	private const SNAPPYMAIL_AUTOLOGIN_PWD = '1';
-
-	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager, Util $util) {
+	private IInitialState $initialState;
+	private $userId;
+	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager, Util $util, $userId, IInitialState $initialState) {
 		$this->appName = $appName;
 		$this->userSession = $userSession;
 		$this->request = $request;
@@ -36,6 +38,8 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		$this->config = $config;
 		$this->appManager = $appManager;
 		$this->util = $util;
+		$this->initialState = $initialState;
+		$this->userId = $userId;
 	}
 
 	public function handle(Event $event): void {
@@ -53,6 +57,9 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) && $event->isLoggedIn()) {
 			// $recoveryEmail = $this->recoveryEmailService->getRecoveryEmail($this->userId);
 			// if ($recoveryEmail === '') {
+			// $unverifiedRecoveryEmail = $this->recoveryEmailService->getUnverifiedRecoveryEmail($this->userId);
+			$userLocation = 'USA';
+			$this->initialState->provideInitialState('userLocation', $userLocation);
 			$this->util->addStyle($this->appName, 'business-banner');
 			$this->util->addScript($this->appName, $this->appName . '-business-banner');
 			// }

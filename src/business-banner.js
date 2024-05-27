@@ -1,7 +1,7 @@
 import { generateUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 
-const unverifiedRecoveryEmail = loadState('ecloud-accounts', 'unverifiedRecoveryEmail')
+const userLocation = loadState('ecloud-accounts', 'userLocation')
 const APPLICATION_NAME = 'ecloud-accounts'
 document.addEventListener('DOMContentLoaded', function() {
 	const newDiv = createNewDiv('business-banner')
@@ -125,7 +125,7 @@ function createNewDiv(className) {
  */
 function createImageElement(appName) {
 	const img = document.createElement('img')
-	img.src = generateUrl('/custom_apps/' + appName + '/img/warning.svg')
+	img.src = generateUrl('/custom_apps/' + appName + '/img/crowdcube.png')
 	return img
 }
 
@@ -135,10 +135,10 @@ function createImageElement(appName) {
  */
 function createTextNode(appName) {
 	const p = document.createElement('p')
-	let labelText = t(appName, 'Please set your recovery email address to use your email account without restrictions.')
-	if (unverifiedRecoveryEmail !== '') {
-		labelText = t(appName, 'Please verify your recovery email address to fully enjoy your murena.io account.')
-	}
+	let labelText = t(appName, 'Own a Part of Murena!')
+	// if (userLocation !== 'USA') {
+	// 	labelText = t(appName, 'Please verify your recovery email address to fully enjoy your murena.io account.')
+	// }
 	const text = document.createTextNode(labelText)
 	p.appendChild(text)
 	return p
@@ -150,12 +150,9 @@ function createTextNode(appName) {
  */
 function createLinkElement(appName) {
 	const link = document.createElement('a')
-	let labelText = t(appName, 'SET RECOVERY EMAIL NOW')
-	if (unverifiedRecoveryEmail !== '') {
-		labelText = t(appName, 'VERIFY RECOVERY EMAIL NOW')
-	}
+	let labelText = t(appName, 'LEARN MORE')
 	link.textContent = labelText
-	link.href = OC.getRootPath() + '/settings/user/security#recovery-email-div'
+	link.href = 'https://murena.com/investors/'
 	link.style.display = 'block'
 	return link
 }
