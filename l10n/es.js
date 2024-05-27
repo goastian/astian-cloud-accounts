@@ -87,6 +87,7 @@ OC.L10N.register(
 		"Captcha is not verified!": "¡Captcha no está verificado!",
 		"A server-side error occurred while processing your request! Please try again later.": "Hubo un error en el servidor al procesar tu solicitud. Por favor, inténtalo más tarde.",
 		"An error occurred while creating your account!": "¡Hubo un error creando tu cuenta!",
-		"The domain of this email address is blacklisted. Please provide another recovery address.": "El dominio de esta dirección de correo electrónico está en lista negra. Por favor, proporciona otra dirección de recuperación."
+		"The domain of this email address is blacklisted. Please provide another recovery address.": "El dominio de esta dirección de correo electrónico está en lista negra. Por favor, proporciona otra dirección de recuperación.",
+		"Own a Part of Murena!": "¡Sea dueño de una parte de Murena!"
 	},
 	"nplurals=2; plural=(n != 1);");
