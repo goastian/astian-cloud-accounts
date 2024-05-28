@@ -93,7 +93,7 @@ class SSOService {
 		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '/' . $this->currentUserId . '/logout';
 
 		$this->logger->debug('logout calling SSO API with url: '. $url);
-		$this->callSSOAPI($url, 'POST', [], 201);
+		$this->callSSOAPI($url, 'POST', [], 204);
 	}
 
 	private function getCredentialIds() : array {
