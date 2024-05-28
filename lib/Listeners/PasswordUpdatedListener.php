@@ -37,4 +37,3 @@ class PasswordUpdatedListener implements IEventListener {
 		}
 	}
 }
-
