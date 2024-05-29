@@ -41,6 +41,5 @@ class AccessTokenUpdatedListener implements IEventListener {
 
 		$username = $this->userSession->getUser()->getUID();
 		$this->session->set('snappymail-nc-uid', $username);
-		$this->session->set('oidc_access_token', $accessToken);
 	}
 }
