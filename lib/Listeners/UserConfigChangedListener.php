@@ -26,12 +26,10 @@ class UserConfigChangedListener implements IEventListener {
 		if ($event->getKey() === 'recovery-email') {
 			$uid = $event->getUserId();
 			$newRecoveryEmail = $event->getValue();
-			if ($newRecoveryEmail !== '') {
-				$recoveryMailAddressAttribute = [
-					'recoveryMailAddress' => $newRecoveryEmail
-				];
-				$this->userService->updateAttributesInLDAP($uid, $recoveryMailAddressAttribute);
-			}
+			$recoveryMailAddressAttribute = [
+				'recoveryMailAddress' => $newRecoveryEmail
+			];
+			$this->userService->updateAttributesInLDAP($uid, $recoveryMailAddressAttribute);
 		}
 	}
 }
