@@ -325,7 +325,6 @@ class UserService {
 			'userPassword' => $password,
 			'displayName' => $displayName,
 			'quota' => $quota,
-			'recoveryMailAddress' => $recoveryEmail,
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
 			'userClusterID' => $this->apiConfig['userCluserId'],
