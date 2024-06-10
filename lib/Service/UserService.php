@@ -104,6 +104,10 @@ class UserService {
 
 	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
 		$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
+		$recoveryMailAddressAttribute = [
+			'recoveryMailAddress' => $recoveryEmail
+		];
+		$this->updateAttributesInLDAP($uid, $recoveryMailAddressAttribute);
 	}
 	public function setUnverifiedRecoveryEmail(string $uid, string $recoveryEmail): void {
 		$this->config->setUserValue($uid, 'email-recovery', 'unverified-recovery-email', $recoveryEmail);
@@ -325,6 +329,7 @@ class UserService {
 			'userPassword' => $password,
 			'displayName' => $displayName,
 			'quota' => $quota,
+			'recoveryMailAddress' => '',
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
 			'userClusterID' => $this->apiConfig['userCluserId'],
