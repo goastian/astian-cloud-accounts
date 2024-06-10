@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Listeners;
 
+use OCA\EcloudAccounts\Service\UserService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\ILogger;
 use OCP\User\Events\UserConfigChangedEvent;
-use OCA\EcloudAccounts\Service\UserService;
 
 class UserConfigChangedListener implements IEventListener {
 	private $logger;
