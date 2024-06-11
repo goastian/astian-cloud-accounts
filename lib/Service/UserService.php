@@ -255,7 +255,7 @@ class UserService {
 		if (!empty($recoveryEmail)) {
 			$this->validateRecoveryEmail($recoveryEmail);
 		}
-		$this->addNewUserToLDAP($displayname, $recoveryEmail, $username, $userEmail, $password);
+		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
 	}
 	/**
 	 * Validates the recovery email address.
@@ -302,7 +302,6 @@ class UserService {
 	 * Add a new user to the LDAP directory.
 	 *
 	 * @param string $displayname The display name of the new user.
-	 * @param string $recoveryEmail The recovery email address of the new user.
 	 * @param string $username The username of the new user.
 	 * @param string $userEmail The email address of the new user.
 	 * @param string $password The password of the new user.
@@ -310,7 +309,7 @@ class UserService {
 	 * @return void
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	private function addNewUserToLDAP(string $displayName, string $recoveryEmail, string $username, string $userEmail, string $password): void {
+	private function addNewUserToLDAP(string $displayName, string $username, string $userEmail, string $password): void {
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		$newUserDN = "username=$username," . $base;
