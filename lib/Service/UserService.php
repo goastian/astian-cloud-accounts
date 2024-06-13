@@ -327,7 +327,7 @@ class UserService {
 			'recoveryMailAddress' => '',
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
-			'userClusterID' => $this->apiConfig['userCluserId'],
+			'userClusterID' => $this->apiConfig['userClusterId'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
 		
