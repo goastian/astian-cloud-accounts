@@ -63,7 +63,7 @@ class UserService {
 			'commonServicesToken' => $this->config->getSystemValue('common_services_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
 			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
-			'userClusterId' => $this->config->getSystemValue('user_cluster_id', ''),
+			'userClusterID' => $this->config->getSystemValue('user_cluster_id', ''),
 			'objectClass' => $this->config->getSystemValue('ldap_object_class', []),
 		];
 	}
@@ -327,7 +327,7 @@ class UserService {
 			'recoveryMailAddress' => '',
 			'active' => 'TRUE',
 			'mailActive' => 'TRUE',
-			'userClusterID' => $this->apiConfig['userClusterId'],
+			'userClusterID' => $this->apiConfig['userClusterID'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
 		
