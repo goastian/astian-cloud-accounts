@@ -63,7 +63,7 @@ class UserService {
 			'commonServicesToken' => $this->config->getSystemValue('common_services_token', ''),
 			'aliasDomain' => $this->config->getSystemValue('alias_domain', ''),
 			'commonApiVersion' => $this->config->getSystemValue('common_api_version', ''),
-			'userCluserId' => $this->config->getSystemValue('user_cluser_id', ''),
+			'userCluserId' => $this->config->getSystemValue('user_cluster_id', ''),
 			'objectClass' => $this->config->getSystemValue('ldap_object_class', []),
 		];
 	}
