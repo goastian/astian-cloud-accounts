@@ -224,6 +224,7 @@ class AccountController extends Controller {
 		}
 
 		try {
+			$username = mb_strtolower($username, 'UTF-8');
 			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
