@@ -138,7 +138,7 @@ class AccountController extends Controller {
 		}
 		
 		try {
-			$username = $mbox = mb_strtolower($username, 'UTF-8');
+			$username = mb_strtolower($username, 'UTF-8');
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
 			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
