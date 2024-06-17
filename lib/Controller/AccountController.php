@@ -216,6 +216,7 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function checkUsernameAvailable(string $username) : DataResponse {
+		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		$response = new DataResponse();
 		$response->setStatus(400);
 
