@@ -249,7 +249,7 @@ class UserService {
 	 */
 	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void {
 		
-		if ($this->userExists($username)) {
+		if ($this->userExists($username) || $this->isUsernameTaken($username)) {
 			throw new Exception("Username '$username' is already taken.");
 		}
 		if (!empty($recoveryEmail)) {
