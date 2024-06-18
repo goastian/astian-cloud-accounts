@@ -596,7 +596,7 @@ class UserService {
 		$blacklisted_domain_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 		$json_data = file_get_contents($blacklisted_domain_url);
 		$filename = 'blacklisted_domains.json';
-		$this->setBlacklistedDomainFile($filename, $json_data);
+		$this->setBlacklistedDomainData($filename, $json_data);
 	}
 	private function getBlacklistedDomainFolder() {
 		try {
@@ -611,7 +611,7 @@ class UserService {
 	 * @param string $filename
 	 * @param string $data
 	 */
-	private function setBlacklistedDomainFile(string $filename, string $data) {
+	private function setBlacklistedDomainData(string $filename, string $data) {
 		$currentFolder = $this->getBlacklistedDomainFolder();
 		if ($currentFolder->fileExists($filename)) {
 			$file = $currentFolder->getFile($filename);
