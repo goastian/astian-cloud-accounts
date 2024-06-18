@@ -11,6 +11,7 @@ use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
+use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
@@ -176,6 +177,10 @@ class AccountController extends Controller {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
+		} catch (RecoveryEmailValidationException | Error $e) {
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
+			$response->setData(['message' => $e->getMessage(), 'success' => false]);
+			$response->setStatus(500);
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'An error occurred while creating your account!', 'success' => false]);
