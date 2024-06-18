@@ -29,7 +29,4 @@
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
         <command>OCA\EcloudAccounts\Command\MapActiveAttributetoLDAP</command>
     </commands>
-    <background-jobs>
-		<job>OCA\EcloudAccounts\BackgroundJob\BlacklistedDomainsJob</job>
-    </background-jobs>
 </info>
