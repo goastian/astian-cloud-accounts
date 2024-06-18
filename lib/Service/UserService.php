@@ -287,8 +287,15 @@ class UserService {
 	public function isBlacklistedEmail(string $email): bool {
 		// Get the blacklisted domains from configuration
 		$blacklistedDomainsInJson = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
+		if (empty($blacklistedDomainsInJson)) {
+			return false;
+		}
 		$blacklistedDomains = json_decode($blacklistedDomainsInJson, true);
-		
+
+		if (empty($blacklistedDomains)) {
+			return false;
+		}
+
 		// Split the email address into parts using explode
 		$emailParts = explode('@', $email);
 		
