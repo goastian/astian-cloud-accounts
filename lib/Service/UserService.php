@@ -12,6 +12,8 @@ use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
+use OCP\Files\IAppData;
+use OCP\Files\NotFoundException;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IUser;
@@ -41,8 +43,12 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
+	/**
+	 * @var IAppData
+	 */
+	private $appData;
 
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IAppData $appData) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -51,6 +57,7 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
+		$this->appData = $appData;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
@@ -588,6 +595,30 @@ class UserService {
 	public function updateBlacklistedDomains() {
 		$blacklisted_domain_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 		$json_data = file_get_contents($blacklisted_domain_url);
-		$this->config->setAppValue(Application::APP_ID, 'blacklisted_domains', $json_data);
+		$filename = 'blacklisted_domains.json';
+		$this->setBlacklistedDomainFile($filename, $json_data);
+	}
+	private function getBlacklistedDomainFolder() {
+		try {
+			return $this->appData->getFolder('blacklisted_domains');
+		} catch (NotFoundException $e) {
+			return $this->appData->newFolder('blacklisted_domains');
+		}
+	}
+	/**
+	 * Store a file for theming in AppData
+	 *
+	 * @param string $filename
+	 * @param string $data
+	 */
+	private function setBlacklistedDomainFile(string $filename, string $data) {
+		$currentFolder = $this->getBlacklistedDomainFolder();
+		if ($currentFolder->fileExists($filename)) {
+			$file = $currentFolder->getFile($filename);
+		} else {
+			$file = $currentFolder->newFile($filename);
+		}
+		$file->putContent($data);
+		return $file;
 	}
 }
