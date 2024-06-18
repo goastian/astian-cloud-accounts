@@ -47,6 +47,8 @@ class UserService {
 	 * @var IAppData
 	 */
 	private $appData;
+	public const BLACKLISTED_DOMAIN_FOLDER_NAME = 'blacklisted_domains';
+	public const BLACKLISTED_DOMAIN_FILE_NAME = 'blacklisted_domains.json';
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IAppData $appData) {
 		$this->userManager = $userManager;
@@ -293,7 +295,7 @@ class UserService {
 	 */
 	public function isBlacklistedEmail(string $email): bool {
 		// Get the blacklisted domains from configuration
-		$blacklistedDomainsInJson = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
+		$blacklistedDomainsInJson = $this->getBlacklistedDomainData();
 		if (empty($blacklistedDomainsInJson)) {
 			return false;
 		}
@@ -592,33 +594,52 @@ class UserService {
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
-	public function updateBlacklistedDomains() {
+	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 		$json_data = file_get_contents($blacklisted_domain_url);
-		$filename = 'blacklisted_domains.json';
-		$this->setBlacklistedDomainData($filename, $json_data);
-	}
-	private function getBlacklistedDomainFolder() {
-		try {
-			return $this->appData->getFolder('blacklisted_domains');
-		} catch (NotFoundException $e) {
-			return $this->appData->newFolder('blacklisted_domains');
-		}
+		$this->setBlacklistedDomainsData($json_data);
 	}
 	/**
-	 * Store a file for theming in AppData
+	 * Get or create the folder for storing blacklisted domain data.
 	 *
-	 * @param string $filename
-	 * @param string $data
 	 */
-	private function setBlacklistedDomainData(string $filename, string $data) {
-		$currentFolder = $this->getBlacklistedDomainFolder();
-		if ($currentFolder->fileExists($filename)) {
-			$file = $currentFolder->getFile($filename);
-		} else {
-			$file = $currentFolder->newFile($filename);
+	private function getBlacklistedDomainsFolder() {
+		$foldername = self::BLACKLISTED_DOMAIN_FOLDER_NAME;
+		try {
+			return $this->appData->getFolder($foldername);
+		} catch (NotFoundException $e) {
+			return $this->appData->newFolder($foldername);
 		}
+	}
+	
+	/**
+	 * Store blacklisted domain data in a file within AppData.
+	 *
+	 * @param string $data The data to be stored in the file.
+	 */
+	private function setBlacklistedDomainsData(string $data) {
+		$file = $this->getBlacklistedDomainsFilePath();
 		$file->putContent($data);
 		return $file;
+	}
+	/**
+	 * Get blacklisted domain data.
+	 *
+	 */
+	private function getBlacklistedDomainData() {
+		return $this->getBlacklistedDomainsFilePath();
+	}
+	/**
+	 * Fetch the contents of a file from a given URL.
+	 *
+	 */
+	private function getBlacklistedDomainsFilePath() {
+		$filename = self::BLACKLISTED_DOMAIN_FILE_NAME;
+		$currentFolder = $this->getBlacklistedDomainsFolder();
+		if ($currentFolder->fileExists($filename)) {
+			return $currentFolder->getFile($filename);
+		} else {
+			return $currentFolder->newFile($filename);
+		}
 	}
 }
