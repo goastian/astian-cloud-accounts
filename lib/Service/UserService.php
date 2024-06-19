@@ -47,8 +47,9 @@ class UserService {
 	 * @var IAppData
 	 */
 	private $appData;
-	public const BLACKLISTED_DOMAINS_FOLDER_NAME = 'ecloud-accounts';
-	public const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
+	private const BLACKLISTED_DOMAINS_FOLDER_NAME = 'ecloud-accounts';
+	private const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
+	private const BLACKLISTED_DOMAINS_URL = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IAppData $appData) {
 		$this->userManager = $userManager;
@@ -598,7 +599,7 @@ class UserService {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 	public function updateBlacklistedDomains(): void {
-		$blacklisted_domain_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
+		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
 		$json_data = file_get_contents($blacklisted_domain_url);
 		$this->setBlacklistedDomainsData($json_data);
 	}
@@ -626,10 +627,9 @@ class UserService {
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		if ($currentFolder->fileExists($filename)) {
-			return $currentFolder->getFile($filename);
-		} else {
-			return $currentFolder->newFile($filename);
+			$currentFolder->getFile($filename)->delete();
 		}
+		return $currentFolder->newFile($filename);
 	}
 	public function getBlacklistedDomainData() {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
@@ -641,7 +641,7 @@ class UserService {
 		try {
 			$this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
-			$this->logger->logException($e);
+			$this->logger->logException('Blacklisted domains file not found!');
 			return false;
 		} catch (\RuntimeException $e) {
 			$this->logger->logException($e);
