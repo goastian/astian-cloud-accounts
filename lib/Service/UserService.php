@@ -605,6 +605,7 @@ class UserService {
 	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
 		$json_data = file_get_contents($blacklisted_domain_url);
+		$json_data = '[{\'test\':\'test1\'}]';
 		$this->setBlacklistedDomainsData($json_data);
 	}
 	/**
