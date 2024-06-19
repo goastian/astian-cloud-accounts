@@ -47,7 +47,7 @@ class UserService {
 	 * @var IAppData
 	 */
 	private $appData;
-	public const BLACKLISTED_DOMAINS_FOLDER_NAME = 'blacklisted_domains';
+	public const BLACKLISTED_DOMAINS_FOLDER_NAME = 'ecloud-accounts';
 	public const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
 
 	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IAppData $appData) {
