@@ -598,12 +598,15 @@ class UserService {
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
+	/**
+	 * update the blacklisted domains file.
+	 *
+	 */
 	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
 		$json_data = file_get_contents($blacklisted_domain_url);
 		$this->setBlacklistedDomainsData($json_data);
 	}
-	
 	/**
 	 * Store blacklisted domain data in a file within AppData.
 	 *
@@ -615,7 +618,7 @@ class UserService {
 		return $file;
 	}
 	/**
-	 * Fetch the contents of a file from a given URL.
+	 * Retrieve the blacklisted domain file path
 	 *
 	 */
 	private function getBlacklistedDomainsFilePath() {
@@ -631,11 +634,19 @@ class UserService {
 		}
 		return $currentFolder->newFile($filename);
 	}
+	/**
+	 * Retrieve the blacklisted domain data.
+	 *
+	 */
 	public function getBlacklistedDomainData() {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		return $this->appData->getFolder($foldername)->getFile((string) $document);
 	}
+	/**
+	 * Ensure the specified folder exists within AppData.
+	 *
+	 */
 	private function ensureDocumentsFolder(): bool {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
