@@ -295,6 +295,9 @@ class UserService {
 	 */
 	public function isBlacklistedEmail(string $email): bool {
 		// Get the blacklisted domains from configuration
+		if (!$this->ensureDocumentsFolder()) {
+			return false;
+		}
 		$blacklistedDomainsInJson = $this->getBlacklistedDomainData();
 		if (empty($blacklistedDomainsInJson)) {
 			return false;
@@ -599,18 +602,6 @@ class UserService {
 		$json_data = file_get_contents($blacklisted_domain_url);
 		$this->setBlacklistedDomainsData($json_data);
 	}
-	/**
-	 * Get or create the folder for storing blacklisted domain data.
-	 *
-	 */
-	private function getBlacklistedDomainsFolder() {
-		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
-		try {
-			return $this->appData->getFolder($foldername);
-		} catch (NotFoundException $e) {
-			return $this->appData->newFolder($foldername);
-		}
-	}
 	
 	/**
 	 * Store blacklisted domain data in a file within AppData.
@@ -623,23 +614,39 @@ class UserService {
 		return $file;
 	}
 	/**
-	 * Get blacklisted domain data.
-	 *
-	 */
-	private function getBlacklistedDomainData() {
-		return $this->getBlacklistedDomainsFilePath();
-	}
-	/**
 	 * Fetch the contents of a file from a given URL.
 	 *
 	 */
 	private function getBlacklistedDomainsFilePath() {
+		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
+		try {
+			$currentFolder = $this->appData->getFolder($foldername);
+		} catch (NotFoundException $e) {
+			$currentFolder = $this->appData->newFolder($foldername);
+		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
-		$currentFolder = $this->getBlacklistedDomainsFolder();
 		if ($currentFolder->fileExists($filename)) {
 			return $currentFolder->getFile($filename);
 		} else {
 			return $currentFolder->newFile($filename);
 		}
+	}
+	public function getBlacklistedDomainData() {
+		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
+		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
+		return $this->appData->getFolder($foldername)->getFile((string) $document);
+	}
+	private function ensureDocumentsFolder(): bool {
+		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
+		try {
+			$this->appData->getFolder($foldername);
+		} catch (NotFoundException $e) {
+			$this->logger->logException($e);
+			return false;
+		} catch (\RuntimeException $e) {
+			$this->logger->logException($e);
+			return false;
+		}
+		return true;
 	}
 }
