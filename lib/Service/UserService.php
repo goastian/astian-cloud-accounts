@@ -631,7 +631,7 @@ class UserService {
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		if ($currentFolder->fileExists($filename)) {
-			$currentFolder->getFile($filename)->delete();
+			return $currentFolder->getFile($filename);
 		}
 		return $currentFolder->newFile($filename);
 	}
