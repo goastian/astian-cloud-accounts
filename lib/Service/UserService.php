@@ -304,7 +304,7 @@ class UserService {
 			return false;
 		}
 		$blacklistedDomains = json_decode($blacklistedDomainsInJson, true);
-
+		
 		if (empty($blacklistedDomains)) {
 			return false;
 		}
@@ -641,7 +641,7 @@ class UserService {
 	public function getBlacklistedDomainData() {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
-		return $this->appData->getFolder($foldername)->getFile((string) $document);
+		return $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
 	}
 	/**
 	 * Ensure the specified folder exists within AppData.
