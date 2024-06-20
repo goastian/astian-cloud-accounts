@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Listeners;
 
 use Exception;
+use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\SSOService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
@@ -33,7 +34,7 @@ class PasswordUpdatedListener implements IEventListener {
 		try {
 			$this->ssoService->logout($username);
 		} catch (Exception $e) {
-			$this->logger->logException('Failed to logout from ssoService for user: ' . $username, ['exception' => $e]);
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
 		}
 	}
 }
