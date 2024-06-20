@@ -23,8 +23,12 @@ class UpdateBlacklistedDomains extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->userService->updateBlacklistedDomains();
-		$output->writeln('Updated blacklisted domains for creation.');
+		try {
+			$this->userService->updateBlacklistedDomains();
+			$output->writeln('Updated blacklisted domains for creation.');
+		} catch (\Throwable $th) {
+			$output->writeln('Error while updating blacklisted domains. Error: '.$th->getMessage());
+		}
 		return 1;
 	}
 }

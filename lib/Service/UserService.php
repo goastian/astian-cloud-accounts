@@ -14,6 +14,7 @@ use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCP\Defaults;
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
+use OCP\Files\SimpleFS\ISimpleFile;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IUser;
@@ -43,11 +44,8 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-	/**
-	 * @var IAppData
-	 */
-	private $appData;
-	private const BLACKLISTED_DOMAINS_FOLDER_NAME = 'ecloud-accounts';
+	private IAppData $appData;
+	private const BLACKLISTED_DOMAINS_FOLDER_NAME = Application::APP_ID;
 	private const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
 	private const BLACKLISTED_DOMAINS_URL = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 
@@ -607,16 +605,16 @@ class UserService {
 	 *
 	 * @param string $data The data to be stored in the file.
 	 */
-	private function setBlacklistedDomainsData(string $data) {
+	private function setBlacklistedDomainsData(string $data): void {
 		$file = $this->getBlacklistedDomainsFilePath();
 		$file->putContent($data);
-		return $file;
 	}
 	/**
 	 * Retrieve the blacklisted domain file path
 	 *
+	 * @return ISimpleFile
 	 */
-	private function getBlacklistedDomainsFilePath() {
+	private function getBlacklistedDomainsFilePath(): ISimpleFile {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
 			$currentFolder = $this->appData->getFolder($foldername);
@@ -632,8 +630,9 @@ class UserService {
 	/**
 	 * Retrieve the blacklisted domain data.
 	 *
+	 * @return array The array of blacklisted domains.
 	 */
-	public function getBlacklistedDomainData() {
+	public function getBlacklistedDomainData(): array {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		try {
