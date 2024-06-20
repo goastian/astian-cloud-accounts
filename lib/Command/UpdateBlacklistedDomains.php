@@ -6,18 +6,15 @@ namespace OCA\EcloudAccounts\Command;
 
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\BlackListService;
-use OCA\EcloudAccounts\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateBlacklistedDomains extends Command {
-	private UserService $userService;
 	private BlackListService $blackListService;
 
-	public function __construct(UserService $userService, BlackListService $blackListService) {
+	public function __construct(BlackListService $blackListService) {
 		parent::__construct();
-		$this->userService = $userService;
 		$this->blackListService = $blackListService;
 	}
 
