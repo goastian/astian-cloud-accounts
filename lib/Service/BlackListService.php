@@ -6,6 +6,7 @@ namespace OCA\EcloudAccounts\Service;
 
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
+use OCP\Files\SimpleFS\ISimpleFile;
 use OCP\ILogger;
 
 class BlackListService {
@@ -51,6 +52,7 @@ class BlackListService {
 	 * Store blacklisted domain data in a file within AppData.
 	 *
 	 * @param string $data The data to be stored in the file.
+	 * @return void
 	 */
 	private function setBlacklistedDomainsData(string $data): void {
 		$file = $this->getBlacklistedDomainsFile();
@@ -59,8 +61,9 @@ class BlackListService {
 	/**
 	 * Retrieve the blacklisted domain file path
 	 *
+	 * @return ISimpleFile
 	 */
-	private function getBlacklistedDomainsFile() {
+	private function getBlacklistedDomainsFile(): ISimpleFile {
 		try {
 			$currentFolder = $this->appData->getFolder('/');
 		} catch (NotFoundException $e) {
@@ -98,6 +101,7 @@ class BlackListService {
 	/**
 	 * Ensure the specified folder exists within AppData.
 	 *
+	 * @return bool
 	 */
 	private function ensureDocumentsFolder(): bool {
 		try {
