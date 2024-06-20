@@ -591,24 +591,23 @@ class UserService {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 	/**
-	 * Update the blacklisted domains data by fetching it from a URL and saving it locally.
+	 * update the blacklisted domains file.
 	 *
-	 * @return void
 	 */
 	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
 		$json_data = file_get_contents($blacklisted_domain_url);
 		$this->setBlacklistedDomainsData($json_data);
 	}
-
 	/**
 	 * Store blacklisted domain data in a file within AppData.
 	 *
 	 * @param string $data The data to be stored in the file.
 	 */
-	private function setBlacklistedDomainsData(string $data): void {
+	private function setBlacklistedDomainsData(string $data) {
 		$file = $this->getBlacklistedDomainsFilePath();
 		$file->putContent($data);
+		return $file;
 	}
 	/**
 	 * Retrieve the blacklisted domain file path
@@ -619,7 +618,6 @@ class UserService {
 		try {
 			$currentFolder = $this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
-			$this->logger->error('Folder '.$foldername.' not found!');
 			$currentFolder = $this->appData->newFolder($foldername);
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
@@ -631,22 +629,11 @@ class UserService {
 	/**
 	 * Retrieve the blacklisted domain data.
 	 *
-	 * @return array The array of blacklisted domains.
 	 */
-	public function getBlacklistedDomainData(): array {
+	public function getBlacklistedDomainData() {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
-		try {
-			$blacklistedDomainsInJson = $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
-			if (empty($blacklistedDomainsInJson)) {
-				return [];
-			}
-			return json_decode($blacklistedDomainsInJson, true);
-		} catch (NotFoundException $e) {
-			$this->logger->error('Blacklisted domains file '.$document.' not found!');
-			return [];
-		}
-		
+		return $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
 	}
 	/**
 	 * Ensure the specified folder exists within AppData.
@@ -657,14 +644,12 @@ class UserService {
 		try {
 			$this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
-			$this->logger->error('Blacklisted domains folder '.$foldername.' not found!');
+			$this->logger->logException('Blacklisted domains file not found!');
 			return false;
 		} catch (\RuntimeException $e) {
-			$this->logger->error('Blacklisted domains folder not found!');
-			$this->logger->error($e);
+			$this->logger->logException($e);
 			return false;
 		}
-		$this->logger->error('Blacklisted domains folder found!');
 		return true;
 	}
 }
