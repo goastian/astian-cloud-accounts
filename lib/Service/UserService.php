@@ -612,9 +612,8 @@ class UserService {
 	/**
 	 * Retrieve the blacklisted domain file path
 	 *
-	 * @return ISimpleFile
 	 */
-	private function getBlacklistedDomainsFilePath(): ISimpleFile {
+	private function getBlacklistedDomainsFilePath() {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
 			$currentFolder = $this->appData->getFolder($foldername);
