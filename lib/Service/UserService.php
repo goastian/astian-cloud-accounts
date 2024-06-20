@@ -651,7 +651,7 @@ class UserService {
 			}
 			return json_decode($blacklistedDomainsInJson, true);
 		} catch (NotFoundException $e) {
-			$this->logger->logException('Blacklisted domains file '.$document.' not found!');
+			$this->logger->error('Blacklisted domains file '.$document.' not found!');
 			return [];
 		}
 		
@@ -663,12 +663,14 @@ class UserService {
 	private function ensureDocumentsFolder(): bool {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
+			$this->logger->error('Blacklisted domains folder found!');
 			$this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
-			$this->logger->logException('Blacklisted domains folder '.$foldername.' not found!');
+			$this->logger->error('Blacklisted domains folder '.$foldername.' not found!');
 			return false;
 		} catch (\RuntimeException $e) {
-			$this->logger->logException($e);
+			$this->logger->error('Blacklisted domains folder not found!');
+			$this->logger->error($e);
 			return false;
 		}
 		return true;
