@@ -591,14 +591,25 @@ class UserService {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 	/**
-	 * update the blacklisted domains file.
+	 * Update the blacklisted domains data by fetching it from a URL and saving it locally.
 	 *
+	 * @return void
 	 */
 	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
-		$json_data = file_get_contents($blacklisted_domain_url);
-		$this->setBlacklistedDomainsData($json_data);
+		try {
+			$json_data = file_get_contents($blacklisted_domain_url);
+			if ($json_data === false) {
+				$this->logger->error("Failed to fetch data from URL: $blacklisted_domain_url");
+				throw new \RuntimeException("Failed to fetch data from URL: $blacklisted_domain_url");
+			}
+			$this->setBlacklistedDomainsData($json_data);
+		} catch (Exception $e) {
+			// Log any exceptions that occur during the process
+			$this->logger->logException($e, ['message' => 'Failed to update blacklisted domains.']);
+		}
 	}
+
 	/**
 	 * Store blacklisted domain data in a file within AppData.
 	 *
