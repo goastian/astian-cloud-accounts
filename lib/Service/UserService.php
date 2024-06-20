@@ -299,12 +299,7 @@ class UserService {
 		if (!$this->ensureDocumentsFolder()) {
 			return false;
 		}
-		$blacklistedDomainsInJson = $this->getBlacklistedDomainData();
-		if (empty($blacklistedDomainsInJson)) {
-			return false;
-		}
-		$blacklistedDomains = json_decode($blacklistedDomainsInJson, true);
-		
+		$blacklistedDomains = $this->getBlacklistedDomainData();
 		if (empty($blacklistedDomains)) {
 			return false;
 		}
@@ -642,7 +637,11 @@ class UserService {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		try {
-			return $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
+			$blacklistedDomainsInJson = $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
+			if (empty($blacklistedDomainsInJson)) {
+				return [];
+			}
+			return json_decode($blacklistedDomainsInJson, true);
 		} catch (NotFoundException $e) {
 			$this->logger->logException('Blacklisted domains file '.$document.' not found!');
 			return [];
