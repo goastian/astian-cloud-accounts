@@ -81,10 +81,14 @@ class BlackListService {
 	 * @return array The array of blacklisted domains.
 	 */
 	public function getBlacklistedDomainData(): array {
-		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
+		$file = $this->getBlacklistedDomainsFilePath();
 		try {
-			$blacklistedDomainsInJson = $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
+			$blacklistedDomainsInJson = $file->getContent();
+			if (empty($blacklistedDomainsInJson)) {
+				return [];
+			}
+			return json_decode($blacklistedDomainsInJson, true);
 		} catch (NotFoundException $e) {
 			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
 			return [];
@@ -92,11 +96,6 @@ class BlackListService {
 			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
 			return [];
 		}
-		if (empty($blacklistedDomainsInJson)) {
-			return [];
-		}
-		return json_decode($blacklistedDomainsInJson, true);
-		
 	}
 	/**
 	 * Ensure the specified folder exists within AppData.
