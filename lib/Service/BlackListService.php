@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
+use Exception;
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
 use OCP\ILogger;
@@ -84,14 +85,17 @@ class BlackListService {
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		try {
 			$blacklistedDomainsInJson = $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
-			if (empty($blacklistedDomainsInJson)) {
-				return [];
-			}
-			return json_decode($blacklistedDomainsInJson, true);
 		} catch (NotFoundException $e) {
 			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
 			return [];
+		} catch (Exception $e) {
+			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
+			return [];
 		}
+		if (empty($blacklistedDomainsInJson)) {
+			return [];
+		}
+		return json_decode($blacklistedDomainsInJson, true);
 		
 	}
 	/**
