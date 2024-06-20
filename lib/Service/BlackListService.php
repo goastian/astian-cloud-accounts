@@ -12,7 +12,6 @@ use OCP\ILogger;
 class BlackListService {
 	private IAppData $appData;
 	private ILogger $logger;
-	private const BLACKLISTED_DOMAINS_FOLDER_NAME = '/';
 	private const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
 	private const BLACKLISTED_DOMAINS_URL = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 
@@ -63,11 +62,10 @@ class BlackListService {
 	 *
 	 */
 	private function getBlacklistedDomainsFilePath() {
-		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
-			$currentFolder = $this->appData->getFolder($foldername);
+			$currentFolder = $this->appData->getFolder('/');
 		} catch (NotFoundException $e) {
-			$currentFolder = $this->appData->newFolder($foldername);
+			$currentFolder = $this->appData->newFolder('/');
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
 		if ($currentFolder->fileExists($filename)) {
@@ -102,11 +100,10 @@ class BlackListService {
 	 *
 	 */
 	private function ensureDocumentsFolder(): bool {
-		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
-			$this->appData->getFolder($foldername);
+			$this->appData->getFolder('/');
 		} catch (NotFoundException $e) {
-			$this->logger->error('Blacklisted domains folder '.$foldername.' not found!');
+			$this->logger->error('Blacklisted domains folder not found!');
 			return false;
 		} catch (\RuntimeException $e) {
 			$this->logger->error($e);
