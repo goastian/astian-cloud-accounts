@@ -44,7 +44,7 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 	private IAppData $appData;
-	private const BLACKLISTED_DOMAINS_FOLDER_NAME = Application::APP_ID;
+	private const BLACKLISTED_DOMAINS_FOLDER_NAME = '/';
 	private const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
 	private const BLACKLISTED_DOMAINS_URL = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 
@@ -663,7 +663,6 @@ class UserService {
 	private function ensureDocumentsFolder(): bool {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		try {
-			$this->logger->error('Blacklisted domains folder found!');
 			$this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
 			$this->logger->error('Blacklisted domains folder '.$foldername.' not found!');
@@ -673,6 +672,7 @@ class UserService {
 			$this->logger->error($e);
 			return false;
 		}
+		$this->logger->error('Blacklisted domains folder found!');
 		return true;
 	}
 }
