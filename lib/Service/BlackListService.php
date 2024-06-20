@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-require __DIR__ . '/../../vendor/autoload.php';
-
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
 use OCP\ILogger;
@@ -68,7 +66,6 @@ class BlackListService {
 		try {
 			$currentFolder = $this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
-			$this->logger->error('Folder '.$foldername.' not found!');
 			$currentFolder = $this->appData->newFolder($foldername);
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
@@ -92,7 +89,7 @@ class BlackListService {
 			}
 			return json_decode($blacklistedDomainsInJson, true);
 		} catch (NotFoundException $e) {
-			$this->logger->error('Blacklisted domains file '.$document.' not found!');
+			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
 			return [];
 		}
 		
