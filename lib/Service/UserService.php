@@ -44,7 +44,7 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 	private IAppData $appData;
-	private const BLACKLISTED_DOMAINS_FOLDER_NAME = 'data';
+	private const BLACKLISTED_DOMAINS_FOLDER_NAME = Application::APP_ID;
 	private const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
 	private const BLACKLISTED_DOMAINS_URL = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 
@@ -591,23 +591,24 @@ class UserService {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 	/**
-	 * update the blacklisted domains file.
+	 * Update the blacklisted domains data by fetching it from a URL and saving it locally.
 	 *
+	 * @return void
 	 */
 	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
 		$json_data = file_get_contents($blacklisted_domain_url);
 		$this->setBlacklistedDomainsData($json_data);
 	}
+
 	/**
 	 * Store blacklisted domain data in a file within AppData.
 	 *
 	 * @param string $data The data to be stored in the file.
 	 */
-	private function setBlacklistedDomainsData(string $data) {
+	private function setBlacklistedDomainsData(string $data): void {
 		$file = $this->getBlacklistedDomainsFilePath();
 		$file->putContent($data);
-		return $file;
 	}
 	/**
 	 * Retrieve the blacklisted domain file path
@@ -618,6 +619,7 @@ class UserService {
 		try {
 			$currentFolder = $this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
+			$this->logger->error('Folder '.$foldername.' not found!');
 			$currentFolder = $this->appData->newFolder($foldername);
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
@@ -629,11 +631,22 @@ class UserService {
 	/**
 	 * Retrieve the blacklisted domain data.
 	 *
+	 * @return array The array of blacklisted domains.
 	 */
-	public function getBlacklistedDomainData() {
+	public function getBlacklistedDomainData(): array {
 		$foldername = self::BLACKLISTED_DOMAINS_FOLDER_NAME;
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
-		return $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
+		try {
+			$blacklistedDomainsInJson = $this->appData->getFolder($foldername)->getFile((string) $document)->getContent();
+			if (empty($blacklistedDomainsInJson)) {
+				return [];
+			}
+			return json_decode($blacklistedDomainsInJson, true);
+		} catch (NotFoundException $e) {
+			$this->logger->error('Blacklisted domains file '.$document.' not found!');
+			return [];
+		}
+		
 	}
 	/**
 	 * Ensure the specified folder exists within AppData.
@@ -644,10 +657,10 @@ class UserService {
 		try {
 			$this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
-			$this->logger->logException('Blacklisted domains file not found!');
+			$this->logger->error('Blacklisted domains folder '.$foldername.' not found!');
 			return false;
 		} catch (\RuntimeException $e) {
-			$this->logger->logException($e);
+			$this->logger->error($e);
 			return false;
 		}
 		return true;
