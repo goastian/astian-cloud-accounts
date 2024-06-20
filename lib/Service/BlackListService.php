@@ -103,7 +103,7 @@ class BlackListService {
 		try {
 			$this->appData->getFolder('/');
 		} catch (NotFoundException $e) {
-			$this->logger->error('Blacklisted domains folder not found!');
+			$this->logger->error(Application::APP_ID . ' AppData folder not found!');
 			return false;
 		} catch (\RuntimeException $e) {
 			$this->logger->error($e);
