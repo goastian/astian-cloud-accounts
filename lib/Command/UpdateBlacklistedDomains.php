@@ -27,7 +27,7 @@ class UpdateBlacklistedDomains extends Command {
 			$this->userService->updateBlacklistedDomains();
 			$output->writeln('Updated blacklisted domains for creation.');
 		} catch (\Throwable $th) {
-			$output->writeln('Error while updating blacklisted domains. Error: '.$th->getMessage());
+			$output->writeln('Error while updating blacklisted domains.');
 		}
 		return 1;
 	}

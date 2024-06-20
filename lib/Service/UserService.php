@@ -597,17 +597,8 @@ class UserService {
 	 */
 	public function updateBlacklistedDomains(): void {
 		$blacklisted_domain_url = self::BLACKLISTED_DOMAINS_URL;
-		try {
-			$json_data = file_get_contents($blacklisted_domain_url);
-			if ($json_data === false) {
-				$this->logger->error("Failed to fetch data from URL: $blacklisted_domain_url");
-				throw new \RuntimeException("Failed to fetch data from URL: $blacklisted_domain_url");
-			}
-			$this->setBlacklistedDomainsData($json_data);
-		} catch (Exception $e) {
-			// Log any exceptions that occur during the process
-			$this->logger->logException($e, ['message' => 'Failed to update blacklisted domains.']);
-		}
+		$json_data = file_get_contents($blacklisted_domain_url);
+		$this->setBlacklistedDomainsData($json_data);
 	}
 
 	/**
