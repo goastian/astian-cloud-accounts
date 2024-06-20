@@ -619,6 +619,7 @@ class UserService {
 		try {
 			$currentFolder = $this->appData->getFolder($foldername);
 		} catch (NotFoundException $e) {
+			$this->logger->error('Folder '.$foldername.' not found!');
 			$currentFolder = $this->appData->newFolder($foldername);
 		}
 		$filename = self::BLACKLISTED_DOMAINS_FILE_NAME;
