@@ -44,7 +44,7 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 	private IAppData $appData;
-	private const BLACKLISTED_DOMAINS_FOLDER_NAME = Application::APP_ID;
+	private const BLACKLISTED_DOMAINS_FOLDER_NAME = 'data';
 	private const BLACKLISTED_DOMAINS_FILE_NAME = 'blacklisted_domains.json';
 	private const BLACKLISTED_DOMAINS_URL = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
 
