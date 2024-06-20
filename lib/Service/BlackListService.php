@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
-use Exception;
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
 use OCP\ILogger;
@@ -54,14 +53,14 @@ class BlackListService {
 	 * @param string $data The data to be stored in the file.
 	 */
 	private function setBlacklistedDomainsData(string $data): void {
-		$file = $this->getBlacklistedDomainsFilePath();
+		$file = $this->getBlacklistedDomainsFile();
 		$file->putContent($data);
 	}
 	/**
 	 * Retrieve the blacklisted domain file path
 	 *
 	 */
-	private function getBlacklistedDomainsFilePath() {
+	private function getBlacklistedDomainsFile() {
 		try {
 			$currentFolder = $this->appData->getFolder('/');
 		} catch (NotFoundException $e) {
@@ -80,21 +79,22 @@ class BlackListService {
 	 */
 	public function getBlacklistedDomainData(): array {
 		$document = self::BLACKLISTED_DOMAINS_FILE_NAME;
-		$file = $this->getBlacklistedDomainsFilePath();
+		$file = $this->getBlacklistedDomainsFile();
 		try {
 			$blacklistedDomainsInJson = $file->getContent();
 			if (empty($blacklistedDomainsInJson)) {
 				return [];
 			}
-			return json_decode($blacklistedDomainsInJson, true);
+			return json_decode($blacklistedDomainsInJson, true, 512, JSON_THROW_ON_ERROR);
 		} catch (NotFoundException $e) {
-			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
+			$this->logger->warning('Blacklisted domains file ' . $document . ' not found!');
 			return [];
-		} catch (Exception $e) {
-			$this->logger->warning('Blacklisted domains file '.$document.' not found!');
+		} catch (\Throwable $e) {
+			$this->logger->warning('Error decoding blacklisted domains file ' . $document . ': ' . $e->getMessage());
 			return [];
 		}
 	}
+	
 	/**
 	 * Ensure the specified folder exists within AppData.
 	 *
@@ -106,7 +106,7 @@ class BlackListService {
 			$this->logger->error(Application::APP_ID . ' AppData folder not found!');
 			return false;
 		} catch (\RuntimeException $e) {
-			$this->logger->error($e);
+			$this->logger->error(Application::APP_ID . ' AppData folder not found! Runtime Error: '.$e->getMessage());
 			return false;
 		}
 		return true;
