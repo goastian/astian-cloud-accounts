@@ -6,10 +6,10 @@ namespace OCA\EcloudAccounts\Command;
 
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Service\BlackListService;
+use OCP\ILogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use OCP\ILogger;
 
 class UpdateBlacklistedDomains extends Command {
 	private BlackListService $blackListService;
