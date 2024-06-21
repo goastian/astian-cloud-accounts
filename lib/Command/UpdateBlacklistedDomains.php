@@ -32,7 +32,7 @@ class UpdateBlacklistedDomains extends Command {
 			$output->writeln('Updated blacklisted domains for creation.');
 		} catch (\Throwable $th) {
 			$this->logger->error('Error while updating blacklisted domains. ' . $th->getMessage());
-			$output->writeln('Error while updating blacklisted domains.');
+			$output->writeln('Error while updating blacklisted domains. '. $th->getMessage());
 		}
 		return 1;
 	}
