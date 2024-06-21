@@ -5,17 +5,21 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Command;
 
 use OCA\EcloudAccounts\AppInfo\Application;
-use OCA\EcloudAccounts\Service\UserService;
+use OCA\EcloudAccounts\Service\BlackListService;
+use OCP\ILogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateBlacklistedDomains extends Command {
-	private UserService $userService;
+	private BlackListService $blackListService;
+	private ILogger $logger;
 
-	public function __construct(UserService $userService) {
+
+	public function __construct(BlackListService $blackListService, ILogger $logger) {
 		parent::__construct();
-		$this->userService = $userService;
+		$this->blackListService = $blackListService;
+		$this->logger = $logger;
 	}
 
 	protected function configure() {
@@ -23,8 +27,13 @@ class UpdateBlacklistedDomains extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->userService->updateBlacklistedDomains();
-		$output->writeln('Updated blacklisted domains for creation.');
+		try {
+			$this->blackListService->updateBlacklistedDomains();
+			$output->writeln('Updated blacklisted domains for creation.');
+		} catch (\Throwable $th) {
+			$this->logger->error('Error while updating blacklisted domains. ' . $th->getMessage());
+			$output->writeln('Error while updating blacklisted domains. '. $th->getMessage());
+		}
 		return 1;
 	}
 }

@@ -42,8 +42,8 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService) {
+	private BlackListService $blackListService;
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -52,6 +52,7 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
+		$this->blackListService = $blackListService;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
@@ -275,36 +276,9 @@ class UserService {
 		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
 			throw new RecoveryEmailValidationException('You cannot set an email address with a Murena domain as recovery email address.');
 		}
-		if ($this->isBlacklistedEmail($recoveryEmail)) {
+		if ($this->blackListService->isBlacklistedEmail($recoveryEmail)) {
 			throw new BlacklistedEmailException('The domain of this email address is blacklisted. Please provide another recovery address.');
 		}
-	}
-	/**
-	 * Check if an email domain is blacklisted against a JSON list of disposable email domains.
-	 *
-	 * @param string $email The email address to check.
-	 * @return bool True if the email domain is blacklisted, false otherwise.
-	 */
-	public function isBlacklistedEmail(string $email): bool {
-		// Get the blacklisted domains from configuration
-		$blacklistedDomainsInJson = $this->config->getAppValue(Application::APP_ID, 'blacklisted_domains');
-		if (empty($blacklistedDomainsInJson)) {
-			return false;
-		}
-		$blacklistedDomains = json_decode($blacklistedDomainsInJson, true);
-
-		if (empty($blacklistedDomains)) {
-			return false;
-		}
-
-		// Split the email address into parts using explode
-		$emailParts = explode('@', $email);
-		
-		// Extract the domain part
-		$emailDomain = strtolower(end($emailParts));
-		
-		// Check if the email domain is in the blacklisted domains array
-		return in_array($emailDomain, $blacklistedDomains);
 	}
 	/**
 	 * Add a new user to the LDAP directory.
@@ -585,10 +559,5 @@ class UserService {
 	
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
-	}
-	public function updateBlacklistedDomains() {
-		$blacklisted_domain_url = 'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json';
-		$json_data = file_get_contents($blacklisted_domain_url);
-		$this->config->setAppValue(Application::APP_ID, 'blacklisted_domains', $json_data);
 	}
 }
