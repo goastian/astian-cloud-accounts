@@ -11,6 +11,7 @@ use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
+use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCP\Defaults;
 use OCP\IConfig;
 use OCP\ILogger;
@@ -267,13 +268,13 @@ class UserService {
 	 */
 	public function validateRecoveryEmail(string $recoveryEmail): void {
 		if (!$this->isValidEmailFormat($recoveryEmail)) {
-			throw new Exception('Recovery email address has an incorrect format.');
+			throw new RecoveryEmailValidationException('Recovery email address has an incorrect format.');
 		}
 		if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
-			throw new Exception('Recovery email address is already taken.');
+			throw new RecoveryEmailValidationException('Recovery email address is already taken.');
 		}
 		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-			throw new Exception('You cannot set an email address with a Murena domain as recovery email address.');
+			throw new RecoveryEmailValidationException('You cannot set an email address with a Murena domain as recovery email address.');
 		}
 		if ($this->blackListService->isBlacklistedEmail($recoveryEmail)) {
 			throw new BlacklistedEmailException('The domain of this email address is blacklisted. Please provide another recovery address.');
