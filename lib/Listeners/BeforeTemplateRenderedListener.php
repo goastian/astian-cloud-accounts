@@ -46,14 +46,4 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		}
 
 	}
-
-	private function getAccountId(): string {
-		$username = $this->userSession->getUser()->getUID();
-		if ($this->config->getAppValue('snappymail', 'snappymail-autologin', false)) {
-			return $username;
-		}
-		if ($this->config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-			return $this->config->getUserValue($username, 'settings', 'email', '');
-		}
-	}
 }
