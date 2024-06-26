@@ -23,9 +23,6 @@ class BeforeTemplateRenderedListener implements IEventListener {
 	private $appManager;
 	private Util $util;
 
-	private const SNAPPYMAIL_APP_ID = 'snappymail';
-	private const SNAPPYMAIL_URL = '/apps/snappymail/';
-	private const SNAPPYMAIL_AUTOLOGIN_PWD = '1';
 
 	public function __construct($appName, IUserSession $userSession, IRequest $request, ISession $session, IConfig $config, IAppManager $appManager, Util $util) {
 		$this->appName = $appName;
@@ -41,46 +38,12 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (!($event instanceof BeforeTemplateRenderedEvent)) {
 			return;
 		}
-		if ($this->userSession->isLoggedIn() && $this->appManager->isEnabledForUser(self::SNAPPYMAIL_APP_ID) && strpos($this->request->getPathInfo(), self::SNAPPYMAIL_URL) !== false) {
-			$this->autoLoginWebmail();
-		}
+
 		$pathInfo = $this->request->getPathInfo();
 
 		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts') !== false) {
 			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
 		}
 
-	}
-
-
-	private function autoLoginWebmail() {
-		$isOidcLogin = $this->session->get('is_oidc');
-		if (!$isOidcLogin) {
-			return;
-		}
-		$accountId = $this->getAccountId();
-		$actions = \RainLoop\Api::Actions();
-
-		if (empty($accountId) || $actions->getMainAccountFromToken(false)) {
-			return;
-		}
-
-		// Just send over '1' as password to trigger login as the plugin will set the correct access token
-		$password = self::SNAPPYMAIL_AUTOLOGIN_PWD; // As we cannot pass by reference to LoginProcess
-		$account = $actions->LoginProcess($accountId, $password, false);
-		if ($account) {
-			$actions->Plugins()->RunHook('login.success', array($account));
-			$actions->SetAuthToken($account);
-		}
-	}
-
-	private function getAccountId(): string {
-		$username = $this->userSession->getUser()->getUID();
-		if ($this->config->getAppValue('snappymail', 'snappymail-autologin', false)) {
-			return $username;
-		}
-		if ($this->config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-			return $this->config->getUserValue($username, 'settings', 'email', '');
-		}
 	}
 }
