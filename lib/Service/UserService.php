@@ -19,7 +19,8 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Util;
-
+use OCA\EmailRecovery\Service\BlackListService;
+use OCA\EmailRecovery\Service\RecoveryEmailService;
 use Throwable;
 use UnexpectedValueException;
 
@@ -43,7 +44,8 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 	private BlackListService $blackListService;
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService) {
+	private RecoveryEmailService $recoveryEmailService;
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService, RecoveryEmailService $recoveryEmailService) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -53,6 +55,7 @@ class UserService {
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$this->blackListService = $blackListService;
+		$this->recoveryEmailService = $recoveryEmailService;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
@@ -267,13 +270,13 @@ class UserService {
 	 * @return void
 	 */
 	public function validateRecoveryEmail(string $recoveryEmail): void {
-		if (!$this->isValidEmailFormat($recoveryEmail)) {
+		if (!$this->recoveryEmailService->isValidEmailFormat($recoveryEmail)) {
 			throw new RecoveryEmailValidationException('Recovery email address has an incorrect format.');
 		}
-		if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
+		if ($this->recoveryEmailService->isRecoveryEmailTaken($recoveryEmail)) {
 			throw new RecoveryEmailValidationException('Recovery email address is already taken.');
 		}
-		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
+		if ($this->recoveryEmailService->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
 			throw new RecoveryEmailValidationException('You cannot set an email address with a Murena domain as recovery email address.');
 		}
 		if ($this->blackListService->isBlacklistedEmail($recoveryEmail)) {
@@ -319,59 +322,6 @@ class UserService {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
 	}
-	/**
-	 * Check if a recovery email address is available (not already taken by another user).
-	 *
-	 * @param string $recoveryEmail The recovery email address to check.
-	 *
-	 * @return bool True if the recovery email address is available, false otherwise.
-	 */
-	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
-		$recoveryEmail = strtolower($recoveryEmail);
-		$users = $this->config->getUsersForUserValue('email-recovery', 'recovery-email', $recoveryEmail);
-		if(count($users)) {
-			return true;
-		}
-		$users = $this->config->getUsersForUserValue('email-recovery', 'unverified-recovery-email', $recoveryEmail);
-		if(count($users)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check if a recovery email address domain is restricted for some domains
-	 *
-	 * @param string $recoveryEmail The recovery email address to check.
-	 *
-	 * @return bool True if the recovery email address is disallowed, false otherwise.
-	 */
-	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
-		
-		$recoveryEmail = strtolower($recoveryEmail);
-		
-		$emailParts = explode('@', $recoveryEmail);
-		$domain = $emailParts[1] ?? '';
-		
-		$legacyDomain = $this->getLegacyDomain();
-		$mainDomain = $this->getMainDomain();
-		
-		$restrictedDomains = [ $legacyDomain, $mainDomain ];
-
-		return in_array($domain, $restrictedDomains);
-	}
-
-	/**
-	 * Check if a recovery email address is in valid format
-	 *
-	 * @param string $recoveryEmail The recovery email address to check.
-	 *
-	 * @return bool True if the recovery email address is valid, false otherwise.
-	 */
-	public function isValidEmailFormat(string $recoveryEmail): bool {
-		return filter_var($recoveryEmail, FILTER_VALIDATE_EMAIL) !== false;
-	}
-
 	/**
 	 * Create a Hide My Email (HME) alias for a user.
 	 *
