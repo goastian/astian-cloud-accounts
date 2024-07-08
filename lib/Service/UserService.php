@@ -12,6 +12,8 @@ use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
+use OCA\EmailRecovery\Service\BlackListService;
+use OCA\EmailRecovery\Service\RecoveryEmailService;
 use OCP\Defaults;
 use OCP\IConfig;
 use OCP\ILogger;
@@ -19,8 +21,6 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Util;
-use OCA\EmailRecovery\Service\BlackListService;
-use OCA\EmailRecovery\Service\RecoveryEmailService;
 use Throwable;
 use UnexpectedValueException;
 
