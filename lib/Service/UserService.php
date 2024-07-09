@@ -9,9 +9,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
-use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
-use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCA\EmailRecovery\Service\BlackListService;
 use OCA\EmailRecovery\Service\RecoveryEmailService;
 use OCP\Defaults;
@@ -258,30 +256,9 @@ class UserService {
 			throw new Exception("Username '$username' is already taken.");
 		}
 		if (!empty($recoveryEmail)) {
-			$this->validateRecoveryEmail($recoveryEmail);
+			$this->recoveryEmailService->validateRecoveryEmail($recoveryEmail);
 		}
 		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
-	}
-	/**
-	 * Validates the recovery email address.
-	 *
-	 * @param string $recoveryEmail The recovery email address to be validated.
-	 * @throws Exception If the recovery email address has an incorrect format, is already taken, or if the domain is disallowed.
-	 * @return void
-	 */
-	public function validateRecoveryEmail(string $recoveryEmail): void {
-		if (!$this->recoveryEmailService->isValidEmailFormat($recoveryEmail)) {
-			throw new RecoveryEmailValidationException('Recovery email address has an incorrect format.');
-		}
-		if ($this->recoveryEmailService->isRecoveryEmailTaken($recoveryEmail)) {
-			throw new RecoveryEmailValidationException('Recovery email address is already taken.');
-		}
-		if ($this->recoveryEmailService->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-			throw new RecoveryEmailValidationException('You cannot set an email address with a Murena domain as recovery email address.');
-		}
-		if ($this->blackListService->isBlacklistedEmail($recoveryEmail)) {
-			throw new BlacklistedEmailException('The domain of this email address is blacklisted. Please provide another recovery address.');
-		}
 	}
 	/**
 	 * Add a new user to the LDAP directory.
