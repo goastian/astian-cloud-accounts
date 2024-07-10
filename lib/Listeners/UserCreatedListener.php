@@ -33,8 +33,9 @@ class UserCreatedListener implements IEventListener {
 		if (!($event instanceof BeforeUserCreatedEvent)) {
 			return;
 		}
-
+		$this->logger->error("Before user created listener called");
 		$uid = $event->getUid();
+		$this->logger->error("UID: ".$uid);
 		// $user = $event->getUser();
 		// $username = $user->getUID();
 		// $newValue = $event->getValue();
