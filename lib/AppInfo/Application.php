@@ -39,9 +39,11 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserCreatedEvent;
 use OCP\User\Events\BeforeUserDeletedEvent;
+use OCP\User\Events\CreateUserEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
 
@@ -58,7 +60,16 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
-		$context->registerEventListener(BeforeUserCreatedEvent::class, BeforeUserCreatedListener::class);
+		$this->registerSystemHooks();
+	}
+	/**
+	 *
+	 */
+	protected function registerSystemHooks(): void {
+		/* @var IEventDispatcher $eventDispatcher */
+		$dispatcher = $this->getContainer()->get(IEventDispatcher::class);
+		$dispatcher->addServiceListener(CreateUserEvent::class, BeforeUserCreatedListener::class);
+		$dispatcher->addServiceListener(BeforeUserCreatedEvent::class, BeforeUserCreatedListener::class);
 	}
 
 	public function boot(IBootContext $context): void {
