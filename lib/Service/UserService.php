@@ -8,11 +8,13 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Event\BeforeUserRegisteredEvent;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EmailRecovery\Service\BlackListService;
 use OCA\EmailRecovery\Service\RecoveryEmailService;
 use OCP\Defaults;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IUser;
@@ -43,7 +45,9 @@ class UserService {
 	private $LDAPConnectionService;
 	private BlackListService $blackListService;
 	private RecoveryEmailService $recoveryEmailService;
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService, RecoveryEmailService $recoveryEmailService) {
+
+	private IEventDispatcher $dispatcher;
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService, RecoveryEmailService $recoveryEmailService, IEventDispatcher $dispatcher) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -54,6 +58,7 @@ class UserService {
 		$this->LDAPConnectionService = $LDAPConnectionService;
 		$this->blackListService = $blackListService;
 		$this->recoveryEmailService = $recoveryEmailService;
+		$this->dispatcher = $dispatcher;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
@@ -256,7 +261,7 @@ class UserService {
 			throw new Exception("Username '$username' is already taken.");
 		}
 		if (!empty($recoveryEmail)) {
-			// $this->recoveryEmailService->validateRecoveryEmail('', $recoveryEmail, $language);
+			$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($recoveryEmail));
 		}
 		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
 	}
