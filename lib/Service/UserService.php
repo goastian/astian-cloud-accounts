@@ -170,16 +170,18 @@ class UserService {
 		}
 	}
 	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en') : void {
-		
+		$this->logger->error('welcome_test at start of sendWelcomeEmail. User: ' . $username);
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
+			$this->logger->error('welcome_test sendgrid_api_key is empty. User: ' . $username);
 			return;
 		}
 		
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
+			$this->logger->error('welcome_test welcome_sendgrid_template_id is empty. User: ' . $username);
 			return;
 		}
 		
@@ -195,7 +197,7 @@ class UserService {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			$this->logger->error('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
+			$this->logger->error('welcome_test Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
 		}
 	}
 	private function getSendGridAPIKey() : string {
@@ -232,6 +234,8 @@ class UserService {
 		$sendgrid = new \SendGrid($sendgridAPIkey);
 		$response = $sendgrid->send($email, [ CURLOPT_TIMEOUT => 15 ]);
 
+		$this->logger->error('welcome_test sending responseCode : ' . $response->statusCode());
+		
 		if ($response->statusCode() < 200 || $response->statusCode() > 299) {
 			$this->logger->error("SendGrid API error - Status Code: " . $response->statusCode());
 		}

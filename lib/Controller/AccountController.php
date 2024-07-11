@@ -108,7 +108,8 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
-		
+		$this->logger->error('welcome_test start creating account');
+
 		$response = new DataResponse();
 		
 		if(!$this->session->get(self::CAPTCHA_VERIFIED_CHECK)) {
@@ -182,6 +183,8 @@ class AccountController extends Controller {
 			$response->setData(['message' => 'An error occurred while creating your account!', 'success' => false]);
 			$response->setStatus(500);
 		}
+
+		$this->logger->error('welcome_test start creating account');
 
 		return $response;
 	}
