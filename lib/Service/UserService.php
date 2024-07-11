@@ -262,8 +262,6 @@ class UserService {
 		}
 		if (!empty($recoveryEmail)) {
 			$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($recoveryEmail));
-			echo '---';
-			die;
 		}
 		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
 	}
