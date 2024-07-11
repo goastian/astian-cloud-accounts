@@ -13,11 +13,7 @@ use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
-use OCA\EmailRecovery\Exception\BlacklistedEmailException;
-use OCA\EmailRecovery\Exception\InvalidRecoveryEmailException;
-use OCA\EmailRecovery\Exception\MurenaDomainDisallowedException;
-use OCA\EmailRecovery\Exception\RecoveryEmailAlreadyFoundException;
-use OCA\EmailRecovery\Exception\SameRecoveryEmailAsEmailException;
+use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -172,7 +168,7 @@ class AccountController extends Controller {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
-		} catch (BlacklistedEmailException | InvalidRecoveryEmailException | SameRecoveryEmailAsEmailException | RecoveryEmailAlreadyFoundException | MurenaDomainDisallowedException | Error $e) {
+		} catch (RecoveryEmailValidationException | Error $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
