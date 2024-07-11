@@ -11,8 +11,6 @@ use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Event\BeforeUserRegisteredEvent;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
-use OCA\EmailRecovery\Service\BlackListService;
-use OCA\EmailRecovery\Service\RecoveryEmailService;
 use OCP\Defaults;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IConfig;
@@ -43,11 +41,8 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-	private BlackListService $blackListService;
-	private RecoveryEmailService $recoveryEmailService;
-
 	private IEventDispatcher $dispatcher;
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService, RecoveryEmailService $recoveryEmailService, IEventDispatcher $dispatcher) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IEventDispatcher $dispatcher) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -56,8 +51,6 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
-		$this->blackListService = $blackListService;
-		$this->recoveryEmailService = $recoveryEmailService;
 		$this->dispatcher = $dispatcher;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
