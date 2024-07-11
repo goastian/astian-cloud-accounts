@@ -28,7 +28,8 @@ use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
 
-class AccountController extends Controller {
+class AccountController extends Controller
+{
 	protected $appName;
 	protected $request;
 	private $userService;
@@ -77,7 +78,8 @@ class AccountController extends Controller {
 	 * @param string $lang Language code (default: 'en')
 	 *
 	 */
-	public function index(string $lang = 'en') {
+	public function index(string $lang = 'en')
+	{
 		if ($this->userSession->isLoggedIn()) {
 			return new RedirectResponse($this->urlGenerator->linkToDefaultPageUrl());
 		}
@@ -91,7 +93,7 @@ class AccountController extends Controller {
 			TemplateResponse::RENDER_AS_GUEST
 		);
 	}
-	
+
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
@@ -107,11 +109,13 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
-		
+	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse
+	{
+		$this->logger->error('welcome_test start creating account');
+
 		$response = new DataResponse();
-		
-		if(!$this->session->get(self::CAPTCHA_VERIFIED_CHECK)) {
+
+		if (!$this->session->get(self::CAPTCHA_VERIFIED_CHECK)) {
 			$response->setData(['message' => 'Captcha is not verified!', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
@@ -128,7 +132,7 @@ class AccountController extends Controller {
 			'displayname' => ['value' => $displayname, 'maxLength' => 30],
 			'password' => ['value' => $password, 'maxLength' => 1024],
 		];
-		
+
 		foreach ($inputData as $inputName => $inputInfo) {
 			$validationError = $this->validateInput($inputName, $inputInfo['value'], $inputInfo['maxLength']);
 			if ($validationError !== null) {
@@ -137,11 +141,11 @@ class AccountController extends Controller {
 				return $response;
 			}
 		}
-		
+
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
 			$mainDomain = $this->userService->getMainDomain();
-			$userEmail = $username.'@'.$mainDomain;
+			$userEmail = $username . '@' . $mainDomain;
 			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
 			sleep(2);
 
@@ -152,19 +156,18 @@ class AccountController extends Controller {
 			$this->userService->setUserLanguage($username, $language);
 			$this->newsletterService->setNewsletterSignup($newsletterEos, $newsletterProduct, $userEmail, $language);
 			$this->userService->setRecoveryEmail($username, '');
-			if($recoveryEmail !== '') {
+			if ($recoveryEmail !== '') {
 				$this->userService->setUnverifiedRecoveryEmail($username, $recoveryEmail);
 			}
-		
+
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
-			
+
 			$this->session->remove(self::SESSION_USERNAME_CHECK);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 
 			$this->userService->addUsernameToCommonDataStore($username);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
-
 		} catch (LDAPUserCreationException | Error $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
@@ -183,6 +186,8 @@ class AccountController extends Controller {
 			$response->setStatus(500);
 		}
 
+		$this->logger->error('welcome_test done creating account');
+
 		return $response;
 	}
 	/**
@@ -194,15 +199,16 @@ class AccountController extends Controller {
 	 *
 	 * @return string|null If validation fails, a string describing the error; otherwise, null.
 	 */
-	public function validateInput(string $inputName, string $value, int $maxLength = null) : ?string {
+	public function validateInput(string $inputName, string $value, int $maxLength = null): ?string
+	{
 		if ($value === '') {
 			return "$inputName is required.";
 		}
-	
+
 		if ($maxLength !== null && strlen($value) > $maxLength) {
 			return "$inputName is too large.";
 		}
-	
+
 		return null; // Validation passed
 	}
 	/**
@@ -216,7 +222,8 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function checkUsernameAvailable(string $username) : DataResponse {
+	public function checkUsernameAvailable(string $username): DataResponse
+	{
 		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		$response = new DataResponse();
 		$response->setStatus(400);
@@ -232,7 +239,7 @@ class AccountController extends Controller {
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
 			}
 		} catch (Exception $e) {
-			$this->logger->logException($e, ['app' => Application::APP_ID ]);
+			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setStatus(500);
 		}
 
@@ -244,7 +251,8 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function captcha(): Http\DataDisplayResponse {
+	public function captcha(): Http\DataDisplayResponse
+	{
 		$captchaValue = $this->captchaService->generateCaptcha();
 
 		$response = new Http\DataDisplayResponse($captchaValue, Http::STATUS_OK, ['Content-Type' => 'image/png']);
@@ -262,7 +270,8 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = '') : DataResponse {
+	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = ''): DataResponse
+	{
 		$response = new DataResponse();
 		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
 		// Initialize the default status to 400 (Bad Request)
@@ -277,5 +286,4 @@ class AccountController extends Controller {
 		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
 		return $response;
 	}
-
 }

@@ -23,7 +23,8 @@ use OCP\Util;
 use Throwable;
 use UnexpectedValueException;
 
-class UserService {
+class UserService
+{
 	/** @var IUserManager */
 	private $userManager;
 	/** @var array */
@@ -43,7 +44,8 @@ class UserService {
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
 	private BlackListService $blackListService;
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService) {
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService)
+	{
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -71,14 +73,16 @@ class UserService {
 	}
 
 
-	public function getConfigValue(string $key, mixed $default = false) {
+	public function getConfigValue(string $key, mixed $default = false)
+	{
 		if (!empty($this->appConfig[$key])) {
 			return $this->appConfig[$key];
 		}
 		return $default;
 	}
 
-	public function userExists(string $uid): bool {
+	public function userExists(string $uid): bool
+	{
 		$exists = $this->userManager->userExists($uid);
 		if ($exists) {
 			return $exists;
@@ -88,7 +92,7 @@ class UserService {
 		foreach ($backends as $backend) {
 			if ($backend->getBackendName() === 'LDAP') {
 				$access = $backend->getLDAPAccess($uid);
-				$users = $access->fetchUsersByLoginName($uid) ;
+				$users = $access->fetchUsersByLoginName($uid);
 				if (count($users) > 0) {
 					$exists = true;
 				}
@@ -97,24 +101,29 @@ class UserService {
 		return $exists;
 	}
 
-	public function getUser(string $uid): ?IUser {
-		if($this->userExists($uid)) {
+	public function getUser(string $uid): ?IUser
+	{
+		if ($this->userExists($uid)) {
 			return $this->userManager->get($uid);
 		}
 		return null;
 	}
 
-	public function setRecoveryEmail(string $uid, string $recoveryEmail): void {
+	public function setRecoveryEmail(string $uid, string $recoveryEmail): void
+	{
 		$this->config->setUserValue($uid, 'email-recovery', 'recovery-email', $recoveryEmail);
 	}
-	public function setUnverifiedRecoveryEmail(string $uid, string $recoveryEmail): void {
+	public function setUnverifiedRecoveryEmail(string $uid, string $recoveryEmail): void
+	{
 		$this->config->setUserValue($uid, 'email-recovery', 'unverified-recovery-email', $recoveryEmail);
 	}
-	public function setTOS(string $uid, bool $tosAccepted): void {
+	public function setTOS(string $uid, bool $tosAccepted): void
+	{
 		$this->config->setUserValue($uid, 'terms_of_service', 'tosAccepted', intval($tosAccepted));
 	}
 
-	public function getHMEAliasesFromConfig($uid) : array {
+	public function getHMEAliasesFromConfig($uid): array
+	{
 		$aliases = $this->config->getUserValue($uid, 'hide-my-email', 'email-aliases', []);
 		if (!empty($aliases)) {
 			$aliases = json_decode($aliases, true);
@@ -122,7 +131,8 @@ class UserService {
 		return $aliases;
 	}
 
-	public function addHMEAliasInConfig($uid, $alias) : bool {
+	public function addHMEAliasInConfig($uid, $alias): bool
+	{
 		$aliases = $this->getHMEAliasesFromConfig($uid);
 		$aliases[] = $alias;
 		$aliases = json_encode($aliases);
@@ -145,7 +155,8 @@ class UserService {
 	 * @param $welcomeSecret string generated at ecloud selfhosting install and added as a custom var in NC's config
 	 * @return mixed response of the external endpoint
 	 */
-	public function deleteEmailAccount(string $email) {
+	public function deleteEmailAccount(string $email)
+	{
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
@@ -155,66 +166,82 @@ class UserService {
 
 		$endpoint = $commonApiVersion . '/emails/' . $email;
 		$url = $commonServicesURL . $endpoint; // DELETE /v2/emails/@email
-		
+
 		$params = [];
 
 		$token = $this->apiConfig['commonServicesToken'];
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-		
+
 		$this->curl->delete($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
-			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: '.$this->curl->getLastStatusCode());
+			throw new Exception('Error deleting mail folder of' . $email . '. Status Code: ' . $this->curl->getLastStatusCode());
 		}
 	}
-	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en') : void {
-		
+	public function sendWelcomeEmail(string $displayname, string $username, string $userEmail, string $language = 'en'): void
+	{
+
+		$this->logger->error('welcome_test at start of sendWelcomeEmail. User: ' . $username);
+
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
+			$this->logger->error('welcome_test sendgrid_api_key is empty. User: ' . $username);
 			return;
 		}
-		
+
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
+			$this->logger->error('welcome_test sendgrid_template_ids is empty. User: ' . $username);
 			return;
 		}
-		
+
 		$templateID = $templateIDs['en'];
 		if (isset($templateIDs[$language])) {
 			$templateID = $templateIDs[$language];
 		}
-		
+
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
-		
+
 		try {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			$this->logger->error('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
+			$this->logger->error('welcome_test Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
 		}
 	}
-	private function getSendGridAPIKey() : string {
+
+	private function getSendGridAPIKey(): string
+	{
 		return $this->config->getSystemValue('sendgrid_api_key', '');
 	}
-	private function getSendGridTemplateIDs() : array {
+
+	private function getSendGridTemplateIDs(): array
+	{
 		return $this->config->getSystemValue('welcome_sendgrid_template_ids', '');
 	}
-	public function getMainDomain() : string {
+
+	public function getMainDomain(): string
+	{
 		return $this->config->getSystemValue('main_domain', '');
 	}
-	public function getLegacyDomain() : string {
+
+	public function getLegacyDomain(): string
+	{
 		return $this->config->getSystemValue('legacy_domain', '');
 	}
-	public function setUserLanguage(string $username, string $language = 'en') {
+
+	public function setUserLanguage(string $username, string $language = 'en')
+	{
 		$this->config->setUserValue($username, 'core', 'lang', $language);
 	}
-	
-	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID) : \SendGrid\Mail\Mail {
+
+	private function createSendGridEmail(string $fromEmail, string $fromName, string $username, string $displayname, string $userEmail, string $templateID): \SendGrid\Mail\Mail
+	{
 		$mainDomain = $this->getMainDomain();
 
 		$email = new \SendGrid\Mail\Mail();
@@ -228,14 +255,19 @@ class UserService {
 		]);
 		return $email;
 	}
-	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): void {
+
+	private function sendEmailWithSendGrid(\SendGrid\Mail\Mail $email, string $sendgridAPIkey): void
+	{
 		$sendgrid = new \SendGrid($sendgridAPIkey);
-		$response = $sendgrid->send($email, [ CURLOPT_TIMEOUT => 15 ]);
+		$response = $sendgrid->send($email, [CURLOPT_TIMEOUT => 15]);
+
+		$this->logger->error('welcome_test sendGrid response: ' . $response->statusCode());
 
 		if ($response->statusCode() < 200 || $response->statusCode() > 299) {
 			$this->logger->error("SendGrid API error - Status Code: " . $response->statusCode());
 		}
 	}
+
 	/**
 	 * Register a new user.
 	 *
@@ -249,8 +281,9 @@ class UserService {
 	 * @throws Exception If the username or recovery email is already taken.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void {
-		
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void
+	{
+
 		if ($this->userExists($username) || $this->isUsernameTaken($username)) {
 			throw new Exception("Username '$username' is already taken.");
 		}
@@ -266,7 +299,8 @@ class UserService {
 	 * @throws Exception If the recovery email address has an incorrect format, is already taken, or if the domain is disallowed.
 	 * @return void
 	 */
-	public function validateRecoveryEmail(string $recoveryEmail): void {
+	public function validateRecoveryEmail(string $recoveryEmail): void
+	{
 		if (!$this->isValidEmailFormat($recoveryEmail)) {
 			throw new RecoveryEmailValidationException('Recovery email address has an incorrect format.');
 		}
@@ -291,14 +325,15 @@ class UserService {
 	 * @return void
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	private function addNewUserToLDAP(string $displayName, string $username, string $userEmail, string $password): void {
+	private function addNewUserToLDAP(string $displayName, string $username, string $userEmail, string $password): void
+	{
 		$connection = $this->LDAPConnectionService->getLDAPConnection();
 		$base = $this->LDAPConnectionService->getLDAPBaseUsers()[0];
 		$newUserDN = "username=$username," . $base;
-		
+
 		$displayName = htmlspecialchars($displayName);
 		$quota = $this->getDefaultQuota() * 1024 * 1024;
-		
+
 		$newUserEntry = [
 			'mailAddress' => $userEmail,
 			'username' => $username,
@@ -312,9 +347,9 @@ class UserService {
 			'userClusterID' => $this->apiConfig['userClusterID'],
 			'objectClass' => $this->apiConfig['objectClass']
 		];
-		
+
 		$ret = ldap_add($connection, $newUserDN, $newUserEntry);
-		
+
 		if (!$ret) {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
@@ -326,14 +361,15 @@ class UserService {
 	 *
 	 * @return bool True if the recovery email address is available, false otherwise.
 	 */
-	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
+	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool
+	{
 		$recoveryEmail = strtolower($recoveryEmail);
 		$users = $this->config->getUsersForUserValue('email-recovery', 'recovery-email', $recoveryEmail);
-		if(count($users)) {
+		if (count($users)) {
 			return true;
 		}
 		$users = $this->config->getUsersForUserValue('email-recovery', 'unverified-recovery-email', $recoveryEmail);
-		if(count($users)) {
+		if (count($users)) {
 			return true;
 		}
 		return false;
@@ -346,17 +382,18 @@ class UserService {
 	 *
 	 * @return bool True if the recovery email address is disallowed, false otherwise.
 	 */
-	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
-		
+	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool
+	{
+
 		$recoveryEmail = strtolower($recoveryEmail);
-		
+
 		$emailParts = explode('@', $recoveryEmail);
 		$domain = $emailParts[1] ?? '';
-		
+
 		$legacyDomain = $this->getLegacyDomain();
 		$mainDomain = $this->getMainDomain();
-		
-		$restrictedDomains = [ $legacyDomain, $mainDomain ];
+
+		$restrictedDomains = [$legacyDomain, $mainDomain];
 
 		return in_array($domain, $restrictedDomains);
 	}
@@ -368,7 +405,8 @@ class UserService {
 	 *
 	 * @return bool True if the recovery email address is valid, false otherwise.
 	 */
-	public function isValidEmailFormat(string $recoveryEmail): bool {
+	public function isValidEmailFormat(string $recoveryEmail): bool
+	{
 		return filter_var($recoveryEmail, FILTER_VALIDATE_EMAIL) !== false;
 	}
 
@@ -380,12 +418,13 @@ class UserService {
 	 *
 	 * @return void
 	 */
-	public function createHMEAlias(string $username, string $resultmail): void {
+	public function createHMEAlias(string $username, string $resultmail): void
+	{
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$aliasDomain = $this->apiConfig['aliasDomain'];
 		$token = $this->apiConfig['commonServicesToken'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
-		
+
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
 		$url = $commonServicesURL . $endpoint . $resultmail;
 		$data = array(
@@ -398,7 +437,7 @@ class UserService {
 		$result = json_decode($result, true);
 
 		$hmeAlias = isset($result['emailAlias']) ? $result['emailAlias'] : '';
-		if($hmeAlias != '') {
+		if ($hmeAlias != '') {
 			$hmeAliasAdded = $this->addHMEAliasInConfig($username, $hmeAlias);
 			if (!$hmeAliasAdded) {
 				$this->logger->error("Failed to add HME Alias '$hmeAlias' for username '$username' in config.");
@@ -415,7 +454,8 @@ class UserService {
 	 *
 	 * @return mixed The result of the domain alias creation request, decoded from JSON.
 	 */
-	public function createNewDomainAlias(string $username, string $userEmail): mixed {
+	public function createNewDomainAlias(string $username, string $userEmail): mixed
+	{
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->config->getSystemValue('commonApiVersion', '');
 		$domain = $this->apiConfig['mainDomain'];
@@ -432,7 +472,7 @@ class UserService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-		
+
 		$result = $this->curl->post($url, $data, $headers);
 		$result = json_decode($result, true);
 		if ($this->curl->getLastStatusCode() !== 200) {
@@ -449,7 +489,8 @@ class UserService {
 	 *
 	 * @return void
 	 */
-	public function setAccountDataLocally(string $uid, string $mailAddress): void {
+	public function setAccountDataLocally(string $uid, string $mailAddress): void
+	{
 		$user = $this->getUser($uid);
 		if (is_null($user)) {
 			throw new Exception("User with username '$uid' not found.");
@@ -462,7 +503,8 @@ class UserService {
 		$user->setQuota($quota);
 	}
 
-	public function isUsernameTaken(string $username) : bool {
+	public function isUsernameTaken(string $username): bool
+	{
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
@@ -500,7 +542,8 @@ class UserService {
 	 *
 	 * @throws AddUsernameToCommonStoreException If an error occurs while adding the username to the common data store.
 	 */
-	public function addUsernameToCommonDataStore(string $username) : void {
+	public function addUsernameToCommonDataStore(string $username): void
+	{
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
@@ -508,8 +551,8 @@ class UserService {
 			return;
 		}
 		$endpoint = $commonApiVersion . '/users/';
-		$url = $commonServicesURL . $endpoint ;
-		
+		$url = $commonServicesURL . $endpoint;
+
 		$params = [
 			'username' => $username
 		];
@@ -518,7 +561,7 @@ class UserService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-		
+
 		$this->curl->post($url, $params, $headers);
 
 		if ($this->curl->getLastStatusCode() !== 200) {
@@ -526,38 +569,42 @@ class UserService {
 		}
 	}
 
-	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void {
+	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void
+	{
 		$userActiveAttributes = $this->getActiveAttributes($isEnabled);
 		$this->updateAttributesInLDAP($username, $userActiveAttributes);
 	}
 
-	private function getActiveAttributes(bool $isEnabled): array {
+	private function getActiveAttributes(bool $isEnabled): array
+	{
 		return [
 			'active' => $isEnabled ? 'TRUE' : 'FALSE',
 			'mailActive' => $isEnabled ? 'TRUE' : 'FALSE',
 		];
 	}
 
-	public function updateAttributesInLDAP(string $username, array $attributes): void {
+	public function updateAttributesInLDAP(string $username, array $attributes): void
+	{
 		if (!$this->LDAPConnectionService->isLDAPEnabled()) {
 			return;
 		}
-	
+
 		$conn = $this->LDAPConnectionService->getLDAPConnection();
 		$userDn = $this->LDAPConnectionService->username2dn($username);
-	
+
 		if ($userDn === false) {
 			throw new Exception('Could not find DN for username: ' . $username);
 		}
-	
+
 		if (!ldap_modify($conn, $userDn, $attributes)) {
 			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server. Attributes: ' . print_r($attributes, true));
 		}
-	
+
 		$this->LDAPConnectionService->closeLDAPConnection($conn);
 	}
-	
-	private function getDefaultQuota() {
+
+	private function getDefaultQuota()
+	{
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
 }
