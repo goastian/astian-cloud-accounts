@@ -36,11 +36,17 @@ use OCP\EventDispatcher\Event;
 class BeforeUserRegisteredEvent extends Event {
 
 	private $recoveryMailAddress;
+	private $language;
 
-	public function __construct(string $recoveryMailAddress) {
+	public function __construct(string $recoveryMailAddress, string $language) {
 		$this->recoveryMailAddress = $recoveryMailAddress;
+		$this->language = $language;
 	}
 	public function getRecoveryEmail(): string {
 		return $this->recoveryMailAddress;
+	}
+
+	public function getLanguage(): string {
+		return $this->language;
 	}
 }

@@ -248,13 +248,13 @@ class UserService {
 	 * @throws Exception If the username or recovery email is already taken.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void {
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password, string $language = 'en'): void {
 		
 		if ($this->userExists($username) || $this->isUsernameTaken($username)) {
 			throw new Exception("Username '$username' is already taken.");
 		}
 		if (!empty($recoveryEmail)) {
-			$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($recoveryEmail));
+			$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($recoveryEmail, $language));
 		}
 		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
 	}
