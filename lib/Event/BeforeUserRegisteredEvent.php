@@ -24,7 +24,7 @@ declare(strict_types=1);
  *
  */
 
-namespace OCP\EcloudAccounts\Events;
+namespace OCA\EcloudAccounts\Event;
 
 use OCP\EventDispatcher\Event;
 
