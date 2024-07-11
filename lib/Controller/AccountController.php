@@ -168,7 +168,7 @@ class AccountController extends Controller {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
-		} catch (RecoveryEmailValidationException | Error $e) {
+		} catch (RecoveryEmailValidationException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
 			$response->setStatus(500);
