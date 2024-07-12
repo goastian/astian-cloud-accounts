@@ -37,8 +37,12 @@ class BeforeUserRegisteredEvent extends Event {
 
 	private $recoveryMailAddress;
 	private $language;
+	private $username;
+	private $displayName;
 
-	public function __construct(string $recoveryMailAddress, string $language) {
+	public function __construct(string $username, string $displayName, string $recoveryMailAddress, string $language) {
+		$this->username = $username;
+		$this->displayName = $displayName;
 		$this->recoveryMailAddress = $recoveryMailAddress;
 		$this->language = $language;
 	}
@@ -48,5 +52,11 @@ class BeforeUserRegisteredEvent extends Event {
 
 	public function getLanguage(): string {
 		return $this->language;
+	}
+	public function getUsername(): string {
+		return $this->username;
+	}
+	public function getDisplayName(): string {
+		return $this->displayName;
 	}
 }

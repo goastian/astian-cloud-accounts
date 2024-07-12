@@ -171,7 +171,7 @@ class AccountController extends Controller {
 		} catch (RecoveryEmailValidationException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
-			$response->setStatus(500);
+			$response->setStatus(400);
 		} catch (AddUsernameToCommonStoreException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setStatus(200);

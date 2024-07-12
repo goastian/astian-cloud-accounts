@@ -253,9 +253,7 @@ class UserService {
 		if ($this->userExists($username) || $this->isUsernameTaken($username)) {
 			throw new Exception("Username '$username' is already taken.");
 		}
-		if (!empty($recoveryEmail)) {
-			$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($recoveryEmail, $language));
-		}
+		$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($username, $displayname, $recoveryEmail, $language));
 		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
 	}
 	/**
