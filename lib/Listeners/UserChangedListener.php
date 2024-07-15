@@ -16,27 +16,23 @@ use OCP\Util;
 
 class UserChangedListener implements IEventListener {
 	private const QUOTA_FEATURE = 'quota';
-
-	private const RECOVERY_EMAIL_FEATURE = 'recovery-email';
-
 	private const ENABLED_FEATURE = 'enabled';
 
 	private $util;
 
 	private $logger;
 
-	private $ldapConnectionService;
-
 	private $mailboxMapper;
 
 	private $userService;
+	private $LDAPConnectionService;
 
-	public function __construct(Util $util, LDAPConnectionService $LDAPConnectionService, ILogger $logger, MailboxMapper $mailboxMapper, UserService $userService) {
+	public function __construct(Util $util, ILogger $logger, MailboxMapper $mailboxMapper, UserService $userService, LDAPConnectionService $LDAPConnectionService) {
 		$this->util = $util;
-		$this->ldapConnectionService = $LDAPConnectionService;
 		$this->mailboxMapper = $mailboxMapper;
 		$this->logger = $logger;
 		$this->userService = $userService;
+		$this->LDAPConnectionService = $LDAPConnectionService;
 	}
 
 	public function handle(Event $event): void {
@@ -57,15 +53,6 @@ class UserChangedListener implements IEventListener {
 			$this->updateQuota($username, $backend, $quotaInBytes);
 		}
 
-		if ($feature === self::RECOVERY_EMAIL_FEATURE) {
-			$recoveryEmail = $event->getValue();
-			$recoveryEmailAttribute = [
-				'recoveryMailAddress' => $recoveryEmail
-			];
-
-			$this->userService->updateAttributesInLDAP($username, $recoveryEmailAttribute);
-		}
-
 		if ($feature === self::ENABLED_FEATURE) {
 			try {
 				$this->userService->mapActiveAttributesInLDAP($username, $newValue);
@@ -84,7 +71,7 @@ class UserChangedListener implements IEventListener {
 				$quotaAttribute = [
 					'quota' => $quotaInBytes
 				];
-				$this->userService->updateAttributesInLDAP($username, $quotaAttribute);
+				$this->LDAPConnectionService->updateAttributesInLDAP($username, $quotaAttribute);
 			}
 		} catch (Exception $e) {
 			$this->logger->error("Error setting quota for user $username " . $e->getMessage());

@@ -104,4 +104,22 @@ class LDAPConnectionService {
 	public function getLdapQuota() {
 		return $this->config->getSystemValue('default_quota', '1024');
 	}
+	public function updateAttributesInLDAP(string $username, array $attributes): void {
+		if (!$this->isLDAPEnabled()) {
+			return;
+		}
+
+		$conn = $this->getLDAPConnection();
+		$userDn = $this->username2dn($username);
+
+		if ($userDn === false) {
+			throw new Exception('Could not find DN for username: ' . $username);
+		}
+
+		if (!ldap_modify($conn, $userDn, $attributes)) {
+			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server. Attributes: ' . print_r($attributes, true));
+		}
+
+		$this->closeLDAPConnection($conn);
+	}
 }
