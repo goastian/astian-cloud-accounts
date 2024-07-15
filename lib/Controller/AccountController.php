@@ -9,7 +9,6 @@ namespace OCA\EcloudAccounts\Controller;
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
-use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
@@ -142,7 +141,7 @@ class AccountController extends Controller {
 			$username = mb_strtolower($username, 'UTF-8');
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
-			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password);
+			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
 			sleep(2);
 
 			$this->userService->setAccountDataLocally($username, $userEmail);
@@ -169,10 +168,10 @@ class AccountController extends Controller {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => 'A server-side error occurred while processing your request! Please try again later.', 'success' => false]);
 			$response->setStatus(500);
-		} catch (BlacklistedEmailException | RecoveryEmailValidationException | Error $e) {
+		} catch (RecoveryEmailValidationException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setData(['message' => $e->getMessage(), 'success' => false]);
-			$response->setStatus(500);
+			$response->setStatus(400);
 		} catch (AddUsernameToCommonStoreException $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID]);
 			$response->setStatus(200);

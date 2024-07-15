@@ -8,18 +8,17 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Exception;
 use OCA\EcloudAccounts\AppInfo\Application;
+use OCA\EcloudAccounts\Event\BeforeUserRegisteredEvent;
 use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
-use OCA\EcloudAccounts\Exception\BlacklistedEmailException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
-use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCP\Defaults;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Util;
-
 use Throwable;
 use UnexpectedValueException;
 
@@ -42,8 +41,8 @@ class UserService {
 	private $apiConfig;
 	/** @var LDAPConnectionService */
 	private $LDAPConnectionService;
-	private BlackListService $blackListService;
-	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, BlackListService $blackListService) {
+	private IEventDispatcher $dispatcher;
+	public function __construct($appName, IUserManager $userManager, IConfig $config, CurlService $curlService, ILogger $logger, Defaults $defaults, IFactory $l10nFactory, LDAPConnectionService $LDAPConnectionService, IEventDispatcher $dispatcher) {
 		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->appConfig = $this->config->getSystemValue($appName);
@@ -52,7 +51,7 @@ class UserService {
 		$this->defaults = $defaults;
 		$this->l10nFactory = $l10nFactory;
 		$this->LDAPConnectionService = $LDAPConnectionService;
-		$this->blackListService = $blackListService;
+		$this->dispatcher = $dispatcher;
 		$commonServiceURL = $this->config->getSystemValue('common_services_url', '');
 
 		if (!empty($commonServiceURL)) {
@@ -249,36 +248,13 @@ class UserService {
 	 * @throws Exception If the username or recovery email is already taken.
 	 * @throws LDAPUserCreationException If there is an error adding new entry to LDAP store
 	 */
-	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password): void {
+	public function registerUser(string $displayname, string $recoveryEmail, string $username, string $userEmail, string $password, string $language = 'en'): void {
 		
 		if ($this->userExists($username) || $this->isUsernameTaken($username)) {
 			throw new Exception("Username '$username' is already taken.");
 		}
-		if (!empty($recoveryEmail)) {
-			$this->validateRecoveryEmail($recoveryEmail);
-		}
+		$this->dispatcher->dispatchTyped(new BeforeUserRegisteredEvent($username, $displayname, $recoveryEmail, $language));
 		$this->addNewUserToLDAP($displayname, $username, $userEmail, $password);
-	}
-	/**
-	 * Validates the recovery email address.
-	 *
-	 * @param string $recoveryEmail The recovery email address to be validated.
-	 * @throws Exception If the recovery email address has an incorrect format, is already taken, or if the domain is disallowed.
-	 * @return void
-	 */
-	public function validateRecoveryEmail(string $recoveryEmail): void {
-		if (!$this->isValidEmailFormat($recoveryEmail)) {
-			throw new RecoveryEmailValidationException('Recovery email address has an incorrect format.');
-		}
-		if ($this->checkRecoveryEmailAvailable($recoveryEmail)) {
-			throw new RecoveryEmailValidationException('Recovery email address is already taken.');
-		}
-		if ($this->isRecoveryEmailDomainDisallowed($recoveryEmail)) {
-			throw new RecoveryEmailValidationException('You cannot set an email address with a Murena domain as recovery email address.');
-		}
-		if ($this->blackListService->isBlacklistedEmail($recoveryEmail)) {
-			throw new BlacklistedEmailException('The domain of this email address is blacklisted. Please provide another recovery address.');
-		}
 	}
 	/**
 	 * Add a new user to the LDAP directory.
@@ -319,59 +295,6 @@ class UserService {
 			throw new LDAPUserCreationException("Error while adding entry to LDAP for username: " .  $username . ' Error: ' . ldap_error($connection), ldap_errno($connection));
 		}
 	}
-	/**
-	 * Check if a recovery email address is available (not already taken by another user).
-	 *
-	 * @param string $recoveryEmail The recovery email address to check.
-	 *
-	 * @return bool True if the recovery email address is available, false otherwise.
-	 */
-	public function checkRecoveryEmailAvailable(string $recoveryEmail): bool {
-		$recoveryEmail = strtolower($recoveryEmail);
-		$users = $this->config->getUsersForUserValue('email-recovery', 'recovery-email', $recoveryEmail);
-		if(count($users)) {
-			return true;
-		}
-		$users = $this->config->getUsersForUserValue('email-recovery', 'unverified-recovery-email', $recoveryEmail);
-		if(count($users)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check if a recovery email address domain is restricted for some domains
-	 *
-	 * @param string $recoveryEmail The recovery email address to check.
-	 *
-	 * @return bool True if the recovery email address is disallowed, false otherwise.
-	 */
-	public function isRecoveryEmailDomainDisallowed(string $recoveryEmail): bool {
-		
-		$recoveryEmail = strtolower($recoveryEmail);
-		
-		$emailParts = explode('@', $recoveryEmail);
-		$domain = $emailParts[1] ?? '';
-		
-		$legacyDomain = $this->getLegacyDomain();
-		$mainDomain = $this->getMainDomain();
-		
-		$restrictedDomains = [ $legacyDomain, $mainDomain ];
-
-		return in_array($domain, $restrictedDomains);
-	}
-
-	/**
-	 * Check if a recovery email address is in valid format
-	 *
-	 * @param string $recoveryEmail The recovery email address to check.
-	 *
-	 * @return bool True if the recovery email address is valid, false otherwise.
-	 */
-	public function isValidEmailFormat(string $recoveryEmail): bool {
-		return filter_var($recoveryEmail, FILTER_VALIDATE_EMAIL) !== false;
-	}
-
 	/**
 	 * Create a Hide My Email (HME) alias for a user.
 	 *
@@ -528,7 +451,7 @@ class UserService {
 
 	public function mapActiveAttributesInLDAP(string $username, bool $isEnabled): void {
 		$userActiveAttributes = $this->getActiveAttributes($isEnabled);
-		$this->updateAttributesInLDAP($username, $userActiveAttributes);
+		$this->LDAPConnectionService->updateAttributesInLDAP($username, $userActiveAttributes);
 	}
 
 	private function getActiveAttributes(bool $isEnabled): array {
@@ -537,26 +460,6 @@ class UserService {
 			'mailActive' => $isEnabled ? 'TRUE' : 'FALSE',
 		];
 	}
-
-	public function updateAttributesInLDAP(string $username, array $attributes): void {
-		if (!$this->LDAPConnectionService->isLDAPEnabled()) {
-			return;
-		}
-	
-		$conn = $this->LDAPConnectionService->getLDAPConnection();
-		$userDn = $this->LDAPConnectionService->username2dn($username);
-	
-		if ($userDn === false) {
-			throw new Exception('Could not find DN for username: ' . $username);
-		}
-	
-		if (!ldap_modify($conn, $userDn, $attributes)) {
-			throw new Exception('Could not modify user ' . $username . ' entry at LDAP server. Attributes: ' . print_r($attributes, true));
-		}
-	
-		$this->LDAPConnectionService->closeLDAPConnection($conn);
-	}
-	
 	private function getDefaultQuota() {
 		return $this->config->getSystemValueInt('default_quota_in_megabytes', 1024);
 	}
