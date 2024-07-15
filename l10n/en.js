@@ -77,18 +77,13 @@ OC.L10N.register(
 		"Success!": "Success!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Your <b>__username__@__domain__</b> account was successfully created.",
 		"If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.": "If you want to use your murena.io email in a mail app like Thunderbird, Outlook or another, please visit <a href='https://doc.e.foundation/support-topics/configure-email'>this page</a>.",
-		"Recovery email address is already taken.": "Recovery email address is already taken.",
 		"Incorrect password length: Required length is 8 to 32": "Incorrect password length: Required length is 8 to 32",
 		"Use an alternative email": "Use an alternative email",
 		"Important:": "Important:",
 		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.",
 		"Set a recovery email address": "Set a recovery email address",
-		"Recovery email address has an incorrect format.": "Recovery email address has an incorrect format.",
-		"Recovery email address is already taken.": "Recovery email address is already taken.",
-		"You cannot set an email address with a Murena domain as recovery email address.": "You cannot set an email address with a Murena domain as recovery email address.",
 		"Captcha is not verified!": "Captcha is not verified!",
 		"A server-side error occurred while processing your request! Please try again later.": "A server-side error occurred while processing your request! Please try again later.",
-		"An error occurred while creating your account!": "An error occurred while creating your account!",
-		"The domain of this email address is blacklisted. Please provide another recovery address.": "The domain of this email address is blacklisted. Please provide another recovery address."
+		"An error occurred while creating your account!": "An error occurred while creating your account!"
 	},
 	"nplurals=2; plural=(n != 1);");

@@ -79,12 +79,8 @@ OC.L10N.register(
 		"Important:": "Das ist wichtig:",
 		"For security reasons, a recovery email is required. If you decide to set it later, your account will be partially restricted.": "Aus Sicherheitsgründen ist eine Wiederherstellungs-E-Mail erforderlich. Wenn Sie sich entscheiden, diese später einzustellen, wird Ihr Konto teilweise eingeschränkt.",
 		"Set a recovery email address": "Festlegen einer Wiederherstellungs-E-Mail-Adresse",
-		"Recovery email address has an incorrect format.": "Die E-Mail-Adresse für die Wiederherstellung hat ein falsches Format.",
-		"Recovery email address is already taken.": "Die E-Mail-Adresse für die Wiederherstellung ist bereits vergeben.",
-		"You cannot set an email address with a Murena domain as recovery email address.": "Sie können keine E-Mail-Adresse mit einer Murena-Domäne als Wiederherstellungs-E-Mail-Adresse festlegen.",
 		"Captcha is not verified!": "Captcha wird nicht überprüft!",
 		"A server-side error occurred while processing your request! Please try again later.": "Ein serverseitiger Fehler ist bei der Bearbeitung Ihrer Anfrage aufgetreten! Bitte versuchen Sie es später noch einmal.",
-		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!",
-		"The domain of this email address is blacklisted. Please provide another recovery address.": "Die Domäne dieser E-Mailadresse ist auf der Sperrliste. Bitte geben Sie eine andere E-Mailadresse an."
+		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!"
 	},
 	"nplurals=2; plural=(n != 1);");
