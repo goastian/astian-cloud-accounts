@@ -52,7 +52,7 @@ class Application extends App implements IBootstrap {
 
 	public function register(IRegistrationContext $context): void {
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
-		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
+		// $context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
