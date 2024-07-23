@@ -2,13 +2,12 @@
 
 namespace OCA\EcloudAccounts\Middleware;
 
-use OCP\AppFramework\Middleware;
-use OCP\IRequest;
-use OCP\ISession;
 use OCA\EcloudAccounts\Controller\AccountController;
 use OCA\EcloudAccounts\Exception\SecurityException;
 use OCP\AppFramework\Http\DataResponse;
-
+use OCP\AppFramework\Middleware;
+use OCP\IRequest;
+use OCP\ISession;
 
 class SecurityMiddleware extends Middleware {
 	private IRequest $request;
@@ -30,10 +29,8 @@ class SecurityMiddleware extends Middleware {
 			return;
 		}
 
-		if 
-
 		if ($this->session->exists(AccountController::SESSION_USER_AGENT) && ($this->session->get(AccountController::SESSION_USER_AGENT) !== $this->request->getHeader('USER_AGENT')) ||
-			$this->session->get(AccountController::SESSION_IP_ADDRESS) !== $this->request->getRemoteAddress()
+		$this->session->exists(AccountController::SESSION_IP_ADDRESS) && $this->session->get(AccountController::SESSION_IP_ADDRESS) !== $this->request->getRemoteAddress()
 		) {
 			throw new SecurityException;
 		}

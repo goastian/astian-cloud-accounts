@@ -41,8 +41,8 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
-	private const SESSION_USER_AGENT = 'USER_AGENT';
-	private const SESSION_IP_ADDRESS = 'IP_ADDRESS';
+	public const SESSION_USER_AGENT = 'USER_AGENT';
+	public const SESSION_IP_ADDRESS = 'IP_ADDRESS';
 	private ILogger $logger;
 	public function __construct(
 		$AppName,
