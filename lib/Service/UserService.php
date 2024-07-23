@@ -311,9 +311,9 @@ class UserService {
 		
 		$endpoint = $commonApiVersion . '/aliases/hide-my-email/';
 		$url = $commonServicesURL . $endpoint . $resultmail;
-		$data = array(
+		$data = [
 			"domain" => $aliasDomain
-		);
+		];
 		$headers = [
 			"Authorization: Bearer $token"
 		];
@@ -348,10 +348,10 @@ class UserService {
 		$endpoint = $commonApiVersion . '/aliases/';
 		$url = $commonServicesURL . $endpoint . $userEmail;
 
-		$data = array(
+		$data = [
 			"alias" => $username,
 			"domain" => $domain
-		);
+		];
 		$headers = [
 			"Authorization: Bearer $token"
 		];

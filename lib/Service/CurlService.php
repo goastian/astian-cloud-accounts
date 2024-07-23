@@ -25,7 +25,7 @@ class CurlService {
 	 * @param array $userOptions
 	 * @return mixed
 	 */
-	public function get($url, $params = array(), $headers = array(), $userOptions = array()) {
+	public function get($url, $params = [], $headers = [], $userOptions = []) {
 		return $this->request('GET', $url, $params, $headers, $userOptions);
 	}
 
@@ -38,7 +38,7 @@ class CurlService {
 	 * @param array $userOptions
 	 * @return mixed
 	 */
-	public function post($url, $params = array(), $headers = array(), $userOptions = array()) {
+	public function post($url, $params = [], $headers = [], $userOptions = []) {
 		return $this->request('POST', $url, $params, $headers, $userOptions);
 	}
 
@@ -88,13 +88,13 @@ class CurlService {
 	 * @return mixed
 	 * @throws Exception
 	 */
-	private function request($method, $url, $params = array(), $headers = array(), $userOptions = array()) {
+	private function request($method, $url, $params = [], $headers = [], $userOptions = []) {
 		$ch = curl_init();
 		$method = strtoupper($method);
-		$options = array(
+		$options = [
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER => $headers
-		);
+		];
 		foreach ($userOptions as $key => $value) {
 			$options[$key] = $value;
 		}

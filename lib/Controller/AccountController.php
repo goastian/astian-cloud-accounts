@@ -29,7 +29,7 @@ use OCP\L10N\IFactory;
 
 class AccountController extends Controller {
 	protected $appName;
-	protected $request;
+	protected IRequest $request;
 	private $userService;
 	private $newsletterService;
 	private $captchaService;
@@ -41,6 +41,8 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
+	private const SESSION_USER_AGENT = 'USER_AGENT';
+	private const SESSION_IP_ADDRESS = 'IP_ADDRESS';
 	private ILogger $logger;
 	public function __construct(
 		$AppName,
@@ -57,6 +59,7 @@ class AccountController extends Controller {
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
+		$this->request = $request;
 		$this->userService = $userService;
 		$this->newsletterService = $newsletterService;
 		$this->captchaService = $captchaService;
@@ -82,7 +85,10 @@ class AccountController extends Controller {
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-
+		$ipAddr = $this->request->getRemoteAddress();
+		$userAgent = $this->request->getHeader('USER_AGENT');
+		$this->session->set(self::SESSION_IP_ADDRESS, $ipAddr);
+		$this->session->set(self::SESSION_USER_AGENT, $userAgent);
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
@@ -193,7 +199,7 @@ class AccountController extends Controller {
 	 *
 	 * @return string|null If validation fails, a string describing the error; otherwise, null.
 	 */
-	public function validateInput(string $inputName, string $value, int $maxLength = null) : ?string {
+	private function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
 			return "$inputName is required.";
 		}
