@@ -66,6 +66,7 @@ class AccountController extends Controller {
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
+		$this->request = $request;
 	}
 
 	/**
@@ -159,8 +160,8 @@ class AccountController extends Controller {
 			
 			$this->session->remove(self::SESSION_USERNAME_CHECK);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
-
-			$this->userService->addUsernameToCommonDataStore($username);
+			$ipAddress = $this->request->getRemoteAddress();
+			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
