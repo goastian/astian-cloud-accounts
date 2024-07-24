@@ -14,6 +14,9 @@ class SecurityMiddleware extends Middleware {
 	private ISession $session;
 
 	private const SESSION_METHODS = ['create', 'checkUsernameAvailable', 'captcha', 'verifyCaptcha'];
+	private const SESSION_USER_AGENT = 'USER_AGENT';
+	private const SESSION_IP_ADDRESS = 'IP_ADDRESS';
+
 	public function __construct(IRequest $request, ISession $session) {
 		$this->request = $request;
 		$this->session = $session;
@@ -25,12 +28,21 @@ class SecurityMiddleware extends Middleware {
 			return;
 		}
 		
+		// Add the required params to session for index
+		if ($methodName === 'index') {
+			$ipAddr = $this->request->getRemoteAddress();
+			$userAgent = $this->request->getHeader('USER_AGENT');
+			$this->session->set(self::SESSION_IP_ADDRESS, $ipAddr);
+			$this->session->set(self::SESSION_USER_AGENT, $userAgent);
+			return;
+		}
+
 		if (!in_array($methodName, self::SESSION_METHODS)) {
 			return;
 		}
 
-		if ($this->session->exists(AccountController::SESSION_USER_AGENT) && ($this->session->get(AccountController::SESSION_USER_AGENT) !== $this->request->getHeader('USER_AGENT')) ||
-		$this->session->exists(AccountController::SESSION_IP_ADDRESS) && $this->session->get(AccountController::SESSION_IP_ADDRESS) !== $this->request->getRemoteAddress()
+		if ($this->session->exists(self::SESSION_USER_AGENT) && ($this->session->get(AccountController::SESSION_USER_AGENT) !== $this->request->getHeader('USER_AGENT')) ||
+		$this->session->exists(self::SESSION_IP_ADDRESS) && $this->session->get(AccountController::SESSION_IP_ADDRESS) !== $this->request->getRemoteAddress()
 		) {
 			throw new SecurityException;
 		}
