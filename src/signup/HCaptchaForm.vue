@@ -6,7 +6,7 @@
 import { loadState } from '@nextcloud/initial-state'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
-import { VueHcaptcha } from '@hcaptcha/vue-hcaptcha'
+import VueHcaptcha from '@hcaptcha/vue-hcaptcha'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
