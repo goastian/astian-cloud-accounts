@@ -212,12 +212,12 @@ export default {
 		},
 	},
 	created() {
-		const currentURL = window.location.href;
-		const urlSegments = currentURL.split('/');
-		const languages = ['de', 'fr', 'it', 'es', 'en'];
-		const potentialLang = urlSegments[urlSegments.length - 2];
+		const currentURL = window.location.href
+		const urlSegments = currentURL.split('/')
+		const languages = ['de', 'fr', 'it', 'es', 'en']
+		const potentialLang = urlSegments[urlSegments.length - 2]
 
-		this.formData.selectedLanguage = languages.includes(potentialLang) ? potentialLang : 'en';
+		this.formData.selectedLanguage = languages.includes(potentialLang) ? potentialLang : 'en'
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
