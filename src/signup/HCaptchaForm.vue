@@ -21,7 +21,7 @@ export default {
 	},
 	methods: {
 		async onVerify(token, ekey) {
-			const url = generateUrl(`/apps/${this.appName}/accounts/verify_hcaptcha`)
+			const url = generateUrl(`/apps/${APPLICATION_NAME}/accounts/verify_hcaptcha`)
 			await Axios.post(url, { token, ekey })
 			const isFormValid = true
 

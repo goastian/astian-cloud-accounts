@@ -29,7 +29,8 @@ return ['routes' => [
 	['name' => 'account#index', 'url' => '/accounts/signup', 'verb' => 'GET', 'postfix' => 'signwithoutlang'],
 	['name' => 'account#create', 'url' => '/accounts/create', 'verb' => 'POST'],
 	['name' => 'account#captcha', 'url' => '/accounts/captcha', 'verb' => 'GET'],
-	['name' => 'account#verify_captcha', 'url' => '/accounts/verify_hcaptcha', 'verb' => 'POST'],	['name' => 'account#verify_hcaptcha', 'url' => '/accounts/verify_captcha', 'verb' => 'POST'],
+	['name' => 'account#verify_captcha', 'url' => '/accounts/verify_captcha', 'verb' => 'POST'],	
+	['name' => 'account#verify_hcaptcha', 'url' => '/accounts/verify_hcaptcha', 'verb' => 'POST'],
 	['name' => 'account#check_username_available', 'url' => '/accounts/check_username_available', 'verb' => 'POST'],
 
 ]];
