@@ -9,13 +9,14 @@ use OCP\AppFramework\Middleware;
 use OCP\IRequest;
 use OCP\ISession;
 
-class SecurityMiddleware extends Middleware {
+class AccountMiddleware extends Middleware {
 	private IRequest $request;
 	private ISession $session;
 
 	private const SESSION_METHODS = ['create', 'checkUsernameAvailable', 'captcha', 'verifyCaptcha'];
 	private const SESSION_USER_AGENT = 'USER_AGENT';
 	private const SESSION_IP_ADDRESS = 'IP_ADDRESS';
+	private const HEADER_USER_AGENT = 'USER_AGENT';
 
 	public function __construct(IRequest $request, ISession $session) {
 		$this->request = $request;
@@ -31,7 +32,7 @@ class SecurityMiddleware extends Middleware {
 		// Add the required params to session for index
 		if ($methodName === 'index') {
 			$ipAddr = $this->request->getRemoteAddress();
-			$userAgent = $this->request->getHeader('USER_AGENT');
+			$userAgent = $this->request->getHeader(self::HEADER_USER_AGENT);
 			$this->session->set(self::SESSION_IP_ADDRESS, $ipAddr);
 			$this->session->set(self::SESSION_USER_AGENT, $userAgent);
 			return;
@@ -41,9 +42,10 @@ class SecurityMiddleware extends Middleware {
 			return;
 		}
 
-		if ($this->session->exists(self::SESSION_USER_AGENT) && ($this->session->get(AccountController::SESSION_USER_AGENT) !== $this->request->getHeader('USER_AGENT')) ||
-		$this->session->exists(self::SESSION_IP_ADDRESS) && $this->session->get(AccountController::SESSION_IP_ADDRESS) !== $this->request->getRemoteAddress()
-		) {
+		$ipAddr = $this->request->getRemoteAddress();
+		$userAgent = $this->request->getHeader(self::HEADER_USER_AGENT);
+		if (!$this->isValidSessionParam(self::SESSION_IP_ADDRESS, $ipAddr)
+		|| !$this->isValidSessionParam(self::SESSION_USER_AGENT, $userAgent)) {
 			throw new SecurityException;
 		}
 	}
@@ -56,5 +58,15 @@ class SecurityMiddleware extends Middleware {
 		$response = new DataResponse();
 		$response->setStatus(401);
 		return $response;
+	}
+
+	private function isValidSessionParam(string $sessionParam, string $value) : bool {
+		if (!$this->session->exists($sessionParam)) {
+			return false;
+		}
+		if ($this->session->get($sessionParam) !== $value) {
+			return false;
+		}
+		return true;
 	}
 }
