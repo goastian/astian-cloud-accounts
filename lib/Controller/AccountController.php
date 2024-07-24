@@ -26,6 +26,9 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Services\IInitialState;
+
 
 class AccountController extends Controller {
 	protected $appName;
@@ -37,10 +40,13 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
+	private $initialState;
 	/** @var IConfig */
 	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
+	private const HCAPTCHA_DOMAINS = ['https://hcaptcha.com', 'https://*.hcaptcha.com'];
+
 	private ILogger $logger;
 	public function __construct(
 		$AppName,
@@ -53,7 +59,8 @@ class AccountController extends Controller {
 		IURLGenerator $urlGenerator,
 		ISession $session,
 		IConfig $config,
-		ILogger $logger
+		ILogger $logger,
+		IInitialState $initialState
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -67,6 +74,7 @@ class AccountController extends Controller {
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
 		$this->request = $request;
+		$this->initialState = $initialState;
 	}
 
 	/**
@@ -84,12 +92,24 @@ class AccountController extends Controller {
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
 
-		return new TemplateResponse(
+		$response = new TemplateResponse(
 			Application::APP_ID,
 			'signup',
 			['appName' => Application::APP_ID, 'lang' => $lang],
 			TemplateResponse::RENDER_AS_GUEST
 		);
+
+		$csp = new ContentSecurityPolicy();
+		foreach (self::HCAPTCHA_DOMAINS as $domain) {
+			$csp->addAllowedScriptDomain($domain);
+			$csp->addAllowedFrameDomain($domain);
+			$csp->addAllowedStyleDomain($domain);
+			$csp->addAllowedConnectDomain($domain);
+		}
+		$response->setContentSecurityPolicy($csp);
+		$hcaptchaSiteKey = $this->config->getSystemValue(Application::APP_ID . '.hcaptcha_site_key');
+		$this->initialState->provideInitialState('hCaptchaSiteKey', $hcaptchaSiteKey);
+		return $response;
 	}
 	
 	/**
