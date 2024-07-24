@@ -43,6 +43,6 @@ class SecurityMiddleware extends Middleware {
 		
 		$response = new DataResponse();
 		$response->setStatus(401);
-		return new DataResponse(['message' => 'Account creation blocked for security reasons! Please contact helpdesk if it is wrongly done!']);
+		return $response;
 	}
 }
