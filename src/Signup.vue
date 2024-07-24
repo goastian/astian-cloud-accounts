@@ -3,7 +3,10 @@
 		<section id="main" class="register-page">
 			<div id="registration">
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
-				<CaptchaForm v-if="showCaptchaForm"
+				<CaptchaForm v-if="0 !== 0"
+					v-model="formData"
+					@form-submitted="submitCaptchaForm" />
+				<HCaptchaForm v-if="showCaptchaForm"
 					v-model="formData"
 					@form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
@@ -18,6 +21,7 @@ import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
 import RegistrationForm from './signup/RegistrationForm.vue'
+import HCaptchaForm from './signup/HCaptchaForm.vue'
 import CaptchaForm from './signup/CaptchaForm.vue'
 import RecoveryEmailForm from './signup/RecoveryEmailForm.vue'
 import SuccessSection from './signup/SuccessSection.vue'
@@ -31,6 +35,7 @@ export default {
 		CaptchaForm,
 		RecoveryEmailForm,
 		SuccessSection,
+		HCaptchaForm,
 	},
 	data() {
 		return {

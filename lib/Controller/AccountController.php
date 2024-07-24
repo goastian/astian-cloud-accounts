@@ -12,13 +12,16 @@ use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
+use OCA\EcloudAccounts\Service\HCaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -26,9 +29,6 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Services\IInitialState;
-
 
 class AccountController extends Controller {
 	protected $appName;
@@ -36,6 +36,7 @@ class AccountController extends Controller {
 	private $userService;
 	private $newsletterService;
 	private $captchaService;
+	private HCaptchaService $hCaptchaService;
 	protected $l10nFactory;
 	private $session;
 	private $userSession;
@@ -54,6 +55,7 @@ class AccountController extends Controller {
 		UserService $userService,
 		NewsLetterService $newsletterService,
 		CaptchaService $captchaService,
+		HCaptchaService $hCaptchaService,
 		IFactory $l10nFactory,
 		IUserSession $userSession,
 		IURLGenerator $urlGenerator,
@@ -67,6 +69,7 @@ class AccountController extends Controller {
 		$this->userService = $userService;
 		$this->newsletterService = $newsletterService;
 		$this->captchaService = $captchaService;
+		$this->hCaptchaService = $hCaptchaService;
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
 		$this->userSession = $userSession;
@@ -214,7 +217,7 @@ class AccountController extends Controller {
 	 *
 	 * @return string|null If validation fails, a string describing the error; otherwise, null.
 	 */
-	public function validateInput(string $inputName, string $value, int $maxLength = null) : ?string {
+	public function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
 			return "$inputName is required.";
 		}
@@ -295,6 +298,37 @@ class AccountController extends Controller {
 		}
 
 		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
+		return $response;
+	}
+
+	/**
+	 * Verify against hCaptcha Service
+	 *
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $captchaInput The user-provided human verification input.
+	 *
+	 * @return \OCP\AppFramework\Http\DataResponse
+	 */
+	public function verifyHcaptcha(string $token = '', string $ekey = '') : DataResponse {
+		$response = new DataResponse();
+		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
+		// Initialize the default status to 400 (Bad Request)
+		$response->setStatus(400);
+		// Check if the input matches the bypass token or the stored captcha result
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
+		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || (!empty($captchaResult) && $captchaInput === $captchaResult)) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
+			$response->setStatus(200);
+		}
+
+		if ($this->hCaptchaService->verify($token)) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
+			$response->setStatus(200);
+		}
+
 		return $response;
 	}
 
