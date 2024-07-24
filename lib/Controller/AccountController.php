@@ -29,7 +29,7 @@ use OCP\L10N\IFactory;
 
 class AccountController extends Controller {
 	protected $appName;
-	protected IRequest $request;
+	protected $request;
 	private $userService;
 	private $newsletterService;
 	private $captchaService;
