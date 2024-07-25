@@ -26,6 +26,7 @@ export default {
 	},
 	data() {
 		return {
+			appName: APPLICATION_NAME,
 			siteKey: loadState(APPLICATION_NAME, 'hCaptchaSiteKey'),
 		}
 	},
