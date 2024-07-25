@@ -8,6 +8,7 @@
 					@form-submitted="submitCaptchaForm" />
 				<HCaptchaForm v-if="showCaptchaForm && captchaProvider === 'hcaptcha'"
 					v-model="formData"
+					:language="language"
 					@form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" v-model="formData" />
@@ -58,6 +59,7 @@ export default {
 			showCaptchaForm: false,
 			showRecoveryEmailForm: false,
 			showSuccessSection: false,
+			language: loadState(APPLICATION_NAME, 'lang'),
 		}
 	},
 	mounted() {

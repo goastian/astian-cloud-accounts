@@ -5,7 +5,7 @@
 				{{ t(appName,'Captcha Verification') }}
 			</h1>
 		</div>
-		<VueHcaptcha :sitekey="siteKey" @verify="onVerify" />
+		<VueHcaptcha :sitekey="siteKey" :language="language" @verify="onVerify" />
 	</div>
 </template>
 
@@ -20,6 +20,9 @@ const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	components: {
 		VueHcaptcha,
+	},
+	props: {
+		language: String,
 	},
 	data() {
 		return {
