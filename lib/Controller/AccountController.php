@@ -275,10 +275,15 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function captcha(): Http\DataDisplayResponse {
+		// Don't allow requests to image captcha if different provider is set
+		if ($this->getCaptchaProvider() !== self::DEFAULT_CAPTCHA_PROVDER) {
+			$response = new DataResponse();
+			$response->setStatus(400);
+			return $response;
+		}
+
 		$captchaValue = $this->captchaService->generateCaptcha();
-
 		$response = new Http\DataDisplayResponse($captchaValue, Http::STATUS_OK, ['Content-Type' => 'image/png']);
-
 		return $response;
 	}
 	/**
