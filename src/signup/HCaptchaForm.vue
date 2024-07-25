@@ -1,5 +1,12 @@
 <template>
-	<VueHcaptcha :sitekey="siteKey" @verify="onVerify" />
+	<div id="hcaptchaForm">
+		<div class="display-flex">
+			<h1 id="registerHeading" class="has-text-centered subtitle is-3">
+				{{ t(appName,'Captcha Verification') }}
+			</h1>
+		</div>
+		<VueHcaptcha :sitekey="siteKey" @verify="onVerify" />
+	</div>
 </template>
 
 <script>
@@ -30,3 +37,34 @@ export default {
 	},
 }
 </script>
+
+<style scoped>
+#hcaptchaForm {
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 0 10px;
+}
+.display-flex {
+	display: flex;
+	justify-content: space-between;
+}
+
+@media screen and (max-width: 768px) {
+	#registerHeading {
+		font-size: 1.5em;
+	}
+}
+
+#registerHeading {
+	margin-bottom: 10%;
+	font-size: 24px;
+	text-align: left !important;
+	font-weight: 500;
+}
+@media screen and (max-width: 500px) {
+	#registerHeading {
+		font-size: 18px;
+	}
+}
+
+</style>
