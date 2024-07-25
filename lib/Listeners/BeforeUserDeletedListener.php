@@ -46,7 +46,7 @@ class BeforeUserDeletedListener implements IEventListener {
 		$isUserOnLDAP = $this->LDAPConnectionService->isUserOnLDAPBackend($user);
 
 		try {
-			$this->logger->info("PostDelete user {user}", array('user' => $uid));
+			$this->logger->info("PostDelete user {user}", ['user' => $uid]);
 			$this->userService->deleteEmailAccount($email);
 		} catch (Exception $e) {
 			$this->logger->error('Error deleting mail folder for user '. $uid . ' :' . $e->getMessage());
