@@ -19,6 +19,7 @@
 <script>
 import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import RegistrationForm from './signup/RegistrationForm.vue'
 import HCaptchaForm from './signup/HCaptchaForm.vue'
