@@ -332,7 +332,7 @@ class AccountController extends Controller {
 	}
 
 	private function getCaptchaProvider() : string {
-		$captchaProvider = $this->config->getSystemValue('ecloud-accounts.captcha_provider', self::DEFAULT_CAPTCHA);
+		$captchaProvider = $this->config->getSystemValue('ecloud-accounts.captcha_provider', self::DEFAULT_CAPTCHA_PROVIDER);
 
 		if (!in_array($captchaProvider, self::ALLOWED_CAPTCHA_PROVIDERS)) {
 			$captchaProvider = self::DEFAULT_CAPTCHA_PROVIDER;
