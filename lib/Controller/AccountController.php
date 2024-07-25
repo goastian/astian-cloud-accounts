@@ -17,7 +17,6 @@ use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -46,6 +45,9 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
+	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
+	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
+	private const HCAPTCHA_PROVIDER = 'hcaptcha';
 	private const HCAPTCHA_DOMAINS = ['https://hcaptcha.com', 'https://*.hcaptcha.com'];
 
 	private ILogger $logger;
@@ -102,16 +104,21 @@ class AccountController extends Controller {
 			TemplateResponse::RENDER_AS_GUEST
 		);
 
-		$csp = new ContentSecurityPolicy();
-		foreach (self::HCAPTCHA_DOMAINS as $domain) {
-			$csp->addAllowedScriptDomain($domain);
-			$csp->addAllowedFrameDomain($domain);
-			$csp->addAllowedStyleDomain($domain);
-			$csp->addAllowedConnectDomain($domain);
+		$captchaProvider = $this->getCaptchaProvider();
+		$this->initialState->provideInitialState('captchaProvider', $captchaProvider);
+		
+		if ($captchaProvider === self::HCAPTCHA_PROVIDER) {
+			$csp = $response->getContentSecurityPolicy();
+			foreach (self::HCAPTCHA_DOMAINS as $domain) {
+				$csp->addAllowedScriptDomain($domain);
+				$csp->addAllowedFrameDomain($domain);
+				$csp->addAllowedStyleDomain($domain);
+				$csp->addAllowedConnectDomain($domain);
+			}
+			$response->setContentSecurityPolicy($csp);
+			$hcaptchaSiteKey = $this->config->getSystemValue(Application::APP_ID . '.hcaptcha_site_key');
+			$this->initialState->provideInitialState('hCaptchaSiteKey', $hcaptchaSiteKey);
 		}
-		$response->setContentSecurityPolicy($csp);
-		$hcaptchaSiteKey = $this->config->getSystemValue(Application::APP_ID . '.hcaptcha_site_key');
-		$this->initialState->provideInitialState('hCaptchaSiteKey', $hcaptchaSiteKey);
 		return $response;
 	}
 	
@@ -287,6 +294,11 @@ class AccountController extends Controller {
 	 */
 	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = '') : DataResponse {
 		$response = new DataResponse();
+		if ($this->getCaptchaProvider() !== self::DEFAULT_CAPTCHA_PROVIDER) {
+			$response->setStatus(400);
+			return $response;
+		}
+		
 		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
 		// Initialize the default status to 400 (Bad Request)
 		$response->setStatus(400);
@@ -312,24 +324,33 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyHcaptcha(string $token = '', string $ekey = '') : DataResponse {
+	public function verifyHcaptcha(string $token = '', string $bypassToken = '') : DataResponse {
 		$response = new DataResponse();
+
+		if ($this->getCaptchaProvider() !== self::HCAPTCHA_PROVIDER) {
+			$response->setStatus(400);
+			return $response;
+		}
+
 		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
 		// Initialize the default status to 400 (Bad Request)
 		$response->setStatus(400);
-		// Check if the input matches the bypass token or the stored captcha result
-		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
-		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || (!empty($captchaResult) && $captchaInput === $captchaResult)) {
-			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
-			$response->setStatus(200);
-		}
-
-		if ($this->hCaptchaService->verify($token)) {
+		// Check if the input matches the bypass token
+		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || $this->hCaptchaService->verify($token)) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
 
 		return $response;
+	}
+
+	private function getCaptchaProvider() : string {
+		$captchaProvider = $this->config->getSystemValue('ecloud-accounts.captcha_provider', self::DEFAULT_CAPTCHA);
+
+		if (!in_array($captchaProvider, self::ALLOWED_CAPTCHA_PROVIDERS)) {
+			$captchaProvider = self::DEFAULT_CAPTCHA_PROVIDER;
+		}
+		return $captchaProvider;
 	}
 
 }
