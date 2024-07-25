@@ -26,7 +26,7 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
-
+use OCP\AppFramework\Services\IInitialState;
 class AccountController extends Controller {
 	protected $appName;
 	protected $request;
@@ -39,6 +39,7 @@ class AccountController extends Controller {
 	private $urlGenerator;
 	/** @var IConfig */
 	private IConfig $config;
+	private IInitialState $initialState;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private ILogger $logger;
@@ -53,6 +54,7 @@ class AccountController extends Controller {
 		IURLGenerator $urlGenerator,
 		ISession $session,
 		IConfig $config,
+		IInitialState $initialState,
 		ILogger $logger
 	) {
 		parent::__construct($AppName, $request);
@@ -67,6 +69,7 @@ class AccountController extends Controller {
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
 		$this->request = $request;
+		$this->initialState = $initialState;
 	}
 
 	/**
@@ -83,7 +86,7 @@ class AccountController extends Controller {
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-
+		$this->initialState->provideInitialState('lang', $lang);
 		return new TemplateResponse(
 			Application::APP_ID,
 			'signup',
