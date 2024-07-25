@@ -2,6 +2,7 @@
 
 namespace OCA\EcloudAccounts\Service;
 
+use OCA\EcloudAccounts\AppInfo\Application;
 use OCP\IConfig;
 use OCP\ISession;
 
@@ -19,7 +20,7 @@ class HCaptchaService {
 	}
 
 	public function verify(string $token) : bool {
-		$secret = $this->config->getSystemValue('ecloud-accounts.hcaptcha_secret');
+		$secret = $this->config->getSystemValue(Application::APP_ID . '.hcaptcha_secret');
 		$data = [
 			'response' => $token,
 			'secret' => $secret
