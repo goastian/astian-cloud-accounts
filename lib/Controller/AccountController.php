@@ -288,60 +288,42 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param string $captchaInput The user-provided human verification input.
+	 * @param string $token The user-provided human verification input.
+	 * @param string $bypassToken Token to bypass captcha for automation testing
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = '') : DataResponse {
+	public function verifyCaptcha(string $userToken = '', string $bypassToken = '') : DataResponse {
 		$response = new DataResponse();
-		if ($this->getCaptchaProvider() !== self::DEFAULT_CAPTCHA_PROVIDER) {
-			$response->setStatus(400);
-			return $response;
-		}
-		
-		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
-		// Initialize the default status to 400 (Bad Request)
-		$response->setStatus(400);
-		// Check if the input matches the bypass token or the stored captcha result
-		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
-		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || (!empty($captchaResult) && $captchaInput === $captchaResult)) {
+
+		// Check if the input matches the bypass token
+		$bypassTokenInConfig = $this->config->getSystemValue('bypass_captcha_token', '');
+		if ((!empty($bypassTokenInConfig) && $bypassToken === $bypassTokenInConfig)) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
 
-		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
+		$response->setStatus(400);
+		$captchaProvider = $this->getCaptchaProvider();
+
+		// Check for default captcha provider
+		if ($captchaProvider === self::DEFAULT_CAPTCHA_PROVIDER && $this->verifyImageCaptcha($userToken)) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
+			$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
+			$response->setStatus(200);
+		}
+
+		// Check for hcaptcha provider
+		if ($captchaProvider === self::HCAPTCHA_PROVIDER && $this->hCaptchaService->verify($userToken)) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
+			$response->setStatus(200);
+		}
 		return $response;
 	}
 
-	/**
-	 * Verify against hCaptcha Service
-	 *
-	 * @NoAdminRequired
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
-	 * @param string $captchaInput The user-provided human verification input.
-	 *
-	 * @return \OCP\AppFramework\Http\DataResponse
-	 */
-	public function verifyHcaptcha(string $token = '', string $bypassToken = '') : DataResponse {
-		$response = new DataResponse();
-
-		if ($this->getCaptchaProvider() !== self::HCAPTCHA_PROVIDER) {
-			$response->setStatus(400);
-			return $response;
-		}
-
-		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
-		// Initialize the default status to 400 (Bad Request)
-		$response->setStatus(400);
-		// Check if the input matches the bypass token
-		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || $this->hCaptchaService->verify($token)) {
-			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
-			$response->setStatus(200);
-		}
-
-		return $response;
+	private function verifyImageCaptcha(string $captchaInput = '') : bool {
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
+		return (!empty($captchaResult) && $captchaInput === $captchaResult);
 	}
 
 	private function getCaptchaProvider() : string {

@@ -28,8 +28,8 @@ export default {
 	},
 	methods: {
 		async onVerify(token, ekey) {
-			const url = generateUrl(`/apps/${APPLICATION_NAME}/accounts/verify_hcaptcha`)
-			await Axios.post(url, { token, ekey })
+			const url = generateUrl(`/apps/${APPLICATION_NAME}/accounts/verify_captcha`)
+			await Axios.post(url, { userToken: token })
 			const isFormValid = true
 
 			this.$emit('form-submitted', { isFormValid })
