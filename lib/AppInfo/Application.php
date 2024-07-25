@@ -31,6 +31,7 @@ use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\PasswordUpdatedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
+use OCA\EcloudAccounts\Middleware\AccountMiddleware;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\AppFramework\App;
@@ -56,6 +57,8 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
+	
+		$context->registerMiddleware(AccountMiddleware::class);
 	}
 
 	public function boot(IBootContext $context): void {

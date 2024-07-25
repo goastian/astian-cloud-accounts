@@ -225,7 +225,7 @@ class AccountController extends Controller {
 	 *
 	 * @return string|null If validation fails, a string describing the error; otherwise, null.
 	 */
-	public function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
+	private function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
 			return "$inputName is required.";
 		}
