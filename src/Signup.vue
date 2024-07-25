@@ -110,8 +110,13 @@ export default {
 				this.showRecoveryEmailForm = false
 				this.showSuccessSection = true
 			} catch (error) {
+				const genericErrorMessage = 'An error occurred while creating your account!'
 				// Handle network errors and unexpected response structures here
-				const errorMessage = error.response ? t(this.appName, error.response.data.message) : t(this.appName, error.message)
+				let errorMessage = error.response ? t(this.appName, error.response.data.message) : t(this.appName, error.message)
+				if (errorMessage === '') {
+					// Fallback to generic error message
+					errorMessage = t(this.appName, genericErrorMessage)
+				}
 				this.showMessage(errorMessage, 'error')
 			}
 		},
