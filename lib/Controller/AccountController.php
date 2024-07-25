@@ -276,7 +276,7 @@ class AccountController extends Controller {
 	 */
 	public function captcha(): Http\DataDisplayResponse {
 		// Don't allow requests to image captcha if different provider is set
-		if ($this->getCaptchaProvider() !== self::DEFAULT_CAPTCHA_PROVDER) {
+		if ($this->getCaptchaProvider() !== self::DEFAULT_CAPTCHA_PROVIDER) {
 			$response = new DataResponse();
 			$response->setStatus(400);
 			return $response;
