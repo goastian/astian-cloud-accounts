@@ -10,7 +10,7 @@ return ['routes' => [
 	['name' => 'shop_account#check_shop_email_post_delete', 'url' => '/shop-accounts/check_shop_email_post_delete', 'verb' => 'GET'],
 	[
 		'name' => 'user#preflighted_cors', 'url' => '/api/{path}',
-		'verb' => 'OPTIONS', 'requirements' => array('path' => '.+')
+		'verb' => 'OPTIONS', 'requirements' => ['path' => '.+']
 	],
 	[
 		'name' => 'beta_user#remove_user_in_group',

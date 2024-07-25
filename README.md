@@ -14,6 +14,18 @@
 
 - This plugin creates an endpoint `/apps/ecloud-accounts/api/set_account_data` that is to be used to set user's email, quota,recovery email and create the user's folder if necessary
 
+### Captcha Configuration for user account creation
+
+- Simple image based captcha is the default for human verification
+- To change the value, set `ecloud-accounts.captcha_provider` 
+  - Allowed values are `image` (default) and `hcaptcha` (https://hcaptcha.com)
+
+#### HCaptcha Configuration
+
+- For hcaptcha provider to work, set the following values correctly:
+  - `ecloud-accounts.hcaptcha_site_key`
+  - `ecloud-accounts.hcaptcha_secret`
+
 ## Drop account
 
 - The drop account functionality plugin works in conjunction with the drop_account plugin : https://apps.nextcloud.com/apps/drop_account
@@ -25,7 +37,7 @@
 
 Please open issues here : https://gitlab.e.foundation/e/backlog/issues
 
-## Dependancies
+## Dependencies
 
 This plugin works in cunjunction with the drop_account plugin : https://apps.nextcloud.com/apps/drop_account
 
