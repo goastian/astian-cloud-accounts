@@ -40,9 +40,9 @@ class AccountController extends Controller {
 	private $session;
 	private $userSession;
 	private $urlGenerator;
-	private $initialState;
 	/** @var IConfig */
 	private IConfig $config;
+	private IInitialState $initialState;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
@@ -96,7 +96,8 @@ class AccountController extends Controller {
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-
+		$this->initialState->provideInitialState('lang', $lang);
+		
 		$response = new TemplateResponse(
 			Application::APP_ID,
 			'signup',
