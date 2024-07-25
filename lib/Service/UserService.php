@@ -420,10 +420,12 @@ class UserService {
 	 * If the operation fails, an exception will be thrown.
 	 *
 	 * @param string $username The username to add to the common data store.
+	 * @param string $ipAddress IP Address of user
+	 * @param string $recoveryEmail A recovery Email of user
 	 *
 	 * @throws AddUsernameToCommonStoreException If an error occurs while adding the username to the common data store.
 	 */
-	public function addUsernameToCommonDataStore(string $username) : void {
+	public function addUsernameToCommonDataStore(string $username, string $ipAddress, string $recoveryEmail) : void {
 		$commonServicesURL = $this->apiConfig['commonServicesURL'];
 		$commonApiVersion = $this->apiConfig['commonApiVersion'];
 
@@ -434,7 +436,9 @@ class UserService {
 		$url = $commonServicesURL . $endpoint ;
 		
 		$params = [
-			'username' => $username
+			'username' => $username,
+			'ipAddress' => $ipAddress,
+			'recoveryEmail' => $recoveryEmail
 		];
 
 		$token = $this->apiConfig['commonServicesToken'];

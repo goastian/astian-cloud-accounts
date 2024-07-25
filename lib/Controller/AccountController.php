@@ -12,6 +12,7 @@ use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
+use OCA\EcloudAccounts\Service\HCaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
 use OCP\AppFramework\Controller;
@@ -19,6 +20,7 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -33,14 +35,20 @@ class AccountController extends Controller {
 	private $userService;
 	private $newsletterService;
 	private $captchaService;
+	private HCaptchaService $hCaptchaService;
 	protected $l10nFactory;
 	private $session;
 	private $userSession;
 	private $urlGenerator;
 	/** @var IConfig */
 	private IConfig $config;
+	private IInitialState $initialState;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
+	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
+	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
+	private const HCAPTCHA_PROVIDER = 'hcaptcha';
+	private const HCAPTCHA_DOMAINS = ['https://hcaptcha.com', 'https://*.hcaptcha.com'];
 
 	private ILogger $logger;
 	public function __construct(
@@ -49,24 +57,29 @@ class AccountController extends Controller {
 		UserService $userService,
 		NewsLetterService $newsletterService,
 		CaptchaService $captchaService,
+		HCaptchaService $hCaptchaService,
 		IFactory $l10nFactory,
 		IUserSession $userSession,
 		IURLGenerator $urlGenerator,
 		ISession $session,
 		IConfig $config,
-		ILogger $logger
+		ILogger $logger,
+		IInitialState $initialState
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
 		$this->userService = $userService;
 		$this->newsletterService = $newsletterService;
 		$this->captchaService = $captchaService;
+		$this->hCaptchaService = $hCaptchaService;
 		$this->l10nFactory = $l10nFactory;
 		$this->session = $session;
 		$this->userSession = $userSession;
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
+		$this->request = $request;
+		$this->initialState = $initialState;
 	}
 
 	/**
@@ -83,13 +96,31 @@ class AccountController extends Controller {
 		}
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-
-		return new TemplateResponse(
+		$this->initialState->provideInitialState('lang', $lang);
+		
+		$response = new TemplateResponse(
 			Application::APP_ID,
 			'signup',
 			['appName' => Application::APP_ID, 'lang' => $lang],
 			TemplateResponse::RENDER_AS_GUEST
 		);
+
+		$captchaProvider = $this->getCaptchaProvider();
+		$this->initialState->provideInitialState('captchaProvider', $captchaProvider);
+		
+		if ($captchaProvider === self::HCAPTCHA_PROVIDER) {
+			$csp = $response->getContentSecurityPolicy();
+			foreach (self::HCAPTCHA_DOMAINS as $domain) {
+				$csp->addAllowedScriptDomain($domain);
+				$csp->addAllowedFrameDomain($domain);
+				$csp->addAllowedStyleDomain($domain);
+				$csp->addAllowedConnectDomain($domain);
+			}
+			$response->setContentSecurityPolicy($csp);
+			$hcaptchaSiteKey = $this->config->getSystemValue(Application::APP_ID . '.hcaptcha_site_key');
+			$this->initialState->provideInitialState('hCaptchaSiteKey', $hcaptchaSiteKey);
+		}
+		return $response;
 	}
 	
 	/**
@@ -160,8 +191,8 @@ class AccountController extends Controller {
 			
 			$this->session->remove(self::SESSION_USERNAME_CHECK);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
-
-			$this->userService->addUsernameToCommonDataStore($username);
+			$ipAddress = $this->request->getRemoteAddress();
+			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
@@ -245,10 +276,15 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function captcha(): Http\DataDisplayResponse {
+		// Don't allow requests to image captcha if different provider is set
+		if ($this->getCaptchaProvider() !== self::DEFAULT_CAPTCHA_PROVIDER) {
+			$response = new DataResponse();
+			$response->setStatus(400);
+			return $response;
+		}
+
 		$captchaValue = $this->captchaService->generateCaptcha();
-
 		$response = new Http\DataDisplayResponse($captchaValue, Http::STATUS_OK, ['Content-Type' => 'image/png']);
-
 		return $response;
 	}
 	/**
@@ -258,24 +294,51 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param string $captchaInput The user-provided human verification input.
+	 * @param string $token The user-provided human verification input.
+	 * @param string $bypassToken Token to bypass captcha for automation testing
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function verifyCaptcha(string $captchaInput = '', string $bypassToken = '') : DataResponse {
+	public function verifyCaptcha(string $userToken = '', string $bypassToken = '') : DataResponse {
 		$response = new DataResponse();
-		$captchaToken = $this->config->getSystemValue('bypass_captcha_token', '');
-		// Initialize the default status to 400 (Bad Request)
-		$response->setStatus(400);
-		// Check if the input matches the bypass token or the stored captcha result
-		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
-		if ((!empty($captchaToken) && $bypassToken === $captchaToken) || (!empty($captchaResult) && $captchaInput === $captchaResult)) {
+
+		// Check if the input matches the bypass token
+		$bypassTokenInConfig = $this->config->getSystemValue('bypass_captcha_token', '');
+		if ((!empty($bypassTokenInConfig) && $bypassToken === $bypassTokenInConfig)) {
 			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
 			$response->setStatus(200);
 		}
 
-		$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
+		$response->setStatus(400);
+		$captchaProvider = $this->getCaptchaProvider();
+
+		// Check for default captcha provider
+		if ($captchaProvider === self::DEFAULT_CAPTCHA_PROVIDER && $this->verifyImageCaptcha($userToken)) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
+			$this->session->remove(CaptchaService::CAPTCHA_RESULT_KEY);
+			$response->setStatus(200);
+		}
+
+		// Check for hcaptcha provider
+		if ($captchaProvider === self::HCAPTCHA_PROVIDER && $this->hCaptchaService->verify($userToken)) {
+			$this->session->set(self::CAPTCHA_VERIFIED_CHECK, true);
+			$response->setStatus(200);
+		}
 		return $response;
+	}
+
+	private function verifyImageCaptcha(string $captchaInput = '') : bool {
+		$captchaResult = (string) $this->session->get(CaptchaService::CAPTCHA_RESULT_KEY, '');
+		return (!empty($captchaResult) && $captchaInput === $captchaResult);
+	}
+
+	private function getCaptchaProvider() : string {
+		$captchaProvider = $this->config->getSystemValue('ecloud-accounts.captcha_provider', self::DEFAULT_CAPTCHA_PROVIDER);
+
+		if (!in_array($captchaProvider, self::ALLOWED_CAPTCHA_PROVIDERS)) {
+			$captchaProvider = self::DEFAULT_CAPTCHA_PROVIDER;
+		}
+		return $captchaProvider;
 	}
 
 }
