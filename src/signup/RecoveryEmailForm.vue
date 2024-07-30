@@ -37,24 +37,14 @@
 				type="primary"
 				:disabled="processingCreation"
 				@click.prevent="submitRecoveryEmailForm(true)">
-				<template v-if="!processingCreation">
-					{{ t(appName,'Set My Recovery Email Now') }}
-				</template>
-				<template v-else>
-					...
-				</template>
+				{{ t(appName,'Set My Recovery Email Now') }}
 			</button>
 			<button :wide="true"
 				class="btn-default w-50 mx-10"
 				type="primary"
 				:disabled="processingCreation"
 				@click.prevent="submitRecoveryEmailForm(false)">
-				<template v-if="!processingCreation">
-					{{ t(appName,'Later') }}
-				</template>
-				<template v-else>
-					...
-				</template>
+				{{ t(appName,'Later') }}
 			</button>
 		</div>
 	</div>
