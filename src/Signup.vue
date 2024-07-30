@@ -3,8 +3,12 @@
 		<section id="main" class="register-page">
 			<div id="registration">
 				<RegistrationForm v-if="showRegistrationForm" v-model="formData" @form-submitted="submitRegistrationForm" />
-				<CaptchaForm v-if="showCaptchaForm"
+				<CaptchaForm v-if="showCaptchaForm && captchaProvider === 'image'"
 					v-model="formData"
+					@form-submitted="submitCaptchaForm" />
+				<HCaptchaForm v-if="showCaptchaForm && captchaProvider === 'hcaptcha'"
+					v-model="formData"
+					:language="language"
 					@form-submitted="submitCaptchaForm" />
 				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" v-model="formData" />
@@ -16,8 +20,10 @@
 <script>
 import Axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import RegistrationForm from './signup/RegistrationForm.vue'
+import HCaptchaForm from './signup/HCaptchaForm.vue'
 import CaptchaForm from './signup/CaptchaForm.vue'
 import RecoveryEmailForm from './signup/RecoveryEmailForm.vue'
 import SuccessSection from './signup/SuccessSection.vue'
@@ -31,6 +37,7 @@ export default {
 		CaptchaForm,
 		RecoveryEmailForm,
 		SuccessSection,
+		HCaptchaForm,
 	},
 	data() {
 		return {
@@ -46,11 +53,13 @@ export default {
 				newsletterProduct: false,
 				selectedLanguage: 'en',
 			},
+			captchaProvider: loadState(APPLICATION_NAME, 'captchaProvider'),
 			appName: APPLICATION_NAME,
 			showRegistrationForm: true,
 			showCaptchaForm: false,
 			showRecoveryEmailForm: false,
 			showSuccessSection: false,
+			language: loadState(APPLICATION_NAME, 'lang'),
 		}
 	},
 	mounted() {
@@ -101,8 +110,13 @@ export default {
 				this.showRecoveryEmailForm = false
 				this.showSuccessSection = true
 			} catch (error) {
+				const genericErrorMessage = 'An error occurred while creating your account!'
 				// Handle network errors and unexpected response structures here
-				const errorMessage = error.response ? t(this.appName, error.response.data.message) : t(this.appName, error.message)
+				let errorMessage = error.response ? t(this.appName, error.response.data.message) : t(this.appName, error.message)
+				if (errorMessage === '') {
+					// Fallback to generic error message
+					errorMessage = t(this.appName, genericErrorMessage)
+				}
 				this.showMessage(errorMessage, 'error')
 			}
 		},

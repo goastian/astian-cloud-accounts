@@ -162,7 +162,7 @@
 import Axios from '@nextcloud/axios'
 import Password from 'vue-password-strength-meter'
 import { generateUrl } from '@nextcloud/router'
-
+import { loadState } from '@nextcloud/initial-state'
 const APPLICATION_NAME = 'ecloud-accounts'
 
 export default {
@@ -212,12 +212,7 @@ export default {
 		},
 	},
 	created() {
-		const currentURL = window.location.href
-		const urlSegments = currentURL.split('/')
-		this.formData.selectedLanguage = 'en'
-		if (urlSegments.length === 8) {
-			this.formData.selectedLanguage = urlSegments[urlSegments.length - 2]
-		}
+		this.formData.selectedLanguage = loadState(this.appName, 'lang')
 	},
 	methods: {
 		validateForm(fieldsToValidate) {
