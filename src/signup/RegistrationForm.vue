@@ -150,8 +150,14 @@
 			<div id="groups" class="aliases-info">
 				<button :wide="true"
 					class="btn-primary"
-					type="primary">
-					{{ t(appName,'Create My Account') }}
+					type="primary"
+					:disabled="!processing">
+					<template v-if="!processing">
+						{{ t(appName,'Create My Account') }}
+					</template>
+					<template v-else>
+						...
+					</template>
 				</button>
 			</div>
 		</form>
@@ -199,6 +205,7 @@ export default {
 				{ message: t(this.appName, 'Incorrect password length: Required length is 8 to 32'), regex: /.{8,32}/ },
 			],
 			isUsernameAvailable: false,
+			processing: false,
 		}
 	},
 	computed: {
@@ -285,6 +292,7 @@ export default {
 			}
 		},
 		async submitRegistrationForm() {
+			this.processing = true
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
 			await this.checkUsername()
 			const isFormValid = Object.values(this.validation).every(value => !value)
@@ -292,6 +300,7 @@ export default {
 			if (isFormValid) {
 				this.$emit('form-submitted', { isFormValid })
 			}
+			this.processing = false
 		},
 		onLanguageChange() {
 			window.location.href = window.location.origin + '/apps/' + APPLICATION_NAME + '/accounts/' + this.formData.selectedLanguage + '/signup'
