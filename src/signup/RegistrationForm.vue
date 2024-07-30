@@ -151,7 +151,7 @@
 				<button :wide="true"
 					class="btn-primary"
 					type="primary"
-					:disabled="!processing">
+					:disabled="processing">
 					<template v-if="!processing">
 						{{ t(appName,'Create My Account') }}
 					</template>
