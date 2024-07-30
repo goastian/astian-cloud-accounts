@@ -35,14 +35,26 @@
 			<button :wide="true"
 				class="btn-primary w-50 mx-10"
 				type="primary"
+				:disabled="processingCreation"
 				@click.prevent="submitRecoveryEmailForm(true)">
-				{{ t(appName,'Set My Recovery Email Now') }}
+				<template v-if="!processingCreation">
+					{{ t(appName,'Set My Recovery Email Now') }}
+				</template>
+				<template v-else>
+					...
+				</template>
 			</button>
 			<button :wide="true"
 				class="btn-default w-50 mx-10"
 				type="primary"
+				:disabled="processingCreation"
 				@click.prevent="submitRecoveryEmailForm(false)">
-				{{ t(appName,'Later') }}
+				<template v-if="!processingCreation">
+					{{ t(appName,'Later') }}
+				</template>
+				<template v-else>
+					...
+				</template>
 			</button>
 		</div>
 	</div>
@@ -53,6 +65,7 @@ const APPLICATION_NAME = 'ecloud-accounts'
 export default {
 	props: {
 		value: Object,
+		processingCreation: Boolean,
 	},
 	data() {
 		return {
