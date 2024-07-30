@@ -174,7 +174,7 @@ class AccountController extends Controller {
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
 			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
-			sleep(2);
+			sleep(5);
 
 			$this->userService->setAccountDataLocally($username, $userEmail);
 			$this->userService->createHMEAlias($username, $userEmail);
