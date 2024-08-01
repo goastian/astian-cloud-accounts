@@ -10,7 +10,10 @@
 					v-model="formData"
 					:language="language"
 					@form-submitted="submitCaptchaForm" />
-				<RecoveryEmailForm v-if="showRecoveryEmailForm" v-model="formData" @form-submitted="submitRecoveryEmailForm" />
+				<RecoveryEmailForm v-if="showRecoveryEmailForm"
+					v-model="formData"
+					:processing-creation="processingCreation"
+					@form-submitted="submitRecoveryEmailForm" />
 				<SuccessSection v-if="showSuccessSection" v-model="formData" />
 			</div>
 		</section>
@@ -60,6 +63,7 @@ export default {
 			showRecoveryEmailForm: false,
 			showSuccessSection: false,
 			language: loadState(APPLICATION_NAME, 'lang'),
+			processingCreation: false,
 		}
 	},
 	mounted() {
@@ -102,6 +106,7 @@ export default {
 		async submitForm(data) {
 			try {
 				const url = generateUrl(`/apps/${this.appName}/accounts/create`)
+				this.processingCreation = true
 				await Axios.post(url, data)
 
 				// If the execution reaches here, the response status is in the 2xx range
@@ -110,6 +115,7 @@ export default {
 				this.showRecoveryEmailForm = false
 				this.showSuccessSection = true
 			} catch (error) {
+				this.processingCreation = false
 				const genericErrorMessage = 'An error occurred while creating your account!'
 				// Handle network errors and unexpected response structures here
 				let errorMessage = error.response ? t(this.appName, error.response.data.message) : t(this.appName, error.message)
