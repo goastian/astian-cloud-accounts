@@ -122,7 +122,15 @@ class AccountController extends Controller {
 		}
 		return $response;
 	}
-	
+	/**
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 **/
+	public function sendemail() {
+		echo 'test';
+	}
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
