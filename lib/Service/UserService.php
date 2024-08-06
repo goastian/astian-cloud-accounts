@@ -172,12 +172,14 @@ class UserService {
 		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
+			print_r("sendgrid_api_key is missing or empty.");
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
 		
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
+			print_r("welcome_sendgrid_template_ids is missing or empty.");
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
@@ -194,6 +196,7 @@ class UserService {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
+			print_r('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
 			$this->logger->error('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
 		}
 	}
