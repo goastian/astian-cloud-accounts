@@ -33,6 +33,7 @@ use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Middleware\AccountMiddleware;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCA\EcloudAccounts\SetupChecks\EmailRecoveryAppIsEnableCheck;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -43,7 +44,6 @@ use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
-use OCA\EcloudAccounts\SetupChecks\EmailRecoveryAppIsEnableCheck;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
