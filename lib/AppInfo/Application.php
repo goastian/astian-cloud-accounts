@@ -43,6 +43,7 @@ use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
+use OCA\EcloudAccounts\SetupChecks\EmailRecoveryAppIsEnableCheck;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -59,6 +60,7 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
 	
 		$context->registerMiddleware(AccountMiddleware::class);
+		$context->registerSetupCheck(EmailRecoveryAppIsEnableCheck::class);
 	}
 
 	public function boot(IBootContext $context): void {
