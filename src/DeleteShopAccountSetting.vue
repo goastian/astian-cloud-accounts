@@ -62,11 +62,11 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
+import SettingsSection from '@nextcloud/vue/dist/Components/NcSettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
-import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
+import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
@@ -132,7 +132,7 @@ export default {
 						params: {
 							shopEmailPostDelete: this.shopEmailPostDelete,
 						},
-					}
+					},
 				)
 				return status
 			} catch (err) {
@@ -158,7 +158,7 @@ export default {
 		async getShopUsers() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/users`
+					`/apps/${this.appName}/shop-accounts/users`,
 				)
 				const { data } = await Axios.get(url)
 				this.shopUsers = data
@@ -167,7 +167,7 @@ export default {
 				if (e.response.status !== 404) {
 					this.disableDeleteAccountEvent()
 					showError(
-						t(APPLICATION_NAME, 'Temporary error contacting murena.com; please try again later!')
+						t(APPLICATION_NAME, 'Temporary error contacting murena.com; please try again later!'),
 					)
 					this.allowDelete = false
 				}
@@ -178,26 +178,26 @@ export default {
 			await this.disableOrEnableDeleteAccount()
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/set_shop_delete_preference`
+					`/apps/${this.appName}/shop-accounts/set_shop_delete_preference`,
 				)
 				const { status } = await Axios.post(url, {
 					deleteShopAccount: this.deleteShopAccount,
 				})
 				if (status !== 200) {
 					showError(
-						t(APPLICATION_NAME, 'Error while setting shop delete preference')
+						t(APPLICATION_NAME, 'Error while setting shop delete preference'),
 					)
 				}
 			} catch (e) {
 				showError(
-					t(APPLICATION_NAME, 'Error while setting shop delete preference')
+					t(APPLICATION_NAME, 'Error while setting shop delete preference'),
 				)
 			}
 		},
 		async callAPIToUpdateEmail() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`
+					`/apps/${this.appName}/shop-accounts/set_shop_email_post_delete`,
 				)
 				const { status, data } = await Axios.post(url, {
 					shopEmailPostDelete: this.shopEmailPostDelete,
@@ -215,8 +215,8 @@ export default {
 				showError(
 					t(
 						APPLICATION_NAME,
-						"Murena.com email cannot be same as this account's email."
-					)
+						"Murena.com email cannot be same as this account's email.",
+					),
 				)
 			} else {
 				const { status, data } = await this.callAPIToUpdateEmail()
@@ -225,8 +225,8 @@ export default {
 					showError(
 						t(
 							APPLICATION_NAME,
-							data.message
-						)
+							data.message,
+						),
 					)
 				} else {
 					this.enableDeleteAccountEvent()
