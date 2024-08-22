@@ -96,7 +96,7 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import SettingsSection from '@nextcloud/vue/dist/Components/SettingsSection.js'
+import SettingsSection from '@nextcloud/vue/dist/Components/NcSettingsSection.js'
 import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showSuccess, showError } from '@nextcloud/dialogs'
@@ -126,7 +126,7 @@ export default {
 		async becomeBetaUser() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/beta/add`
+					`/apps/${this.appName}/beta/add`,
 				)
 				await Axios.post(url, {})
 				this.isBetaUser = true
@@ -138,7 +138,7 @@ export default {
 		async optOutFromBetaUser() {
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/beta/remove`
+					`/apps/${this.appName}/beta/remove`,
 				)
 				await Axios.delete(url)
 				this.isBetaUser = false
@@ -151,7 +151,7 @@ export default {
 			e.preventDefault()
 			try {
 				const url = generateUrl(
-					`/apps/${this.appName}/issue/submit`
+					`/apps/${this.appName}/issue/submit`,
 				)
 				await Axios.post(url, { title: this.title, description: this.description })
 				showSuccess(t(this.appName, 'Issue submitted successfully.'))
