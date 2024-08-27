@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	  document.querySelector(checkboxSelector).disabled = true
 	  document.querySelector(buttonSelector).disabled = true
 	  document.querySelector(checkboxSpanSelector).classList.add(disabledClass)
-	  document.querySelector(deleteAccountSectionId).style.visibility = "hidden"
+	  document.querySelector(deleteAccountSectionId).style.visibility = 'hidden'
 	})
 
 	elem.addEventListener('enable-delete-account', function() {
@@ -22,6 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	  const enableDeleteAccount = document.querySelector(checkboxSelector).checked
 	  document.querySelector(buttonSelector).disabled = !enableDeleteAccount
 	  document.querySelector(checkboxSpanSelector).classList.remove(disabledClass)
-	  document.querySelector(deleteAccountSectionId).style.visibility = "visible"
+	  document.querySelector(deleteAccountSectionId).style.visibility = 'visible'
 	})
 })
