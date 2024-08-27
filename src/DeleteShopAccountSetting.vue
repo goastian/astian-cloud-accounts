@@ -1,5 +1,5 @@
 <template>
-	<SettingsSection v-if="shopUsers.length > 0" :title="t(appName, 'Options')">
+	<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
 		<div>
 			<p>
 				{{
