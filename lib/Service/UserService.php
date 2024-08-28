@@ -193,7 +193,7 @@ class UserService {
 		
 		$fromEmail = Util::getDefaultEmailAddress('noreply');
 		$fromName = $this->defaults->getName();
-		$fromEmail = 'ronak.register@murena.io';
+		$fromEmail = 'noreply@murenatest.io';
 		try {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
