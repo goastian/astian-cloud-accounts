@@ -129,9 +129,9 @@ class AccountController extends Controller {
 	 *
 	 **/
 	public function sendemail() {
-		$displayname = 'Ronak';
-		$username = 'ronak.patel';
-		$userEmail = 'eronax59@gmail.com';
+		$displayname = 'Avinash';
+		$username = 'avinashrecovery1';
+		$userEmail = 'avinashrecovery1@dev.eeo.one';
 		$language = 'en';
 		$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 		echo 'sent';
