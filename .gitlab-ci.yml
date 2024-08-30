@@ -1,3 +1,9 @@
+stages:
+  - test
+  - performance
+  - dast
+  - deploy
+
 variables:
     TO_PACKAGE: 'appinfo l10n lib templates js img css'
 include:
