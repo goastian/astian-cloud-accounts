@@ -13,6 +13,15 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "nc-apps-deploy.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: dev/1789-setup-mr-review-tools-in-gitlab
+    file: "mr-review-tools.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: dev/1789-setup-mr-review-tools-in-gitlab
+    file: "git-operations.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: dev/1789-setup-mr-review-tools-in-gitlab
+    file: "populate-code-climate-default-config.yml"
 
 build-vendor:
   stage: build
