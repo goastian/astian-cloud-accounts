@@ -45,7 +45,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
 		}
 		if (strpos($pathInfo, '/settings/user/migration') !== false) {
-			$this->util->addScript('settings-user-migration');
+			$this->util->addScript($this->appName, $this->appName . '-settings-user-migration');
 		}
 
 	}
