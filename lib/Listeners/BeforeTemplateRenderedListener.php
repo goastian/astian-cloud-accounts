@@ -44,7 +44,7 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (strpos($pathInfo, '/apps/ecloud-accounts/accounts') !== false) {
 			$this->util->addStyle($this->appName, $this->appName . '-userregistration');
 		}
-		if (strpos($pathInfo, 'settings/user/migration') !== false) {
+		if (strpos($pathInfo, '/settings/user/migration') !== false) {
 			$this->util->addScript('settings-user-migration');
 		}
 
