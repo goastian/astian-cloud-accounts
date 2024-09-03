@@ -9,13 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	const newParagraph = document.createElement('p')
 	// Add the img element to the paragraph
-	newParagraph.appendChild(img);
+	newParagraph.appendChild(img)
 
 	newParagraph.textContent = ' ' + translatedText
 
 	googleContent.insertBefore(newParagraph, googleContent.querySelector('h3'))
 })
-
 
 /**
  *
@@ -26,4 +25,3 @@ function createImageElement(appName) {
 	img.src = generateUrl('/custom_apps/' + appName + '/img/warning.svg')
 	return img
 }
-
