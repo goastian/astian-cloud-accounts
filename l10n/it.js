@@ -82,6 +82,7 @@ OC.L10N.register(
 		"Set a recovery email address": "Impostare un indirizzo e-mail di recupero",
 		"Captcha is not verified!": "Il Captcha non è verificato!",
 		"A server-side error occurred while processing your request! Please try again later.": "Si è verificato un errore lato server nel processare la tua richiesta! Ritenta più tardi.",
-		"An error occurred while creating your account!": "Si è verificato un errore nella creazione dell'account!"
+		"An error occurred while creating your account!": "Si è verificato un errore nella creazione dell'account!",
+		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Se vedi un messaggio che dice \"Google hasn't verified this app\", puoi ignorarlo facendo clic su \"Advanced\". Attualmente stiamo lavorando per ottenere la certificazione richiesta da Google per eliminare questo messaggio."
 	},
 	"nplurals=2; plural=(n != 1);");
