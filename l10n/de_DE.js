@@ -1,5 +1,6 @@
-{
-	"translations": {
+OC.L10N.register(
+	"ecloud-accounts",
+	{
 		"Email Address": "E-Mail Adresse",
 		"Options": "Optionen",
 		"We are going to proceed with your cloud account suppression.": "Wir werden mit der Löschung Ihres Cloud-Kontos fortfahren.",
@@ -68,6 +69,7 @@
 		"Human Verification code is not correct.": "Der Human Verification Code ist nicht korrekt.",
 		"Recovery Email is required.": "Eine Wiederherstellungs-E-Mail ist erforderlich.",
 		"You must read and accept the Terms of Service to create your account.": "Sie müssen die Allgemeinen Geschäftsbedingungen lesen und akzeptieren, um Ihr Konto zu erstellen.",
+		"Use My Account Now": "Mein Konto jetzt verwenden",
 		"I have read and accept the <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Terms of Service</a>.": "Ich habe die <a href='http://murena.io/apps/terms_of_service/en/termsandconditions' target='_blank'>Nutzungsbedingungen</a> gelesen und akzeptiere diese.",
 		"Success!": "Erfolgreich!",
 		"Your <b>__username__@__domain__</b> account was successfully created.": "Ihr <b>__username__@__domain__</b>-Konto wurde erfolgreich erstellt.",
@@ -80,7 +82,6 @@
 		"Captcha is not verified!": "Captcha wird nicht überprüft!",
 		"A server-side error occurred while processing your request! Please try again later.": "Ein serverseitiger Fehler ist bei der Bearbeitung Ihrer Anfrage aufgetreten! Bitte versuchen Sie es später noch einmal.",
 		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!",
-		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Wenn Sie eine Nachricht sehen, die besagt \"Google hasn't verified this app\", können Sie diese ignorieren, indem Sie auf \"Advanced\" tippen. Wir arbeiten derzeit daran, die erforderliche Zertifizierung von Google zu erhalten, um diese Fehlermeldung zu beseitigen."
+		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Wenn du eine Nachricht siehst, die besagt \"Google hasn't verified this app\", kannst du sie ignorieren, indem du auf \"Advanced\" klickst. Wir arbeiten derzeit daran, die erforderliche Zertifizierung von Google zu erhalten, um diese Nachricht zu entfernen."
 	},
-	"pluralForm": "nplurals=2; plural=(n != 1);"
-}
+	"nplurals=2; plural=(n != 1);");
