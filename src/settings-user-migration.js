@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Add the img element to the paragraph
 	newParagraph.appendChild(img)
 
-	newParagraph.textContent = ' ' + translatedText
+	const textNode = document.createTextNode(' ' + translatedText)
+	newParagraph.appendChild(textNode)
 
 	googleContent.insertBefore(newParagraph, googleContent.querySelector('h3'))
 })
@@ -19,9 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  *
  * @param appName
+ * @return {HTMLImageElement}
  */
 function createImageElement(appName) {
 	const img = document.createElement('img')
 	img.src = generateUrl('/custom_apps/' + appName + '/img/warning.svg')
+	img.alt = 'Warning'
+	img.style.verticalAlign = 'middle'
 	return img
 }
