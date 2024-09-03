@@ -1,3 +1,5 @@
+import { generateUrl } from '@nextcloud/router'
+
 document.addEventListener('DOMContentLoaded', function() {
 	const googleContent = document.getElementById('google-content')
 
