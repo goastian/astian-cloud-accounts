@@ -286,7 +286,7 @@ export default {
 				console.error(error)
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 403) {
-					this.usernameValidationMessage = t(this.appName, error.response.message)
+					this.usernameValidationMessage = t(this.appName, error.response.data.message)
 				} if (error.response && error.response.status === 400) {
 					this.usernameValidationMessage = t(this.appName, 'Username is already taken.')
 				} else {
