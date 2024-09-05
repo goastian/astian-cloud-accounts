@@ -283,7 +283,8 @@ export default {
 				await Axios.post(url, data)
 				this.isUsernameAvailable = true
 			} catch (error) {
-				console.error(error)
+				console.error(error.response)
+				console.error(error.response.status)
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 403) {
 					this.usernameValidationMessage = t(this.appName, error.response.data.message)
