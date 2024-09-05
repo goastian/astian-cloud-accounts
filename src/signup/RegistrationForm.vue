@@ -288,7 +288,7 @@ export default {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 403) {
 					this.usernameValidationMessage = t(this.appName, error.response.data.message)
-				} if (error.response && error.response.status === 400) {
+				} else if (error.response && error.response.status === 400) {
 					this.usernameValidationMessage = t(this.appName, 'Username is already taken.')
 				} else {
 					this.usernameValidationMessage = t(this.appName, 'Something went wrong.')
