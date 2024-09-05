@@ -231,7 +231,7 @@ class AccountController extends Controller {
 		}
 	
 		if ($maxLength !== null && strlen($value) > $maxLength) {
-			return "$inputName is too large.";
+			return ucwords($inputName)." is too large.";
 		}
 	
 		return null; // Validation passed
