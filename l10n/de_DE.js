@@ -59,7 +59,7 @@ OC.L10N.register(
 		"Recovery Email": "Wiederherstellung E-Mail",
 		"Display name is required.": "Anzeigename ist erforderlich.",
 		"Username is required.": "Der Benutzername ist erforderlich.",
-		"Username must consist of letters, numbers, hyphens, and underscores only.": "Der Benutzername darf nur aus Buchstaben, Zahlen, Bindestrichen und Unterstrichen bestehen.",
+		"Username must consist of letters, numbers, hyphens, dots and underscores only.": "Der Benutzername darf nur aus Buchstaben, Zahlen, Bindestrichen, Punkten und Unterstrichen bestehen.",
 		"Username must be at least 3 characters long.": "Der Benutzername muss mindestens 3 Zeichen lang sein.",
 		"Username is already taken.": "Benutzername ist bereits vergeben.",
 		"Password is required.": "Passwort ist erforderlich.",
@@ -82,6 +82,7 @@ OC.L10N.register(
 		"Captcha is not verified!": "Captcha wird nicht überprüft!",
 		"A server-side error occurred while processing your request! Please try again later.": "Ein serverseitiger Fehler ist bei der Bearbeitung Ihrer Anfrage aufgetreten! Bitte versuchen Sie es später noch einmal.",
 		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!",
-		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Wenn du eine Nachricht siehst, die besagt \"Google hasn't verified this app\", kannst du sie ignorieren, indem du auf \"Advanced\" klickst. Wir arbeiten derzeit daran, die erforderliche Zertifizierung von Google zu erhalten, um diese Nachricht zu entfernen."
+		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Wenn du eine Nachricht siehst, die besagt \"Google hasn't verified this app\", kannst du sie ignorieren, indem du auf \"Advanced\" klickst. Wir arbeiten derzeit daran, die erforderliche Zertifizierung von Google zu erhalten, um diese Nachricht zu entfernen.",
+		"Username is too large.": "Der Benutzername ist zu groß."
 	},
 	"nplurals=2; plural=(n != 1);");

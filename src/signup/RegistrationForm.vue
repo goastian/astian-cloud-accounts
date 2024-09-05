@@ -265,7 +265,7 @@ export default {
 			const isEnoughCharacters = this.formData.username.length >= minCharacterCount
 
 			if (!isValidUsername) {
-				this.usernameValidationMessage = t(this.appName, 'Username must consist of letters, numbers, hyphens, and underscores only.')
+				this.usernameValidationMessage = t(this.appName, 'Username must consist of letters, numbers, hyphens, dots and underscores only.')
 				this.validation.isUsernameNotValid = true
 			} else if (!isEnoughCharacters) {
 				this.usernameValidationMessage = t(this.appName, 'Username must be at least 3 characters long.')
