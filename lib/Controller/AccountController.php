@@ -227,7 +227,7 @@ class AccountController extends Controller {
 	 */
 	private function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
-			return "$inputName is required.";
+			return ucwords($inputName)." is required.";
 		}
 	
 		if ($maxLength !== null && strlen($value) > $maxLength) {
