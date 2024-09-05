@@ -259,7 +259,7 @@ export default {
 			this.validation.isUsernameNotValid = false
 			this.usernameValidationMessage = ''
 			this.isUsernameAvailable = false
-			const usernamePattern = /^[a-zA-Z0-9_-]+$/
+			const usernamePattern = /^[a-zA-Z0-9._-]+$/
 			const minCharacterCount = 3
 			const isValidUsername = usernamePattern.test(this.formData.username)
 			const isEnoughCharacters = this.formData.username.length >= minCharacterCount

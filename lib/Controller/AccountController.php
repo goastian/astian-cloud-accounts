@@ -255,10 +255,7 @@ class AccountController extends Controller {
 		if (empty($username)) {
 			return $response;
 		}
-		$inputData = [
-			'username' => ['value' => $username, 'maxLength' => 30]
-		];
-		
+
 		$validationError = $this->validateInput('username', $username, 30);
 		if ($validationError !== null) {
 			$response->setData(['message' => $validationError, 'success' => false]);
