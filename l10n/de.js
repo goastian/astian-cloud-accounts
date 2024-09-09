@@ -83,6 +83,7 @@ OC.L10N.register(
 		"A server-side error occurred while processing your request! Please try again later.": "Ein serverseitiger Fehler ist bei der Bearbeitung Ihrer Anfrage aufgetreten! Bitte versuchen Sie es später noch einmal.",
 		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!",
 		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Wenn Sie eine Nachricht sehen, die besagt \"Google hasn't verified this app\", können Sie diese ignorieren, indem Sie auf \"Advanced\" klicken. Wir arbeiten derzeit daran, die erforderliche Zertifizierung von Google zu erhalten, um diese Nachricht zu entfernen.",
-		"Username is too large.": "Der Benutzername ist zu groß."
+		"Username is too large.": "Der Benutzername ist zu groß.",
+		"Display name is too large.": "Der Anzeigename ist zu groß."
 	},
 	"nplurals=2; plural=(n != 1);");
