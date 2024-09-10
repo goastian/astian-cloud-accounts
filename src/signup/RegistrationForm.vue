@@ -279,6 +279,8 @@ export default {
 		},
 
 		async validateFields() {
+			this.validation.isUsernameNotValid = false
+			this.validation.isDisplaynameNotValid = false
 			const data = {
 				username: this.formData.username,
 				displayname: this.formData.displayname,
