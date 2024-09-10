@@ -262,16 +262,18 @@ class AccountController extends Controller {
 			return $response;
 		}
 
-		$validationError = $this->validateInput('displayname', $displayname, 30);
-		if ($validationError !== null) {
-			$response->setData(['message' => $validationError, 'success' => false]);
-			return $response;
-		}
+		$inputData = [
+			'username' => ['value' => $username, 'maxLength' => 30],
+			'displayname' => ['value' => $displayname, 'maxLength' => 30]
+		];
 		
-		$validationError = $this->validateInput('username', $username, 30);
-		if ($validationError !== null) {
-			$response->setData(['message' => $validationError, 'success' => false]);
-			return $response;
+		foreach ($inputData as $inputName => $inputInfo) {
+			$validationError = $this->validateInput($inputName, $inputInfo['value'], $inputInfo['maxLength']);
+			if ($validationError !== null) {
+				$response->setData(['message' => $validationError, 'success' => false]);
+				$response->setStatus(400);
+				return $response;
+			}
 		}
 
 		try {
