@@ -274,7 +274,11 @@ class AccountController extends Controller {
 				return $response;
 			}
 		}
-
+		if (!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
+			$response->setData(['message' => 'Username must consist of letters, numbers, hyphens, dots and underscores only.', 'field' => 'username', 'success' => false]);
+			$response->setStatus(403);
+			return $response;
+		}
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
 			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
