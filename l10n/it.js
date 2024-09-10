@@ -85,6 +85,6 @@ OC.L10N.register(
 		"An error occurred while creating your account!": "Si è verificato un errore nella creazione dell'account!",
 		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Se vedi un messaggio che dice \"Google hasn't verified this app\", puoi ignorarlo facendo clic su \"Advanced\". Attualmente stiamo lavorando per ottenere la certificazione richiesta da Google per eliminare questo messaggio.",
 		"Username is too large.": "Il nome utente è troppo grande.",
-		"Displayname is too large.": "Il nome del display è troppo grande."
+		"Display name is too large.": "Il nome del display è troppo grande."
 	},
 	"nplurals=2; plural=(n != 1);");

@@ -156,7 +156,7 @@ class AccountController extends Controller {
 
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
-			'displayname' => ['value' => $displayname, 'maxLength' => 30],
+			'display name' => ['value' => $displayname, 'maxLength' => 30],
 			'password' => ['value' => $password, 'maxLength' => 1024],
 		];
 		
@@ -227,11 +227,10 @@ class AccountController extends Controller {
 	 */
 	private function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
-			return ucwords($inputName)." is required.";
+			return ucfirst(strtolower($inputName))." is required.";
 		}
-	
 		if ($maxLength !== null && strlen($value) > $maxLength) {
-			return ucwords($inputName)." is too large.";
+			return ucfirst(strtolower($inputName))." is too large.";
 		}
 	
 		return null; // Validation passed
@@ -258,13 +257,13 @@ class AccountController extends Controller {
 			return $response;
 		}
 		if (empty($displayname)) {
-			$response->setData(['message' => 'Displayname is required.', 'field' => 'displayname', 'success' => false]);
+			$response->setData(['message' => 'Display name is required.', 'field' => 'displayname', 'success' => false]);
 			return $response;
 		}
 
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
-			'displayname' => ['value' => $displayname, 'maxLength' => 30]
+			'display name' => ['value' => $displayname, 'maxLength' => 30]
 		];
 		
 		foreach ($inputData as $inputName => $inputInfo) {
