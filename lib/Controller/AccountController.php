@@ -257,7 +257,7 @@ class AccountController extends Controller {
 			return $response;
 		}
 		if (empty($displayname)) {
-			$response->setData(['message' => 'Display name is required.', 'field' => 'displayname', 'success' => false]);
+			$response->setData(['message' => 'Display name is required.', 'field' => 'display name', 'success' => false]);
 			return $response;
 		}
 

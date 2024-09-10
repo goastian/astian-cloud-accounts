@@ -294,7 +294,7 @@ export default {
 						this.validation.isUsernameNotValid = true
 						this.usernameValidationMessage = t(this.appName, error.response.data.message)
 					}
-					if (error.response.data.field === 'displayname') {
+					if (error.response.data.field === 'display name') {
 						this.validation.isDisplaynameNotValid = true
 						this.displaynameValidationMessage = t(this.appName, error.response.data.message)
 					}
