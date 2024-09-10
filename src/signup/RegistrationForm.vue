@@ -27,8 +27,8 @@
 						<p v-if="validation.isDisplaynameEmpty" class="validation-warning">
 							{{ t(appName,'Display name is required.') }}
 						</p>
-						<p v-else-if="validation.isDisplaynameTooLong" class="validation-warning">
-							{{ t(appName, 'Display name is too large.') }}
+						<p v-else-if="validation.isDisplaynameNotValid" class="validation-warning">
+							{{ t(appName, displaynameValidationMessage) }}
 						</p>
 					</div>
 				</div>
@@ -58,9 +58,6 @@
 						</p>
 						<p v-else-if="isUsernameAvailable" class="validation-success">
 							{{ t(appName,'Available!') }}
-						</p>
-						<p v-else-if="validation.isUsernameTooLong" class="validation-warning">
-							{{ t(appName, 'Username is too large.') }}
 						</p>
 					</div>
 				</div>
@@ -188,6 +185,7 @@ export default {
 		return {
 			appName: APPLICATION_NAME,
 			usernameValidationMessage: '',
+			displaynameValidationMessage: '',
 			domain: window.location.host,
 			validation: {
 				isDisplaynameEmpty: false,
@@ -198,8 +196,7 @@ export default {
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
 				isAccepttnsEmpty: false,
-				isUsernameTooLong: false,
-				isDisplaynameTooLong: false,
+				isDisplaynameNotValid: false,
 			},
 			languages: [
 				{ code: 'en', name: 'English' },
@@ -233,13 +230,6 @@ export default {
 		validateForm(fieldsToValidate) {
 			fieldsToValidate.forEach(field => {
 				this.validation[`is${field.charAt(0).toUpperCase() + field.slice(1)}Empty`] = this.formData[field] === ''
-				if (field === 'username') {
-					this.validation.isUsernameTooLong = this.formData.username.length > 30
-				}
-
-				if (field === 'displayname') {
-					this.validation.isDisplaynameTooLong = this.formData.displayname.length > 30
-				}
 			})
 			if (fieldsToValidate.includes('password')) {
 				this.passwordValidation()
@@ -301,7 +291,13 @@ export default {
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 400) {
-					this.usernameValidationMessage = t(this.appName, error.response.data.message)
+					if (error.response.data.field === 'username') {
+						this.usernameValidationMessage = t(this.appName, error.response.data.message)
+					}
+					if (error.response.data.field === 'displayname') {
+						this.validation.isDisplaynameNotValid = true
+						this.displaynameValidationMessage = t(this.appName, error.response.data.message)
+					}
 				} else {
 					this.usernameValidationMessage = t(this.appName, 'Something went wrong.')
 				}

@@ -254,11 +254,11 @@ class AccountController extends Controller {
 		$response->setStatus(400);
 
 		if (empty($username)) {
-			$response->setData(['message' => 'Username is required.', 'success' => false]);
+			$response->setData(['message' => 'Username is required.', 'field' => 'username', 'success' => false]);
 			return $response;
 		}
 		if (empty($displayname)) {
-			$response->setData(['message' => 'Display name is required.', 'success' => false]);
+			$response->setData(['message' => 'Display name is required.', 'field' => 'displayname', 'success' => false]);
 			return $response;
 		}
 
@@ -270,7 +270,7 @@ class AccountController extends Controller {
 		foreach ($inputData as $inputName => $inputInfo) {
 			$validationError = $this->validateInput($inputName, $inputInfo['value'], $inputInfo['maxLength']);
 			if ($validationError !== null) {
-				$response->setData(['message' => $validationError, 'success' => false]);
+				$response->setData(['message' => $validationError, 'field' => $inputName, 'success' => false]);
 				$response->setStatus(400);
 				return $response;
 			}
@@ -282,7 +282,7 @@ class AccountController extends Controller {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
 			} else {
-				$response->setData(['message' => 'Username is already taken.', 'success' => false]);
+				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			}
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID ]);
