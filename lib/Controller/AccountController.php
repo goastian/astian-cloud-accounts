@@ -156,7 +156,7 @@ class AccountController extends Controller {
 
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
-			'displayname' => ['value' => $displayname, 'maxLength' => 30],
+			'display name' => ['value' => $displayname, 'maxLength' => 30],
 			'password' => ['value' => $password, 'maxLength' => 1024],
 		];
 		
@@ -227,40 +227,65 @@ class AccountController extends Controller {
 	 */
 	private function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
-			return "$inputName is required.";
+			return ucfirst(strtolower($inputName))." is required.";
 		}
-	
 		if ($maxLength !== null && strlen($value) > $maxLength) {
-			return "$inputName is too large.";
+			return ucfirst(strtolower($inputName))." is too large.";
 		}
 	
 		return null; // Validation passed
 	}
 	/**
-	 * Check if a username is available.
+	 * Check if a username and displayname is valid or not.
 	 *
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
 	 * @param string $username The username to check.
+	 * @param string $displayname The displayname to check.
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function checkUsernameAvailable(string $username) : DataResponse {
+	public function validateFields(string $username, string $displayname) : DataResponse {
 		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		$response = new DataResponse();
 		$response->setStatus(400);
 
 		if (empty($username)) {
+			$response->setData(['message' => 'Username is required.', 'field' => 'username', 'success' => false]);
+			return $response;
+		}
+		if (empty($displayname)) {
+			$response->setData(['message' => 'Display name is required.', 'field' => 'display name', 'success' => false]);
 			return $response;
 		}
 
+		$inputData = [
+			'username' => ['value' => $username, 'maxLength' => 30],
+			'display name' => ['value' => $displayname, 'maxLength' => 30]
+		];
+		
+		foreach ($inputData as $inputName => $inputInfo) {
+			$validationError = $this->validateInput($inputName, $inputInfo['value'], $inputInfo['maxLength']);
+			if ($validationError !== null) {
+				$response->setData(['message' => $validationError, 'field' => $inputName, 'success' => false]);
+				$response->setStatus(400);
+				return $response;
+			}
+		}
+		if (!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
+			$response->setData(['message' => 'Username must consist of letters, numbers, hyphens, dots and underscores only.', 'field' => 'username', 'success' => false]);
+			$response->setStatus(403);
+			return $response;
+		}
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
 			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
+			} else {
+				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			}
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID ]);
