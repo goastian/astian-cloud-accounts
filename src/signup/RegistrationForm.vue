@@ -27,6 +27,9 @@
 						<p v-if="validation.isDisplaynameEmpty" class="validation-warning">
 							{{ t(appName,'Display name is required.') }}
 						</p>
+						<p v-else-if="validation.isDisplaynameNotValid" class="validation-warning">
+							{{ t(appName, displaynameValidationMessage) }}
+						</p>
 					</div>
 				</div>
 			</div>
@@ -182,6 +185,7 @@ export default {
 		return {
 			appName: APPLICATION_NAME,
 			usernameValidationMessage: '',
+			displaynameValidationMessage: '',
 			domain: window.location.host,
 			validation: {
 				isDisplaynameEmpty: false,
@@ -192,6 +196,7 @@ export default {
 				isRepasswordEmpty: false,
 				isRePasswordMatched: false,
 				isAccepttnsEmpty: false,
+				isDisplaynameNotValid: false,
 			},
 			languages: [
 				{ code: 'en', name: 'English' },
@@ -259,13 +264,13 @@ export default {
 			this.validation.isUsernameNotValid = false
 			this.usernameValidationMessage = ''
 			this.isUsernameAvailable = false
-			const usernamePattern = /^[a-zA-Z0-9_-]+$/
+			const usernamePattern = /^[a-zA-Z0-9._-]+$/
 			const minCharacterCount = 3
 			const isValidUsername = usernamePattern.test(this.formData.username)
 			const isEnoughCharacters = this.formData.username.length >= minCharacterCount
 
 			if (!isValidUsername) {
-				this.usernameValidationMessage = t(this.appName, 'Username must consist of letters, numbers, hyphens, and underscores only.')
+				this.usernameValidationMessage = t(this.appName, 'Username must consist of letters, numbers, hyphens, dots and underscores only.')
 				this.validation.isUsernameNotValid = true
 			} else if (!isEnoughCharacters) {
 				this.usernameValidationMessage = t(this.appName, 'Username must be at least 3 characters long.')
@@ -273,20 +278,30 @@ export default {
 			}
 		},
 
-		async checkUsername() {
+		async validateFields() {
+			this.validation.isUsernameNotValid = false
+			this.validation.isDisplaynameNotValid = false
 			const data = {
 				username: this.formData.username,
+				displayname: this.formData.displayname,
 			}
-			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
+			const url = generateUrl(`/apps/${this.appName}/accounts/validate_fields`)
 
 			try {
 				await Axios.post(url, data)
 				this.isUsernameAvailable = true
 			} catch (error) {
-				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 400) {
-					this.usernameValidationMessage = t(this.appName, 'Username is already taken.')
+					if (error.response.data.field === 'username') {
+						this.validation.isUsernameNotValid = true
+						this.usernameValidationMessage = t(this.appName, error.response.data.message)
+					}
+					if (error.response.data.field === 'display name') {
+						this.validation.isDisplaynameNotValid = true
+						this.displaynameValidationMessage = t(this.appName, error.response.data.message)
+					}
 				} else {
+					this.validation.isUsernameNotValid = true
 					this.usernameValidationMessage = t(this.appName, 'Something went wrong.')
 				}
 			}
@@ -294,7 +309,7 @@ export default {
 		async submitRegistrationForm() {
 			this.processing = true
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
-			await this.checkUsername()
+			await this.validateFields()
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
 			if (isFormValid) {
