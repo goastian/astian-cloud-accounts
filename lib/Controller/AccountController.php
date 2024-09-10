@@ -237,17 +237,18 @@ class AccountController extends Controller {
 		return null; // Validation passed
 	}
 	/**
-	 * Check if a username is available.
+	 * Check if a username and displayname is valid or not.
 	 *
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
 	 * @param string $username The username to check.
+	 * @param string $displayname The displayname to check.
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function checkUsernameAvailable(string $username) : DataResponse {
+	public function validateFields(string $username, string $displayname) : DataResponse {
 		$this->session->remove(self::SESSION_USERNAME_CHECK);
 		$response = new DataResponse();
 		$response->setStatus(400);
@@ -256,7 +257,17 @@ class AccountController extends Controller {
 			$response->setData(['message' => 'Username is required.', 'success' => false]);
 			return $response;
 		}
+		if (empty($displayname)) {
+			$response->setData(['message' => 'Display name is required.', 'success' => false]);
+			return $response;
+		}
 
+		$validationError = $this->validateInput('displayname', $displayname, 30);
+		if ($validationError !== null) {
+			$response->setData(['message' => $validationError, 'success' => false]);
+			return $response;
+		}
+		
 		$validationError = $this->validateInput('username', $username, 30);
 		if ($validationError !== null) {
 			$response->setData(['message' => $validationError, 'success' => false]);

@@ -288,18 +288,19 @@ export default {
 			}
 		},
 
-		async checkUsername() {
+		async validateFields() {
 			const data = {
 				username: this.formData.username,
+				displayname: this.formData.displayname,
 			}
-			const url = generateUrl(`/apps/${this.appName}/accounts/check_username_available`)
+			const url = generateUrl(`/apps/${this.appName}/accounts/validate_fields`)
 
 			try {
 				await Axios.post(url, data)
 				this.isUsernameAvailable = true
 			} catch (error) {
 				this.validation.isUsernameNotValid = true
-				if (error.response && error.response.status === 400) {
+				if (error.response && error.response.status === 400) { 
 					this.usernameValidationMessage = t(this.appName, error.response.data.message)
 				} else {
 					this.usernameValidationMessage = t(this.appName, 'Something went wrong.')
@@ -309,7 +310,7 @@ export default {
 		async submitRegistrationForm() {
 			this.processing = true
 			this.validateForm(['displayname', 'username', 'password', 'repassword', 'termsandservices'])
-			await this.checkUsername()
+			await this.validateFields()
 			const isFormValid = Object.values(this.validation).every(value => !value)
 
 			if (isFormValid) {
