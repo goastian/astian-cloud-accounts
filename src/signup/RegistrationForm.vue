@@ -289,9 +289,9 @@ export default {
 				await Axios.post(url, data)
 				this.isUsernameAvailable = true
 			} catch (error) {
-				this.validation.isUsernameNotValid = true
 				if (error.response && error.response.status === 400) {
 					if (error.response.data.field === 'username') {
+						this.validation.isUsernameNotValid = true
 						this.usernameValidationMessage = t(this.appName, error.response.data.message)
 					}
 					if (error.response.data.field === 'displayname') {
@@ -299,6 +299,7 @@ export default {
 						this.displaynameValidationMessage = t(this.appName, error.response.data.message)
 					}
 				} else {
+					this.validation.isUsernameNotValid = true
 					this.usernameValidationMessage = t(this.appName, 'Something went wrong.')
 				}
 			}
