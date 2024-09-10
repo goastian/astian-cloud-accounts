@@ -59,7 +59,7 @@
 		"Recovery Email": "Recupero e-mail",
 		"Display name is required.": "Il nome visualizzato è obbligatorio.",
 		"Username is required.": "Il nome utente è necessario.",
-		"Username must consist of letters, numbers, hyphens, and underscores only.": "Il nome utente deve essere composto esclusivamente da lettere, numeri, trattini e trattini bassi.",
+		"Username must consist of letters, numbers, hyphens, dots and underscores only.": "Il nome utente deve essere composto esclusivamente da lettere, numeri, trattini, punti e trattini bassi.",
 		"Username must be at least 3 characters long.": "Il nome utente deve essere lungo almeno 3 caratteri.",
 		"Username is already taken.": "Il nome utente è già stato preso.",
 		"Password is required.": "La password è necessaria.",
@@ -78,7 +78,9 @@
 		"Captcha is not verified!": "Il Captcha non è verificato!",
 		"A server-side error occurred while processing your request! Please try again later.": "Si è verificato un errore lato server nel processare la tua richiesta! Ritenta più tardi.",
 		"An error occurred while creating your account!": "Si è verificato un errore nella creazione dell'account!",
-		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Se vedi un messaggio che dice \"Google hasn't verified this app\", puoi ignorarlo cliccando su \"Advanced\". Attualmente stiamo lavorando per ottenere la certificazione richiesta da Google per eliminare questo messaggio."
+		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Se vedi un messaggio che dice \"Google hasn't verified this app\", puoi ignorarlo cliccando su \"Advanced\". Attualmente stiamo lavorando per ottenere la certificazione richiesta da Google per eliminare questo messaggio.",
+		"Username is too large.": "Il nome utente è troppo grande.",
+		"Display name is too large.": "Il nome del display è troppo grande."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }
