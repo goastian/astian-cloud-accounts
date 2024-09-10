@@ -253,13 +253,13 @@ class AccountController extends Controller {
 		$response->setStatus(400);
 
 		if (empty($username)) {
+			$response->setData(['message' => 'Username is required.', 'success' => false]);
 			return $response;
 		}
 
 		$validationError = $this->validateInput('username', $username, 30);
 		if ($validationError !== null) {
 			$response->setData(['message' => $validationError, 'success' => false]);
-			$response->setStatus(403);
 			return $response;
 		}
 
@@ -268,6 +268,8 @@ class AccountController extends Controller {
 			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
+			} else {
+				$response->setData(['message' => 'Username is already taken.', 'success' => false]);
 			}
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID ]);
