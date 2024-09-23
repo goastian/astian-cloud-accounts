@@ -1,3 +1,10 @@
+stages:
+  - test
+  - build
+  - performance
+  - dast
+  - deploy
+
 variables:
     TO_PACKAGE: 'appinfo l10n lib templates js img css'
 include:
@@ -7,6 +14,15 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "nc-apps-deploy.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: main
+    file: "mr-review-tools.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: main
+    file: "git-operations.yml"
+  - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
+    ref: main
+    file: "populate-code-climate-default-config.yml"
 
 build-vendor:
   stage: build
