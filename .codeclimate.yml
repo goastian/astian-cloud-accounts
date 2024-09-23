@@ -1,0 +1,8 @@
+plugins:
+  phpmd:
+    enabled: true
+    config:
+      file_extensions:
+        - php
+        - inc
+      rulesets: "unusedcode,codesize,naming,controversial,design"
