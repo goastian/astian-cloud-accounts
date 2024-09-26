@@ -1,9 +1,10 @@
 <template>
 	<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
-		 <div v-if="isLoading" class="spinner-container">
-            <div class="spinner"></div> <!-- Spinner component -->
-        </div>
-		<div v-else>>
+		<div v-if="isLoading" class="spinner-container">
+			<div class="spinner" /> <!-- Spinner component -->
+		</div>
+		<div v-else>
+			>
 			<p>
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
@@ -290,7 +291,7 @@ input#shop-alternate-email:disabled {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100px; 
+    height: 100px;
 }
 
 .spinner {
