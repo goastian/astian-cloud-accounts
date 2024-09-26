@@ -1,6 +1,9 @@
 <template>
 	<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
-		<div>
+		 <div v-if="isLoading" class="spinner-container">
+            <div class="spinner"></div> <!-- Spinner component -->
+        </div>
+		<div v-else>>
 			<p>
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
@@ -283,4 +286,29 @@ input#shop-alternate-email:disabled {
 #delete-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label:hover{
 	background-color: unset;
 }
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; 
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #09f;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 </style>
