@@ -109,11 +109,7 @@ export default {
 		},
 	},
 	mounted() {
-		// eslint-disable-next-line no-console
-		console.log(this.isLoading)
 		this.getShopUsers()
-		// eslint-disable-next-line no-console
-		console.log(this.isLoading)
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
@@ -166,7 +162,11 @@ export default {
 		},
 		async getShopUsers() {
 			try {
+				// eslint-disable-next-line no-console
+				console.log(this.isLoading)
 				this.isLoading = true // Start loading
+				// eslint-disable-next-line no-console
+				console.log(this.isLoading)
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/users`,
 				)
@@ -183,7 +183,11 @@ export default {
 				}
 			} finally {
 				this.isLoading = false // Stop loading
+				// eslint-disable-next-line no-console
+				console.log(this.isLoading)
 			}
+			// eslint-disable-next-line no-console
+			console.log(this.isLoading)
 			this.disableOrEnableDeleteAccount()
 		},
 		async updateDeleteShopPreference() {
