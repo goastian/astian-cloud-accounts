@@ -10,7 +10,7 @@ variables:
   CONTAINER_IMAGE: ubuntu
   CONTAINER_TAG: focal
   CONTAINER_NAME: nextcloud
-  APP_NAME: oidc_login
+  APP_NAME: ecloud-accounts
   OCC_ENABLE_AFTER_DEPLOY: 'true'
   APP_PATH: ''
   
