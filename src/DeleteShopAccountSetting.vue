@@ -4,7 +4,6 @@
 			<div class="spinner" /> <!-- Spinner component -->
 		</div>
 		<div v-else>
-			>
 			<p>
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
@@ -90,6 +89,7 @@ export default {
 			showError: false,
 			allowDelete: true,
 			ordersDescription: '',
+			 isLoading: false,
 		}
 	},
 	computed: {
@@ -161,6 +161,7 @@ export default {
 		},
 		async getShopUsers() {
 			try {
+				this.isLoading = true // Start loading
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/users`,
 				)
@@ -175,6 +176,8 @@ export default {
 					)
 					this.allowDelete = false
 				}
+			} finally {
+				this.isLoading = false // Stop loading
 			}
 			this.disableOrEnableDeleteAccount()
 		},
@@ -311,5 +314,4 @@ input#shop-alternate-email:disabled {
         transform: rotate(360deg);
     }
 }
-
 </style>
