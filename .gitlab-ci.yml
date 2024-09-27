@@ -13,7 +13,6 @@ variables:
     CONTAINER_NAME: nextcloud
     APP_NAME: $CI_PROJECT_NAME
     OCC_ENABLE_AFTER_DEPLOY: 'true'
-    APP_PATH: ''
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
@@ -63,10 +62,7 @@ include:
       fi
       EOT
     - echo "SUCCESS" > .job_status
-  after_script:
-    # reading job status, checking it and implementing additional steps
-    # are not handled here as rm -rf /tmp/${CI_JOB_ID} will always execute
-    - ssh $SSH_USER@$DEPLOYMENT_HOST "rm -rf /tmp/${CI_JOB_ID}"
+
 
 
 deploy:staging:
