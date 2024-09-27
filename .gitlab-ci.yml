@@ -64,14 +64,13 @@ include:
 
 
 deploy:staging:
-  extends: .deploy:nextcloud-app-by-checkout
-  when: manual
+  extends: .deploy:nextcloud-app
   only:
     - main
     - murena-main
     - production
     - tags
-    - dev/account-delete-changes
+    - dev/fix-slowness
   environment:
     name: staging/01
     url: https://eeo.one
