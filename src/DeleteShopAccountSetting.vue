@@ -170,6 +170,7 @@ export default {
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/users`,
 				)
+				await new Promise(resolve => setTimeout(resolve, 5000))
 				const { data } = await Axios.get(url)
 				this.shopUsers = data
 				this.setOrderDescription()
