@@ -62,20 +62,19 @@ include:
     - ssh $SSH_USER@$DEPLOYMENT_HOST "rm -rf /tmp/${CI_JOB_ID}"
 
 
-
 deploy:staging:
   extends: .deploy:nextcloud-app
-   rules:
+  rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: manual
     - if: $CI_COMMIT_BRANCH == "murena-main"
       when: manual
     - if: $CI_COMMIT_BRANCH == "production"
       when: manual
-     - if: $CI_COMMIT_BRANCH == "dev/fix-slowness"
-      when: manual  
     - if: $CI_COMMIT_TAG
       when: manual
+    - if: $CI_COMMIT_BRANCH == "dev/fix-slowness"
+      when: manual   
   environment:
     name: staging/01
-    url: https://eeo.one
+    url: $ENV_URL
