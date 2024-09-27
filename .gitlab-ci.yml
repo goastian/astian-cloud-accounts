@@ -6,6 +6,104 @@ stages:
   - deploy
 
 variables:
+
+  CONTAINER_IMAGE: ubuntu
+  CONTAINER_TAG: focal
+  CONTAINER_NAME: nextcloud
+  APP_NAME: oidc_login
+  OCC_ENABLE_AFTER_DEPLOY: 'true'
+  APP_PATH: ''
+  
+.deploy:nextcloud-app-by-checkout:
+  stage: deploy
+  # assuming all deployment will happen with sames image
+  image: $CONTAINER_IMAGE:$CONTAINER_TAG
+  # assuming we will need to add SSH for all deployment
+  before_script:
+    - echo "FAIL" > .job_status
+    - mkdir $HOME/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY_ED" > $HOME/.ssh/id_ed25519
+    - echo "$SSH_PUBKEY_ED" > $HOME/.ssh/id_ed25519.pub
+    - echo "$SSH_KNOWN_HOSTS" > $HOME/.ssh/known_hosts
+    - chmod 600 ~/.ssh/id_ed25519
+    - chmod 644 ~/.ssh/known_hosts ~/.ssh/id_ed25519.pub
+    - apt-get update && apt-get install -y openssh-client rsync
+  script:
+    # print var to confirm
+    - echo "Deploying $APP_NAME to $CI_ENVIRONMENT_NAME ($DEPLOYMENT_HOST)"
+    # clone repo to /tmp
+    - |
+      ssh $SSH_USER@$DEPLOYMENT_HOST /bin/bash -s << EOT
+      git clone --depth 1 $CI_REPOSITORY_URL --branch $CI_COMMIT_REF_NAME --single-branch /tmp/${CI_JOB_ID}/${APP_NAME}
+      if $OCC_ENABLE_AFTER_DEPLOY = 'true'
+      then
+        sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:disable ${APP_NAME}
+      fi
+      sudo rsync -avzh --chown www-data:www-data --delete --exclude '.git*' /tmp/${CI_JOB_ID}/${APP_NAME} ${DEPLOYMENT_PATH}/html/custom_apps/${APP_PATH}
+      if $OCC_ENABLE_AFTER_DEPLOY = 'true'
+      then
+        sudo docker exec -u www-data $CONTAINER_NAME /usr/local/bin/php /var/www/html/occ app:enable ${APP_NAME}
+      fi
+      EOT
+    - echo "SUCCESS" > .job_status
+  after_script:
+    # reading job status, checking it and implementing additional steps
+    # are not handled here as rm -rf /tmp/${CI_JOB_ID} will always execute
+    - ssh $SSH_USER@$DEPLOYMENT_HOST "rm -rf /tmp/${CI_JOB_ID}"
+
+deploy:dev01:
+  extends: .deploy:nextcloud-app-by-checkout
+  when: manual
+  only:
+    - /^dev\/.*$/
+    - main
+    - murena-main
+  environment:
+    name: dev/01
+    url: https://dev.eeo.one/
+  variables:
+    CONTAINER_NAME: dev01_nextcloud
+
+deploy:dev02:
+  extends: .deploy:nextcloud-app-by-checkout
+  when: manual
+  only:
+    - /^dev\/.*$/
+    - main
+    - murena-main
+  environment:
+    name: dev/02
+    url: https://ecloud02.dev.eeo.one
+  variables:
+    DEPLOYMENT_BRANCH: $CI_COMMIT_BRANCH
+    CONTAINER_NAME: dev02_nextcloud
+
+deploy:dev03:
+  extends: .deploy:nextcloud-app-by-checkout
+  when: manual
+  only:
+    - /^dev\/.*$/
+    - main
+    - murena-main
+  environment:
+    name: dev/03
+    url: https://ecloud03.dev.eeo.one
+  variables:
+    CONTAINER_NAME: dev03_nextcloud
+
+deploy:staging:
+  extends: .deploy:nextcloud-app-by-checkout
+  when: manual
+  only:
+    - main
+    - murena-main
+    - production
+    - tags
+    - dev/access-tokens
+  environment:
+    name: staging/01
+    url: https://eeo.one
     TO_PACKAGE: 'appinfo l10n lib templates js img css'
 include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
