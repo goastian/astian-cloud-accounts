@@ -182,7 +182,7 @@ export default {
 					this.allowDelete = false
 				}
 			} finally {
-				this.isLoading = false // Stop loading
+				this.isLoading = true // Stop loading
 			}
 			this.disableOrEnableDeleteAccount()
 		},
