@@ -90,7 +90,7 @@ export default {
 			showError: false,
 			allowDelete: true,
 			ordersDescription: '',
-			 isLoading: true,
+			isLoading: true,
 		}
 	},
 	computed: {
@@ -109,7 +109,11 @@ export default {
 		},
 	},
 	mounted() {
+		// eslint-disable-next-line no-console
+		console.log(this.isLoading)
 		this.getShopUsers()
+		// eslint-disable-next-line no-console
+		console.log(this.isLoading)
 	},
 	methods: {
 		async disableOrEnableDeleteAccount() {
