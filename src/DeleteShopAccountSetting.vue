@@ -90,7 +90,7 @@ export default {
 			showError: false,
 			allowDelete: true,
 			ordersDescription: '',
-			 isLoading: false,
+			 isLoading: true,
 		}
 	},
 	computed: {
