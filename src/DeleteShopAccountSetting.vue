@@ -1,10 +1,10 @@
 <template>
-	<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
+	<SettingsSection :name="t(appName, 'Options')">
 		<div v-if="isLoading" class="spinner-container">
 			This is test text
 			<div class="spinner" /> <!-- Spinner component -->
 		</div>
-		<div v-else>
+		<div v-else-if="shopUsers.length > 0">
 			<p>
 				{{
 					t(appName, 'We are going to proceed with your cloud account suppression.')
