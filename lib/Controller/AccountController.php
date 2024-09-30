@@ -153,8 +153,8 @@ class AccountController extends Controller {
 			$response->setStatus(400);
 			return $response;
 		}
-	
-		if($this->has_invalid_password_characters()){
+
+		if(preg_match("/\\\/", $password)){
 			$response->setData(['message' => 'Password has invalid characters', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
@@ -287,27 +287,21 @@ class AccountController extends Controller {
 		}
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
-			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
+			if (in_array($username, array('abuse', 'hostmaster', 'postmaster', 'webmaster', 'postmaster', 'root', 'sendmail', 'postfix', 'contact', 'info', 'sales', 'marketing', 'news', 'newsletter', 'eelo', 'job', 'jobs', 'career', 'admin', 'legal', 'apache', 'postfix', 'mysql', 'support'))) {
+				$response->setData(['message' => 'This username is forbidden.', 'field' => 'username', 'success' => false]);
+			}
+			else if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
 			} else {
 				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			}
-			if (in_array($mbox, array('abuse', 'hostmaster', 'postmaster', 'webmaster', 'postmaster', 'root', 'sendmail', 'postfix', 'contact', 'info', 'sales', 'marketing', 'news', 'newsletter', 'eelo', 'job', 'jobs', 'career', 'admin', 'legal', 'apache', 'postfix', 'mysql', 'support'))) {
-				$response->setData(['message' => 'This username is forbidden', 'field' => 'username', 'success' => false]);
-			}
-
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID ]);
 			$response->setStatus(500);
 		}
 
 		return $response;
-	}
-
-	private function has_invalid_password_characters(string $password): bool
-	{
-    		return (bool) preg_match("/\\\/", $password);
 	}
 
 	/**
