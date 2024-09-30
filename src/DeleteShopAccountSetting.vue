@@ -165,6 +165,7 @@ export default {
 				// eslint-disable-next-line no-console
 				console.log(this.isLoading)
 				this.isLoading = true // Start loading
+				await this.$nextTick();
 				// eslint-disable-next-line no-console
 				console.log(this.isLoading)
 				const url = generateUrl(
