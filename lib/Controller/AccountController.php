@@ -154,7 +154,7 @@ class AccountController extends Controller {
 			return $response;
 		}
 
-		if(preg_match("/\\\/", $password)){
+		if (preg_match("/\\\/", $password)) {
 			$response->setData(['message' => 'Password has invalid characters', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
@@ -294,7 +294,7 @@ class AccountController extends Controller {
 				$content = file_get_contents($filePath);
 				$blacklist = explode("\n", $content);
 			}
-			if (in_array($username, $blacklist)){
+			if (in_array($username, $blacklist)) {
 				$response->setData(['message' => 'This username is forbidden.', 'field' => 'username', 'success' => false]);
 			}
 			else if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
