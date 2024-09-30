@@ -287,7 +287,14 @@ class AccountController extends Controller {
 		}
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
-			if (in_array($username, array('abuse', 'hostmaster', 'postmaster', 'webmaster', 'postmaster', 'root', 'sendmail', 'postfix', 'contact', 'info', 'sales', 'marketing', 'news', 'newsletter', 'eelo', 'job', 'jobs', 'career', 'admin', 'legal', 'apache', 'postfix', 'mysql', 'support'))) {
+			$blacklist = array();
+			$appPath = \OC_App::getAppPath($this->appName);
+			$filePath = $appPath . '/blacklisted_usernames';
+			if (file_exists($filePath)) {
+				$content = file_get_contents($filePath);
+				$blacklist = explode("\n", $content);
+			}
+			if (in_array($username, $blacklist)){
 				$response->setData(['message' => 'This username is forbidden.', 'field' => 'username', 'success' => false]);
 			}
 			else if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
