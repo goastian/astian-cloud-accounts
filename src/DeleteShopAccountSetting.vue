@@ -297,6 +297,7 @@ input#shop-alternate-email:disabled {
     justify-content: center;
     align-items: center;
     height: 100px;
+	margin-top: 50px;
 }
 
 .spinner {
