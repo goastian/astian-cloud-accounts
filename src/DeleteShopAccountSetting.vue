@@ -1,8 +1,7 @@
 <template>
 	<SettingsSection :name="t(appName, 'Options')">
 		<div v-if="isLoading" class="spinner-container">
-			This is test text
-			<div class="spinner" /> <!-- Spinner component -->
+			<div class="spinner" />
 		</div>
 		<div v-else-if="shopUsers.length > 0">
 			<p>
