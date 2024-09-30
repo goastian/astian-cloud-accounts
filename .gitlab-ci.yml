@@ -24,7 +24,20 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "populate-code-climate-default-config.yml"
-
+    
+build-vendor:
+  stage: build
+  extends: .composer:base
+  needs: ["build-frontend"]
+  before_script:
+    - composer install --no-dev
+  script:
+    - cp -a vendor dist/${APP_NAME}
+    - find dist/${APP_NAME} -type d -exec chmod 755 {} \;
+    - find dist/${APP_NAME} -type f -exec chmod 644 {} \;
+  artifacts:
+    paths:
+      - dist/
 deploy:staging:
   extends: .deploy:nextcloud-app
   rules:
