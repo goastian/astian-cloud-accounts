@@ -163,11 +163,7 @@ export default {
 		},
 		async getShopUsers() {
 			try {
-				// eslint-disable-next-line no-console
-				console.log(this.isLoading)
-				this.isLoading = true // Start loading
-				// eslint-disable-next-line no-console
-				console.log(this.isLoading)
+				this.isLoading = true
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/users`,
 				)
@@ -183,7 +179,7 @@ export default {
 					this.allowDelete = false
 				}
 			} finally {
-				this.isLoading = false // Stop loading
+				this.isLoading = false
 			}
 			this.disableOrEnableDeleteAccount()
 		},
@@ -305,7 +301,7 @@ input#shop-alternate-email:disabled {
 
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #09f;
+    border-left-color: var(--color-primary-element);
     border-radius: 50%;
     width: 40px;
     height: 40px;
