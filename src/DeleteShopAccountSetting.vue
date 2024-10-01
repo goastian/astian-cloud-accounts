@@ -291,16 +291,16 @@ input#shop-alternate-email:disabled {
 	background-color: unset;
 }
 .spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100px;
 	margin-top: 50px;
 }
 
 #delete-my-account-loader {
 	margin-left: auto;
-    margin-right: auto;
-    width: 40px;
+	margin-right: auto;
+	width: 40px;
 }
 </style>
