@@ -320,4 +320,9 @@ input#shop-alternate-email:disabled {
         transform: rotate(360deg);
     }
 }
+#delete-my-account-loader {
+	margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}	
 </style>
