@@ -155,7 +155,7 @@ class AccountController extends Controller {
 		}
 
 		if (preg_match("/\\\/", $password)) {
-			$response->setData(['message' => 'Password has invalid characters', 'success' => false]);
+			$response->setData(['message' => 'Password has invalid characters.', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
 		}
