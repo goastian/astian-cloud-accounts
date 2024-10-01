@@ -324,5 +324,5 @@ input#shop-alternate-email:disabled {
 	margin-left: auto;
     margin-right: auto;
     width: 50%;
-}	
+}
 </style>
