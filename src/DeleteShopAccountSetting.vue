@@ -60,7 +60,7 @@
 			</div>
 		</SettingsSection>
 		<div id="delete-my-account-loader" class="spinner-container">
-			<div class="spinner" /> <!-- Spinner component -->
+			<NcLoadingIcon :size="40" />
 		</div>
 	</div>
 </template>
@@ -72,6 +72,7 @@ import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
 import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
@@ -80,6 +81,7 @@ export default {
 	components: {
 		SettingsSection,
 		CheckboxRadioSwitch,
+		NcLoadingIcon,
 	},
 	data() {
 		return {
@@ -296,23 +298,6 @@ input#shop-alternate-email:disabled {
 	margin-top: 50px;
 }
 
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: var(--color-primary-element);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 #delete-my-account-loader {
 	margin-left: auto;
     margin-right: auto;
