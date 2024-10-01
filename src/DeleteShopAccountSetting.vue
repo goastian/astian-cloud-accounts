@@ -1,8 +1,5 @@
 <template>
 	<div>
-		<div v-if="isLoading" class="spinner-container">
-			<div class="spinner" /> <!-- Spinner component -->
-		</div>
 		<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
 			<div>
 				<p>
@@ -94,7 +91,6 @@ export default {
 			showError: false,
 			allowDelete: true,
 			ordersDescription: '',
-			isLoading: true,
 		}
 	},
 	computed: {
@@ -166,7 +162,6 @@ export default {
 		},
 		async getShopUsers() {
 			try {
-				this.isLoading = true
 				const url = generateUrl(
 					`/apps/${this.appName}/shop-accounts/users`,
 				)
@@ -181,8 +176,6 @@ export default {
 					)
 					this.allowDelete = false
 				}
-			} finally {
-				this.isLoading = false
 			}
 			this.disableOrEnableDeleteAccount()
 		},
