@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector(checkboxSpanSelector).classList.add(disabledClass)
 
 	const elem = document.getElementById('body-settings')
-	document.querySelector(deleteMyAccountLoader).style.visibility = 'visible'
+	document.querySelector(deleteMyAccountLoader).style.display = 'block'
 	elem.addEventListener('disable-delete-account', function() {
 	  document.querySelector(checkboxSelector).disabled = true
 	  document.querySelector(buttonSelector).disabled = true
 	  document.querySelector(checkboxSpanSelector).classList.add(disabledClass)
-	  document.querySelector(deleteMyAccountLoader).style.visibility = 'visible'
+	  document.querySelector(deleteMyAccountLoader).style.display = 'block'
 	  document.querySelector(deleteAccountSectionId).style.visibility = 'hidden'
 	})
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	  const enableDeleteAccount = document.querySelector(checkboxSelector).checked
 	  document.querySelector(buttonSelector).disabled = !enableDeleteAccount
 	  document.querySelector(checkboxSpanSelector).classList.remove(disabledClass)
-	  document.querySelector(deleteMyAccountLoader).style.visibility = 'hidden'
+	  document.querySelector(deleteMyAccountLoader).style.display = 'none'
 	  document.querySelector(deleteAccountSectionId).style.visibility = 'visible'
 	})
 })
