@@ -323,6 +323,6 @@ input#shop-alternate-email:disabled {
 #delete-my-account-loader {
 	margin-left: auto;
     margin-right: auto;
-    width: 50%;
+    width: 40px;
 }
 </style>
