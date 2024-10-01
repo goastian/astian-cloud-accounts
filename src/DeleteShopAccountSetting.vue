@@ -62,6 +62,9 @@
 				</form>
 			</div>
 		</SettingsSection>
+		<div id="delete-my-account-loader" class="spinner-container">
+			<div class="spinner" /> <!-- Spinner component -->
+		</div>
 	</div>
 </template>
 
