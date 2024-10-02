@@ -21,6 +21,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Files\IAppData;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -28,7 +29,6 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
-use OCP\Files\IAppData;
 
 class AccountController extends Controller {
 	protected $appName;
