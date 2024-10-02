@@ -1,11 +1,10 @@
-
 stages:
   - test
   - build
   - performance
   - dast
   - deploy
-  
+
 variables:
     TO_PACKAGE: 'appinfo l10n lib templates js img css'
 include:
@@ -24,7 +23,7 @@ include:
   - project: "e/infra/ecloud/nextcloud-apps/ci-templates"
     ref: main
     file: "populate-code-climate-default-config.yml"
-    
+
 build-vendor:
   stage: build
   extends: .composer:base
@@ -38,19 +37,3 @@ build-vendor:
   artifacts:
     paths:
       - dist/
-deploy:staging:
-  extends: .deploy:nextcloud-app
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "murena-main"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "production"
-      when: manual
-    - if: $CI_COMMIT_TAG
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "dev/fix-slowness"
-      when: manual   
-  environment:
-    name: staging/01
-    url: $ENV_URL
