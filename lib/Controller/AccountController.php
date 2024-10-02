@@ -28,6 +28,7 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
+use OCP\Files\IAppData;
 
 class AccountController extends Controller {
 	protected $appName;
@@ -43,13 +44,15 @@ class AccountController extends Controller {
 	/** @var IConfig */
 	private IConfig $config;
 	private IInitialState $initialState;
+	private IAppData $appData;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
 	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
 	private const HCAPTCHA_PROVIDER = 'hcaptcha';
 	private const HCAPTCHA_DOMAINS = ['https://hcaptcha.com', 'https://*.hcaptcha.com'];
-
+	private const BLACKLISTED_USERNAMES_FILE_NAME = 'blacklisted_usernames';
+	
 	private ILogger $logger;
 	public function __construct(
 		$AppName,
@@ -64,7 +67,8 @@ class AccountController extends Controller {
 		ISession $session,
 		IConfig $config,
 		ILogger $logger,
-		IInitialState $initialState
+		IInitialState $initialState,
+		IAppData $appData
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -80,6 +84,7 @@ class AccountController extends Controller {
 		$this->logger = $logger;
 		$this->request = $request;
 		$this->initialState = $initialState;
+		$this->appData = $appData;
 	}
 
 	/**
@@ -288,12 +293,13 @@ class AccountController extends Controller {
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
 			$blacklist = [];
-			$appPath = \OC_App::getAppPath($this->appName);
-			$filePath = $appPath . '/blacklisted_usernames';
-			if (file_exists($filePath)) {
-				$content = file_get_contents($filePath);
-				$blacklist = explode("\n", $content);
+			$appDataFolder = $this->appData->getFolder('/');
+			if (!$appDataFolder->fileExists(self::BLACKLISTED_USERNAMES_FILE_NAME)) {
+				$appDataFolder->newFile(self::BLACKLISTED_USERNAMES_FILE_NAME, "");
 			}
+			$content = $appDataFolder->getFile(self::BLACKLISTED_USERNAMES_FILE_NAME)->getContent();
+			$blacklist = explode("\n", $content);
+
 			if (in_array($username, $blacklist)) {
 				$response->setData(['message' => 'This username is forbidden.', 'field' => 'username', 'success' => false]);
 			} elseif (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
