@@ -1,63 +1,68 @@
 <template>
-	<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
-		<div>
-			<p>
-				{{
-					t(appName, 'We are going to proceed with your cloud account suppression.')
-				}}
-				<span v-if="!hasActiveSubscription">
+	<div>
+		<SettingsSection v-if="shopUsers.length > 0" :name="t(appName, 'Options')">
+			<div>
+				<p>
 					{{
-						t(appName, 'Check the box below if you also want to delete the associated shop account(s).')
+						t(appName, 'We are going to proceed with your cloud account suppression.')
 					}}
-				</span>
-			</p>
+					<span v-if="!hasActiveSubscription">
+						{{
+							t(appName, 'Check the box below if you also want to delete the associated shop account(s).')
+						}}
+					</span>
+				</p>
 
-			<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
-			<p v-if="hasActiveSubscription">
-				<b>
-					{{
-						t(appName, 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.')
-					}}
-				</b>
-			</p>
+				<p><span v-if="orderCount > 0" v-html="ordersDescription" /></p>
+				<p v-if="hasActiveSubscription">
+					<b>
+						{{
+							t(appName, 'A subscription is active in this account. Please cancel it or let it expire before deleting your account.')
+						}}
+					</b>
+				</p>
 
-			<form @submit.prevent>
-				<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
-					<div class="delete-shop-input">
-						<CheckboxRadioSwitch id="shop-accounts_confirm"
-							:checked.sync="deleteShopAccount"
-							:disabled="hasActiveSubscription || !allowDelete"
-							@update:checked="updateDeleteShopPreference">
-							{{
-								t(
-									appName,
-									"I also want to delete my shop account"
-								)
-							}}
-						</CheckboxRadioSwitch>
+				<form @submit.prevent>
+					<div v-if="!onlyUser && !onlyAdmin" id="delete-shop-account-settings">
+						<div class="delete-shop-input">
+							<CheckboxRadioSwitch id="shop-accounts_confirm"
+								:checked.sync="deleteShopAccount"
+								:disabled="hasActiveSubscription || !allowDelete"
+								@update:checked="updateDeleteShopPreference">
+								{{
+									t(
+										appName,
+										"I also want to delete my shop account"
+									)
+								}}
+							</CheckboxRadioSwitch>
+						</div>
+						<div v-if="!deleteShopAccount" class="delete-shop-input">
+							<label for="shop-alternate-email">
+								{{
+									t(
+										appName,
+										"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
+									)
+								}}
+							</label>
+							<input id="shop-alternate-email"
+								v-model="shopEmailPostDelete"
+								type="email"
+								name="shop-alternate-email"
+								:placeholder="t(appName, 'Email Address')"
+								class="form-control"
+								:disabled="hasActiveSubscription || !allowDelete"
+								@blur="updateEmailPostDelete($event)">
+						</div>
 					</div>
-					<div v-if="!deleteShopAccount" class="delete-shop-input">
-						<label for="shop-alternate-email">
-							{{
-								t(
-									appName,
-									"If you want to keep your shop account please validate or modify the email address below. This email address will become your new login to the shop."
-								)
-							}}
-						</label>
-						<input id="shop-alternate-email"
-							v-model="shopEmailPostDelete"
-							type="email"
-							name="shop-alternate-email"
-							:placeholder="t(appName, 'Email Address')"
-							class="form-control"
-							:disabled="hasActiveSubscription || !allowDelete"
-							@blur="updateEmailPostDelete($event)">
-					</div>
-				</div>
-			</form>
+				</form>
+			</div>
+		</SettingsSection>
+		<div id="delete-my-account-loader" class="spinner-container">
+			<NcLoadingIcon :size="40" />
 		</div>
-	</SettingsSection>
+	</div>
 </template>
 
 <script>
@@ -67,6 +72,7 @@ import Axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
 import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
 
 const APPLICATION_NAME = 'ecloud-accounts'
 
@@ -75,6 +81,7 @@ export default {
 	components: {
 		SettingsSection,
 		CheckboxRadioSwitch,
+		NcLoadingIcon,
 	},
 	data() {
 		return {
@@ -282,5 +289,18 @@ input#shop-alternate-email:disabled {
 }
 #delete-account-settings .checkbox-radio-switch--disabled .checkbox-radio-switch__label:hover{
 	background-color: unset;
+}
+.spinner-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100px;
+	margin-top: 50px;
+}
+
+#delete-my-account-loader {
+	margin-left: auto;
+	margin-right: auto;
+	width: 40px;
 }
 </style>
