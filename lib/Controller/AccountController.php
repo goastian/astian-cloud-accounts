@@ -301,7 +301,7 @@ class AccountController extends Controller {
 			$blacklist = explode("\n", $content);
 
 			if (in_array($username, $blacklist)) {
-				$response->setData(['message' => 'This username is forbidden.', 'field' => 'username', 'success' => false]);
+				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			} elseif (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
