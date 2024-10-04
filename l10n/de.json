@@ -82,7 +82,8 @@
 		"An error occurred while creating your account!": "Beim Anlegen Ihres Kontos ist ein Fehler aufgetreten!",
 		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Wenn Sie eine Nachricht sehen, die besagt \"Google hasn't verified this app\", können Sie diese ignorieren, indem Sie auf \"Advanced\" tippen. Wir arbeiten derzeit daran, die erforderliche Zertifizierung von Google zu erhalten, um diese Fehlermeldung zu beseitigen.",
 		"Username is too large.": "Der Benutzername ist zu groß.",
-		"Display name is too large.": "Der Anzeigename ist zu groß."
+		"Display name is too large.": "Der Anzeigename ist zu groß.",
+		"Password has invalid characters.": "Das Passwort enthält ungültige Zeichen."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

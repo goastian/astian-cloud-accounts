@@ -21,6 +21,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Files\IAppData;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -43,13 +44,15 @@ class AccountController extends Controller {
 	/** @var IConfig */
 	private IConfig $config;
 	private IInitialState $initialState;
+	private IAppData $appData;
 	private const SESSION_USERNAME_CHECK = 'username_check_passed';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
 	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
 	private const HCAPTCHA_PROVIDER = 'hcaptcha';
 	private const HCAPTCHA_DOMAINS = ['https://hcaptcha.com', 'https://*.hcaptcha.com'];
-
+	private const BLACKLISTED_USERNAMES_FILE_NAME = 'blacklisted_usernames';
+	
 	private ILogger $logger;
 	public function __construct(
 		$AppName,
@@ -64,7 +67,8 @@ class AccountController extends Controller {
 		ISession $session,
 		IConfig $config,
 		ILogger $logger,
-		IInitialState $initialState
+		IInitialState $initialState,
+		IAppData $appData
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -80,6 +84,7 @@ class AccountController extends Controller {
 		$this->logger = $logger;
 		$this->request = $request;
 		$this->initialState = $initialState;
+		$this->appData = $appData;
 	}
 
 	/**
@@ -150,6 +155,12 @@ class AccountController extends Controller {
 
 		if (!$this->session->get(self::SESSION_USERNAME_CHECK)) {
 			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
+			$response->setStatus(400);
+			return $response;
+		}
+
+		if (preg_match("/\\\/", $password)) {
+			$response->setData(['message' => 'Password has invalid characters.', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
 		}
@@ -274,14 +285,24 @@ class AccountController extends Controller {
 				return $response;
 			}
 		}
-		if (!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
+		if (!preg_match('/^(?=.{3,30}$)(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._-]+(?<![_.-])$/', $username)) {
 			$response->setData(['message' => 'Username must consist of letters, numbers, hyphens, dots and underscores only.', 'field' => 'username', 'success' => false]);
 			$response->setStatus(403);
 			return $response;
 		}
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
-			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
+			$blacklist = [];
+			$appDataFolder = $this->appData->getFolder('/');
+			if (!$appDataFolder->fileExists(self::BLACKLISTED_USERNAMES_FILE_NAME)) {
+				$appDataFolder->newFile(self::BLACKLISTED_USERNAMES_FILE_NAME, "");
+			}
+			$content = $appDataFolder->getFile(self::BLACKLISTED_USERNAMES_FILE_NAME)->getContent();
+			$blacklist = explode("\n", $content);
+
+			if (in_array($username, $blacklist)) {
+				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
+			} elseif (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
 				$this->session->set(self::SESSION_USERNAME_CHECK, true);
 			} else {
