@@ -92,8 +92,6 @@ export default {
 		submitRecoveryEmailForm(data) {
 			if (data.isFormValid) {
 				const data = {
-					displayname: this.formData.displayname,
-					username: this.formData.username,
 					password: this.formData.password,
 					recoveryEmail: this.formData.email,
 					language: this.formData.selectedLanguage,

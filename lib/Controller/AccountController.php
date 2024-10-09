@@ -45,7 +45,8 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private IInitialState $initialState;
 	private IAppData $appData;
-	private const SESSION_USERNAME_CHECK = 'username_check_passed';
+	private const SESSION_VARIFIED_USERNAME = 'varified_username';
+	private const SESSION_VARIFIED_DISPLAYNAME = 'varified_displayname';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
 	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
@@ -143,7 +144,7 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
+	public function create(string $recoveryEmail = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
 		
 		$response = new DataResponse();
 		
@@ -153,7 +154,10 @@ class AccountController extends Controller {
 			return $response;
 		}
 
-		if (!$this->session->get(self::SESSION_USERNAME_CHECK)) {
+		$displayname = $this->session->get(self::SESSION_VARIFIED_DISPLAYNAME);
+		$username = $this->session->get(self::SESSION_VARIFIED_USERNAME);
+
+		if ($this->isNullOrEmptyInput($displayname) || $this->isNullOrEmptyInput($username)) {
 			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
@@ -200,7 +204,8 @@ class AccountController extends Controller {
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
-			$this->session->remove(self::SESSION_USERNAME_CHECK);
+			$this->session->remove(self::SESSION_VARIFIED_USERNAME);
+			$this->session->remove(self::SESSION_VARIFIED_DISPLAYNAME);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 			$ipAddress = $this->request->getRemoteAddress();
 			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
@@ -227,6 +232,15 @@ class AccountController extends Controller {
 
 		return $response;
 	}
+
+	private function isNullOrEmptyInput(string|null $input): bool {
+		if($input === null || empty(trim($input))) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Validate input for a given input name, value, and optional maximum length.
 	 *
@@ -259,7 +273,8 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function validateFields(string $username, string $displayname) : DataResponse {
-		$this->session->remove(self::SESSION_USERNAME_CHECK);
+		$this->session->remove(self::SESSION_VARIFIED_DISPLAYNAME);
+		$this->session->remove(self::SESSION_VARIFIED_USERNAME);
 		$response = new DataResponse();
 		$response->setStatus(400);
 
@@ -304,7 +319,8 @@ class AccountController extends Controller {
 				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			} elseif (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
-				$this->session->set(self::SESSION_USERNAME_CHECK, true);
+				$this->session->set(self::SESSION_VARIFIED_USERNAME, $username);
+				$this->session->set(self::SESSION_VARIFIED_DISPLAYNAME, $displayname);
 			} else {
 				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			}
