@@ -45,8 +45,8 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private IInitialState $initialState;
 	private IAppData $appData;
-	private const SESSION_VARIFIED_USERNAME = 'varified_username';
-	private const SESSION_VARIFIED_DISPLAYNAME = 'varified_displayname';
+	private const SESSION_VERIFIED_USERNAME = 'verified_username';
+	private const SESSION_VERIFIED_DISPLAYNAME = 'verified_displayname';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
 	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
@@ -154,8 +154,8 @@ class AccountController extends Controller {
 			return $response;
 		}
 
-		$displayname = $this->session->get(self::SESSION_VARIFIED_DISPLAYNAME);
-		$username = $this->session->get(self::SESSION_VARIFIED_USERNAME);
+		$displayname = $this->session->get(self::SESSION_VERIFIED_DISPLAYNAME);
+		$username = $this->session->get(self::SESSION_VERIFIED_USERNAME);
 
 		if ($this->isNullOrEmptyInput($displayname) || $this->isNullOrEmptyInput($username)) {
 			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
@@ -204,8 +204,8 @@ class AccountController extends Controller {
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
-			$this->session->remove(self::SESSION_VARIFIED_USERNAME);
-			$this->session->remove(self::SESSION_VARIFIED_DISPLAYNAME);
+			$this->session->remove(self::SESSION_VERIFIED_USERNAME);
+			$this->session->remove(self::SESSION_VERIFIED_DISPLAYNAME);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 			$ipAddress = $this->request->getRemoteAddress();
 			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
@@ -273,8 +273,8 @@ class AccountController extends Controller {
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function validateFields(string $username, string $displayname) : DataResponse {
-		$this->session->remove(self::SESSION_VARIFIED_DISPLAYNAME);
-		$this->session->remove(self::SESSION_VARIFIED_USERNAME);
+		$this->session->remove(self::SESSION_VERIFIED_DISPLAYNAME);
+		$this->session->remove(self::SESSION_VERIFIED_USERNAME);
 		$response = new DataResponse();
 		$response->setStatus(400);
 
@@ -319,8 +319,8 @@ class AccountController extends Controller {
 				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			} elseif (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
-				$this->session->set(self::SESSION_VARIFIED_USERNAME, $username);
-				$this->session->set(self::SESSION_VARIFIED_DISPLAYNAME, $displayname);
+				$this->session->set(self::SESSION_VERIFIED_USERNAME, $username);
+				$this->session->set(self::SESSION_VERIFIED_DISPLAYNAME, $displayname);
 			} else {
 				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			}
