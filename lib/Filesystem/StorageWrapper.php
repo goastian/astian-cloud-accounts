@@ -10,7 +10,6 @@ use OC\Files\Storage\Wrapper\Wrapper;
 use OCP\Files\ForbiddenException;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
-use OCA\EcloudAccounts\Filesystem\CacheWrapper;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	/**

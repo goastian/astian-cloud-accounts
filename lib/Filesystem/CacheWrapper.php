@@ -31,4 +31,20 @@ class CacheWrapper extends Wrapper {
 		}
 		return $entry;
 	}
+
+	public function get($fileId) {
+		throw new OCP\Files\Cache\CacheEntryNotFoundException('User data cache access is disabled.');
+	}
+
+	public function insert($file, $data) {
+		throw new \OCP\Files\Cache\CacheUpdateForbiddenException('User data cache insert is disabled.');
+	}
+
+	public function update($id, $data) {
+		throw new \OCP\Files\Cache\CacheUpdateForbiddenException('User data cache update is disabled.');
+	}
+
+	public function remove($fileId) {
+		throw new \OCP\Files\Cache\CacheUpdateForbiddenException('User data cache removal is disabled.');
+	}
 }

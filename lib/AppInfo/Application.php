@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
+use OCA\EcloudAccounts\Filesystem\StorageWrapper;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\PasswordUpdatedListener;
@@ -44,7 +45,6 @@ use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCP\Util;
-use OCA\EcloudAccounts\Filesystem\StorageWrapper;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
