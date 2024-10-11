@@ -43,6 +43,8 @@ use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
+use OCP\Util;
+use OCA\EcloudAccounts\Filesystem\StorageWrapper;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -52,6 +54,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
+		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
@@ -68,5 +71,29 @@ class Application extends App implements IBootstrap {
 				$c->get(IUserManager::class)
 			);
 		});
+	}
+
+	/**
+	 * @internal
+	 */
+	public function addStorageWrapper(): void {
+		Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
+	}
+
+	/**
+	 * @internal
+	 * @param $mountPoint
+	 * @param IStorage $storage
+	 * @return StorageWrapper|IStorage
+	 */
+	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
+		if (!OC::$CLI && $mountPoint !== '/') {
+			return new StorageWrapper([
+				'storage' => $storage,
+				'mountPoint' => $mountPoint,
+			]);
+		}
+
+		return $storage;
 	}
 }
