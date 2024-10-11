@@ -213,7 +213,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 			$storage = $this;
 		}
 		$cache = $this->storage->getCache($path, $storage);
-		return new CacheWrapper($cache, $storage, $this->operation);
+		return new CacheWrapper($cache, $storage);
 	}
 
 	/**
