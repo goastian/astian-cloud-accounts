@@ -10,7 +10,7 @@
     <description><![CDATA[in /e/OS cloud, nextcloud accounts are linked to mail accounts. This app ensures both are coordinated: it sets the e-mail address, quota and storage of the user upon creation.
     It also completes the account deletion by cleaning other parts of the /e/OS cloud setup to ensure no more data is retained when a user requests an account deletion.
     This app uses the UserDeletedEvent to invoke scripts in the docker-welcome container of /e/OS cloud setup]]></description>
-    <version>8.0.2</version>
+    <version>9.0.0</version>
     <licence>agpl</licence>
     <author mail="dev@murena.com" homepage="https://murena.com/">Murena SAS</author>
     <namespace>EcloudAccounts</namespace>
