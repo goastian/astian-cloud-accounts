@@ -47,6 +47,8 @@ use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCP\Util;
+use OCP\IUserSession;
+use OCP\IGroupManager;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -79,8 +81,25 @@ class Application extends App implements IBootstrap {
 	 * @internal
 	 */
 	public function addStorageWrapper(): void {
-		Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
-	}
+		$userSession = \OC::$server->get(IUserSession::class);
+		$currentUser = $userSession->getUser();
+		if ($currentUser !== null) {
+			$groupManager = \OC::$server->get(IGroupManager::class);
+			$groups = $groupManager->getUserGroups($currentUser);
+			$hasAccess = false;
+			if (!empty($groups)) {
+				foreach ($groups as $group) {
+					if($group->getGID() === "storage_enable"){
+					$hasAccess = true;
+					  break;
+					}
+				}
+			}
+			if(!$hasAccess){ 
+				Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
+			}
+		}
+		
 
 	/**
 	 * @internal
