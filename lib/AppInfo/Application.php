@@ -83,22 +83,28 @@ class Application extends App implements IBootstrap {
 	public function addStorageWrapper(): void {
 		$userSession = \OC::$server->get(IUserSession::class);
 		$currentUser = $userSession->getUser();
-		if ($currentUser !== null) {
-			$groupManager = \OC::$server->get(IGroupManager::class);
-			$groups = $groupManager->getUserGroups($currentUser);
-			$hasAccess = false;
-			if (!empty($groups)) {
-				foreach ($groups as $group) {
-					if($group->getGID() === "storage_enable"){
+		if ($currentUser === null) {
+                        Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
+                        return;
+                }
+
+		$groupManager = \OC::$server->get(IGroupManager::class);
+		$groups = $groupManager->getUserGroups($currentUser);
+		$hasAccess = false;
+		
+                if (!empty($groups)) {
+			foreach ($groups as $group) {
+				if($group->getGID() === "storage_enable") {
 					$hasAccess = true;
-					  break;
-					}
+					break;
 				}
 			}
-			if(!$hasAccess){ 
-				Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
-			}
 		}
+			
+                if(!$hasAccess) { 
+			Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
+		}
+	}
 		
 
 	/**
