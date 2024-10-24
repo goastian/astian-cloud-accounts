@@ -91,7 +91,7 @@ class Application extends App implements IBootstrap {
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
-		if (!\OC::$CLI && $mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
+		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
 			return new StorageWrapper([
 				'storage' => $storage,
 				'mountPoint' => $mountPoint,
