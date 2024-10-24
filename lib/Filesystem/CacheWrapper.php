@@ -49,9 +49,9 @@ class CacheWrapper extends Wrapper {
 	}
 
 	public function searchQuery(ISearchQuery $searchQuery) {
-		return null;
+		return [];
 	}
-	
+
 	public function getCacheEntryFromSearchResult(ICacheEntry $rawEntry): ?ICacheEntry {
 		return null;
 	}
