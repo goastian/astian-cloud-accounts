@@ -11,7 +11,6 @@ use OCP\Files\Cache\ICacheEntry;
 use OCP\Files\ForbiddenException;
 use OCP\Files\Search\ISearchQuery;
 
-
 class CacheWrapper extends Wrapper {
 
 	public function __construct(
