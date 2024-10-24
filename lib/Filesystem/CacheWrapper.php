@@ -7,8 +7,8 @@ namespace OCA\EcloudAccounts\Filesystem;
 use OC\Files\Cache\Wrapper\CacheWrapper as Wrapper;
 use OCP\Constants;
 use OCP\Files\Cache\ICache;
-use OCP\Files\ForbiddenException;
 use OCP\Files\Cache\ICacheEntry;
+use OCP\Files\ForbiddenException;
 use OCP\Files\Search\ISearchQuery;
 
 
