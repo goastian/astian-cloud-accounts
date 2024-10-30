@@ -406,7 +406,9 @@ class UserService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-
+		$this->logger->error('url: '.$url);
+		$this->logger->error("Authorization: Bearer $token");
+		
 		$this->curl->get($url, [], $headers);
 
 		$statusCode = $this->curl->getLastStatusCode();
