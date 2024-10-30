@@ -257,11 +257,10 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param string $username The username to check.
 	 *
 	 */
-	public function tempApiCheck(string $username) {
-		echo 'test '.$username;
+	public function tempApiCheck() {
+		echo 'test';die;
 	}
 	/**
 	 * Check if a username is available.
