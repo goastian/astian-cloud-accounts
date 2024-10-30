@@ -260,8 +260,16 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function tempApiCheck() {
-		echo 'test';
-		die;
+		try {
+			$username = 'ronakp1';
+			if($this->userService->isUsernameTaken($username)) {
+				echo 'username taken';
+			} else {
+				echo 'username nottaken';
+			}
+		} catch (Exception $e) {
+			echo 'username exception issue. '.$e->getMessage();
+		}
 	}
 	/**
 	 * Check if a username is available.
