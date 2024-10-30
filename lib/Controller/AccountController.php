@@ -260,7 +260,8 @@ class AccountController extends Controller {
 	 *
 	 */
 	public function tempApiCheck() {
-		echo 'test';die;
+		echo 'test';
+		die;
 	}
 	/**
 	 * Check if a username is available.
