@@ -259,6 +259,19 @@ class AccountController extends Controller {
 	 *
 	 * @param string $username The username to check.
 	 *
+	 */
+	public function tempApiCheck(string $username) {
+		echo 'test';		
+	}
+	/**
+	 * Check if a username is available.
+	 *
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $username The username to check.
+	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
 	public function checkUsernameAvailable(string $username) : DataResponse {
