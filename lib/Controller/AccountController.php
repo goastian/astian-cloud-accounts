@@ -133,21 +133,6 @@ class AccountController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 **/
-	public function sendemail() {
-		$displayname = 'Ronak';
-		$username = 'ronak.patel';
-		$userEmail = 'eronax59@gmail.com';
-		$language = 'en';
-		$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
-		echo 'sent';
-		die;
-	}
-	/**
-	 * @NoAdminRequired
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
 	 * @param string $displayname      User's display name
 	 * @param string $recoveryEmail    User's recovery email
 	 * @param string $username         User's username

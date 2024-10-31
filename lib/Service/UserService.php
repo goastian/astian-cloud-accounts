@@ -172,16 +172,12 @@ class UserService {
 		
 		$sendgridAPIkey = $this->getSendGridAPIKey();
 		if (empty($sendgridAPIkey)) {
-			print_r("sendgrid_api_key is missing or empty.");
-			die;
 			$this->logger->warning("sendgrid_api_key is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
 		
 		$templateIDs = $this->getSendGridTemplateIDs();
 		if (empty($templateIDs)) {
-			print_r("welcome_sendgrid_template_ids is missing or empty.");
-			die;
 			$this->logger->warning("welcome_sendgrid_template_ids is missing or empty.", ['app' => Application::APP_ID]);
 			return;
 		}
@@ -198,8 +194,6 @@ class UserService {
 			$email = $this->createSendGridEmail($fromEmail, $fromName, $username, $displayname, $userEmail, $templateID);
 			$this->sendEmailWithSendGrid($email, $sendgridAPIkey);
 		} catch (Throwable $e) {
-			print_r('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
-			die;
 			$this->logger->error('Error sending welcome email to user: ' . $username . ': ' . $e->getMessage());
 		}
 	}
@@ -238,8 +232,7 @@ class UserService {
 		$response = $sendgrid->send($email, [ CURLOPT_TIMEOUT => 15 ]);
 
 		if ($response->statusCode() < 200 || $response->statusCode() > 299) {
-			print_r("SendGrid API error - Status Code: " . $response->statusCode());
-			die;
+			$this->logger->error("SendGrid API error - Status Code: " . $response->statusCode());
 		}
 	}
 	/**
@@ -406,9 +399,7 @@ class UserService {
 		$headers = [
 			"Authorization: Bearer $token"
 		];
-		$this->logger->error('url: '.$url);
-		$this->logger->error("Authorization: Bearer $token");
-		
+
 		$this->curl->get($url, [], $headers);
 
 		$statusCode = $this->curl->getLastStatusCode();
