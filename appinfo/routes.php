@@ -31,5 +31,6 @@ return ['routes' => [
 	['name' => 'account#captcha', 'url' => '/accounts/captcha', 'verb' => 'GET'],
 	['name' => 'account#verify_captcha', 'url' => '/accounts/verify_captcha', 'verb' => 'POST'],
 	['name' => 'account#validate_fields', 'url' => '/accounts/validate_fields', 'verb' => 'POST'],
+	['name' => 'account#temp_api_check', 'url' => '/accounts/temp_api_check', 'verb' => 'GET'],
 
 ]];
