@@ -59,7 +59,7 @@
 		"Recovery Email": "Récupération de l'email",
 		"Display name is required.": "Le nom d'affichage est obligatoire.",
 		"Username is required.": "Le nom d'utilisateur est requis.",
-		"Username must consist of letters, numbers, hyphens, and underscores only.": "Le nom d'utilisateur doit être composé uniquement de lettres, de chiffres, de traits d'union et de traits de soulignement.",
+		"Username must consist of letters, numbers, hyphens, dots and underscores only.": "Le nom d'utilisateur doit être composé uniquement de lettres, de chiffres, de traits d'union, de points et de traits de soulignement.",
 		"Username must be at least 3 characters long.": "Le nom d'utilisateur doit comporter au moins 3 caractères.",
 		"Username is already taken.": "Le nom d'utilisateur est déjà pris.",
 		"Password is required.": "Le mot de passe est requis.",
@@ -81,7 +81,11 @@
 		"Set a recovery email address": "Définir une adresse électronique de récupération",
 		"Captcha is not verified!": "Captcha n'est pas vérifié !",
 		"A server-side error occurred while processing your request! Please try again later.": "Erreur du serveur dans la gestion de votre demande ! Merci d'essayer ultérieurement.",
-		"An error occurred while creating your account!": "Une erreur s'est produite lors de la création de votre compte!"
+		"An error occurred while creating your account!": "Une erreur s'est produite lors de la création de votre compte!",
+		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"Si vous voyez un message disant \"Google hasn't verified this app\" vous pouvez le contourner en cliquant sur \"Advanced\". Nous travaillons actuellement sur l'obtention de la certification exigée par Google pour se débarrasser de ce message.",
+		"Username is too large.": "Le nom d'utilisateur est trop grand.",
+		"Display name is too large.": "Le nom affiché est trop grand.",
+		"Password has invalid characters.": "Le mot de passe contient des caractères non valides."
 	},
 	"pluralForm": "nplurals=2; plural=(n != 1);"
 }

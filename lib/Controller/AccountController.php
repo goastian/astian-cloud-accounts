@@ -21,6 +21,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Files\IAppData;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -43,13 +44,16 @@ class AccountController extends Controller {
 	/** @var IConfig */
 	private IConfig $config;
 	private IInitialState $initialState;
-	private const SESSION_USERNAME_CHECK = 'username_check_passed';
+	private IAppData $appData;
+	private const SESSION_VERIFIED_USERNAME = 'verified_username';
+	private const SESSION_VERIFIED_DISPLAYNAME = 'verified_displayname';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
 	private const ALLOWED_CAPTCHA_PROVIDERS = ['image', 'hcaptcha'];
 	private const DEFAULT_CAPTCHA_PROVIDER = 'image';
 	private const HCAPTCHA_PROVIDER = 'hcaptcha';
 	private const HCAPTCHA_DOMAINS = ['https://hcaptcha.com', 'https://*.hcaptcha.com'];
-
+	private const BLACKLISTED_USERNAMES_FILE_NAME = 'blacklisted_usernames';
+	
 	private ILogger $logger;
 	public function __construct(
 		$AppName,
@@ -64,7 +68,8 @@ class AccountController extends Controller {
 		ISession $session,
 		IConfig $config,
 		ILogger $logger,
-		IInitialState $initialState
+		IInitialState $initialState,
+		IAppData $appData
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -80,6 +85,7 @@ class AccountController extends Controller {
 		$this->logger = $logger;
 		$this->request = $request;
 		$this->initialState = $initialState;
+		$this->appData = $appData;
 	}
 
 	/**
@@ -152,7 +158,7 @@ class AccountController extends Controller {
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function create(string $displayname = '', string $recoveryEmail = '', string $username = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
+	public function create(string $recoveryEmail = '', string $password = '', string $language = 'en', bool $newsletterEos = false, bool $newsletterProduct = false): DataResponse {
 		
 		$response = new DataResponse();
 		
@@ -162,15 +168,24 @@ class AccountController extends Controller {
 			return $response;
 		}
 
-		if (!$this->session->get(self::SESSION_USERNAME_CHECK)) {
+		$displayname = $this->session->get(self::SESSION_VERIFIED_DISPLAYNAME);
+		$username = $this->session->get(self::SESSION_VERIFIED_USERNAME);
+
+		if ($this->isNullOrEmptyInput($displayname) || $this->isNullOrEmptyInput($username)) {
 			$response->setData(['message' => 'Username is already taken.', 'success' => false]);
+			$response->setStatus(400);
+			return $response;
+		}
+
+		if (preg_match("/\\\/", $password)) {
+			$response->setData(['message' => 'Password has invalid characters.', 'success' => false]);
 			$response->setStatus(400);
 			return $response;
 		}
 
 		$inputData = [
 			'username' => ['value' => $username, 'maxLength' => 30],
-			'displayname' => ['value' => $displayname, 'maxLength' => 30],
+			'display name' => ['value' => $displayname, 'maxLength' => 30],
 			'password' => ['value' => $password, 'maxLength' => 1024],
 		];
 		
@@ -188,7 +203,7 @@ class AccountController extends Controller {
 			$mainDomain = $this->userService->getMainDomain();
 			$userEmail = $username.'@'.$mainDomain;
 			$this->userService->registerUser($displayname, $recoveryEmail, $username, $userEmail, $password, $language);
-			sleep(2);
+			sleep(5);
 
 			$this->userService->setAccountDataLocally($username, $userEmail);
 			$this->userService->createHMEAlias($username, $userEmail);
@@ -203,7 +218,8 @@ class AccountController extends Controller {
 		
 			$this->userService->sendWelcomeEmail($displayname, $username, $userEmail, $language);
 			
-			$this->session->remove(self::SESSION_USERNAME_CHECK);
+			$this->session->remove(self::SESSION_VERIFIED_USERNAME);
+			$this->session->remove(self::SESSION_VERIFIED_DISPLAYNAME);
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 			$ipAddress = $this->request->getRemoteAddress();
 			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
@@ -230,6 +246,15 @@ class AccountController extends Controller {
 
 		return $response;
 	}
+
+	private function isNullOrEmptyInput(string|null $input): bool {
+		if($input === null || empty(trim($input))) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Validate input for a given input name, value, and optional maximum length.
 	 *
@@ -241,17 +266,16 @@ class AccountController extends Controller {
 	 */
 	private function validateInput(string $inputName, string $value, ?int $maxLength = null) : ?string {
 		if ($value === '') {
-			return "$inputName is required.";
+			return ucfirst(strtolower($inputName))." is required.";
 		}
-	
 		if ($maxLength !== null && strlen($value) > $maxLength) {
-			return "$inputName is too large.";
+			return ucfirst(strtolower($inputName))." is too large.";
 		}
 	
 		return null; // Validation passed
 	}
 	/**
-	 * Check if a username is available.
+	 * Check if a username and displayname is valid or not.
 	 *
 	 * @NoAdminRequired
 	 * @PublicPage
@@ -279,23 +303,61 @@ class AccountController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 * @param string $username The username to check.
+	 * @param string $displayname The displayname to check.
 	 *
 	 * @return \OCP\AppFramework\Http\DataResponse
 	 */
-	public function checkUsernameAvailable(string $username) : DataResponse {
-		$this->session->remove(self::SESSION_USERNAME_CHECK);
+	public function validateFields(string $username, string $displayname) : DataResponse {
+		$this->session->remove(self::SESSION_VERIFIED_DISPLAYNAME);
+		$this->session->remove(self::SESSION_VERIFIED_USERNAME);
 		$response = new DataResponse();
 		$response->setStatus(400);
 
 		if (empty($username)) {
+			$response->setData(['message' => 'Username is required.', 'field' => 'username', 'success' => false]);
+			return $response;
+		}
+		if (empty($displayname)) {
+			$response->setData(['message' => 'Display name is required.', 'field' => 'display name', 'success' => false]);
 			return $response;
 		}
 
+		$inputData = [
+			'username' => ['value' => $username, 'maxLength' => 30],
+			'display name' => ['value' => $displayname, 'maxLength' => 30]
+		];
+		
+		foreach ($inputData as $inputName => $inputInfo) {
+			$validationError = $this->validateInput($inputName, $inputInfo['value'], $inputInfo['maxLength']);
+			if ($validationError !== null) {
+				$response->setData(['message' => $validationError, 'field' => $inputName, 'success' => false]);
+				$response->setStatus(400);
+				return $response;
+			}
+		}
+		if (!preg_match('/^(?=.{3,30}$)(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._-]+(?<![_.-])$/', $username)) {
+			$response->setData(['message' => 'Username must consist of letters, numbers, hyphens, dots and underscores only.', 'field' => 'username', 'success' => false]);
+			$response->setStatus(403);
+			return $response;
+		}
 		try {
 			$username = mb_strtolower($username, 'UTF-8');
-			if (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
+			$blacklist = [];
+			$appDataFolder = $this->appData->getFolder('/');
+			if (!$appDataFolder->fileExists(self::BLACKLISTED_USERNAMES_FILE_NAME)) {
+				$appDataFolder->newFile(self::BLACKLISTED_USERNAMES_FILE_NAME, "");
+			}
+			$content = $appDataFolder->getFile(self::BLACKLISTED_USERNAMES_FILE_NAME)->getContent();
+			$blacklist = explode("\n", $content);
+
+			if (in_array($username, $blacklist)) {
+				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
+			} elseif (!$this->userService->userExists($username) && !$this->userService->isUsernameTaken($username)) {
 				$response->setStatus(200);
-				$this->session->set(self::SESSION_USERNAME_CHECK, true);
+				$this->session->set(self::SESSION_VERIFIED_USERNAME, $username);
+				$this->session->set(self::SESSION_VERIFIED_DISPLAYNAME, $displayname);
+			} else {
+				$response->setData(['message' => 'Username is already taken.', 'field' => 'username', 'success' => false]);
 			}
 		} catch (Exception $e) {
 			$this->logger->logException($e, ['app' => Application::APP_ID ]);

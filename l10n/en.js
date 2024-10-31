@@ -62,7 +62,7 @@ OC.L10N.register(
 		"Recovery Email": "Recovery Email",
 		"Display name is required.": "Display name is required.",
 		"Username is required.": "Username is required.",
-		"Username must consist of letters, numbers, hyphens, and underscores only.": "Username must consist of letters, numbers, hyphens, and underscores only.",
+		"Username must consist of letters, numbers, hyphens, dots and underscores only.": "Username must consist of letters, numbers, hyphens, dots and underscores only.",
 		"Username must be at least 3 characters long.": "Username must be at least 3 characters long.",
 		"Username is already taken.": "Username is already taken.",
 		"Password is required.": "Password is required.",
@@ -84,6 +84,10 @@ OC.L10N.register(
 		"Set a recovery email address": "Set a recovery email address",
 		"Captcha is not verified!": "Captcha is not verified!",
 		"A server-side error occurred while processing your request! Please try again later.": "A server-side error occurred while processing your request! Please try again later.",
-		"An error occurred while creating your account!": "An error occurred while creating your account!"
+		"An error occurred while creating your account!": "An error occurred while creating your account!",
+		"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.":"If you see a \"Google hasn't verified this app\" message you can bypass it by clicking \"Advanced\". We're currently working on passing the certification Google demands to get rid of this message.",
+		"Username is too large.": "Username is too large.",
+		"Display name is too large.": "Display name is too large.",
+		"Password has invalid characters.": "Password has invalid characters."
 	},
 	"nplurals=2; plural=(n != 1);");
