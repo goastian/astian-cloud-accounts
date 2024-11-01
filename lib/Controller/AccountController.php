@@ -270,16 +270,17 @@ class AccountController extends Controller {
 	 */
 	public function tempApiCheck() {
 		try {
-			$username = 'ronakp1';
-			if($this->userService->isUsernameTaken($username)) {
-				echo 'username taken';
-			} else {
-				echo 'username nottaken';
+			$usernames = ['ronakp1', 'ronakp2', 'ronakp3'];
+			foreach ($usernames as $username) {
+				if ($this->userService->isUsernameTaken($username)) {
+					echo $username . ' username taken<br>';
+				} else {
+					echo $username . ' username is not taken<br>';
+				}
 			}
 		} catch (Exception $e) {
-			echo 'username exception issue. '.$e->getMessage();
+			echo 'Username exception issue: ' . $e->getMessage();
 		}
-		die;
 	}
 	/**
 	 * Check if a username is available.
