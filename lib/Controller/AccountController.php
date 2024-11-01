@@ -279,6 +279,7 @@ class AccountController extends Controller {
 		} catch (Exception $e) {
 			echo 'username exception issue. '.$e->getMessage();
 		}
+		die;
 	}
 	/**
 	 * Check if a username is available.
