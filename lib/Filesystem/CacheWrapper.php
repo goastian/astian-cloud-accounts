@@ -13,6 +13,8 @@ use OCP\Files\Search\ISearchQuery;
 
 class CacheWrapper extends Wrapper {
 
+	private string $excludedFolder = 'restricted-folder';
+
 	public function __construct(
 		ICache $cache
 	) {
@@ -47,11 +49,23 @@ class CacheWrapper extends Wrapper {
 		throw new \Exception('User data cache removal is disabled.');
 	}
 
+	// Exclude specific folder and its files from search results
 	public function searchQuery(ISearchQuery $searchQuery) {
-		return [];
+		$results = parent::searchQuery($searchQuery);
+		return array_filter($results, function($entry) {
+			return !$this->isExcludedPath($entry['path']);
+		});
 	}
 
 	public function getCacheEntryFromSearchResult(ICacheEntry $rawEntry): ?ICacheEntry {
-		return null;
+		if ($this->isExcludedPath($rawEntry->getPath())) {
+			return null;
+		}
+		return parent::getCacheEntryFromSearchResult($rawEntry);
+	}
+
+	// Check if a path is within the excluded folder
+	private function isExcludedPath(string $path): bool {
+		return strpos($path, $this->excludedFolder) === 0;
 	}
 }
