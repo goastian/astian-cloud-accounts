@@ -13,7 +13,7 @@ use OCP\Files\Search\ISearchQuery;
 
 class CacheWrapper extends Wrapper {
 
-	private string $excludedFolder = 'restricted-folder';
+	private string $excludedFolder = 'files/restricted-folder';
 
 	public function __construct(
 		ICache $cache
@@ -53,7 +53,7 @@ class CacheWrapper extends Wrapper {
 	public function searchQuery(ISearchQuery $searchQuery) {
 		$results = parent::searchQuery($searchQuery);
 		return array_filter($results, function ($entry) {
-			return !$this->isExcludedPath($entry['path']);
+			return isset($entry['path']) && !$this->isExcludedPath($entry['path']);
 		});
 	}
 
