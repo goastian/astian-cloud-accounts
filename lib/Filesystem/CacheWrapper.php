@@ -52,7 +52,7 @@ class CacheWrapper extends Wrapper {
 	// Exclude specific folder and its files from search results
 	public function searchQuery(ISearchQuery $searchQuery) {
 		$results = parent::searchQuery($searchQuery);
-		return array_filter($results, function($entry) {
+		return array_filter($results, function ($entry) {
 			return !$this->isExcludedPath($entry['path']);
 		});
 	}
