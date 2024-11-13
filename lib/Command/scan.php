@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -33,6 +32,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
@@ -60,8 +60,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Scan extends Base
-{
+class Scan extends Base {
 	protected float $execTime = 0;
 	protected int $foldersCounter = 0;
 	protected int $filesCounter = 0;
@@ -80,12 +79,11 @@ class Scan extends Base
 		parent::__construct();
 	}
 
-	protected function configure(): void
-	{
+	protected function configure(): void {
 		parent::configure();
 
 		$this
-			->setName(Application::APP_ID . ':scan')
+			->setName(Application::APP_ID.':scan')
 			->setDescription('rescan filesystem')
 			->addArgument(
 				'user_id',
@@ -128,8 +126,7 @@ class Scan extends Base
 			);
 	}
 
-	protected function scanFiles(string $user, string $path, ?string $scanMetadata, OutputInterface $output, bool $backgroundScan = false, bool $recursive = true, bool $homeOnly = false): void
-	{
+	protected function scanFiles(string $user, string $path, ?string $scanMetadata, OutputInterface $output, bool $backgroundScan = false, bool $recursive = true, bool $homeOnly = false): void {
 		$connection = $this->reconnectToDatabase($output);
 		$scanner = new \OC\Files\Utils\Scanner(
 			$user,
@@ -203,14 +200,12 @@ class Scan extends Base
 		}
 	}
 
-	public function filterHomeMount(IMountPoint $mountPoint): bool
-	{
+	public function filterHomeMount(IMountPoint $mountPoint): bool {
 		// any mountpoint inside '/$user/files/'
 		return substr_count($mountPoint->getMountPoint(), '/') <= 3;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output): int
-	{
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$inputPath = $input->getOption('path');
 		if ($inputPath) {
 			$inputPath = '/' . trim($inputPath, '/');
@@ -267,14 +262,13 @@ class Scan extends Base
 	/**
 	 * Initialises some useful tools for the Command
 	 */
-	protected function initTools(OutputInterface $output): void
-	{
+	protected function initTools(OutputInterface $output): void {
 		// Start the timer
 		$this->execTime = -microtime(true);
 		// Convert PHP errors to exceptions
 		set_error_handler(
-			fn(int $severity, string $message, string $file, int $line): bool =>
-			$this->exceptionErrorHandler($output, $severity, $message, $file, $line),
+			fn (int $severity, string $message, string $file, int $line): bool =>
+				$this->exceptionErrorHandler($output, $severity, $message, $file, $line),
 			E_ALL
 		);
 	}
@@ -289,8 +283,7 @@ class Scan extends Base
 	 * @param string $file the filename that the error was raised in
 	 * @param int $line the line number the error was raised
 	 */
-	public function exceptionErrorHandler(OutputInterface $output, int $severity, string $message, string $file, int $line): bool
-	{
+	public function exceptionErrorHandler(OutputInterface $output, int $severity, string $message, string $file, int $line): bool {
 		if (($severity === E_DEPRECATED) || ($severity === E_USER_DEPRECATED)) {
 			// Do not show deprecation warnings
 			return false;
@@ -302,8 +295,7 @@ class Scan extends Base
 		return true;
 	}
 
-	protected function presentStats(OutputInterface $output): void
-	{
+	protected function presentStats(OutputInterface $output): void {
 		// Stop the timer
 		$this->execTime += microtime(true);
 
@@ -339,15 +331,13 @@ class Scan extends Base
 	/**
 	 * Formats microtime into a human-readable format
 	 */
-	protected function formatExecTime(): string
-	{
+	protected function formatExecTime(): string {
 		$secs = (int)round($this->execTime);
 		# convert seconds into HH:MM:SS form
 		return sprintf('%02d:%02d:%02d', (int)($secs / 3600), ((int)($secs / 60) % 60), $secs % 60);
 	}
 
-	protected function reconnectToDatabase(OutputInterface $output): Connection
-	{
+	protected function reconnectToDatabase(OutputInterface $output): Connection {
 		/** @var Connection $connection */
 		$connection = \OC::$server->get(Connection::class);
 		try {
