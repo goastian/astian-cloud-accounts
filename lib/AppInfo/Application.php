@@ -91,7 +91,7 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
-		if (\OC::$CLI && (\OC::$REQUESTEDAPP === "ecloud-accounts" || \OC::$REQUESTEDAPP === "encryption")) {
+		if (\OC::$CLI && \OC::$REQUESTEDAPP === self::APP_ID) {
 			return $storage;
 		}
 

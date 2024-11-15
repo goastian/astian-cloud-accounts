@@ -206,6 +206,7 @@ class Scan extends Base {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		\OC::$REQUESTEDAPP = Application::APP_ID;
 		$inputPath = $input->getOption('path');
 		if ($inputPath) {
 			$inputPath = '/' . trim($inputPath, '/');
