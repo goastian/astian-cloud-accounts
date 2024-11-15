@@ -29,5 +29,6 @@
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
         <command>OCA\EcloudAccounts\Command\MapActiveAttributetoLDAP</command>
         <command>OCA\EcloudAccounts\Command\Scan</command>
+        <command>OCA\EcloudAccounts\Command\FixEncryptedVersion</command>
     </commands>
 </info>
