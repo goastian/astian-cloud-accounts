@@ -42,7 +42,9 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
+use OCP\IGroupManager;
 use OCP\IUserManager;
+use OCP\IUserSession;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -56,13 +58,13 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		//	Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
-	
+
 		$context->registerMiddleware(AccountMiddleware::class);
 	}
 
@@ -89,6 +91,25 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
+		if (\OC::$CLI && (\OC::$REQUESTEDAPP === "ecloud-accounts" || \OC::$REQUESTEDAPP === "encryption")) {
+			return $storage;
+		}
+
+		$userSession = \OC::$server->get(IUserSession::class);
+		$currentUser = $userSession->getUser();
+		if ($currentUser !== null) {
+			$groupManager = \OC::$server->get(IGroupManager::class);
+			$groups = $groupManager->getUserGroups($currentUser);
+
+			if (!empty($groups)) {
+				foreach ($groups as $group) {
+					if ($group->getGID() === "recovery_done") {
+						return $storage;
+					}
+				}
+			}
+		}
+
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
 		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
