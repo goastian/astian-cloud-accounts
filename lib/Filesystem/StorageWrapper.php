@@ -7,7 +7,6 @@ namespace OCA\EcloudAccounts\Filesystem;
 use OC\Files\Cache\Cache;
 use OC\Files\Storage\Storage;
 use OC\Files\Storage\Wrapper\Wrapper;
-use OC\ServiceUnavailableException;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
 
@@ -20,10 +19,10 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	}
 
 	/**
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	protected function checkFileAccess(string $path, bool $isDir = false): void {
-		throw new ServiceUnavailableException('Access denied');
+		throw new \Exception('Service unavailable', 503);
 	}
 
 	/*
@@ -35,7 +34,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function mkdir($path) {
 		$this->checkFileAccess($path, true);
@@ -46,7 +45,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function rmdir($path) {
 		$this->checkFileAccess($path, true);
@@ -61,7 +60,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	public function isCreatable($path) {
 		try {
 			$this->checkFileAccess($path);
-		} catch (ServiceUnavailableException $e) {
+		} catch (\Exception $e) {
 			return false;
 		}
 	}
@@ -75,7 +74,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	public function isReadable($path) {
 		try {
 			$this->checkFileAccess($path);
-		} catch (ServiceUnavailableException $e) {
+		} catch (\Exception $e) {
 			return false;
 		}
 	}
@@ -89,7 +88,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	public function isUpdatable($path) {
 		try {
 			$this->checkFileAccess($path);
-		} catch (ServiceUnavailableException $e) {
+		} catch (\Exception $e) {
 			return false;
 		}
 	}
@@ -103,7 +102,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	public function isDeletable($path) {
 		try {
 			$this->checkFileAccess($path);
-		} catch (ServiceUnavailableException $e) {
+		} catch (\Exception $e) {
 			return false;
 		}
 	}
@@ -111,7 +110,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	public function getPermissions($path) {
 		try {
 			$this->checkFileAccess($path);
-		} catch (ServiceUnavailableException $e) {
+		} catch (\Exception $e) {
 			return $this->mask;
 		}
 	}
@@ -121,7 +120,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return string
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function file_get_contents($path) {
 		$this->checkFileAccess($path);
@@ -133,7 +132,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @param string $data
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function file_put_contents($path, $data) {
 		$this->checkFileAccess($path);
@@ -144,7 +143,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function unlink($path) {
 		$this->checkFileAccess($path);
@@ -156,7 +155,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path1
 	 * @param string $path2
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function rename($path1, $path2) {
 		$this->checkFileAccess($path1);
@@ -169,7 +168,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path1
 	 * @param string $path2
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function copy($path1, $path2) {
 		$this->checkFileAccess($path1);
@@ -182,7 +181,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @param string $mode
 	 * @return resource
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function fopen($path, $mode) {
 		$this->checkFileAccess($path);
@@ -195,7 +194,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @param int $mtime
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function touch($path, $mtime = null) {
 		$this->checkFileAccess($path);
@@ -223,7 +222,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return array
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function getDirectDownload($path) {
 		$this->checkFileAccess($path);
@@ -234,7 +233,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $sourceInternalPath
 	 * @param string $targetInternalPath
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function copyFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath) {
 		$this->checkFileAccess($targetInternalPath);
@@ -245,14 +244,14 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $sourceInternalPath
 	 * @param string $targetInternalPath
 	 * @return bool
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function moveFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath) {
 		$this->checkFileAccess($targetInternalPath);
 	}
 
 	/**
-	 * @throws ServiceUnavailableException
+	 * @throws \Exception
 	 */
 	public function writeStream(string $path, $stream, ?int $size = null): int {
 		$this->checkFileAccess($path);
