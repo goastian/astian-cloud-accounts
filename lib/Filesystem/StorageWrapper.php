@@ -59,11 +59,8 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isCreatable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (StorageNotAvailableException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	/**
@@ -73,11 +70,8 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isReadable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (StorageNotAvailableException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	/**
@@ -87,11 +81,8 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isUpdatable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (StorageNotAvailableException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	/**
@@ -101,19 +92,13 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isDeletable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (StorageNotAvailableException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	public function getPermissions($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (StorageNotAvailableException $e) {
-			return $this->mask;
-		}
+		$this->checkFileAccess($path);
+		return $this->mask;
 	}
 
 	/**
