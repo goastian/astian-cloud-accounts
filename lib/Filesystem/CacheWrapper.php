@@ -99,6 +99,9 @@ class CacheWrapper extends Wrapper {
 	 * Check if a path is within the excluded folder (e.g., "Recovery").
 	 */
 	private function isExcludedPath(string $path): bool {
+		if (empty($path)) {
+			return false;
+		}
 		return strpos($path, $this->excludedFolder) === 0;
 	}
 }
