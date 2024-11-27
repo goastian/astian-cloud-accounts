@@ -170,16 +170,23 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	}
 
 	public function getDirectDownload($path): array|false {
+		
 		$this->checkFileAccess($path, false);
 		return $this->storage->getDirectDownload($path);
 	}
 
 	public function copyFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath): bool {
+		if ($sourceStorage === $this) {
+			return $this->copy($sourceInternalPath, $targetInternalPath);
+		}
 		$this->checkFileAccess($targetInternalPath);
 		return $this->storage->copyFromStorage($sourceStorage, $sourceInternalPath, $targetInternalPath);
 	}
 
 	public function moveFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath): bool {
+		if ($sourceStorage === $this) {
+			return $this->rename($sourceInternalPath, $targetInternalPath);
+		}
 		$this->checkFileAccess($targetInternalPath);
 		return $this->storage->moveFromStorage($sourceStorage, $sourceInternalPath, $targetInternalPath);
 	}
