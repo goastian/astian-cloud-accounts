@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Filesystem;
 
 use OC\Files\Cache\Wrapper\CacheWrapper as Wrapper;
+use OCP\Constants;
 use OCP\Files\Cache\ICache;
 use OCP\Files\Cache\ICacheEntry;
 use OCP\Files\ForbiddenException;
@@ -18,6 +19,11 @@ class CacheWrapper extends Wrapper {
 		ICache $cache
 	) {
 		parent::__construct($cache);
+		$this->mask = Constants::PERMISSION_ALL
+			& ~Constants::PERMISSION_READ
+			& ~Constants::PERMISSION_CREATE
+			& ~Constants::PERMISSION_UPDATE
+			& ~Constants::PERMISSION_DELETE;
 	}
 
 	/**
@@ -29,6 +35,9 @@ class CacheWrapper extends Wrapper {
 			if ($this->isExcludedPath($entry['path'])) {
 				throw new ForbiddenException('Access denied to the Recovery folder.', 503);
 			}
+	
+			// Mask permissions for files outside of the "Recovery" folder
+			$entry['permissions'] &= $this->mask;
 		}
 		return $entry;
 	}
