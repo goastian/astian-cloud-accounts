@@ -31,13 +31,15 @@ class CacheWrapper extends Wrapper {
 	 */
 	protected function formatCacheEntry($entry) {
 		if (isset($entry['path']) && isset($entry['permissions'])) {
-			// Check if the file is in the "Recovery" folder
+			// Only restrict permissions for files in the "Recovery" folder
 			if ($this->isExcludedPath($entry['path'])) {
-				throw new ForbiddenException('Access denied to the Recovery folder.', 503);
-			}
+				try {
+					throw new ForbiddenException('Access denied', false);
+				} catch (ForbiddenException) {
+					$entry['permissions'] &= $this->mask;
+				}
 	
-			// Mask permissions for files outside of the "Recovery" folder
-			$entry['permissions'] &= $this->mask;
+			}
 		}
 		return $entry;
 	}
@@ -46,8 +48,7 @@ class CacheWrapper extends Wrapper {
 	 * Prevent inserting into the cache for "Recovery" folder.
 	 */
 	public function insert($file, $data) {
-		// Ensure path is set before checking
-		if (isset($file) && $this->isExcludedPath($file)) {
+		if ($this->isExcludedPath($file)) {
 			throw new \Exception('Cache insert is disabled for the Recovery folder.');
 		}
 		return parent::insert($file, $data); // Normal insert for other paths
@@ -57,8 +58,7 @@ class CacheWrapper extends Wrapper {
 	 * Prevent updating cache for files in the "Recovery" folder.
 	 */
 	public function update($id, $data) {
-		// Ensure path is set before checking
-		if (isset($data['path']) && $this->isExcludedPath($data['path'])) {
+		if ($this->isExcludedPath($data['path'])) {
 			throw new \Exception('Cache update is disabled for the Recovery folder.');
 		}
 		return parent::update($id, $data); // Normal update for other paths
@@ -98,11 +98,7 @@ class CacheWrapper extends Wrapper {
 	/**
 	 * Check if a path is within the excluded folder (e.g., "Recovery").
 	 */
-	private function isExcludedPath(?string $path): bool {
-		// If path is null or not set, return false
-		if ($path === null) {
-			return false;
-		}
+	private function isExcludedPath(string $path): bool {
 		return strpos($path, $this->excludedFolder) === 0;
 	}
 }
