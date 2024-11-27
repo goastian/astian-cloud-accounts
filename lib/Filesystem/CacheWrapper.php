@@ -58,7 +58,7 @@ class CacheWrapper extends Wrapper {
 	 * Prevent updating cache for files in the "Recovery" folder.
 	 */
 	public function update($id, $data) {
-		if ($this->isExcludedPath($data['path'])) {
+		if (isset($data['path']) && $data['path'] !== null && $this->isExcludedPath($data['path'])) {
 			throw new \Exception('Cache update is disabled for the Recovery folder.');
 		}
 		return parent::update($id, $data); // Normal update for other paths
