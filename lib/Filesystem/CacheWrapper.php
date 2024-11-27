@@ -8,7 +8,6 @@ use OC\Files\Cache\Wrapper\CacheWrapper as Wrapper;
 use OCP\Constants;
 use OCP\Files\Cache\ICache;
 use OCP\Files\Cache\ICacheEntry;
-use OCP\Files\ForbiddenException;
 use OCP\Files\Search\ISearchQuery;
 
 class CacheWrapper extends Wrapper {
@@ -26,30 +25,53 @@ class CacheWrapper extends Wrapper {
 			& ~Constants::PERMISSION_DELETE;
 	}
 
+	/**
+	 * Format the cache entry to check access and adjust permissions.
+	 */
 	protected function formatCacheEntry($entry) {
 		if (isset($entry['path']) && isset($entry['permissions'])) {
-			try {
-				throw new ForbiddenException('Access denied', false);
-			} catch (ForbiddenException) {
+			// Only restrict permissions for files in the "Recovery" folder
+			if ($this->isExcludedPath($entry['path'])) {
 				$entry['permissions'] &= $this->mask;
 			}
 		}
 		return $entry;
 	}
 
+	/**
+	 * Prevent inserting into the cache for "Recovery" folder.
+	 */
 	public function insert($file, $data) {
-		throw new \Exception('User data cache insert is disabled.');
+		if ($this->isExcludedPath($file)) {
+			throw new \Exception('Cache insert is disabled for the Recovery folder.');
+		}
+		return parent::insert($file, $data); // Normal insert for other paths
 	}
 
+	/**
+	 * Prevent updating cache for files in the "Recovery" folder.
+	 */
 	public function update($id, $data) {
-		throw new \Exception('User data cache update is disabled.');
+		if ($this->isExcludedPath($data['path'])) {
+			throw new \Exception('Cache update is disabled for the Recovery folder.');
+		}
+		return parent::update($id, $data); // Normal update for other paths
 	}
 
+	/**
+	 * Prevent removal from cache for files in the "Recovery" folder.
+	 */
 	public function remove($fileId) {
-		throw new \Exception('User data cache removal is disabled.');
+		$filePath = $this->storage->getPath($fileId);
+		if ($this->isExcludedPath($filePath)) {
+			throw new \Exception('Cache removal is disabled for the Recovery folder.');
+		}
+		return parent::remove($fileId); // Normal removal for other paths
 	}
 
-	// Exclude specific folder and its files from search results
+	/**
+	 * Exclude specific folder and its files from search results.
+	 */
 	public function searchQuery(ISearchQuery $searchQuery) {
 		$results = parent::searchQuery($searchQuery);
 		return array_filter($results, function ($entry) {
@@ -57,6 +79,9 @@ class CacheWrapper extends Wrapper {
 		});
 	}
 
+	/**
+	 * Filter out "Recovery" folder from cache search results.
+	 */
 	public function getCacheEntryFromSearchResult(ICacheEntry $rawEntry): ?ICacheEntry {
 		if ($this->isExcludedPath($rawEntry->getPath())) {
 			return null;
@@ -64,7 +89,9 @@ class CacheWrapper extends Wrapper {
 		return parent::getCacheEntryFromSearchResult($rawEntry);
 	}
 
-	// Check if a path is within the excluded folder
+	/**
+	 * Check if a path is within the excluded folder (e.g., "Recovery").
+	 */
 	private function isExcludedPath(string $path): bool {
 		return strpos($path, $this->excludedFolder) === 0;
 	}
