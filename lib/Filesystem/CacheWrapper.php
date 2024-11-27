@@ -13,7 +13,7 @@ use OCP\Files\Search\ISearchQuery;
 
 class CacheWrapper extends Wrapper {
 
-	private string $excludedFolder = 'files/restricted-folder';
+	private string $excludedFolder = 'files/Recovery';
 
 	public function __construct(
 		ICache $cache

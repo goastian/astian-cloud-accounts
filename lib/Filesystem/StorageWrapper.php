@@ -12,6 +12,7 @@ use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
+	private const RECOVERY_FOLDER = 'files/Recovery';
 	/**
 	 * @param array $parameters
 	 */
@@ -23,7 +24,20 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @throws ForbiddenException
 	 */
 	protected function checkFileAccess(string $path, bool $isDir = false): void {
-		throw new ForbiddenException('Access denied', false);
+		if ($this->isRecoveryFolder($path)) {
+			throw new ForbiddenException('Access denied to the Recovery folder', false);
+		}
+	}
+
+	/**
+	 * Check if the path refers to the "Recovery" folder.
+	 *
+	 * @param string $path
+	 * @return bool
+	 */
+	private function isRecoveryFolder(string $path): bool {
+	  
+		return strpos($path, '/' . self::RECOVERY_FOLDER) !== false;
 	}
 
 	/*
