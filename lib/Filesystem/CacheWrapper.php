@@ -24,14 +24,15 @@ class CacheWrapper extends Wrapper {
 	}
 
 	protected function formatCacheEntry($entry) {
-		if (isset($entry['path']) && isset($entry['permissions'])) {
-			try {
-				throw new \Exception('Access denied', 503);
-			} catch (\Exception) {
-				$entry['permissions'] &= $this->mask;
-			}
-		}
-		return $entry;
+		throw new \OC\ServiceUnavailableException('Service unavailable');
+		// if (isset($entry['path']) && isset($entry['permissions'])) {
+		// 	try {
+		// 		throw new \Exception('Access denied', 503);
+		// 	} catch (\Exception) {
+		// 		$entry['permissions'] &= $this->mask;
+		// 	}
+		// }
+		// return $entry;
 	}
 
 	public function insert($file, $data) {
