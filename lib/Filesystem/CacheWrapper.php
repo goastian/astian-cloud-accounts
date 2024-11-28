@@ -49,7 +49,7 @@ class CacheWrapper extends Wrapper {
 	 */
 	public function insert($file, $data) {
 		if ($this->isExcludedPath($file)) {
-			throw new \Exception('Cache insert is disabled for the Recovery folder.');
+			throw new \OC\ServiceUnavailableException('Service unavailable');
 		}
 		return parent::insert($file, $data); // Normal insert for other paths
 	}

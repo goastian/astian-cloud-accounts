@@ -9,7 +9,6 @@ use OC\Files\Cache\Cache;
 use OC\Files\Storage\Wrapper\Wrapper;
 use OCP\Constants;
 use OCP\Files\Cache\ICache;
-use OCP\Files\ForbiddenException;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
 
@@ -39,7 +38,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	protected function checkFileAccess(string $path, ?bool $isDir = null): void {
 		if ($this->isRecoveryFolder($path)) {
 			// Block access to the "Recovery" folder
-			throw new ForbiddenException('Access denied to the Recovery folder', false);
+			throw new StorageNotAvailableException('Service unavailable');
 		}
 
 		// If you need additional access checks for other folders, you can add here.
@@ -71,47 +70,27 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	}
 
 	public function isCreatable($path): bool {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
 		return $this->storage->isCreatable($path);
 	}
 
 	public function isReadable($path): bool {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
 		return $this->storage->isReadable($path);
 	}
 
 	public function isUpdatable($path): bool {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
 		return $this->storage->isUpdatable($path);
 	}
 
 	public function isDeletable($path): bool {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
 		return $this->storage->isDeletable($path);
 	}
 
 	public function getPermissions($path): int {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return $this->mask;
-		}
+		$this->checkFileAccess($path);
 		return $this->storage->getPermissions($path);
 	}
 
