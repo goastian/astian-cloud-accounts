@@ -42,9 +42,8 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
-use OCP\IGroupManager;
+use OCP\IRequest;
 use OCP\IUserManager;
-use OCP\IUserSession;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -91,32 +90,18 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
-		if (\OC::$CLI && \OC::$REQUESTEDAPP === self::APP_ID) {
-			return $storage;
-		}
+		$request = \OC::$server->get(IRequest::class);
 
-		$userSession = \OC::$server->get(IUserSession::class);
-		$currentUser = $userSession->getUser();
-		if ($currentUser !== null) {
-			$groupManager = \OC::$server->get(IGroupManager::class);
-			$groups = $groupManager->getUserGroups($currentUser);
+		if ($request !== null) {
+			$userAgent = $request->getHeader('USER_AGENT');
+			$userAgent = strtolower($userAgent);
 
-			if (!empty($groups)) {
-				foreach ($groups as $group) {
-					if ($group->getGID() === "recovery_done") {
-						return $storage;
-					}
-				}
+			if (strpos($userAgent, "eos") !== false || strpos($userAgent, "edrive") !== false) {
+				return new StorageWrapper([
+					'storage' => $storage,
+					'mountPoint' => $mountPoint,
+				]);
 			}
-		}
-
-		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
-		$appdataFolder = 'appdata_' . $instanceId;
-		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
-			return new StorageWrapper([
-				'storage' => $storage,
-				'mountPoint' => $mountPoint,
-			]);
 		}
 
 		return $storage;
