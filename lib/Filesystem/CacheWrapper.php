@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Filesystem;
 
 use OC\Files\Cache\Wrapper\CacheWrapper as Wrapper;
+use OCP\Constants;
 use OCP\Files\Cache\ICache;
 use OCP\Files\Cache\ICacheEntry;
 use OCP\Files\Search\ISearchQuery;
@@ -17,6 +18,11 @@ class CacheWrapper extends Wrapper {
 		ICache $cache
 	) {
 		parent::__construct($cache);
+		$this->mask = Constants::PERMISSION_ALL
+						& ~Constants::PERMISSION_READ
+						& ~Constants::PERMISSION_CREATE
+						& ~Constants::PERMISSION_UPDATE
+						& ~Constants::PERMISSION_DELETE;
 	}
 
 	/**
@@ -26,7 +32,11 @@ class CacheWrapper extends Wrapper {
 		if (isset($entry['path']) && isset($entry['permissions'])) {
 			// Only restrict permissions for files in the "Recovery" folder
 			if ($this->isExcludedPath($entry['path'])) {
-				throw new \OC\ServiceUnavailableException('Service unavailable');
+				try {
+					throw new \OC\ServiceUnavailableException('Service unavailable');
+				} catch (\OC\ServiceUnavailableException $e) {
+					$entry['permissions'] &= $this->mask;
+				}
 			}
 		}
 		return $entry;
