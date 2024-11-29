@@ -59,7 +59,7 @@ class CacheWrapper extends Wrapper {
 	 */
 	public function update($id, $data) {
 		if (isset($data['path']) && $data['path'] !== null && $this->isExcludedPath($data['path'])) {
-			throw new \Exception('Cache update is disabled for the Recovery folder.');
+			throw new \OC\ServiceUnavailableException('Service unavailable');
 		}
 		return parent::update($id, $data); // Normal update for other paths
 	}
@@ -70,7 +70,7 @@ class CacheWrapper extends Wrapper {
 	public function remove($fileId) {
 		$filePath = $this->storage->getPath($fileId);
 		if ($this->isExcludedPath($filePath)) {
-			throw new \Exception('Cache removal is disabled for the Recovery folder.');
+			throw new \OC\ServiceUnavailableException('Service unavailable');
 		}
 		return parent::remove($fileId); // Normal removal for other paths
 	}
