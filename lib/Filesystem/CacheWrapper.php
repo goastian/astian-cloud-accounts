@@ -32,11 +32,7 @@ class CacheWrapper extends Wrapper {
 		if (isset($entry['path']) && isset($entry['permissions'])) {
 			// Only restrict permissions for files in the "Recovery" folder
 			if ($this->isExcludedPath($entry['path'])) {
-				try {
-					throw new \OC\ServiceUnavailableException('Service unavailable');
-				} catch (\OC\ServiceUnavailableException $e) {
-					$entry['permissions'] &= $this->mask;
-				}
+				throw new \OC\ServiceUnavailableException('Service unavailable');
 			}
 		}
 		return $entry;
