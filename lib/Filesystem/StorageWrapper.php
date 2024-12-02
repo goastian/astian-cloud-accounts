@@ -1,214 +1,142 @@
 <?php
 
+
 declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Filesystem;
 
 use OC\Files\Cache\Cache;
-use OC\Files\Storage\Storage;
 use OC\Files\Storage\Wrapper\Wrapper;
-use OCP\Files\ForbiddenException;
+use OCP\Constants;
+use OCP\Files\Cache\ICache;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
+	private const RECOVERY_FOLDER = 'files/Recovery';
+	protected readonly int $mask;
+
 	/**
+	 * Constructor
+	 *
 	 * @param array $parameters
 	 */
 	public function __construct($parameters) {
 		parent::__construct($parameters);
+
+		// Set up the permission mask to block specific permissions
+		$this->mask = Constants::PERMISSION_READ;
 	}
 
 	/**
 	 * @throws ForbiddenException
 	 */
-	protected function checkFileAccess(string $path, bool $isDir = false): void {
-		throw new ForbiddenException('Access denied', false);
+	protected function checkFileAccess(string $path, ?bool $isDir = null): void {
+		if ($this->isRecoveryFolder($path)) {
+			// Block access to the "Recovery" folder
+			throw new StorageNotAvailableException('Service unavailable');
+		}
+
+		// If you need additional access checks for other folders, you can add here.
+	}
+
+	/**
+	 * Check if the path refers to the "Recovery" folder.
+	 *
+	 * @param string $path
+	 * @return bool
+	 */
+	private function isRecoveryFolder(string $path): bool {
+		// Ensure the path matches exactly or starts with "files/Recovery"
+		return strpos($path, '/' . self::RECOVERY_FOLDER) === 0;
 	}
 
 	/*
 	 * Storage wrapper methods
 	 */
 
-	/**
-	 * see http://php.net/manual/en/function.mkdir.php
-	 *
-	 * @param string $path
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function mkdir($path) {
+	public function mkdir($path): bool {
 		$this->checkFileAccess($path, true);
+		return $this->storage->mkdir($path);
 	}
 
-	/**
-	 * see http://php.net/manual/en/function.rmdir.php
-	 *
-	 * @param string $path
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function rmdir($path) {
+	public function rmdir($path): bool {
 		$this->checkFileAccess($path, true);
+		return $this->storage->rmdir($path);
 	}
 
-	/**
-	 * check if a file can be created in $path
-	 *
-	 * @param string $path
-	 * @return bool
-	 */
-	public function isCreatable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
-	}
-
-	/**
-	 * check if a file can be read
-	 *
-	 * @param string $path
-	 * @return bool
-	 */
-	public function isReadable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
-	}
-
-	/**
-	 * check if a file can be written to
-	 *
-	 * @param string $path
-	 * @return bool
-	 */
-	public function isUpdatable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
-	}
-
-	/**
-	 * check if a file can be deleted
-	 *
-	 * @param string $path
-	 * @return bool
-	 */
-	public function isDeletable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
-	}
-
-	public function getPermissions($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return $this->mask;
-		}
-	}
-
-	/**
-	 * see http://php.net/manual/en/function.file_get_contents.php
-	 *
-	 * @param string $path
-	 * @return string
-	 * @throws ForbiddenException
-	 */
-	public function file_get_contents($path) {
+	public function isCreatable($path): bool {
 		$this->checkFileAccess($path);
+		return $this->storage->isCreatable($path);
 	}
 
-	/**
-	 * see http://php.net/manual/en/function.file_put_contents.php
-	 *
-	 * @param string $path
-	 * @param string $data
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function file_put_contents($path, $data) {
+	public function isReadable($path): bool {
 		$this->checkFileAccess($path);
+		return $this->storage->isReadable($path);
 	}
 
-	/**
-	 * see http://php.net/manual/en/function.unlink.php
-	 *
-	 * @param string $path
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function unlink($path) {
+	public function isUpdatable($path): bool {
 		$this->checkFileAccess($path);
+		return $this->storage->isUpdatable($path);
 	}
 
-	/**
-	 * see http://php.net/manual/en/function.rename.php
-	 *
-	 * @param string $path1
-	 * @param string $path2
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function rename($path1, $path2) {
-		$this->checkFileAccess($path1);
-		$this->checkFileAccess($path2);
+	public function isDeletable($path): bool {
+		$this->checkFileAccess($path);
+		return $this->storage->isDeletable($path);
 	}
 
-	/**
-	 * see http://php.net/manual/en/function.copy.php
-	 *
-	 * @param string $path1
-	 * @param string $path2
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function copy($path1, $path2) {
-		$this->checkFileAccess($path1);
-		$this->checkFileAccess($path2);
+	public function getPermissions($path): int {
+		$this->checkFileAccess($path);
+		return $this->storage->getPermissions($path);
 	}
 
-	/**
-	 * see http://php.net/manual/en/function.fopen.php
-	 *
-	 * @param string $path
-	 * @param string $mode
-	 * @return resource
-	 * @throws ForbiddenException
-	 */
+	public function file_get_contents($path): string|false {
+		$this->checkFileAccess($path, false);
+		return $this->storage->file_get_contents($path);
+	}
+
+	public function file_put_contents($path, $data): int|float|false {
+		$this->checkFileAccess($path, false);
+		return $this->storage->file_put_contents($path, $data);
+	}
+
+	public function unlink($path): bool {
+		$this->checkFileAccess($path, false);
+		return $this->storage->unlink($path);
+	}
+
+	public function rename($source, $target): bool {
+		$isDir = $this->is_dir($source);
+		$this->checkFileAccess($source, $isDir);
+		$this->checkFileAccess($target, $isDir);
+		return $this->storage->rename($source, $target);
+	}
+
+	public function copy($source, $target): bool {
+		$isDir = $this->is_dir($source);
+		$this->checkFileAccess($source, $isDir);
+		$this->checkFileAccess($target, $isDir);
+		return $this->storage->copy($source, $target);
+	}
+
 	public function fopen($path, $mode) {
-		$this->checkFileAccess($path);
+		$this->checkFileAccess($path, false);
+		return $this->storage->fopen($path, $mode);
+	}
+
+	public function touch($path, $mtime = null): bool {
+		$this->checkFileAccess($path, false);
+		return $this->storage->touch($path, $mtime);
 	}
 
 	/**
-	 * see http://php.net/manual/en/function.touch.php
-	 * If the backend does not support the operation, false should be returned
-	 *
-	 * @param string $path
-	 * @param int $mtime
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function touch($path, $mtime = null) {
-		$this->checkFileAccess($path);
-	}
-
-	/**
-	 * get a cache instance for the storage
+	 * Get a cache instance for the storage
 	 *
 	 * @param string $path
 	 * @param Storage (optional) the storage to pass to the cache
 	 * @return Cache
 	 */
-	public function getCache($path = '', $storage = null) {
+	public function getCache($path = '', $storage = null): ICache {
 		if (!$storage) {
 			$storage = $this;
 		}
@@ -216,45 +144,30 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 		return new CacheWrapper($cache, $storage);
 	}
 
-	/**
-	 * A custom storage implementation can return an url for direct download of a give file.
-	 *
-	 * For now the returned array can hold the parameter url - in future more attributes might follow.
-	 *
-	 * @param string $path
-	 * @return array
-	 * @throws ForbiddenException
-	 */
-	public function getDirectDownload($path) {
-		$this->checkFileAccess($path);
+	public function getDirectDownload($path): array|false {
+		
+		$this->checkFileAccess($path, false);
+		return $this->storage->getDirectDownload($path);
 	}
 
-	/**
-	 * @param IStorage $sourceStorage
-	 * @param string $sourceInternalPath
-	 * @param string $targetInternalPath
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function copyFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath) {
+	public function copyFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath): bool {
+		if ($sourceStorage === $this) {
+			return $this->copy($sourceInternalPath, $targetInternalPath);
+		}
 		$this->checkFileAccess($targetInternalPath);
+		return $this->storage->copyFromStorage($sourceStorage, $sourceInternalPath, $targetInternalPath);
 	}
 
-	/**
-	 * @param IStorage $sourceStorage
-	 * @param string $sourceInternalPath
-	 * @param string $targetInternalPath
-	 * @return bool
-	 * @throws ForbiddenException
-	 */
-	public function moveFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath) {
+	public function moveFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath): bool {
+		if ($sourceStorage === $this) {
+			return $this->rename($sourceInternalPath, $targetInternalPath);
+		}
 		$this->checkFileAccess($targetInternalPath);
+		return $this->storage->moveFromStorage($sourceStorage, $sourceInternalPath, $targetInternalPath);
 	}
 
-	/**
-	 * @throws ForbiddenException
-	 */
 	public function writeStream(string $path, $stream, ?int $size = null): int {
-		$this->checkFileAccess($path);
+		$this->checkFileAccess($path, false);
+		return $this->storage->writeStream($path, $stream, $size);
 	}
 }
