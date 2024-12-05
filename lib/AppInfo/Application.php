@@ -56,7 +56,19 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+		$userManager = \OC::$server->getUserManager(); // Get the user manager instance
+		$userSession = \OC::$server->getUserSession(); // Get the user session instance
+
+		$currentLoggedInUser = $userSession->getUser();
+		if ($currentLoggedInUser) {
+			$userId = $currentLoggedInUser->getUID();
+			$user = $userManager->get($userId);
+
+			if ($user && $user->getLastLogin() !== 0) {
+				Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+			}
+		}
+
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
