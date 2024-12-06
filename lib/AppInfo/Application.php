@@ -50,29 +50,26 @@ use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
-	private $logger;
-	private $userManager;
-	private $userSession;
 
 	public function __construct(array $urlParams = []) {
-		$serverContainer = \OC::$server;
-		$this->logger = $serverContainer->get(\OCP\ILogger::class);
-		$this->userManager = $serverContainer->get(\OCP\IUserManager::class);
-		$this->userSession = $serverContainer->get(\OCP\IUserSession::class);
 		parent::__construct(self::APP_ID, $urlParams);
 	}
 
 	public function register(IRegistrationContext $context): void {
-		$currentLoggedInUser = $this->userSession->getUser();
+		$userSession = \OC::$server->getUserSession();
+		$userManager = \OC::$server->getUserManager();
+		$logger = \OC::$server->getLogger();
+
+		$currentLoggedInUser = $userSession->getUser();
 		if ($currentLoggedInUser) {
 			$userId = $currentLoggedInUser->getUID();
-			$user = $this->userManager->get($userId);
-			$this->logger->info('User logged in at: ' . $user->getLastLogin());
+			$user = $userManager->get($userId);
+			$logger->info('User logged in at: ' . $user->getLastLogin());
 			if ($user && $user->getLastLogin() !== 0) {
-				$this->logger->info('addStorageWrapper called');
+				$logger->info('addStorageWrapper called');
 				Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 			} else {
-				$this->logger->info('skipped addStorageWrapper');
+				$logger->info('skipped addStorageWrapper');
 			}
 		}
 
