@@ -71,6 +71,8 @@ class Application extends App implements IBootstrap {
 			} else {
 				$logger->info('skipped addStorageWrapper');
 			}
+		} else {
+			$logger->info('user not loggedin');
 		}
 
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
