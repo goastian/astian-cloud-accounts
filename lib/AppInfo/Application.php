@@ -42,7 +42,9 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
+use OCP\ILogger;
 use OCP\IUserManager;
+use OCP\IUserSession;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -50,22 +52,28 @@ use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
+	private $logger;
+	private $userManager;
+	private $userSession;
 
-	public function __construct(array $urlParams = []) {
+	public function __construct(array $urlParams = [], ILogger $logger, IUserManager $userManager, IUserSession $userSession) {
+		$this->logger = $logger;
+		$this->userManager = $userManager;
+		$this->userSession = $userSession;
 		parent::__construct(self::APP_ID, $urlParams);
 	}
 
 	public function register(IRegistrationContext $context): void {
-		$userManager = \OC::$server->getUserManager(); // Get the user manager instance
-		$userSession = \OC::$server->getUserSession(); // Get the user session instance
-
-		$currentLoggedInUser = $userSession->getUser();
+		$currentLoggedInUser = $this->userSession->getUser();
 		if ($currentLoggedInUser) {
 			$userId = $currentLoggedInUser->getUID();
-			$user = $userManager->get($userId);
-
+			$user = $this->userManager->get($userId);
+			$this->logger->info('User logged in at: ' . $user->getLastLogin());
 			if ($user && $user->getLastLogin() !== 0) {
+				$this->logger->info('addStorageWrapper called');
 				Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+			} else {
+				$this->logger->info('skipped addStorageWrapper');
 			}
 		}
 
