@@ -64,15 +64,15 @@ class Application extends App implements IBootstrap {
 		if ($currentLoggedInUser) {
 			$userId = $currentLoggedInUser->getUID();
 			$user = $userManager->get($userId);
-			$logger->info('User logged in at: ' . $user->getLastLogin());
+			$logger->error('User logged in at: ' . $user->getLastLogin());
 			if ($user && $user->getLastLogin() !== 0) {
-				$logger->info('addStorageWrapper called');
+				$logger->error('addStorageWrapper called');
 				Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 			} else {
-				$logger->info('skipped addStorageWrapper');
+				$logger->error('skipped addStorageWrapper');
 			}
 		} else {
-			$logger->info('user not loggedin');
+			$logger->error('user not loggedin');
 		}
 
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
