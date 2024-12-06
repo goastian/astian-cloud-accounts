@@ -42,9 +42,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
-use OCP\ILogger;
 use OCP\IUserManager;
-use OCP\IUserSession;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -56,10 +54,11 @@ class Application extends App implements IBootstrap {
 	private $userManager;
 	private $userSession;
 
-	public function __construct(array $urlParams = [], ILogger $logger, IUserManager $userManager, IUserSession $userSession) {
-		$this->logger = $logger;
-		$this->userManager = $userManager;
-		$this->userSession = $userSession;
+	public function __construct(array $urlParams = []) {
+		$serverContainer = \OC::$server;
+		$this->logger = $serverContainer->get(\OCP\ILogger::class);
+		$this->userManager = $serverContainer->get(\OCP\IUserManager::class);
+		$this->userSession = $serverContainer->get(\OCP\IUserSession::class);
 		parent::__construct(self::APP_ID, $urlParams);
 	}
 
