@@ -56,24 +56,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		$userSession = \OC::$server->getUserSession();
-		$userManager = \OC::$server->getUserManager();
-		$logger = \OC::$server->getLogger();
-
-		$currentLoggedInUser = $userSession->getUser();
-		if ($currentLoggedInUser) {
-			$userId = $currentLoggedInUser->getUID();
-			$user = $userManager->get($userId);
-			$logger->error('User logged in at: ' . $user->getLastLogin());
-			if ($user && $user->getLastLogin() !== 0) {
-				$logger->error('addStorageWrapper called');
-				Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
-			} else {
-				$logger->error('skipped addStorageWrapper');
-			}
-		} else {
-			$logger->error('user not loggedin');
-		}
+		// Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);

@@ -39,6 +39,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 */
 	public function mkdir($path) {
 		$this->checkFileAccess($path, true);
+		
 	}
 
 	/**
