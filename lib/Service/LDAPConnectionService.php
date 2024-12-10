@@ -122,4 +122,39 @@ class LDAPConnectionService {
 
 		$this->closeLDAPConnection($conn);
 	}
+	public function getUsersCreatedAfter(string $date): array {
+		if (!$this->isLDAPEnabled()) {
+			throw new Exception('LDAP backend is not enabled');
+		}
+	
+		// Convert the provided date to LDAP Generalized Time format: YYYYMMDDHHMMSSZ
+		$formattedDate = (new \DateTime($date))->format('YmdHis') . 'Z';
+	
+		$conn = $this->getLDAPConnection();
+		$baseDn = implode(',', $this->getLDAPBaseUsers());
+		$filter = sprintf('(createTimestamp>=%s)', $formattedDate);
+	
+		$searchResult = ldap_search($conn, $baseDn, $filter, ['dn', 'username', 'createTimestamp']);
+		if (!$searchResult) {
+			$this->closeLDAPConnection($conn);
+			throw new Exception('LDAP search failed for createTimestamp after: ' . $date);
+		}
+	
+		$entries = ldap_get_entries($conn, $searchResult);
+		$this->closeLDAPConnection($conn);
+	
+		$users = [];
+		if ($entries['count'] > 0) {
+			for ($i = 0; $i < $entries['count']; $i++) {
+				$users[] = [
+					'dn' => $entries[$i]['dn'],
+					'username' => $entries[$i]['username'][0] ?? null,
+					'createTimestamp' => $entries[$i]['createtimestamp'][0] ?? null,
+				];
+			}
+		}
+	
+		return $users;
+	}
+
 }
