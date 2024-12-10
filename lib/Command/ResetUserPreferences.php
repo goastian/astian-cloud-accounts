@@ -22,7 +22,7 @@ class ResetUserPreferences extends Command {
 		parent::__construct();
 	}
 	/**
-	 * run: occ ecloud-accounts:reset-user-preferences --date=20241201000000Z
+	 * run: occ ecloud-accounts:reset-user-preferences --date='2024-12-01 00:00:00'
 	 * @return void
 	 */
 	protected function configure(): void {
