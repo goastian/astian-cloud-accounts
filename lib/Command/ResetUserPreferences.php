@@ -21,7 +21,10 @@ class ResetUserPreferences extends Command {
         $this->db = $db;
         parent::__construct();
     }
-
+    /**
+     * run: occ ecloud-accounts:reset-user-preferences --date=20241201000000Z
+     * @return void
+     */
     protected function configure(): void {
         $this
             ->setName('ecloud-accounts:reset-user-preferences')
@@ -39,7 +42,7 @@ class ResetUserPreferences extends Command {
         $date = $input->getOption('date');
 
         if (!$date) {
-            $output->writeln('<error>Date option is required.</error>');
+            $output->writeln('Date option is required.');
             return Command::INVALID;
         }
 
@@ -67,10 +70,10 @@ class ResetUserPreferences extends Command {
                 $output->writeln("Deleted 'lastLogin' preference for user: $username");
             }
 
-            $output->writeln('<info>All sessions invalidated and preferences deleted for eligible users.</info>');
+            $output->writeln('All sessions invalidated and preferences deleted for eligible users.');
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->writeln('Error: ' . $e->getMessage() );
             return Command::FAILURE;
         }
     }
