@@ -33,7 +33,7 @@ class ResetUserPreferences extends Command {
 				'date',
 				null,
 				InputOption::VALUE_REQUIRED,
-				'Date in YYYYMMDDHHMMSSZ format (e.g., 20241201000000Z)',
+				'Date in YYYY-MM-DD HH-MM-SS format (e.g., 2024-12-01 00:00:00)',
 				null
 			);
 	}
