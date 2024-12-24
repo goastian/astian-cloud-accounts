@@ -20,38 +20,31 @@ class SendGridService {
 	}
 
 	/**
-	 * Fetch contacts created between the specified date range.
+	 * Fetch contacts from a specific segment.
 	 *
-	 * @param string $startDate Format: 'Y-m-d H:i:s'
-	 * @param string $endDate Format: 'Y-m-d H:i:s'
+	 * @param string $segmentId
 	 * @return array
 	 * @throws Exception
 	 */
-	public function fetchContactsByDateRange(string $startDate, string $endDate): array {
-		$startTimestamp = strtotime($startDate);
-		$endTimestamp = strtotime($endDate);
-
+	public function fetchContactsFromSegment(string $segmentId): array {
 		$contacts = [];
 		$page = 1;
 		$pageSize = 100;
 
 		do {
-			$response = $this->sendGridClient->client->marketing()->contacts()->get(null, $page, $pageSize);
+			$response = $this->sendGridClient->client->contactdb()->segments()->_($segmentId)->recipients()->get(null, [
+				'page' => $page,
+				'page_size' => $pageSize,
+			]);
+
 			if ($response->statusCode() !== 200) {
-				throw new Exception("Error fetching contacts: " . $response->body());
+				throw new Exception("Failed to fetch contacts: " . $response->body());
 			}
 
-			$result = json_decode($response->body(), true);
-			$fetchedContacts = $result['result'] ?? [];
+			$data = json_decode($response->body(), true);
+			$contacts = array_merge($contacts, $data['recipients'] ?? []);
 
-			foreach ($fetchedContacts as $contact) {
-				$createdTimestamp = strtotime($contact['created_at']);
-				if ($createdTimestamp >= $startTimestamp && $createdTimestamp <= $endTimestamp) {
-					$contacts[] = $contact;
-				}
-			}
-
-			if (count($fetchedContacts) < $pageSize) {
+			if (count($data['recipients'] ?? []) < $pageSize) {
 				break;
 			}
 
@@ -62,10 +55,27 @@ class SendGridService {
 	}
 
 	/**
-	 * Delete contacts by their IDs.
+	 * Filter contacts by creation date range.
+	 *
+	 * @param array $contacts
+	 * @param string $startDate
+	 * @param string $endDate
+	 * @return array
+	 */
+	public function filterContactsByDateRange(array $contacts, string $startDate, string $endDate): array {
+		$startTimestamp = strtotime($startDate);
+		$endTimestamp = strtotime($endDate);
+
+		return array_filter($contacts, function ($contact) use ($startTimestamp, $endTimestamp) {
+			$createdTimestamp = isset($contact['created_at']) ? strtotime($contact['created_at']) : null;
+			return $createdTimestamp && $createdTimestamp >= $startTimestamp && $createdTimestamp <= $endTimestamp;
+		});
+	}
+
+	/**
+	 * Delete contacts by IDs.
 	 *
 	 * @param array $contactIds
-	 * @return void
 	 * @throws Exception
 	 */
 	public function deleteContacts(array $contactIds): void {
@@ -73,11 +83,12 @@ class SendGridService {
 			throw new Exception("No contacts provided for deletion.");
 		}
 
-		$requestBody = ['ids' => $contactIds];
-		$response = $this->sendGridClient->client->marketing()->contacts()->delete(null, $requestBody);
+		$response = $this->sendGridClient->client->marketing()->contacts()->delete(null, [
+			'ids' => implode(',', $contactIds),
+		]);
 
 		if ($response->statusCode() !== 202) {
-			throw new Exception("Failed to delete contacts. HTTP Code: " . $response->statusCode() . ". Response: " . $response->body());
+			throw new Exception("Failed to delete contacts: " . $response->body());
 		}
 	}
 }

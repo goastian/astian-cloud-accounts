@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteSendGridContactsCommand extends Command {
+class DeleteSendgridContactCommand extends Command {
 	private SendGridService $sendGridService;
 
 	public function __construct(SendGridService $sendGridService) {
@@ -21,47 +21,53 @@ class DeleteSendGridContactsCommand extends Command {
 
 	protected function configure(): void {
 		$this
-			->setName('ecloud-accounts:delete-sendgrid-contacts')
-			->setDescription('Delete SendGrid contacts within a specified date range.')
+			->setName('ecloud-accounts:delete-sendgrid-contact')
+			->setDescription('Delete SendGrid contacts within a segment and date range')
+			->addOption(
+				'segment-id',
+				null,
+				InputOption::VALUE_REQUIRED,
+				'The ID of the SendGrid segment'
+			)
 			->addOption(
 				'start-date',
 				null,
 				InputOption::VALUE_REQUIRED,
-				'Start date in format Y-m-d H:i:s',
-				''
+				'Start date in YYYY-MM-DD format'
 			)
 			->addOption(
 				'end-date',
 				null,
 				InputOption::VALUE_REQUIRED,
-				'End date in format Y-m-d H:i:s',
-				''
+				'End date in YYYY-MM-DD format'
 			);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$segmentId = $input->getOption('segment-id');
 		$startDate = $input->getOption('start-date');
 		$endDate = $input->getOption('end-date');
 
-		if (empty($startDate) || empty($endDate)) {
-			$output->writeln('Both start-date and end-date options are required.');
+		if (!$segmentId || !$startDate || !$endDate) {
+			$output->writeln('<error>All options --segment-id, --start-date, and --end-date are required.</error>');
 			return Command::FAILURE;
 		}
 
 		try {
-			$contacts = $this->sendGridService->fetchContactsByDateRange($startDate, $endDate);
-			$contactIds = array_column($contacts, 'id');
+			$contacts = $this->sendGridService->fetchContactsFromSegment($segmentId);
+			$filteredContacts = $this->sendGridService->filterContactsByDateRange($contacts, $startDate, $endDate);
+			$contactIds = array_column($filteredContacts, 'id');
 
 			if (empty($contactIds)) {
-				$output->writeln('No contacts found within the specified date range.');
+				$output->writeln('<info>No contacts found within the specified date range.</info>');
 				return Command::SUCCESS;
 			}
 
 			$this->sendGridService->deleteContacts($contactIds);
-			$output->writeln('Successfully deleted ' . count($contactIds) . ' contacts.');
+			$output->writeln('<info>Successfully deleted ' . count($contactIds) . ' contacts.</info>');
 			return Command::SUCCESS;
 		} catch (Exception $e) {
-			$output->writeln('Error: ' . $e->getMessage());
+			$output->writeln('<error>Error: ' . $e->getMessage() . '</error>');
 			return Command::FAILURE;
 		}
 	}
