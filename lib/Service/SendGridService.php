@@ -15,7 +15,7 @@ class SendGridService {
 
 	public function __construct(IConfig $config) {
 		$this->config = $config;
-		$apiKey = $this->config->getSystemValue('sendgrid_api_key', '');
+		$apiKey = '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';
 		$this->sendGridClient = new \SendGrid($apiKey);
 	}
 
@@ -62,15 +62,27 @@ class SendGridService {
 	 * @param string $endDate
 	 * @return array
 	 */
-	public function filterContactsByDateRange(array $contacts, string $startDate, string $endDate): array {
-		$startTimestamp = strtotime($startDate);
-		$endTimestamp = strtotime($endDate);
+	public function filterContactsByDateRange($contacts, $startDate, $endDate) {
+		$startTimestamp = is_int($startDate) ? $startDate : strtotime($startDate);
+		$endTimestamp = is_int($endDate) ? $endDate : strtotime($endDate);
 
 		return array_filter($contacts, function ($contact) use ($startTimestamp, $endTimestamp) {
-			$createdTimestamp = isset($contact['created_at']) ? strtotime($contact['created_at']) : null;
-			return $createdTimestamp && $createdTimestamp >= $startTimestamp && $createdTimestamp <= $endTimestamp;
+			// Check if `created_at` exists and is numeric
+			if (!isset($contact['created_at']) || !is_numeric($contact['created_at'])) {
+				echo "Skipping: Missing or non-numeric created_at.\n";
+				return false;
+			}
+
+			$createdTimestamp = (int) $contact['created_at'];
+			// Check if the timestamp falls within the range
+			if ($createdTimestamp >= $startTimestamp && $createdTimestamp <= $endTimestamp) {
+				return true;
+			} else {
+				return false;
+			}
 		});
 	}
+
 
 	/**
 	 * Delete contacts by IDs.
