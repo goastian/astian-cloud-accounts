@@ -122,7 +122,7 @@ class SendGridService {
 			if ($response->statusCode() === 202) {
 				return true;
 			} else {
-				throw new Exception("Failed to delete contacts: " . $response->body());
+				throw new Exception("Failed to refresh contacts: " . $response->body());
 			}
 		} catch (Exception $e) {
 			throw new Exception('Caught exception: ' . $e->getMessage());
