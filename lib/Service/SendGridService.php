@@ -12,10 +12,12 @@ use OCP\IConfig;
 class SendGridService {
 	private \SendGrid $sendGridClient;
 	private $config;
+	private $apiKey;
 
 	public function __construct(IConfig $config) {
 		$this->config = $config;
 		$apiKey = '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';
+		$this->apiKey = $apiKey;
 		$this->sendGridClient = new \SendGrid($apiKey);
 	}
 
@@ -101,6 +103,29 @@ class SendGridService {
 
 		if ($response->statusCode() !== 202) {
 			throw new Exception("Failed to delete contacts: " . $response->body());
+		}
+	}
+
+	public function refreshSendGridSegment($segmentId) {
+		$data = [
+			'user_time_zone' => 'America/Chicago'
+		];
+
+		try {
+			$response = $this->sendGridClient->client
+				->marketing()
+				->segments()
+				->_($segmentId)
+				->refresh()
+				->post($data);
+
+			if ($response->statusCode() === 202) {
+				return true;
+			} else {
+				throw new Exception("Failed to delete contacts: " . $response->body());
+			}
+		} catch (Exception $e) {
+			throw new Exception('Caught exception: ' . $e->getMessage());
 		}
 	}
 }
