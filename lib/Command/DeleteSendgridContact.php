@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteSendgridContactCommand extends Command {
+class DeleteSendgridContact extends Command {
 	private SendGridService $sendGridService;
 
 	public function __construct(SendGridService $sendGridService) {
