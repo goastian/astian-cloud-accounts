@@ -42,6 +42,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
+use OCP\ILogger;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
@@ -51,8 +52,11 @@ use OCP\Util;
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
 
-	public function __construct(array $urlParams = []) {
+	private $logger;
+
+	public function __construct(array $urlParams = [], ILogger $logger) {
 		parent::__construct(self::APP_ID, $urlParams);
+		$this->logger = $logger;
 	}
 
 	public function register(IRegistrationContext $context): void {
@@ -95,7 +99,7 @@ class Application extends App implements IBootstrap {
 			return new StorageWrapper([
 				'storage' => $storage,
 				'mountPoint' => $mountPoint,
-			]);
+			], $this->logger);
 		}
 
 		return $storage;

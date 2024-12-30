@@ -11,21 +11,25 @@ use OCP\Constants;
 use OCP\Files\Cache\ICache;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
+use OCP\ILogger;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	private const RECOVERY_FOLDER = 'files/Recovery';
 	protected readonly int $mask;
+	private $logger;
 
 	/**
 	 * Constructor
 	 *
 	 * @param array $parameters
 	 */
-	public function __construct($parameters) {
+	public function __construct($parameters, ILogger $logger) {
 		parent::__construct($parameters);
 
 		// Set up the permission mask to block specific permissions
 		$this->mask = Constants::PERMISSION_READ;
+		
+		$this->logger = $logger;
 	}
 
 	/**
@@ -47,6 +51,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	private function isRecoveryFolder(string $path): bool {
+		$this->logger->debug('block_recovery_path '. $path, ['app' => 'ecloud-accounts']);
 		// Ensure the path matches exactly or starts with "files/Recovery"
 		return strpos($path, '/' . self::RECOVERY_FOLDER) === 0;
 	}
