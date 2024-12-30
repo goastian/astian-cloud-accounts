@@ -31,10 +31,11 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	/**
 	 * @throws ForbiddenException
 	 */
-	protected function checkFileAccess(string $path, ?bool $isDir = null): void {
-		if ($this->isRecoveryFolder($path)) {
+	protected function checkFileAccess(string $path, ?bool $isDir = null, bool $requestToCheckModifiable = false): void {
+		if ($this->isRecoveryFolder($path, $requestToCheckModifiable)) {
 			// Block access to the "Recovery" folder
-			throw new StorageNotAvailableException('Service unavailable');
+			throw new \OC\ServiceUnavailableException('Service unavailable');
+			// throw new StorageNotAvailableException('Service unavailable');
 		}
 
 		// If you need additional access checks for other folders, you can add here.
@@ -46,9 +47,13 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @return bool
 	 */
-	private function isRecoveryFolder(string $path): bool {
+	private function isRecoveryFolder(string $path, bool $requestToCheckModifiable = false): bool {
 		// Ensure the path matches exactly or starts with "files/Recovery"
-		return (strpos($path, '/' . self::RECOVERY_FOLDER) === 0 || strpos($path, self::RECOVERY_FOLDER) === 0);
+		if($requestToCheckModifiable) {
+			return (strpos($path, '/' . self::RECOVERY_FOLDER) === 0 || strpos($path, self::RECOVERY_FOLDER) === 0);
+		}
+
+		return strpos($path, '/' . self::RECOVERY_FOLDER) === 0;
 	}
 
 	/*
@@ -66,7 +71,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	}
 
 	public function isCreatable($path): bool {
-		$this->checkFileAccess($path);
+		$this->checkFileAccess($path, requestToCheckModifiable:true);
 		return $this->storage->isCreatable($path);
 	}
 
@@ -76,12 +81,12 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	}
 
 	public function isUpdatable($path): bool {
-		$this->checkFileAccess($path);
+		$this->checkFileAccess($path, requestToCheckModifiable:true);
 		return $this->storage->isUpdatable($path);
 	}
 
 	public function isDeletable($path): bool {
-		$this->checkFileAccess($path);
+		$this->checkFileAccess($path, requestToCheckModifiable:true);
 		return $this->storage->isDeletable($path);
 	}
 
