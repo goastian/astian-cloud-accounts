@@ -48,7 +48,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 */
 	private function isRecoveryFolder(string $path): bool {
 		// Ensure the path matches exactly or starts with "files/Recovery"
-		return strpos($path, '/' . self::RECOVERY_FOLDER) === 0;
+		return (strpos($path, '/' . self::RECOVERY_FOLDER) === 0 || strpos($path, self::RECOVERY_FOLDER) === 0);
 	}
 
 	/*
