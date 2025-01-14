@@ -8,6 +8,7 @@ use OCA\EcloudAccounts\Exception\SSOAdminAccessTokenException;
 use OCA\EcloudAccounts\Exception\SSOAdminAPIException;
 use OCP\IConfig;
 use OCP\ILogger;
+use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Security\ICrypto;
 
@@ -21,12 +22,13 @@ class SSOService {
 	private string $currentUserId;
 	private ICrypto $crypto;
 	private IFactory $l10nFactory;
+	private IUserManager $userManager;
 
 	private const ADMIN_TOKEN_ENDPOINT = '/auth/realms/master/protocol/openid-connect/token';
 	private const USERS_ENDPOINT = '/users';
 	private const CREDENTIALS_ENDPOINT = '/users/{USER_ID}/credentials';
 
-	public function __construct($appName, IConfig $config, CurlService $curlService, ICrypto $crypto, IFactory $l10nFactory, ILogger $logger) {
+	public function __construct($appName, IConfig $config, CurlService $curlService, ICrypto $crypto, IFactory $l10nFactory, IUserManager $userManager, ILogger $logger) {
 		$this->appName = $appName;
 		$this->config = $config;
 
@@ -45,6 +47,7 @@ class SSOService {
 		$this->curl = $curlService;
 		$this->logger = $logger;
 		$this->l10nFactory = $l10nFactory;
+		$this->userManager = $userManager;
 	}
 
 	public function shouldSync2FA() : bool {
@@ -147,8 +150,16 @@ class SSOService {
 	}
 
 	private function getUserId(string $username) : void {
-		$usernameWithoutDomain = explode('@', $username)[0];
-		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '?exact=true&username=' . $usernameWithoutDomain;
+		$user = $this->userManager->get($username);
+		if ($user === null) {
+			throw new SSOAdminAPIException('Error: no user exists in cloud with username ' . $username);
+		}
+		$email = $user->getEMailAddress();
+		if ($email === null) {
+			throw new SSOAdminAPIException('Error: user with username ' . $username . ' does not have email field set');
+		}
+
+		$url = $this->ssoConfig['admin_rest_api_url'] . self::USERS_ENDPOINT . '?exact=true&email=' . $email;
 		$this->logger->debug('getUserId calling SSO API with url: '. $url);
 		$users = $this->callSSOAPI($url, 'GET');
 		if (empty($users) || !is_array($users) || !isset($users[0])) {
