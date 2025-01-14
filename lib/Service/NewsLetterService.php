@@ -54,6 +54,7 @@ class NewsLetterService {
 
 	private function signupForNewsletter(string $userEmail, array $listIds, string $userLanguage): void {
 		$newsletterApiUrl = $this->config->getSystemValue('newsletter_base_url', '');
+		$origin = (!empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
 
 		if (empty($newsletterApiUrl)) {
 			return;
@@ -70,7 +71,8 @@ class NewsLetterService {
 		$params_string = json_encode($params);
 		$headers = [
 			'Content-Type: application/json',
-			'Content-Length: ' . strlen($params_string)
+			'Content-Length: ' . strlen($params_string),
+			'Origin: ' . $origin
 		];
 		$this->curl->post($url, $params, $headers);
 
