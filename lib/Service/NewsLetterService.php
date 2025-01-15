@@ -60,7 +60,7 @@ class NewsLetterService {
 			return;
 		}
 
-		$endpoint = '/api/signup';
+		$endpoint = '/v2/api/signup';
 		$url = $newsletterApiUrl . $endpoint;
 
 		$params = [
