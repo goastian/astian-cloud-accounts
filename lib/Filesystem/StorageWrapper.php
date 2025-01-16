@@ -7,9 +7,9 @@ namespace OCA\EcloudAccounts\Filesystem;
 use OC\Files\Cache\Cache;
 use OC\Files\Storage\Storage;
 use OC\Files\Storage\Wrapper\Wrapper;
-use OCP\Files\ForbiddenException;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
+use OCP\Files\StorageNotAvailableException;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	/**
@@ -20,10 +20,10 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	}
 
 	/**
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	protected function checkFileAccess(string $path, bool $isDir = false): void {
-		throw new ForbiddenException('Access denied', false);
+		throw new StorageNotAvailableException('Service unavailable');
 	}
 
 	/*
@@ -35,7 +35,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function mkdir($path) {
 		$this->checkFileAccess($path, true);
@@ -46,7 +46,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function rmdir($path) {
 		$this->checkFileAccess($path, true);
@@ -59,11 +59,8 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isCreatable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	/**
@@ -73,11 +70,8 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isReadable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	/**
@@ -87,11 +81,8 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isUpdatable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	/**
@@ -101,19 +92,13 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @return bool
 	 */
 	public function isDeletable($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return false;
-		}
+		$this->checkFileAccess($path);
+		return false;
 	}
 
 	public function getPermissions($path) {
-		try {
-			$this->checkFileAccess($path);
-		} catch (ForbiddenException $e) {
-			return $this->mask;
-		}
+		$this->checkFileAccess($path);
+		return $this->mask;
 	}
 
 	/**
@@ -121,7 +106,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return string
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function file_get_contents($path) {
 		$this->checkFileAccess($path);
@@ -133,7 +118,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @param string $data
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function file_put_contents($path, $data) {
 		$this->checkFileAccess($path);
@@ -144,7 +129,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function unlink($path) {
 		$this->checkFileAccess($path);
@@ -156,7 +141,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path1
 	 * @param string $path2
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function rename($path1, $path2) {
 		$this->checkFileAccess($path1);
@@ -169,7 +154,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path1
 	 * @param string $path2
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function copy($path1, $path2) {
 		$this->checkFileAccess($path1);
@@ -182,7 +167,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @param string $mode
 	 * @return resource
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function fopen($path, $mode) {
 		$this->checkFileAccess($path);
@@ -195,7 +180,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $path
 	 * @param int $mtime
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function touch($path, $mtime = null) {
 		$this->checkFileAccess($path);
@@ -223,7 +208,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 *
 	 * @param string $path
 	 * @return array
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function getDirectDownload($path) {
 		$this->checkFileAccess($path);
@@ -234,7 +219,7 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $sourceInternalPath
 	 * @param string $targetInternalPath
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function copyFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath) {
 		$this->checkFileAccess($targetInternalPath);
@@ -245,14 +230,14 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @param string $sourceInternalPath
 	 * @param string $targetInternalPath
 	 * @return bool
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function moveFromStorage(IStorage $sourceStorage, $sourceInternalPath, $targetInternalPath) {
 		$this->checkFileAccess($targetInternalPath);
 	}
 
 	/**
-	 * @throws ForbiddenException
+	 * @throws StorageNotAvailableException
 	 */
 	public function writeStream(string $path, $stream, ?int $size = null): int {
 		$this->checkFileAccess($path);
