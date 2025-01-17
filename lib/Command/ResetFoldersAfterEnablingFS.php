@@ -11,8 +11,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use OC_Util;
+use OCP\Files\NotPermittedException;
 
-class ResetUserPreferences extends Command {
+class ResetFoldersAfterEnablingFS extends Command {
 	private LDAPConnectionService $ldapService;
 	private IDBConnection $db;
 
@@ -22,13 +24,13 @@ class ResetUserPreferences extends Command {
 		parent::__construct();
 	}
 	/**
-	 * run: occ ecloud-accounts:reset-user-preferences --date='2024-12-01 00:00:00'
+	 * run: occ ecloud-accounts:create-folders --date='2024-12-01 00:00:00'
 	 * @return void
 	 */
 	protected function configure(): void {
 		$this
-			->setName('ecloud-accounts:reset-user-preferences')
-			->setDescription('Invalidate sessions and remove preferences for users created after a specific date')
+			->setName('ecloud-accounts:create-folders')
+			->setDescription('Create Folders for users created after a specific date')
 			->addOption(
 				'date',
 				null,
@@ -59,15 +61,9 @@ class ResetUserPreferences extends Command {
 				$output->writeln("Processing user: $username");
 
 				// Invalidate user sessions
-				$this->invalidateUserSessions($username);
-				$output->writeln("Invalidated session for user: $username");
+				$this->callSetupFS($username);
+				$output->writeln("call setup fs for user: $username");
 
-				// Delete specific preferences
-				$this->deletePreference($username, 'firstLoginAccomplished');
-				$output->writeln("Deleted 'firstLoginAccomplished' preference for user: $username");
-
-				$this->deletePreference($username, 'lastLogin');
-				$output->writeln("Deleted 'lastLogin' preference for user: $username");
 			}
 
 			$output->writeln('All sessions invalidated and preferences deleted for eligible users.');
@@ -78,22 +74,18 @@ class ResetUserPreferences extends Command {
 		}
 	}
 
-	private function invalidateUserSessions(string $username): void {
-		$qb = $this->db->getQueryBuilder();
+	private function callSetupFS(string $user): void {
+		OC_Util::setupFS($user);
+		
+		//trigger creation of user home and /files folder
+		$userFolder = \OC::$server->getUserFolder($user);
 
-		$qb->delete('authtoken')
-			->where($qb->expr()->eq('uid', $qb->createNamedParameter($username, IQueryBuilder::PARAM_STR)));
-
-		$qb->executeStatement();
+		try {
+			// copy skeleton
+			OC_Util::copySkeleton($user, $userFolder);
+		} catch (NotPermittedException $ex) {
+			// read only uses
+		}
 	}
 
-	private function deletePreference(string $username, string $key): void {
-		$qb = $this->db->getQueryBuilder();
-
-		$qb->delete('preferences')
-			->where($qb->expr()->eq('userid', $qb->createNamedParameter($username, IQueryBuilder::PARAM_STR)))
-			->andWhere($qb->expr()->eq('configkey', $qb->createNamedParameter($key, IQueryBuilder::PARAM_STR)));
-
-		$qb->executeStatement();
-	}
 }
