@@ -66,7 +66,7 @@ class ResetFoldersAfterEnablingFS extends Command {
 
 			}
 
-			$output->writeln('All sessions invalidated and preferences deleted for eligible users.');
+			$output->writeln('Setup completed for eligible users.');
 			return Command::SUCCESS;
 		} catch (\Exception $e) {
 			$output->writeln('Error: ' . $e->getMessage());
