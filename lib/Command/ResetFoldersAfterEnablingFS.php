@@ -60,7 +60,6 @@ class ResetFoldersAfterEnablingFS extends Command {
 				$username = $user['username'];
 				$output->writeln("Processing user: $username");
 
-				// Invalidate user sessions
 				$this->callSetupFS($username);
 				$output->writeln("call setup fs for user: $username");
 
