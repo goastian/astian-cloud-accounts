@@ -5,22 +5,28 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\Command;
 
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
-use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IDBConnection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use OC_Util;
 use OCP\Files\NotPermittedException;
+use OCP\IConfig;
+use OCP\IGroupManager;
+use OCP\IUserManager;
+
 
 class ResetFoldersAfterEnablingFS extends Command {
 	private LDAPConnectionService $ldapService;
-	private IDBConnection $db;
+	private IUserManager $userManager;
+	private IConfig $config;
+	private IGroupManager $groupManager;
 
-	public function __construct(LDAPConnectionService $ldapService, IDBConnection $db) {
+	public function __construct(LDAPConnectionService $ldapService, IConfig $config, IUserManager $userManager, IGroupManager $groupManager) {
 		$this->ldapService = $ldapService;
-		$this->db = $db;
+		$this->config = $config;
+		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 		parent::__construct();
 	}
 	/**
@@ -58,10 +64,13 @@ class ResetFoldersAfterEnablingFS extends Command {
 				}
 
 				$username = $user['username'];
-				$output->writeln("Processing user: $username");
+				$output->writeln("Processing user $username");
 
 				$this->callSetupFS($username);
-				$output->writeln("call setup fs for user: $username");
+				$output->writeln("Call setup fs for user: $username");
+
+				$this->addUserInGroup($username);
+				$output->writeln("Add user $username in group.");
 
 			}
 
@@ -85,6 +94,19 @@ class ResetFoldersAfterEnablingFS extends Command {
 		} catch (NotPermittedException $ex) {
 			// read only uses
 		}
+	}
+	public function addUserInGroup($username) {
+		$user = $this->userManager->get($username);
+  		if (!$user) {
+  			return false;
+  		}
+		$groupName = $this->config->getSystemValue("temporary_group_name");
+		if (!$this->groupManager->groupExists($groupName)) {
+			return false;
+		}
+		$group = $this->groupManager->get($groupName);
+		$group->addUser($user);
+		return true;
 	}
 
 }
