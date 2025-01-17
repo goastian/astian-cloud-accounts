@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
-use OCA\EcloudAccounts\Service\LDAPConnectionService;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use OC_Util;
+use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCP\Files\NotPermittedException;
 use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IUserManager;
-
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ResetFoldersAfterEnablingFS extends Command {
 	private LDAPConnectionService $ldapService;
@@ -97,9 +96,9 @@ class ResetFoldersAfterEnablingFS extends Command {
 	}
 	public function addUserInGroup($username) {
 		$user = $this->userManager->get($username);
-  		if (!$user) {
-  			return false;
-  		}
+		if (!$user) {
+			return false;
+		}
 		$groupName = $this->config->getSystemValue("temporary_group_name");
 		if (!$this->groupManager->groupExists($groupName)) {
 			return false;
