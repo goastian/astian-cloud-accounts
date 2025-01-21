@@ -6,10 +6,14 @@ namespace OCA\EcloudAccounts\Command;
 
 use OC_Util;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
+use OCP\EventDispatcher\GenericEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\NotPermittedException;
 use OCP\IConfig;
 use OCP\IGroupManager;
+use OCP\IUser;
 use OCP\IUserManager;
+use OCP\User\Events\UserFirstTimeLoggedInEvent;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -98,6 +102,10 @@ class ResetFoldersAfterEnablingFS extends Command {
 			// read only uses
 			$output->writeln("NotPermittedException exception for user: $user");
 		}
+
+		// trigger any other initialization
+		\OC::$server->get(IEventDispatcher::class)->dispatch(IUser::class . '::firstLogin', new GenericEvent($this->getUser()));
+		\OC::$server->get(IEventDispatcher::class)->dispatchTyped(new UserFirstTimeLoggedInEvent($this->getUser()));
 	}
 	public function addUserInGroup($username) {
 		$user = $this->userManager->get($username);
