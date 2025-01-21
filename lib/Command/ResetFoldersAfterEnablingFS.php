@@ -65,7 +65,7 @@ class ResetFoldersAfterEnablingFS extends Command {
 				$username = $user['username'];
 				$output->writeln("Processing user $username");
 
-				$this->callSetupFS($username);
+				$this->callSetupFS($username, $output);
 				$output->writeln("Call setup fs for user: $username");
 
 				$this->addUserInGroup($username);
@@ -81,17 +81,22 @@ class ResetFoldersAfterEnablingFS extends Command {
 		}
 	}
 
-	private function callSetupFS(string $user): void {
+	private function callSetupFS(string $user, OutputInterface $output): void {
+		
+		$output->writeln("OC_Util::setupFS called for user: $user");
 		OC_Util::setupFS($user);
+		$output->writeln("OC_Util::setupFS Done for user: $user");
 		
 		//trigger creation of user home and /files folder
 		$userFolder = \OC::$server->getUserFolder($user);
 
 		try {
+			$output->writeln("getUserFolder for user: $user");
 			// copy skeleton
 			OC_Util::copySkeleton($user, $userFolder);
 		} catch (NotPermittedException $ex) {
 			// read only uses
+			$output->writeln("NotPermittedException exception for user: $user");
 		}
 	}
 	public function addUserInGroup($username) {
