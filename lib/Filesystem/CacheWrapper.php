@@ -8,7 +8,6 @@ use OC\Files\Cache\Wrapper\CacheWrapper as Wrapper;
 use OCP\Constants;
 use OCP\Files\Cache\ICache;
 use OCP\Files\Cache\ICacheEntry;
-use OCP\Files\ForbiddenException;
 use OCP\Files\Search\ISearchQuery;
 
 class CacheWrapper extends Wrapper {
@@ -25,26 +24,30 @@ class CacheWrapper extends Wrapper {
 	}
 
 	protected function formatCacheEntry($entry) {
-		if (isset($entry['path']) && isset($entry['permissions'])) {
-			try {
-				throw new ForbiddenException('Access denied', false);
-			} catch (ForbiddenException) {
-				$entry['permissions'] &= $this->mask;
-			}
-		}
-		return $entry;
+		throw new \OC\ServiceUnavailableException('Service unavailable');
+		// if (isset($entry['path']) && isset($entry['permissions'])) {
+		// 	try {
+		// 		throw new \Exception('Access denied', 503);
+		// 	} catch (\Exception) {
+		// 		$entry['permissions'] &= $this->mask;
+		// 	}
+		// }
+		// return $entry;
 	}
 
 	public function insert($file, $data) {
-		throw new \Exception('User data cache insert is disabled.');
+		throw new \OC\ServiceUnavailableException('Service unavailable');
+		// throw new \Exception('User data cache insert is disabled.', 503);
 	}
 
 	public function update($id, $data) {
-		throw new \Exception('User data cache update is disabled.');
+		throw new \OC\ServiceUnavailableException('Service unavailable');
+		// throw new \Exception('User data cache update is disabled.', 503);
 	}
 
 	public function remove($fileId) {
-		throw new \Exception('User data cache removal is disabled.');
+		throw new \OC\ServiceUnavailableException('Service unavailable');
+		// throw new \Exception('User data cache removal is disabled.', 503);
 	}
 
 	public function searchQuery(ISearchQuery $searchQuery) {
