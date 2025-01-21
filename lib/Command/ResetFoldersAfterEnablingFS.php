@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
+use OC\User\Manager;
 use OC_Util;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCP\EventDispatcher\GenericEvent;
@@ -22,13 +23,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ResetFoldersAfterEnablingFS extends Command {
 	private LDAPConnectionService $ldapService;
 	private IUserManager $userManager;
+	private Manager $manager;
 	private IConfig $config;
 	private IGroupManager $groupManager;
 
-	public function __construct(LDAPConnectionService $ldapService, IConfig $config, IUserManager $userManager, IGroupManager $groupManager) {
+	public function __construct(LDAPConnectionService $ldapService, IConfig $config, Manager $manager, IUserManager $userManager, IGroupManager $groupManager) {
 		$this->ldapService = $ldapService;
 		$this->config = $config;
 		$this->userManager = $userManager;
+		$this->manager = $manager;
 		$this->groupManager = $groupManager;
 		parent::__construct();
 	}
@@ -102,10 +105,11 @@ class ResetFoldersAfterEnablingFS extends Command {
 			// read only uses
 			$output->writeln("NotPermittedException exception for user: $user");
 		}
+		$userDetails = $this->manager->get($user);
 
 		// trigger any other initialization
-		\OC::$server->get(IEventDispatcher::class)->dispatch(IUser::class . '::firstLogin', new GenericEvent($this->getUser()));
-		\OC::$server->get(IEventDispatcher::class)->dispatchTyped(new UserFirstTimeLoggedInEvent($this->getUser()));
+		\OC::$server->get(IEventDispatcher::class)->dispatch(IUser::class . '::firstLogin', new GenericEvent($userDetails));
+		\OC::$server->get(IEventDispatcher::class)->dispatchTyped(new UserFirstTimeLoggedInEvent($userDetails));
 	}
 	public function addUserInGroup($username) {
 		$user = $this->userManager->get($username);
