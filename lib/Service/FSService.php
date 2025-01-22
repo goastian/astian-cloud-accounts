@@ -66,6 +66,7 @@ class FSService {
 			return false;
 		}
 		$groupName = $this->config->getSystemValue("temporary_group_name");
+		$this->logger->error("addUserInGroup for user in groupname : $groupName .");
 		if (!$this->groupManager->groupExists($groupName)) {
 			$this->logger->error("addUserInGroup for user: $username . Group not found.");
 			return false;
