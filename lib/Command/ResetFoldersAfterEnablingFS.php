@@ -4,17 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Command;
 
-use OC\User\Manager;
-use OC_Util;
+use OCA\EcloudAccounts\Service\FSService;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
-use OCP\EventDispatcher\GenericEvent;
-use OCP\EventDispatcher\IEventDispatcher;
-use OCP\Files\NotPermittedException;
-use OCP\IConfig;
-use OCP\IGroupManager;
-use OCP\IUser;
-use OCP\IUserManager;
-use OCP\User\Events\UserFirstTimeLoggedInEvent;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,17 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ResetFoldersAfterEnablingFS extends Command {
 	private LDAPConnectionService $ldapService;
-	private IUserManager $userManager;
-	private Manager $manager;
-	private IConfig $config;
-	private IGroupManager $groupManager;
+	private FSService $fsservice;
 
-	public function __construct(LDAPConnectionService $ldapService, IConfig $config, Manager $manager, IUserManager $userManager, IGroupManager $groupManager) {
+	public function __construct(LDAPConnectionService $ldapService, FSService $fsservice) {
 		$this->ldapService = $ldapService;
-		$this->config = $config;
-		$this->userManager = $userManager;
-		$this->manager = $manager;
-		$this->groupManager = $groupManager;
+		$this->fsservice = $fsservice;
 		parent::__construct();
 	}
 	/**
@@ -72,11 +57,11 @@ class ResetFoldersAfterEnablingFS extends Command {
 				$username = $user['username'];
 				$output->writeln("Processing user $username");
 
-				$this->callSetupFS($username, $output);
+				$this->fsservice->callSetupFS($username);
 				$output->writeln("Call setup fs for user: $username");
 
-				$this->addUserInGroup($username);
-				$output->writeln("Add user $username in group.");
+				$isAdded = $this->fsservice->addUserInGroup($username);
+				$output->writeln("Add user $username in group: ".$isAdded ? 'YES': 'NO');
 
 			}
 
@@ -86,43 +71,6 @@ class ResetFoldersAfterEnablingFS extends Command {
 			$output->writeln('Error: ' . $e->getMessage());
 			return Command::FAILURE;
 		}
-	}
-
-	private function callSetupFS(string $user, OutputInterface $output): void {
-		
-		$output->writeln("OC_Util::setupFS called for user: $user");
-		OC_Util::setupFS($user);
-		$output->writeln("OC_Util::setupFS Done for user: $user");
-		
-		//trigger creation of user home and /files folder
-		$userFolder = \OC::$server->getUserFolder($user);
-
-		try {
-			$output->writeln("getUserFolder for user: $user");
-			// copy skeleton
-			OC_Util::copySkeleton($user, $userFolder);
-		} catch (NotPermittedException $ex) {
-			// read only uses
-			$output->writeln("NotPermittedException exception for user: $user");
-		}
-		$userDetails = $this->manager->get($user);
-
-		// trigger any other initialization
-		\OC::$server->get(IEventDispatcher::class)->dispatch(IUser::class . '::firstLogin', new GenericEvent($userDetails));
-		\OC::$server->get(IEventDispatcher::class)->dispatchTyped(new UserFirstTimeLoggedInEvent($userDetails));
-	}
-	public function addUserInGroup($username) {
-		$user = $this->userManager->get($username);
-		if (!$user) {
-			return false;
-		}
-		$groupName = $this->config->getSystemValue("temporary_group_name");
-		if (!$this->groupManager->groupExists($groupName)) {
-			return false;
-		}
-		$group = $this->groupManager->get($groupName);
-		$group->addUser($user);
-		return true;
 	}
 
 }
