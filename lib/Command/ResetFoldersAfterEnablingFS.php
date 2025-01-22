@@ -60,8 +60,9 @@ class ResetFoldersAfterEnablingFS extends Command {
 				$this->fsservice->callSetupFS($username);
 				$output->writeln("Call setup fs for user: $username");
 
+				$output->writeln("Add user $username in group: ");
 				$isAdded = $this->fsservice->addUserInGroup($username);
-				$output->writeln("Add user $username in group: ".$isAdded ? 'YES': 'NO');
+				$output->writeln($isAdded ? "YES": "NO");
 
 			}
 
