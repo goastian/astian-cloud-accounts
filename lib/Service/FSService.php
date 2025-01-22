@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Service;
 
+use OC\User\Manager;
 use OC_Util;
 use OCP\EventDispatcher\GenericEvent;
 use OCP\EventDispatcher\IEventDispatcher;
