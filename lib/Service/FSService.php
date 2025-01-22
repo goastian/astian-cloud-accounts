@@ -62,17 +62,17 @@ class FSService {
 	public function addUserInGroup($username) {
 		$user = $this->userManager->get($username);
 		if (!$user) {
-			$this->logger->error("addUserInGroup for user: $user . User not found.");
+			$this->logger->error("addUserInGroup for user: $username . User not found.");
 			return false;
 		}
 		$groupName = $this->config->getSystemValue("temporary_group_name");
 		if (!$this->groupManager->groupExists($groupName)) {
-			$this->logger->error("addUserInGroup for user: $user . Group not found.");
+			$this->logger->error("addUserInGroup for user: $username . Group not found.");
 			return false;
 		}
 		$group = $this->groupManager->get($groupName);
 		$group->addUser($user);
-		$this->logger->error("addUserInGroup for user: $user . SUCCESS.");
+		$this->logger->error("addUserInGroup for user: $username . SUCCESS.");
 		return true;
 	}
 }
