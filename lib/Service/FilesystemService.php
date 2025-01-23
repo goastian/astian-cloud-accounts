@@ -6,15 +6,11 @@ namespace OCA\EcloudAccounts\Service;
 
 use OC\User\Manager;
 use OC_Util;
-use OCP\EventDispatcher\GenericEvent;
-use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\NotPermittedException;
 use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\ILogger;
-use OCP\IUser;
 use OCP\IUserManager;
-use OCP\User\Events\UserFirstTimeLoggedInEvent;
 
 class FilesystemService {
 	/** @var IUserManager */
@@ -36,39 +32,47 @@ class FilesystemService {
 	}
 
 
-	public function callSetupFS(string $user): void {
+	public function callSetupFS(string $user) {
 
-		$this->logger->error("OC_Util::setupFS called for user: $user");
 		OC_Util::setupFS($user);
-		$this->logger->error("OC_Util::setupFS Done for user: $user");
-		
 		//trigger creation of user home and /files folder
 		$userFolder = \OC::$server->getUserFolder($user);
 
 		try {
-			$this->logger->error("getUserFolder for user: $user");
 			// copy skeleton
 			OC_Util::copySkeleton($user, $userFolder);
+			return true;
 		} catch (NotPermittedException $ex) {
 			// read only uses
-			$this->logger->error("NotPermittedException exception for user: $user");
-		}
-	}
-	public function addUserInGroup($username) {
-		$user = $this->userManager->get($username);
-		if (!$user) {
-			$this->logger->error("addUserInGroup for user: $username . User not found.");
+			$this->logger->error("Exception for user $user. Error: ".$ex->getMessage());
 			return false;
 		}
-		$groupName = $this->config->getSystemValue("temporary_group_name");
-		$this->logger->error("addUserInGroup for user in groupname : $groupName .");
+	}
+	public function addUserInFilesEnabledGroup($username) {
+		$user = $this->userManager->get($username);
+		if (!$user) {
+			$this->logger->error("$username User not found.");
+			return false;
+		}
+		$groupName = $this->config->getSystemValue("files_enabled_group");
 		if (!$this->groupManager->groupExists($groupName)) {
-			$this->logger->error("addUserInGroup for user: $username . Group not found.");
+			$this->logger->error("$groupName group not exist.");
 			return false;
 		}
 		$group = $this->groupManager->get($groupName);
 		$group->addUser($user);
-		$this->logger->error("addUserInGroup for user: $username . SUCCESS.");
-		return true;/canAccessFilesystem
+		return true;
 	}
+	public function checkFilesGroupAccess($username) {
+		$groupName = $this->config->getSystemValue("files_enabled_group");
+		if (!$this->groupManager->groupExists($groupName)) {
+			$this->logger->error("$groupName group not exist.");
+			return false;
+		}
+		if ($this->groupManager->isInGroup($username, $groupName)) {
+			return true;
+		}
+		return false;
+	}
+
 }
