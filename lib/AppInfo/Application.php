@@ -44,7 +44,6 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
-use OCP\IUserSession;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -52,20 +51,13 @@ use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
-	private FilesystemService $fsservice;
-	private IUserSession $userSession;
 
-	public function __construct(array $urlParams = [], FilesystemService $fsservice, IUserSession $userSession) {
+	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
-		$this->fsservice = $fsservice;
-		$this->userSession = $userSession;
 	}
 
 	public function register(IRegistrationContext $context): void {
-		$username = $this->userSession->getUser()->getUID();
-		if(!$this->fsservice->checkFilesGroupAccess($username)) {
-			Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
-		}
+		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
@@ -97,7 +89,14 @@ class Application extends App implements IBootstrap {
 	 * @param IStorage $storage
 	 * @return StorageWrapper|IStorage
 	 */
-	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
+	public function addStorageWrapperCallback($mountPoint, IStorage $storage, FilesystemService $fsservice) {
+
+		$user = \OC::$server->getUserSession()->getUser();
+		$username = $user ? $user->getUID() : null;
+				
+		if($username && $fsservice->checkFilesGroupAccess($username)) {
+			return $storage;
+		}
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
 		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
