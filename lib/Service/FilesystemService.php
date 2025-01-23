@@ -16,7 +16,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\User\Events\UserFirstTimeLoggedInEvent;
 
-class FSService {
+class FilesystemService {
 	/** @var IUserManager */
 	private $userManager;
 	/** @var IConfig */
@@ -53,11 +53,6 @@ class FSService {
 			// read only uses
 			$this->logger->error("NotPermittedException exception for user: $user");
 		}
-		$userDetails = $this->manager->get($user);
-
-		// trigger any other initialization
-		\OC::$server->get(IEventDispatcher::class)->dispatch(IUser::class . '::firstLogin', new GenericEvent($userDetails));
-		\OC::$server->get(IEventDispatcher::class)->dispatchTyped(new UserFirstTimeLoggedInEvent($userDetails));
 	}
 	public function addUserInGroup($username) {
 		$user = $this->userManager->get($username);
@@ -74,6 +69,6 @@ class FSService {
 		$group = $this->groupManager->get($groupName);
 		$group->addUser($user);
 		$this->logger->error("addUserInGroup for user: $username . SUCCESS.");
-		return true;
+		return true;/canAccessFilesystem
 	}
 }
