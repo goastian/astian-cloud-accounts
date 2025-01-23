@@ -58,8 +58,9 @@ class CreateUserFilesystem extends Command {
 			$users = [];
 			if ($date) {
 				// Fetch users from LDAP created after the specified date
-				$users = $this->ldapService->getUsersCreatedAfter($date);
 				$output->writeln("Fetching users created after $date...");
+				$users = $this->ldapService->getUsersCreatedAfter($date);
+				
 			} elseif ($userIdsOption) {
 				// Process specific user IDs
 				$userIds = array_map('trim', explode(',', $userIdsOption));
@@ -68,25 +69,26 @@ class CreateUserFilesystem extends Command {
 				}
 				$output->writeln('Processing specified user IDs: ' . implode(', ', $userIds));
 			}
-
+			$output->writeln('Setup started for all eligible users.');
 			foreach ($users as $user) {
 				if (!$user['username']) {
 					continue;
 				}
 
 				$username = $user['username'];
-				$output->writeln("Processing user $username");
+				$output->writeln("$username Processing user...");
 
-				$this->fsservice->callSetupFS($username);
-				$output->writeln("Call setup fs for user: $username");
+				$output->writeln("Setup FS for user...");
+				$isSetupCompleted = $this->fsservice->callSetupFS($username);
+				$output->writeln($isSetupCompleted ? "YES": "NO");
 
-				$output->writeln("Add user $username in group: ");
-				$isAdded = $this->fsservice->addUserInGroup($username);
-				$output->writeln($isAdded ? "YES": "NO");
-
+				$output->writeln("Add user in group...");
+				$isUserInGroup = $this->fsservice->addUserInFilesEnabledGroup($username);
+				$output->writeln($isUserInGroup ? "YES": "NO");
+				$output->writeln("--End--");
 			}
 
-			$output->writeln('Setup completed for eligible users.');
+			$output->writeln('Setup completed for all eligible users.');
 			return Command::SUCCESS;
 		} catch (\Exception $e) {
 			$output->writeln('Error: ' . $e->getMessage());
