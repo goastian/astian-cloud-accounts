@@ -55,7 +55,7 @@ class Application extends App implements IBootstrap {
 	private FilesystemService $fsservice;
 	private IUserSession $userSession;
 
-	public function __construct(FilesystemService $fsservice, IUserSession $userSession, array $urlParams = []) {
+	public function __construct(array $urlParams = [], FilesystemService $fsservice, IUserSession $userSession) {
 		parent::__construct(self::APP_ID, $urlParams);
 		$this->fsservice = $fsservice;
 		$this->userSession = $userSession;
