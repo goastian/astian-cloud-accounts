@@ -95,6 +95,7 @@ class Application extends App implements IBootstrap {
 
 		$user = \OC::$server->getUserSession()->getUser();
 		$username = $user ? $user->getUID() : null;
+		
 		$fsservice = Server::get(FilesystemService::class);
 		if($username && $fsservice->checkFilesGroupAccess($username)) {
 			return $storage;
