@@ -58,7 +58,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		// Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
@@ -92,10 +92,19 @@ class Application extends App implements IBootstrap {
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
 		
-
+		$username = null;
 		$user = \OC::$server->getUserSession()->getUser();
-		$username = $user ? $user->getUID() : null;
-		
+		if($user) {
+			$username = $user->getUID();
+		} else {
+			if (preg_match('#/([^/]+)/#', $mountPoint, $matches)) {
+				$username = $matches[1];
+			}
+
+		}
+		\OC::$server->getLogger()->error("--> addStorageWrapperCallback mountPoint:: ".$mountPoint);
+		\OC::$server->getLogger()->error("--> addStorageWrapperCallback username:: ".$username);
+
 		$fsservice = Server::get(FilesystemService::class);
 		if($username && $fsservice->checkFilesGroupAccess($username)) {
 			return $storage;
