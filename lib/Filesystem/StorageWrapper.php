@@ -7,15 +7,26 @@ namespace OCA\EcloudAccounts\Filesystem;
 use OC\Files\Cache\Cache;
 use OC\Files\Storage\Storage;
 use OC\Files\Storage\Wrapper\Wrapper;
+use OCA\EcloudAccounts\Service\FilesystemService;
 use OCP\Files\ForbiddenException;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
+use OCP\Server;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
+	public $isrestricted = true;
 	/**
 	 * @param array $parameters
 	 */
 	public function __construct($parameters) {
+		$mountPoint = $parameters['mountPoint'] ?? null;
+		if (preg_match('#/([^/]+)/files/#', $mountPoint, $matches)) {
+			$username = $matches[1];
+			$fsservice = Server::get(FilesystemService::class);
+			if($username && $fsservice->checkFilesGroupAccess($username)) {
+				$this->isrestricted = false;
+			}
+		}
 		parent::__construct($parameters);
 	}
 
@@ -23,7 +34,9 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @throws ForbiddenException
 	 */
 	protected function checkFileAccess(string $path, bool $isDir = false): void {
-		throw new ForbiddenException('Access denied', false);
+		if($this->isrestricted) {
+			throw new ForbiddenException('Access denied.', false);
+		}
 	}
 
 	/*
