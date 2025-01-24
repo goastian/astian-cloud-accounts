@@ -14,19 +14,10 @@ use OCP\Files\Storage\IWriteStreamStorage;
 use OCP\Server;
 
 class StorageWrapper extends Wrapper implements IWriteStreamStorage {
-	public $isrestricted = true;
 	/**
 	 * @param array $parameters
 	 */
 	public function __construct($parameters) {
-		$mountPoint = $parameters['mountPoint'] ?? null;
-		if (preg_match('#/([^/]+)/files/#', $mountPoint, $matches)) {
-			$username = $matches[1];
-			$fsservice = Server::get(FilesystemService::class);
-			if($username && $fsservice->checkFilesGroupAccess($username)) {
-				$this->isrestricted = false;
-			}
-		}
 		parent::__construct($parameters);
 	}
 
@@ -34,8 +25,18 @@ class StorageWrapper extends Wrapper implements IWriteStreamStorage {
 	 * @throws ForbiddenException
 	 */
 	protected function checkFileAccess(string $path, bool $isDir = false): void {
-		if($this->isrestricted) {
-			throw new ForbiddenException('Access denied.', false);
+		$isrestricted = true;
+		$mountPoint = $path ?? null;
+		\OC::$server->getLogger()->error("mountPoint:: $mountPoint");
+		if (preg_match('#/([^/]+)/?#', $mountPoint, $matches)) {
+			$username = $matches[1];
+			$fsservice = Server::get(FilesystemService::class);
+			if($username && $fsservice->checkFilesGroupAccess($username)) {
+				$isrestricted = false;
+			}
+		}
+		if($isrestricted) {
+			throw new ForbiddenException('Access denied.'.$isrestricted, false);
 		}
 	}
 
