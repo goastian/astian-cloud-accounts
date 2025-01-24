@@ -98,10 +98,8 @@ class Application extends App implements IBootstrap {
 		$username = $user ? $user->getUID() : null;
 		$fsservice = Server::get(FilesystemService::class);
 		if($username && $fsservice->checkFilesGroupAccess($username)) {
-			\OC::$server->logger->error("File access allowed for $username...");
 			return $storage;
 		}
-		\OC::$server->logger->error("File access not allowed for $username...");
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
 		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
