@@ -90,25 +90,16 @@ class Application extends App implements IBootstrap {
 	 * @param IStorage $storage
 	 * @return StorageWrapper|IStorage
 	 */
-	public function addStorageWrapperCallback($mountPoint, IStorage $storage) {
-		
-		$username = null;
-		$user = \OC::$server->getUserSession()->getUser();
-		if($user) {
-			$username = $user->getUID();
-		} else {
-			if (preg_match('#/([^/]+)/#', $mountPoint, $matches)) {
-				$username = $matches[1];
-			}
-
-		}
-		\OC::$server->getLogger()->error("--> addStorageWrapperCallback mountPoint:: ".$mountPoint);
-		\OC::$server->getLogger()->error("--> addStorageWrapperCallback username:: ".$username);
+	public function addStorageWrapperCallback($mountPoint, IStorage $storage): IStorage {
+		$username = $this->getUsernameFromMountPoint($mountPoint);
+		\OC::$server->getLogger()->error("--> addStorageWrapperCallback mountPoint:: " . $mountPoint);
+		\OC::$server->getLogger()->error("--> addStorageWrapperCallback username:: " . $username);
 
 		$fsservice = Server::get(FilesystemService::class);
-		if($username && $fsservice->checkFilesGroupAccess($username)) {
+		if ($username && $fsservice->checkFilesGroupAccess($username)) {
 			return $storage;
 		}
+
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
 		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
@@ -119,5 +110,18 @@ class Application extends App implements IBootstrap {
 		}
 
 		return $storage;
+	}
+
+	private function getUsernameFromMountPoint($mountPoint): ?string {
+		$user = \OC::$server->getUserSession()->getUser();
+		if ($user) {
+			return $user->getUID();
+		}
+
+		if (preg_match('#/([^/]+)/#', $mountPoint, $matches)) {
+			return $matches[1];
+		}
+
+		return null;
 	}
 }
