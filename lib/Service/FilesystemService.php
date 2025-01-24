@@ -65,13 +65,16 @@ class FilesystemService {
 	}
 	public function checkFilesGroupAccess($username) {
 		$groupName = $this->config->getSystemValue("files_access_group_name");
+		
 		if (!$this->groupManager->groupExists($groupName)) {
 			$this->logger->error("$groupName group not exist.");
 			return false;
 		}
 		if ($this->groupManager->isInGroup($username, $groupName)) {
+			$this->logger->error("$username is in $groupName group.");
 			return true;
 		}
+		$this->logger->error("$username is not in $groupName group.");
 		return false;
 	}
 
