@@ -58,7 +58,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		\OC::$server->logger->error("addStorageWrapper called...");
 		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
