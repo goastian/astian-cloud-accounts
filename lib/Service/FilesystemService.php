@@ -51,7 +51,6 @@ class FilesystemService {
 	public function addUserInFilesEnabledGroup($username) {
 		$user = $this->userManager->get($username);
 		if (!$user) {
-			$this->logger->error("$username User not found.");
 			return false;
 		}
 		$groupName = $this->config->getSystemValue("files_access_group_name");
@@ -71,10 +70,8 @@ class FilesystemService {
 			return false;
 		}
 		if ($this->groupManager->isInGroup($username, $groupName)) {
-			$this->logger->error("$username is in $groupName group.");
 			return true;
 		}
-		$this->logger->error("$username is not in $groupName group.");
 		return false;
 	}
 

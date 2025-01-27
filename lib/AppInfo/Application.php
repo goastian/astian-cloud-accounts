@@ -91,10 +91,7 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage): IStorage {
-		\OC::$server->getLogger()->error("--> addStorageWrapperCallback original mountPoint:: " . $mountPoint);
 		$username = $this->getUsernameFromMountPoint($mountPoint);
-		\OC::$server->getLogger()->error("--> addStorageWrapperCallback mountPoint:: " . $mountPoint);
-		\OC::$server->getLogger()->error("--> addStorageWrapperCallback username:: " . $username);
 
 		$fsservice = Server::get(FilesystemService::class);
 		if ($username && $fsservice->checkFilesGroupAccess($username)) {
