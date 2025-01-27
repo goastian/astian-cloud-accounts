@@ -46,7 +46,7 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private IInitialState $initialState;
 	private IAppData $appData;
-	private FilesystemService $fsservice;
+	private FilesystemService $fsService;
 	private const SESSION_VERIFIED_USERNAME = 'verified_username';
 	private const SESSION_VERIFIED_DISPLAYNAME = 'verified_displayname';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
@@ -72,7 +72,7 @@ class AccountController extends Controller {
 		ILogger $logger,
 		IInitialState $initialState,
 		IAppData $appData,
-		FilesystemService $fsservice
+		FilesystemService $fsService
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -89,7 +89,7 @@ class AccountController extends Controller {
 		$this->request = $request;
 		$this->initialState = $initialState;
 		$this->appData = $appData;
-		$this->fsservice = $fsservice;
+		$this->fsService = $fsService;
 	}
 
 	/**
@@ -214,7 +214,7 @@ class AccountController extends Controller {
 			$ipAddress = $this->request->getRemoteAddress();
 			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
 			// temporary fix to add user in 'files-enabled' group
-			$this->fsservice->addUserInFilesEnabledGroup($username);
+			$this->fsService->addUserInFilesEnabledGroup($username);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
