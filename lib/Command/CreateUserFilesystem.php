@@ -94,7 +94,7 @@ class CreateUserFilesystem extends Command {
 
 			$output->writeln('Setup completed for all eligible users.');
 			return Command::SUCCESS;
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$output->writeln('Error: ' . $e->getMessage());
 			return Command::FAILURE;
 		}
