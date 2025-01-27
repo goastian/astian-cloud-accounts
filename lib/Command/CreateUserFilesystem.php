@@ -13,11 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateUserFilesystem extends Command {
 	private LDAPConnectionService $ldapService;
-	private FilesystemService $fsservice;
+	private FilesystemService $fsService;
 
-	public function __construct(LDAPConnectionService $ldapService, FilesystemService $fsservice) {
+	public function __construct(LDAPConnectionService $ldapService, FilesystemService $fsService) {
 		$this->ldapService = $ldapService;
-		$this->fsservice = $fsservice;
+		$this->fsService = $fsService;
 		parent::__construct();
 	}
 	/**
@@ -59,8 +59,12 @@ class CreateUserFilesystem extends Command {
 			if ($date) {
 				// Fetch users from LDAP created after the specified date
 				$output->writeln("Fetching users created after $date...");
-				$users = $this->ldapService->getUsersCreatedAfter($date);
-				
+				try {
+					$users = $this->ldapService->getUsersCreatedAfter($date);
+				} catch (\Exception $e) {
+					$output->writeln('Error fetching users from LDAP: ' . $e->getMessage());
+					return Command::FAILURE;
+				}
 			} elseif ($userIdsOption) {
 				// Process specific user IDs
 				$userIds = array_map('trim', explode(',', $userIdsOption));
@@ -77,18 +81,16 @@ class CreateUserFilesystem extends Command {
 
 				$username = $user['username'];
 				$output->writeln("$username Processing user");
-
-				$isUserInGroup = $this->fsservice->addUserInFilesEnabledGroup($username);
-				$output->writeln("Checking if user in group");
+	
+				$isUserInGroup = $this->fsService->checkFilesGroupAccess($username);
+				$output->writeln("Checking $username is in group...");
 				if (!$isUserInGroup) {
-					$result = $this->fsservice->addUserInFilesEnabledGroup($username);
-					$output->writeln($result ? "Added in group sucessfully.": "Failed to add in Group");
+					$result = $this->fsService->addUserInFilesEnabledGroup($username);
+					$output->writeln($result ? "$username added to group successfully." : "$username failed to add to group.");
 				}
-				$output->writeln("Setup FS for user...");
-				$isSetupCompleted = $this->fsservice->callSetupFS($username);
-				$output->writeln($isSetupCompleted ? "User Setup sucessfully": "Failed to setup");
-				
-				$output->writeln("--End--");
+				$output->writeln("Setup FS for user $username ");
+				$isSetupCompleted = $this->fsService->callSetupFS($username);
+				$output->writeln($isSetupCompleted ? "$username User setup successfully" : "$username is failed while setup");
 			}
 
 			$output->writeln('Setup completed for all eligible users.');

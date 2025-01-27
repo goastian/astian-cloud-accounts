@@ -32,7 +32,7 @@ class FilesystemService {
 	}
 
 
-	public function callSetupFS(string $user) {
+	public function callSetupFS(string $user): bool {
 
 		OC_Util::setupFS($user);
 		//trigger creation of user home and /files folder
@@ -44,16 +44,15 @@ class FilesystemService {
 			return true;
 		} catch (NotPermittedException $ex) {
 			// read only uses
-			$this->logger->error("Exception for user $user. Error: ".$ex->getMessage());
 			return false;
 		}
 	}
-	public function addUserInFilesEnabledGroup($username) {
+	public function addUserInFilesEnabledGroup($username): bool {
 		$user = $this->userManager->get($username);
 		if (!$user) {
 			return false;
 		}
-		$groupName = $this->config->getSystemValue("files_access_group_name");
+		$groupName = $this->config->getSystemValue('files_access_group_name', '');
 		if (!$this->groupManager->groupExists($groupName)) {
 			$this->logger->error("$groupName group not exist.");
 			return false;
@@ -62,8 +61,8 @@ class FilesystemService {
 		$group->addUser($user);
 		return true;
 	}
-	public function checkFilesGroupAccess($username) {
-		$groupName = $this->config->getSystemValue("files_access_group_name");
+	public function checkFilesGroupAccess($username): bool {
+		$groupName = $this->config->getSystemValue('files_access_group_name', '');
 		
 		if (!$this->groupManager->groupExists($groupName)) {
 			$this->logger->error("$groupName group not exist.");

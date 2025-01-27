@@ -91,13 +91,6 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage): IStorage {
-		$username = $this->getUsernameFromMountPoint($mountPoint);
-
-		$fsservice = Server::get(FilesystemService::class);
-		if ($username && $fsservice->checkFilesGroupAccess($username)) {
-			return $storage;
-		}
-
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
 		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
@@ -106,20 +99,24 @@ class Application extends App implements IBootstrap {
 				'mountPoint' => $mountPoint,
 			]);
 		}
+		$username = $this->getUsernameFromMountPoint($mountPoint);
+
+		$fsservice = Server::get(FilesystemService::class);
+		if ($username && $fsservice->checkFilesGroupAccess($username)) {
+			return $storage;
+		}
 
 		return $storage;
 	}
 
 	private function getUsernameFromMountPoint($mountPoint): ?string {
-		$user = \OC::$server->getUserSession()->getUser();
-		if ($user) {
-			return $user->getUID();
-		}
-
-		if (preg_match('#/([^/]+)/#', $mountPoint, $matches)) {
-			return $matches[1];
-		}
-
-		return null;
+		// Remove the leading slash if it's there
+		$mountPoint = ltrim($mountPoint, '/');
+		
+		// Split the mount point by '/'
+		$parts = explode('/', $mountPoint);
+		
+		// If the first part exists, return it as the username
+		return isset($parts[0]) ? $parts[0] : null;
 	}
 }
