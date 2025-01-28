@@ -134,7 +134,7 @@ class LDAPConnectionService {
 		$baseDn = implode(',', $this->getLDAPBaseUsers());
 		$filter = sprintf('(createTimestamp>=%s)', $formattedDate);
 	
-		$searchResult = ldap_search($conn, $baseDn, $filter, ['dn', 'username', 'createTimestamp']);
+		$searchResult = ldap_search($conn, $baseDn, $filter, ['username']);
 		if (!$searchResult) {
 			$this->closeLDAPConnection($conn);
 			throw new Exception('LDAP search failed for createTimestamp after: ' . $date);
@@ -147,9 +147,7 @@ class LDAPConnectionService {
 		if ($entries['count'] > 0) {
 			for ($i = 0; $i < $entries['count']; $i++) {
 				$users[] = [
-					'dn' => $entries[$i]['dn'],
 					'username' => $entries[$i]['username'][0] ?? null,
-					'createTimestamp' => $entries[$i]['createtimestamp'][0] ?? null,
 				];
 			}
 		}
