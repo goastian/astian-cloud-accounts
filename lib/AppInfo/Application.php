@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\AppInfo;
 
 use OC\Files\Filesystem;
+use OCA\EcloudAccounts\Dav\CheckPlugin;
 use OCA\EcloudAccounts\Filesystem\StorageWrapper;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
@@ -44,6 +45,7 @@ use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
+use OCP\SabrePluginEvent;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
