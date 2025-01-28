@@ -48,20 +48,30 @@ class CreateUserFilesystem extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$date = $input->getOption('date');
 		$userIdsOption = $input->getOption('user_ids');
-		$batchSize = 1000;  // Define the batch size
-		
+	
 		if (!$date && !$userIdsOption) {
 			$output->writeln('Either the --date or --user_ids option is required.');
 			return Command::INVALID;
 		}
 	
 		try {
+			$batchSize = 500; // Define the batch size
 			$users = [];
+	
 			if ($date) {
-				// Fetch users from LDAP created after the specified date
-				$output->writeln("Fetching users created after $date...");
+				// Fetch users from LDAP created after the specified date in batches
+				$output->writeln("Fetching users created after $date in batches of $batchSize...");
 				try {
-					$users = $this->ldapService->getUsersCreatedAfter($date);
+					$cookie = null; // Initialize LDAP pagination cookie
+					do {
+						// Fetch a batch of users
+						$currentBatch = $this->ldapService->getUsersCreatedAfter($date, $batchSize, $cookie);
+						$users = array_merge($users, $currentBatch);
+	
+						$output->writeln(sprintf("Fetched %d users in this batch. Total fetched: %d", count($currentBatch), count($users)));
+	
+					} while ($cookie !== null && $cookie !== '');
+	
 				} catch (\Exception $e) {
 					$output->writeln('Error fetching users from LDAP: ' . $e->getMessage());
 					return Command::FAILURE;
@@ -74,46 +84,35 @@ class CreateUserFilesystem extends Command {
 				}
 				$output->writeln('Processing specified user IDs: ' . implode(', ', $userIds));
 			}
-			
+	
+			// Process users in chunks
 			$output->writeln('Setup started for all eligible users.');
-	
-			// Process in batches
-			$batchCount = 0;
-			foreach (array_chunk($users, $batchSize) as $userBatch) {
-				$batchCount++;
-				$output->writeln("Processing batch $batchCount...");
-	
-				foreach ($userBatch as $user) {
-					if (!$user['username']) {
-						continue;
-					}
-	
-					$username = $user['username'];
-					$output->writeln("Processing user $username.");
-	
-					$output->writeln("Checking $username is in group.");
-					$isUserInGroup = $this->fsService->checkFilesGroupAccess($username);
-					if (!$isUserInGroup) {
-						$result = $this->fsService->addUserInFilesEnabledGroup($username);
-						$output->writeln($result ? "$username added to group successfully." : "$username failed to add to group.");
-					}
-	
-					$output->writeln("Setup FS for user $username ");
-					$isSetupCompleted = $this->fsService->callSetupFS($username);
-					$output->writeln($isSetupCompleted ? "$username User setup successfully." : "$username setup is failed!");
+			foreach ($users as $user) {
+				if (!$user['username']) {
+					continue;
 				}
 	
-				$output->writeln("Waiting for 2 seconds before processing the next batch...");
-				sleep(2); // Delay for 2 seconds
-				$output->writeln("Resuming to next batch.");
+				$username = $user['username'];
+				$output->writeln("Processing user $username.");
+	
+				$output->writeln("Checking $username is in group.");
+				$isUserInGroup = $this->fsService->checkFilesGroupAccess($username);
+				if (!$isUserInGroup) {
+					$result = $this->fsService->addUserInFilesEnabledGroup($username);
+					$output->writeln($result ? "$username added to group successfully." : "$username failed to add to group.");
+				}
+	
+				$output->writeln("Setup FS for user $username ");
+				$isSetupCompleted = $this->fsService->callSetupFS($username);
+				$output->writeln($isSetupCompleted ? "$username User setup successfully." : "$username setup is failed!");
 			}
 	
 			$output->writeln('Setup completed for all eligible users.');
 			return Command::SUCCESS;
+	
 		} catch (\Throwable $e) {
 			$output->writeln('Error: ' . $e->getMessage());
 			return Command::FAILURE;
 		}
 	}
-
 }
