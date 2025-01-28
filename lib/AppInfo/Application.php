@@ -44,7 +44,6 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
-use OCP\Server;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -94,7 +93,7 @@ class Application extends App implements IBootstrap {
 		
 		$username = $this->getUsernameFromMountPoint($mountPoint);
 
-		$fsService = Server::get(FilesystemService::class);
+		$fsService = \OC::$server->get(FilesystemService::class);
 		if ($username && $fsService->checkFilesGroupAccess($username)) {
 			return $storage;
 		}
