@@ -48,6 +48,7 @@ use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCP\Util;
 
+
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
 
@@ -57,6 +58,19 @@ class Application extends App implements IBootstrap {
 
 	public function register(IRegistrationContext $context): void {
 		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+		// Get the event dispatcher service
+		$eventDispatcher = $context->getServerContainer()->get(IEventDispatcher::class);
+
+		// Add a listener for the 'OCA\DAV\Connector\Sabre::addPlugin' event
+		$eventDispatcher->addListener('OCA\DAV\Connector\Sabre::addPlugin', function (SabrePluginEvent $event) use ($context) {
+			$eventServer = $event->getServer();
+
+			if ($eventServer !== null) {
+				// Register the CheckPlugin
+				$plugin = $context->getAppContainer()->get(CheckPlugin::class);
+				$eventServer->addPlugin($plugin);
+			}
+		});
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
