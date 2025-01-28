@@ -48,12 +48,13 @@ class CreateUserFilesystem extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$date = $input->getOption('date');
 		$userIdsOption = $input->getOption('user_ids');
-
+		$batchSize = 1000;  // Define the batch size
+		
 		if (!$date && !$userIdsOption) {
 			$output->writeln('Either the --date or --user_ids option is required.');
 			return Command::INVALID;
 		}
-
+	
 		try {
 			$users = [];
 			if ($date) {
@@ -73,27 +74,40 @@ class CreateUserFilesystem extends Command {
 				}
 				$output->writeln('Processing specified user IDs: ' . implode(', ', $userIds));
 			}
+			
 			$output->writeln('Setup started for all eligible users.');
-			foreach ($users as $user) {
-				if (!$user['username']) {
-					continue;
-				}
-
-				$username = $user['username'];
-				$output->writeln("Processing user $username.");
 	
-				$output->writeln("Checking $username is in group.");
-				$isUserInGroup = $this->fsService->checkFilesGroupAccess($username);
-				if (!$isUserInGroup) {
-					$result = $this->fsService->addUserInFilesEnabledGroup($username);
-					$output->writeln($result ? "$username added to group successfully." : "$username failed to add to group.");
+			// Process in batches
+			$batchCount = 0;
+			foreach (array_chunk($users, $batchSize) as $userBatch) {
+				$batchCount++;
+				$output->writeln("Processing batch $batchCount...");
+	
+				foreach ($userBatch as $user) {
+					if (!$user['username']) {
+						continue;
+					}
+	
+					$username = $user['username'];
+					$output->writeln("Processing user $username.");
+	
+					$output->writeln("Checking $username is in group.");
+					$isUserInGroup = $this->fsService->checkFilesGroupAccess($username);
+					if (!$isUserInGroup) {
+						$result = $this->fsService->addUserInFilesEnabledGroup($username);
+						$output->writeln($result ? "$username added to group successfully." : "$username failed to add to group.");
+					}
+	
+					$output->writeln("Setup FS for user $username ");
+					$isSetupCompleted = $this->fsService->callSetupFS($username);
+					$output->writeln($isSetupCompleted ? "$username User setup successfully." : "$username setup is failed!");
 				}
-				
-				$output->writeln("Setup FS for user $username ");
-				$isSetupCompleted = $this->fsService->callSetupFS($username);
-				$output->writeln($isSetupCompleted ? "$username User setup successfully." : "$username setup is failed!");
+	
+				$output->writeln("Waiting for 2 seconds before processing the next batch...");
+				sleep(2); // Delay for 2 seconds
+				$output->writeln("Resuming to next batch.");
 			}
-
+	
 			$output->writeln('Setup completed for all eligible users.');
 			return Command::SUCCESS;
 		} catch (\Throwable $e) {
