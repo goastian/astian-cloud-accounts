@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\Dav;
 
-use OCA\TermsOfService\AppInfo\Application;
+use OCA\EcloudAccounts\AppInfo\Application;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\DAV\Server;
 use Sabre\DAV\ServerPlugin;

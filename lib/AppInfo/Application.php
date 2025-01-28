@@ -41,13 +41,13 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
 use OCP\Util;
-
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -58,6 +58,16 @@ class Application extends App implements IBootstrap {
 
 	public function register(IRegistrationContext $context): void {
 		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
+		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
+		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
+		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
+		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
+		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
+	
+		$context->registerMiddleware(AccountMiddleware::class);
+	}
+
+	public function boot(IBootContext $context): void {
 		// Get the event dispatcher service
 		$eventDispatcher = $context->getServerContainer()->get(IEventDispatcher::class);
 
@@ -71,16 +81,6 @@ class Application extends App implements IBootstrap {
 				$eventServer->addPlugin($plugin);
 			}
 		});
-		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
-		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
-		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
-		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
-		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
-	
-		$context->registerMiddleware(AccountMiddleware::class);
-	}
-
-	public function boot(IBootContext $context): void {
 		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($c) {
 			return new LDAPConnectionService(
