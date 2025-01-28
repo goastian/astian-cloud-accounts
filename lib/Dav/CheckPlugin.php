@@ -75,7 +75,7 @@ class CheckPlugin extends ServerPlugin {
 	 * @return string
 	 */
 	public function getPluginName(): string {
-		return Application::APPNAME;
+		return Application::APP_ID;
 	}
 
 	/**
