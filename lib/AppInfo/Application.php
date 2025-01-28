@@ -90,34 +90,39 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage): IStorage {
-		
+		// Get the username from the mount point
 		$username = $this->getUsernameFromMountPoint($mountPoint);
 
-		$fsService = \OC::$server->get(FilesystemService::class);
-		if ($username && $fsService->checkFilesGroupAccess($username)) {
-			return $storage;
-		}
-
+		// Only perform the access check if the mount point is not part of the appdata folder
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
-		if ($mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
-			return new StorageWrapper([
-				'storage' => $storage,
-				'mountPoint' => $mountPoint,
-			]);
+
+		// Check if the mountPoint is not appdata and if we need to check the user's group access
+		if ($username && $mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
+			$fsService = \OC::$server->get(FilesystemService::class);
+			// Perform the group access check
+			if (!$fsService->checkFilesGroupAccess($username)) {
+				// If access is denied, wrap the storage
+				return new StorageWrapper([
+					'storage' => $storage,
+					'mountPoint' => $mountPoint,
+				]);
+			}
 		}
 
+		// Return the storage directly if access is allowed or the mountPoint is part of appdata
 		return $storage;
 	}
 
 	private function getUsernameFromMountPoint($mountPoint): ?string {
 		// Remove the leading slash if it's there
 		$mountPoint = ltrim($mountPoint, '/');
-		
+
 		// Split the mount point by '/'
 		$parts = explode('/', $mountPoint);
-		
+
 		// If the first part exists, return it as the username
 		return isset($parts[0]) ? $parts[0] : null;
 	}
+
 }
