@@ -26,15 +26,12 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-use OC\Files\Filesystem;
-use OCA\EcloudAccounts\Filesystem\StorageWrapper;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\PasswordUpdatedListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Middleware\AccountMiddleware;
-use OCA\EcloudAccounts\Service\FilesystemService;
 use OCA\EcloudAccounts\Service\LDAPConnectionService;
 use OCA\TwoFactorTOTP\Event\StateChanged;
 use OCP\AppFramework\App;
@@ -42,12 +39,10 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
-use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
-use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -57,7 +52,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		Util::connectHook('OC_Filesystem', 'preSetup', $this, 'addStorageWrapper');
 		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
 		$context->registerEventListener(BeforeUserDeletedEvent::class, BeforeUserDeletedListener::class);
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
@@ -75,52 +69,4 @@ class Application extends App implements IBootstrap {
 			);
 		});
 	}
-
-	/**
-	 * @internal
-	 */
-	public function addStorageWrapper(): void {
-		Filesystem::addStorageWrapper('ecloud-accounts', [$this, 'addStorageWrapperCallback'], -10);
-	}
-
-	/**
-	 * @internal
-	 * @param $mountPoint
-	 * @param IStorage $storage
-	 * @return StorageWrapper|IStorage
-	 */
-	public function addStorageWrapperCallback($mountPoint, IStorage $storage): IStorage {
-
-		// Only perform the access check if the mount point is not part of the appdata folder
-		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
-		$appdataFolder = 'appdata_' . $instanceId;
-		
-		if ($mountPoint === '/' || strpos($mountPoint, '/' . $appdataFolder) === 0) {
-			return $storage;
-		}
-
-		// Get the username from the mount point
-		$username = $this->getUsernameFromMountPoint($mountPoint);
-		$fsService = \OC::$server->get(FilesystemService::class);
-		if ($fsService->checkFilesGroupAccess($username)) {
-			return $storage;
-		}
-
-		return new StorageWrapper([
-			'storage' => $storage,
-			'mountPoint' => $mountPoint,
-		]);
-	}
-
-	private function getUsernameFromMountPoint($mountPoint): ?string {
-		// Remove the leading slash if it's there
-		$mountPoint = ltrim($mountPoint, '/');
-
-		// Split the mount point by '/'
-		$parts = explode('/', $mountPoint);
-
-		// If the first part exists, return it as the username
-		return isset($parts[0]) ? $parts[0] : null;
-	}
-
 }

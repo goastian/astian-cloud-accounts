@@ -28,6 +28,5 @@
         <command>OCA\EcloudAccounts\Command\Migrate2FASecrets</command>
         <command>OCA\EcloudAccounts\Command\MigrateWebmailAddressbooks</command>
         <command>OCA\EcloudAccounts\Command\MapActiveAttributetoLDAP</command>
-        <command>OCA\EcloudAccounts\Command\CreateUserFilesystem</command>
     </commands>
 </info>
