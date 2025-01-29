@@ -70,7 +70,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
-		// Get the event dispatcher service
 		$eventDispatcher = $context->getServerContainer()->get(IEventDispatcher::class);
 
 		// Add a listener for the 'OCA\DAV\Connector\Sabre::addPlugin' event
