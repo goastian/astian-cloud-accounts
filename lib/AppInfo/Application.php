@@ -71,23 +71,25 @@ class Application extends App implements IBootstrap {
 
 	public function boot(IBootContext $context): void {
 		$eventDispatcher = $context->getServerContainer()->get(IEventDispatcher::class);
-
-		// Add a listener for the 'OCA\DAV\Connector\Sabre::addPlugin' event
-		$eventDispatcher->addListener('OCA\DAV\Connector\Sabre::addPlugin', function (SabrePluginEvent $event) use ($context) {
-			$eventServer = $event->getServer();
-
-			if ($eventServer !== null) {
-				// Register the CheckPlugin
-				$plugin = $context->getAppContainer()->get(CheckPlugin::class);
-				$eventServer->addPlugin($plugin);
-			}
-		});
+		$eventDispatcher->addListener('OCA\DAV\Connector\Sabre::addPlugin', [$this, 'registerDavPlugin']);
 		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($c) {
 			return new LDAPConnectionService(
 				$c->get(IUserManager::class)
 			);
 		});
+	}
+
+	/**
+	 * Registers the CheckPlugin for DAV integration
+	 */
+	public function registerDavPlugin(SabrePluginEvent $event): void {
+		$eventServer = $event->getServer();
+
+		if ($eventServer !== null) {
+			$plugin = $this->getContainer()->get(CheckPlugin::class);
+			$eventServer->addPlugin($plugin);
+		}
 	}
 
 	/**
