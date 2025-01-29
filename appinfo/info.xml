@@ -14,6 +14,9 @@
     <licence>agpl</licence>
     <author mail="dev@murena.com" homepage="https://murena.com/">Murena SAS</author>
     <namespace>EcloudAccounts</namespace>
+    <types>
+        <dav/>
+    </types>
     <category>tools</category>
     <bugs>https://gitlab.e.foundation/e/management/issues</bugs>
     <dependencies>

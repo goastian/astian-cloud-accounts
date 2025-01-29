@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace OCA\EcloudAccounts\AppInfo;
 
 use OC\Files\Filesystem;
+use OCA\EcloudAccounts\Dav\CheckPlugin;
 use OCA\EcloudAccounts\Filesystem\StorageWrapper;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
@@ -41,8 +42,10 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
+use OCP\SabrePluginEvent;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
@@ -67,12 +70,26 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
+		$eventDispatcher = $context->getServerContainer()->get(IEventDispatcher::class);
+		$eventDispatcher->addListener('OCA\DAV\Connector\Sabre::addPlugin', [$this, 'registerDavPlugin']);
 		$serverContainer = $context->getServerContainer();
 		$serverContainer->registerService('LDAPConnectionService', function ($c) {
 			return new LDAPConnectionService(
 				$c->get(IUserManager::class)
 			);
 		});
+	}
+
+	/**
+	 * Registers the CheckPlugin for DAV integration
+	 */
+	public function registerDavPlugin(SabrePluginEvent $event): void {
+		$eventServer = $event->getServer();
+
+		if ($eventServer !== null) {
+			$plugin = $this->getContainer()->get(CheckPlugin::class);
+			$eventServer->addPlugin($plugin);
+		}
 	}
 
 	/**
