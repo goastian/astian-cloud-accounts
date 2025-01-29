@@ -158,7 +158,7 @@ class LDAPConnectionService {
 			$entries = ldap_get_entries($conn, $searchResult);
 			if ($entries['count'] > 0) {
 				foreach ($entries as $entry) {
-					if (!is_array($entry) || !isset($entry['uid'][0])) {
+					if (!is_array($entry) || !isset($entry['username'][0])) {
 						continue;
 					}
 					$users[] = [
