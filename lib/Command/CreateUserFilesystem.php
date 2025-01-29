@@ -92,11 +92,14 @@ class CreateUserFilesystem extends Command {
 				if (!$isUserInGroup) {
 					$result = $this->fsService->addUserInFilesEnabledGroup($username);
 					$output->writeln($result ? "$username added to group successfully." : "$username failed to add to group.");
+					if($result) {
+						$output->writeln("Setup FS for user $username ");
+						$isSetupCompleted = $this->fsService->callSetupFS($username);
+						$output->writeln($isSetupCompleted ? "$username User setup successfully." : "$username setup is failed!");
+					}
+				} else {
+					$output->writeln("$username is already in group.");
 				}
-	
-				$output->writeln("Setup FS for user $username ");
-				$isSetupCompleted = $this->fsService->callSetupFS($username);
-				$output->writeln($isSetupCompleted ? "$username User setup successfully." : "$username setup is failed!");
 			}
 	
 			$output->writeln('Setup completed for all eligible users.');
