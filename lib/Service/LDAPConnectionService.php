@@ -122,50 +122,8 @@ class LDAPConnectionService {
 
 		$this->closeLDAPConnection($conn);
 	}
-	public function getUsersCreatedAfter11(string $date, int $batchSize = 500, &$cookie = ''): array {
-		if (!$this->isLDAPEnabled()) {
-			throw new Exception('LDAP backend is not enabled');
-		}
 	
-		// Convert the provided date to LDAP Generalized Time format: YYYYMMDDHHMMSSZ
-		$formattedDate = (new \DateTime($date))->format('YmdHis') . 'Z';
-	
-		$conn = $this->getLDAPConnection();
-		$baseDn = implode(',', $this->getLDAPBaseUsers());
-		$filter = sprintf('(createTimestamp>=%s)', $formattedDate);
-	
-		$users = [];
-	
-		do {
-			// Set the paged result control
-			ldap_control_paged_result($conn, $batchSize, true, $cookie);
-	
-			$searchResult = ldap_search($conn, $baseDn, $filter, ['username']);
-			if (!$searchResult) {
-				$this->closeLDAPConnection($conn);
-				throw new Exception('LDAP search failed for createTimestamp after: ' . $date);
-			}
-	
-			$entries = ldap_get_entries($conn, $searchResult);
-			if ($entries['count'] > 0) {
-				for ($i = 0; $i < $entries['count']; $i++) {
-					$users[] = [
-						'username' => $entries[$i]['username'][0] ?? null,
-					];
-				}
-			}
-	
-			// Get the pagination cookie
-			ldap_control_paged_result_response($conn, $searchResult, $cookie);
-	
-		} while ($cookie !== null && $cookie !== '');
-	
-		$this->closeLDAPConnection($conn);
-	
-		return $users;
-	}
-	
-	public function getUsersCreatedAfter(string $date, int $batchSize = 500, &$cookie = null): array {
+	public function getUsersCreatedAfter(string $date, int $batchSize = 500): array {
 		if (!$this->isLDAPEnabled()) {
 			throw new Exception('LDAP backend is not enabled');
 		}
@@ -179,44 +137,43 @@ class LDAPConnectionService {
 		$attributes = ['username'];
 
 		$users = [];
-	
-		// Initialize cookie for pagination if not already set
-		$cookie = $cookie ?? '';
+		$cookie = '';
 	
 		do {
-			$controls = [
+			// Set pagination control
+			ldap_set_option($conn, LDAP_OPT_SERVER_CONTROLS, [
 				[
 					'oid' => LDAP_CONTROL_PAGEDRESULTS,
-					'value' => ['size' => $batchSize, 'cookie' => $cookie],
-				],
-			];
+					'value' => ['size' => $batchSize, 'cookie' => $cookie]
+				]
+			]);
 	
-			// Set pagination controls on the LDAP query
-			ldap_set_option($conn, LDAP_OPT_SERVER_CONTROLS, $controls);
-	
+			// Perform search
 			$searchResult = ldap_search($conn, $baseDn, $filter, $attributes);
-	
 			if (!$searchResult) {
 				throw new Exception('LDAP search failed: ' . ldap_error($conn));
 			}
 	
+			// Retrieve results
 			$entries = ldap_get_entries($conn, $searchResult);
-	
-			// Add users to the result array
-			foreach ($entries as $entry) {
-				if (!is_array($entry) || !isset($entry['username'][0])) {
-					continue;
+			if ($entries['count'] > 0) {
+				foreach ($entries as $entry) {
+					if (!is_array($entry) || !isset($entry['uid'][0])) {
+						continue;
+					}
+					$users[] = [
+						'username' => $entry['username'][0],
+					];
 				}
-				$users[] = [
-					'username' => $entry['username'][0]
-				];
 			}
 	
-			// Retrieve updated cookie for pagination
-			$responseControls = [];
-			ldap_get_option($conn, LDAP_OPT_SERVER_CONTROLS, $responseControls);
+			// Retrieve updated pagination cookie
+			$cookie = '';
+			ldap_parse_result($conn, $searchResult, $errcode, null, null, null, $controls);
+			if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
+				$cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+			}
 	
-			$cookie = $responseControls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
 		} while (!empty($cookie));
 	
 		return $users;

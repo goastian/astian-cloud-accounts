@@ -62,16 +62,8 @@ class CreateUserFilesystem extends Command {
 				// Fetch users from LDAP created after the specified date in batches
 				$output->writeln("Fetching users created after $date in batches of $batchSize...");
 				try {
-					$cookie = null; // Initialize LDAP pagination cookie
-					do {
-						// Fetch a batch of users
-						$currentBatch = $this->ldapService->getUsersCreatedAfter($date, $batchSize, $cookie);
-						$users = array_merge($users, $currentBatch);
-	
-						$output->writeln(sprintf("Fetched %d users in this batch. Total fetched: %d", count($currentBatch), count($users)));
-	
-					} while ($cookie !== null && $cookie !== '');
-	
+					$users = $this->ldapService->getUsersCreatedAfter($date);
+					$output->writeln("Total users fetched: " . count($users));
 				} catch (\Exception $e) {
 					$output->writeln('Error fetching users from LDAP: ' . $e->getMessage());
 					return Command::FAILURE;
