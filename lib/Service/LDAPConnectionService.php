@@ -151,28 +151,31 @@ class LDAPConnectionService {
 			// Perform search
 			$searchResult = ldap_search($conn, $baseDn, $filter, $attributes);
 			if (!$searchResult) {
-				throw new Exception('LDAP search failed: ' . ldap_error($conn));
+				throw new \Exception('LDAP search failed: ' . ldap_error($conn));
 			}
 	
-			// Retrieve results
-			$entries = ldap_get_entries($conn, $searchResult);
-			if ($entries['count'] > 0) {
-				foreach ($entries as $entry) {
-					if (!is_array($entry) || !isset($entry['username'][0])) {
-						continue;
-					}
+			// Iterate entries one by one
+			$entry = ldap_first_entry($conn, $searchResult);
+			while ($entry) {
+				$username = ldap_get_values($conn, $entry, 'uid')[0] ?? null;
+				$createTimestamp = ldap_get_values($conn, $entry, 'createTimestamp')[0] ?? null;
+	
+				if ($username) {
 					$users[] = [
-						'username' => $entry['username'][0],
+						'username' => $username,
+						'createTimestamp' => $createTimestamp,
 					];
 				}
+	
+				// Move to next entry
+				$entry = ldap_next_entry($conn, $entry);
 			}
 	
 			// Retrieve updated pagination cookie
 			$matchedDn = $errorMessage = $referrals = null;
 			$controls = [];
-
+	
 			ldap_parse_result($conn, $searchResult, $errcode, $matchedDn, $errorMessage, $referrals, $controls);
-
 			$cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
 	
 		} while (!empty($cookie));
