@@ -14,10 +14,10 @@ use Sabre\HTTP\ResponseInterface;
 
 class CheckPlugin extends ServerPlugin {
 	/** @var Server */
-	protected $server;
+	private $server;
 
 	/** @var array */
-	protected $blockedUserAgents = [
+	private $blockedUserAgents = [
 		'/^Mozilla\/5\.0 \(.*\) mirall\/.*$/', // Nextcloud desktop clients
 		'/^Mozilla\/5\.0 \(Android\) Nextcloud\-android\/.*$/', // Nextcloud Android clients
 		'/^Mozilla\/5\.0 \(iOS\) Nextcloud\-iOS\/.*$/', // Nextcloud iOS clients
