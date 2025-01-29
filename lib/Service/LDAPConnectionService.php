@@ -151,19 +151,17 @@ class LDAPConnectionService {
 			// Perform search
 			$searchResult = ldap_search($conn, $baseDn, $filter, $attributes);
 			if (!$searchResult) {
-				throw new \Exception('LDAP search failed: ' . ldap_error($conn));
+				throw new Exception('LDAP search failed: ' . ldap_error($conn));
 			}
 	
 			// Iterate entries one by one
 			$entry = ldap_first_entry($conn, $searchResult);
 			while ($entry) {
-				$username = ldap_get_values($conn, $entry, 'uid')[0] ?? null;
-				$createTimestamp = ldap_get_values($conn, $entry, 'createTimestamp')[0] ?? null;
+				$username = ldap_get_values($conn, $entry, 'username')[0] ?? null;
 	
 				if ($username) {
 					$users[] = [
-						'username' => $username,
-						'createTimestamp' => $createTimestamp,
+						'username' => $username
 					];
 				}
 	
