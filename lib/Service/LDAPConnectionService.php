@@ -168,11 +168,12 @@ class LDAPConnectionService {
 			}
 	
 			// Retrieve updated pagination cookie
-			$cookie = '';
-			ldap_parse_result($conn, $searchResult, $errcode, null, null, null, $controls);
-			if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-				$cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-			}
+			$matchedDn = $errorMessage = $referrals = null;
+			$controls = [];
+
+			ldap_parse_result($conn, $searchResult, $errcode, $matchedDn, $errorMessage, $referrals, $controls);
+
+			$cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
 	
 		} while (!empty($cookie));
 	
