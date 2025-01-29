@@ -90,28 +90,26 @@ class Application extends App implements IBootstrap {
 	 * @return StorageWrapper|IStorage
 	 */
 	public function addStorageWrapperCallback($mountPoint, IStorage $storage): IStorage {
-		// Get the username from the mount point
-		$username = $this->getUsernameFromMountPoint($mountPoint);
 
 		// Only perform the access check if the mount point is not part of the appdata folder
 		$instanceId = \OC::$server->getConfig()->getSystemValue('instanceid', '');
 		$appdataFolder = 'appdata_' . $instanceId;
-
-		// Check if the mountPoint is not appdata and if we need to check the user's group access
-		if ($username && $mountPoint !== '/' && strpos($mountPoint, '/' . $appdataFolder) !== 0) {
-			$fsService = \OC::$server->get(FilesystemService::class);
-			// Perform the group access check
-			if (!$fsService->checkFilesGroupAccess($username)) {
-				// If access is denied, wrap the storage
-				return new StorageWrapper([
-					'storage' => $storage,
-					'mountPoint' => $mountPoint,
-				]);
-			}
+		
+		if ($mountPoint === '/' || strpos($mountPoint, '/' . $appdataFolder) === 0) {
+			return $storage;
 		}
 
-		// Return the storage directly if access is allowed or the mountPoint is part of appdata
-		return $storage;
+		// Get the username from the mount point
+		$username = $this->getUsernameFromMountPoint($mountPoint);
+		$fsService = \OC::$server->get(FilesystemService::class);
+		if ($fsService->checkFilesGroupAccess($username)) {
+			return $storage;
+		}
+
+		return new StorageWrapper([
+			'storage' => $storage,
+			'mountPoint' => $mountPoint,
+		]);
 	}
 
 	private function getUsernameFromMountPoint($mountPoint): ?string {
