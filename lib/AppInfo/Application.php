@@ -26,10 +26,10 @@ declare(strict_types=1);
 
 namespace OCA\EcloudAccounts\AppInfo;
 
-use OCA\EcloudAccounts\Listeners\TempEventListener;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\PasswordUpdatedListener;
+use OCA\EcloudAccounts\Listeners\TempEventListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Middleware\AccountMiddleware;
