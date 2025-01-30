@@ -12,6 +12,7 @@ use OCA\EcloudAccounts\Exception\AddUsernameToCommonStoreException;
 use OCA\EcloudAccounts\Exception\LDAPUserCreationException;
 use OCA\EcloudAccounts\Exception\RecoveryEmailValidationException;
 use OCA\EcloudAccounts\Service\CaptchaService;
+use OCA\EcloudAccounts\Service\FilesystemService;
 use OCA\EcloudAccounts\Service\HCaptchaService;
 use OCA\EcloudAccounts\Service\NewsLetterService;
 use OCA\EcloudAccounts\Service\UserService;
@@ -45,6 +46,7 @@ class AccountController extends Controller {
 	private IConfig $config;
 	private IInitialState $initialState;
 	private IAppData $appData;
+	private FilesystemService $fsService;
 	private const SESSION_VERIFIED_USERNAME = 'verified_username';
 	private const SESSION_VERIFIED_DISPLAYNAME = 'verified_displayname';
 	private const CAPTCHA_VERIFIED_CHECK = 'captcha_verified';
@@ -69,7 +71,8 @@ class AccountController extends Controller {
 		IConfig $config,
 		ILogger $logger,
 		IInitialState $initialState,
-		IAppData $appData
+		IAppData $appData,
+		FilesystemService $fsService
 	) {
 		parent::__construct($AppName, $request);
 		$this->appName = $AppName;
@@ -86,6 +89,7 @@ class AccountController extends Controller {
 		$this->request = $request;
 		$this->initialState = $initialState;
 		$this->appData = $appData;
+		$this->fsService = $fsService;
 	}
 
 	/**
@@ -209,6 +213,8 @@ class AccountController extends Controller {
 			$this->session->remove(self::CAPTCHA_VERIFIED_CHECK);
 			$ipAddress = $this->request->getRemoteAddress();
 			$this->userService->addUsernameToCommonDataStore($username, $ipAddress, $recoveryEmail);
+			// temporary fix to add user in 'files-enabled' group
+			$this->fsService->addUserInFilesEnabledGroup($username);
 			$response->setStatus(200);
 			$response->setData(['success' => true]);
 
