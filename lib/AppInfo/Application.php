@@ -29,7 +29,6 @@ namespace OCA\EcloudAccounts\AppInfo;
 use OCA\EcloudAccounts\Listeners\BeforeTemplateRenderedListener;
 use OCA\EcloudAccounts\Listeners\BeforeUserDeletedListener;
 use OCA\EcloudAccounts\Listeners\PasswordUpdatedListener;
-use OCA\EcloudAccounts\Listeners\TempEventListener;
 use OCA\EcloudAccounts\Listeners\TwoFactorStateChangedListener;
 use OCA\EcloudAccounts\Listeners\UserChangedListener;
 use OCA\EcloudAccounts\Middleware\AccountMiddleware;
@@ -44,7 +43,6 @@ use OCP\IUserManager;
 use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\PasswordUpdatedEvent;
 use OCP\User\Events\UserChangedEvent;
-use OCP\User\Events\UserLoggedInEvent;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'ecloud-accounts';
@@ -59,7 +57,7 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserChangedEvent::class, UserChangedListener::class);
 		$context->registerEventListener(StateChanged::class, TwoFactorStateChangedListener::class);
 		$context->registerEventListener(PasswordUpdatedEvent::class, PasswordUpdatedListener::class);
-		$context->registerEventListener(UserLoggedInEvent::class, TempEventListener::class);
+	
 		$context->registerMiddleware(AccountMiddleware::class);
 	}
 
