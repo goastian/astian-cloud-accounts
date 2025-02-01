@@ -1,41 +1,38 @@
-# Ecloud Accounts
+# Astian Accounts for Cloud
 
-- This app is used to integrate ecloud account creation with [welcome](https://gitlab.e.foundation/e/infra/docker-welcome)
+- This app is used to integrate Astian  account creation with [welcome](https://gitlab.e.foundation/e/infra/docker-welcome)
 - Options to be configured in your `config.php`:
 ```php
-    'e_welcome_secret' => 'secret', // Secret to authenticate request to the welcome server
-    'e_welcome_domain' => 'welcome.ecloud.global', // Domain of welcome server
-    'ecloud-accounts' => [
-        'secret' => 'ecloud-accounts-secret', // Secret for incoming requests to authenticate against
+    'a_welcome_secret' => 'secret', // Secret to authenticate request to the welcome server
+    'a_welcome_domain' => 'welcome. astian.global', // Domain of welcome server
+    'astian-accounts' => [
+        'secret' => 'astian-accounts-secret', // Secret for incoming requests to authenticate against
     ]
 ```
 
 ## User Account creation
 
-- This plugin creates an endpoint `/apps/ecloud-accounts/api/set_account_data` that is to be used to set user's email, quota,recovery email and create the user's folder if necessary
+- This plugin creates an endpoint `/apps/astian-accounts/api/set_account_data` that is to be used to set user's email, quota,recovery email and create the user's folder if necessary
 
 ### Captcha Configuration for user account creation
 
 - Simple image based captcha is the default for human verification
-- To change the value, set `ecloud-accounts.captcha_provider` 
+- To change the value, set `astian-accounts.captcha_provider` 
   - Allowed values are `image` (default) and `hcaptcha` (https://hcaptcha.com)
 
 #### HCaptcha Configuration
 
 - For hcaptcha provider to work, set the following values correctly:
-  - `ecloud-accounts.hcaptcha_site_key`
-  - `ecloud-accounts.hcaptcha_secret`
+  - `astian-accounts.hcaptcha_site_key`
+  - `astian-accounts.hcaptcha_secret`
 
 ## Drop account
 
 - The drop account functionality plugin works in conjunction with the drop_account plugin : https://apps.nextcloud.com/apps/drop_account
 - The app listens for user deletion event to handle proper deletion of user account in /e/ ecosystem 
 - This plugin calls the postDelete.php script in the /e/ docker-welcome container 
-- The e_welcome_secret is loaded in nextcloud's config file during ecloud-selfhosting installation. 
+- The a_welcome_secret is loaded in nextcloud's config file during astian-selfhosting installation. 
 
-## Support
-
-Please open issues here : https://gitlab.e.foundation/e/backlog/issues
 
 ## Dependencies
 
